@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@alpinejs/intersect": "^3.10.2",
     "alpinejs": "^3.10.2"
   }
 }

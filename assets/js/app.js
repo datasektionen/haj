@@ -25,8 +25,10 @@ import { Socket } from "phoenix"
 import { LiveSocket } from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 import Alpine from "alpinejs";
+import intersect from '@alpinejs/intersect'
 
 window.Alpine = Alpine
+Alpine.plugin(intersect)
 Alpine.start()
 
 let hooks = {};
