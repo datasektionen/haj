@@ -1,20 +1,20 @@
-<section class="flex relative h-screen max-h-[85vh] pt-48 pb-10 w-full overflow-hidden" x-data="{playing: true}"
+<section class="flex relative h-screen max-h-[85vh] pt-48 pb-10 w-full overflow-hidden bg-black" x-data="{playing: true}"
   x-init="$watch('playing', (value) => {value ? $refs.video.play() : $refs.video.pause()})">
   <div class="flex flex-col justify-end flex-1 p-6 md:px-14 mx-auto text-white space-y-3 z-10">
     <h2 class="font-light text-xl md:text-2xl">METASPEXET 2022</h2>
     <h1 class="font-title text-5xl md:text-6xl">På västfronten intet Spex</h1>
     <h2 class="font-title text-2xl md:text-3xl">Eller andra sidan är ni klara?</h2>
-    <a class="flex link-underline items-center space-x-2 pt-4 mr-auto" href="https://metaspexet.se/biljetter">
+    <a class="flex link-underline items-center space-x-2 pt-4 mr-auto" href="/spexet">
       <h3 class="font-light uppercase text-xl md:text-2xl">köp biljetter</h3>
       <Heroicons.Solid.arrow_right class="w-4 h-4" />
     </a>
   </div>
 
-  <div
-    class="absolute top-0 left-0 h-full w-full bg-[url('/images/home-bg.jpg')] bg-cover bg-center"
+  <div class="absolute top-0 left-0 h-full w-full bg-[url('/images/home-bg.jpg')] bg-cover bg-center"
     x-intersect.once="$el.classList.add('scroll-in')">
-    <video class=" object-cover h-full w-full transition-opacity duration-700" x-ref="video" :class="{'opacity-none': playing, 'opacity-0': !playing}"
-      playsinline="" autoplay="" loop="" poster="/images/home-bg.jpg">
+    <video class=" object-cover h-full w-full transition-opacity duration-700" x-ref="video"
+      :class="{'opacity-none': playing, 'opacity-0': !playing}" playsinline="" autoplay="" loop=""
+      poster="/images/home-bg.jpg">
       <source src="/images/clip.mp4">
     </video>
   </div>
@@ -24,6 +24,7 @@
     <Heroicons.Outline.play class="h-10 w-10" x-show="!playing" />
   </button>
 </section>
+
 <div class="bg-gray-200 space-y-4 p-6 xl:px-14 text-lg" x-data>
   <div class="space-y-2 mt-4 mb-10 flex flex-col">
     <h1 class="font-title text-3xl md:text-4xl">Årets spex</h1>
@@ -32,7 +33,7 @@
       intriger, kamratskap och de tokigheter som kan hända när två sidor möts och lär sig om varandras likheter... Och
       olikheter.
     </p>
-    <a class="link-underline flex items-center space-x-2 pt-4 mr-auto">
+    <a href="/spexet" class="link-underline flex items-center space-x-2 pt-4 mr-auto">
       <h3 class="font-light text-xl uppercase md:text-2xl">Läs mer om årets spex</h3>
       <Heroicons.Solid.arrow_right class="w-4 h-4" />
     </a>
@@ -42,7 +43,7 @@
 
     <!-- render cards with info about pages-->
     <%= for card <- @cards do %>
-      <.card card={card} />
+      <.index_card card={card} />
       <% end %>
 
   </div>

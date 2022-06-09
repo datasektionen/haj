@@ -26,10 +26,10 @@
             </button>
 
             <ul class="hidden space-x-6 font-medium text-lg md:flex">
-                <li><a>Årets spex</a></li>
-                <li><a>Om METAspexet</a></li>
-                <li><a>Grupper</a></li>
-                <li><a>Tidigare spex</a></li>
+                <li><a href="/spexet">Årets spex</a></li>
+                <li><a href="/about">Om METAspexet</a></li>
+                <li><a href="/groups">Grupper</a></li>
+                <li><a href="/previous">Tidigare spex</a></li>
             </ul>
 
         </nav>
@@ -41,9 +41,10 @@
                transition duration-300
                md:hidden"
         :class="{'translate-x-full opacity-0': !navbarOpen, 'translate-x-0 opacity-100': navbarOpen}">
-        <li><a>Årets spex</a></li>
-        <li><a>Om METAspexet</a></li>
-        <li><a>Grupper</a></li>
-        <li><a>Tidigare spex</a></li>
+        <li><a href="/spexet">Årets spex</a></li>
+        <li><a href="/about">Om METAspexet</a></li>
+        <li><a href="/groups">Grupper</a></li>
+        <li><a href="/previous">Tidigare spex</a></li>
+        <li class="justify-self-end mt-auto"><a>Intranät</a></li>
     </ul>
 </header>

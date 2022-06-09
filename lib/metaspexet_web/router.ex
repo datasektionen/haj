@@ -18,6 +18,10 @@ defmodule MetaspexetWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/groups", PageController, :groups
+    get "/spexet", PageController, :spex
+    get "/previous", PageController, :previous
+    get "/about", PageController, :about
   end
 
   # Other scopes may use custom stacks.
