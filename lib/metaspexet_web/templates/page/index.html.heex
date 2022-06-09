@@ -1,43 +1,50 @@
-<div class="h-[36em] w-full">
-  <video class="object-cover h-full w-full" playsinline="" autoplay="" loop="" poster="https://metaspexet.se/static/vastfronten-orange-60f49f2e83473d91a0a94691d3bd21db.jpg"
-    width="100%">
-    <source src="https://metaspexet.se/static/teaser-751ceba6d77d04084f2198bc23084ed3.webm">
-    <source src="https://metaspexet.se/static/teaser-f5ab46022197743ee04d6b304f65246f.mp4">
-  </video>
-</div>
-<div class="text-white space-y-12">
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime doloremque enim cupiditate illo. Voluptates odio
-    saepe unde praesentium, itaque et quos eligendi nesciunt commodi rem labore eum reiciendis! Beatae, nesciunt.</p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil, maxime incidunt nisi cupiditate voluptatem commodi
-    magnam earum iure et. Commodi asperiores dignissimos quaerat cumque necessitatibus nulla dolores ex doloribus eum.
-  </p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil, maxime incidunt nisi cupiditate voluptatem commodi
-    magnam earum iure et. Commodi asperiores dignissimos quaerat cumque necessitatibus nulla dolores ex doloribus eum.
-  </p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil, maxime incidunt nisi cupiditate voluptatem commodi
-    magnam earum iure et. Commodi asperiores dignissimos quaerat cumque necessitatibus nulla dolores ex doloribus eum.
-  </p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil, maxime incidunt nisi cupiditate voluptatem commodi
-    magnam earum iure et. Commodi asperiores dignissimos quaerat cumque necessitatibus nulla dolores ex doloribus eum.
-  </p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil, maxime incidunt nisi cupiditate voluptatem commodi
-    magnam earum iure et. Commodi asperiores dignissimos quaerat cumque necessitatibus nulla dolores ex doloribus eum.
-  </p>
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime doloremque enim cupiditate illo. Voluptates odio
-    saepe unde praesentium, itaque et quos eligendi nesciunt commodi rem labore eum reiciendis! Beatae, nesciunt.</p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil, maxime incidunt nisi cupiditate voluptatem commodi
-    magnam earum iure et. Commodi asperiores dignissimos quaerat cumque necessitatibus nulla dolores ex doloribus eum.
-  </p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil, maxime incidunt nisi cupiditate voluptatem commodi
-    magnam earum iure et. Commodi asperiores dignissimos quaerat cumque necessitatibus nulla dolores ex doloribus eum.
-  </p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil, maxime incidunt nisi cupiditate voluptatem commodi
-    magnam earum iure et. Commodi asperiores dignissimos quaerat cumque necessitatibus nulla dolores ex doloribus eum.
-  </p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil, maxime incidunt nisi cupiditate voluptatem commodi
-    magnam earum iure et. Commodi asperiores dignissimos quaerat cumque necessitatibus nulla dolores ex doloribus eum.
-  </p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil, maxime incidunt nisi cupiditate voluptatem commodi
-    magnam earum iure et. Commodi asperiores dignissimos quaerat cumque necessitatibus nulla dolores ex doloribus eum.
-  </p>
+<section
+  class="flex relative h-screen max-h-[85vh] pt-48 pb-10 w-full bg-[url('/images/home-bg.jpg')] bg-cover bg-center"
+  x-data="{playing: true}" x-init="$watch('playing', (value) => {value ? $refs.video.play() : $refs.video.pause()})">
+  <div class="flex flex-col justify-end flex-1 p-6 md:px-14 mx-auto text-white space-y-3 z-10">
+    <h2 class="font-light text-xl md:text-2xl">METASPEXET 2022</h2>
+    <h1 class="font-title text-5xl md:text-6xl">På västfronten intet Spex</h1>
+    <h2 class="font-title text-2xl md:text-3xl">Eller andra sidan är ni klara?</h2>
+    <a class="flex items-center space-x-2 pt-4">
+      <h3 class="font-light text-xl md:text-2xl">KÖP BILJETTER</h3>
+      <Heroicons.Solid.arrow_right class="w-4 h-4" />
+    </a>
+  </div>
+
+  <div class="absolute top-0 left-0 h-full w-full transition-opacity duration-700"
+    :class="{'opacity-none': playing, 'opacity-0': !playing}">
+    <video class=" object-cover h-full w-full" x-ref="video" playsinline="" autoplay="" loop=""
+      poster="/images/home-bg.jpg">
+      <source src="https://metaspexet.se/static/teaser-751ceba6d77d04084f2198bc23084ed3.webm">
+      <source src="https://metaspexet.se/static/teaser-f5ab46022197743ee04d6b304f65246f.mp4">
+    </video>
+  </div>
+
+  <button class="absolute right-6 bottom-6 z-10 text-white flex items-center space-x-2" @click="playing = !playing">
+    <Heroicons.Outline.pause class="h-10 w-10" x-show="playing" />
+    <Heroicons.Outline.play class="h-10 w-10" x-show="!playing" />
+  </button>
+</section>
+<div class="bg-gray-200 space-y-4 p-6 xl:px-14 text-lg">
+  <div class="space-y-2 mt-4 mb-10">
+    <h1 class="font-title text-3xl md:text-4xl">Årets spex</h1>
+    <p>
+      Spexet tar oss till första världskriget, där två sidor möts. METAspexet berättar en historia om politiska
+      intriger, kamratskap och de tokigheter som kan hända när två sidor möts och lär sig om varandras likheter... Och
+      olikheter.
+    </p>
+    <a class="flex items-center space-x-2 pt-4">
+      <h3 class="font-light text-xl uppercase md:text-2xl">Läs mer om årets spex</h3>
+      <Heroicons.Solid.arrow_right class="w-4 h-4" />
+    </a>
+  </div>
+
+  <div class="flex flex-col gap-8 md:text-white xl:text-black xl:grid grid-cols-2 grid-rows-2 content-start xl:gap-8">
+  
+  <!-- render cards with info about pages-->
+  <%= for card <- @cards do %>
+    <.card card={card}/>
+  <% end %>
+
+  </div>
 </div>

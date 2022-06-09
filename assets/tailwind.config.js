@@ -7,10 +7,15 @@ module.exports = {
     '../lib/*_web/**/*.*ex'
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        'xs': '520px',
+      }
+    },
     fontFamily: {
-      sans: ['Mukta', 'sans-serif']
-    }
+      sans: ['Mukta', 'sans-serif'],
+      title: ['Yeseva One', 'cursive']
+    },
   },
   plugins: [
     require('@tailwindcss/forms')
