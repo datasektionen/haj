@@ -19,6 +19,7 @@ defmodule MetaspexetWeb.Router do
 
     get "/", PageController, :index
     get "/groups", PageController, :groups
+    get "/groups/:name", PageController, :group
     get "/spexet", PageController, :spex
     get "/previous", PageController, :previous
     get "/about", PageController, :about
