@@ -10,7 +10,7 @@ defmodule MetaspexetWeb.PageController do
   end
 
   def spex(conn, _params) do
-    shows = Metaspexet.Content.Spex.get_shows()
+    shows = Metaspexet.Content.About.get_shows()
 
     conn
     |> assign(:shows, shows)
@@ -40,7 +40,9 @@ defmodule MetaspexetWeb.PageController do
   end
 
   def previous(conn, _params) do
+    all_spex = Metaspexet.Content.About.get_previous_spex()
     conn
+    |> assign(:spex, all_spex)
     |> render("previous.html")
   end
 end
