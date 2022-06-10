@@ -21,7 +21,9 @@ defmodule MetaspexetWeb.PageController do
   end
 
   def groups(conn, _params) do
+    all_groups = Metaspexet.Content.Gropus.get_groups()
     conn
+    |> assign(:groups, all_groups)
     |> render("groups.html")
   end
 

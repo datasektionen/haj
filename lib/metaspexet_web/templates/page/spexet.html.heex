@@ -4,9 +4,8 @@
         <h2 class="font-title text-2xl md:text-4xl">Eller andra sidan är ni klara?</h2>
     </div>
 
-    <div class="absolute top-0 left-0 h-full w-full bg-[url('/images/home-bg.jpg')] bg-cover bg-center"
-    x-data
-    x-intersect.once="$el.classList.add('scroll-in')">
+    <div class="absolute top-0 left-0 h-full w-full bg-[url('/images/home-bg.jpg')] bg-cover bg-center" x-data
+        x-intersect.once="$el.classList.add('scroll-in')">
     </div>
 </section>
 
@@ -46,10 +45,10 @@
                     Playhouse
                     Teater den 21:a och 22:a maj. Den sista föreställningen, som kallas Slasque, skiljer sig från de
                     andra
-                    två
-                    föreställningarna i och med en gammal tradition om att skoja med varandra mellan spexgrupperna under
-                    själva
-                    föreställningen. Om ni endast tittar på den så får ni vara beredda på att den blir något utöver det
+                    två föreställningarna i och med en gammal tradition om att skoja med varandra mellan spexgrupperna
+                    under
+                    själva föreställningen. Om ni endast tittar på den så får ni vara beredda på att den blir något
+                    utöver det
                     vanliga!
                 </p>
             </div>
@@ -61,15 +60,18 @@
             <h1 class="font-title text-2xl md:text-3xl">Föreställningar</h1>
             <ul class="flex flex-col">
                 <%= for show <- @shows do %>
-                    <li class="flex border-b-2 border-b-gray-500 pb-4 mt-4 items-center">
-                        <span>
-                            <%= format_time(show.time) %>
-                                <b>(<%= show.title %>)</b>
-                        </span>
-                        <button href={show.tickets}
-                            class="ml-auto inline-block px-6 py-2 text-white bg-black font-medium leading-tight uppercase transition duration-150 ease-in-out hover:bg-white hover:text-black">Biljetter</button>
-                    </li>
-                    <%= end %>
+                <li class="flex border-b-2 border-b-gray-500 pb-4 mt-4 items-center">
+                    <span>
+                        <%= format_time(show.time) %>
+                        <b>(<%= show.title %>)</b>
+                    </span>
+                    <button href={show.tickets}
+                        class="ml-auto inline-block px-6 py-2 text-white bg-black font-medium 
+                               leading-tight uppercase transition duration-150 ease-in-out hover:bg-white hover:text-black">
+                        Biljetter
+                    </button>
+                </li>
+                <% end %>
             </ul>
         </div>
     </div>
