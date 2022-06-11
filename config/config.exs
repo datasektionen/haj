@@ -8,7 +8,9 @@
 import Config
 
 config :metaspexet,
-  ecto_repos: [Metaspexet.Repo]
+  ecto_repos: [Metaspexet.Repo],
+  login_api_key: System.get_env("LOGIN_API_KEY"),
+  login_host: System.get_env("LOGIN_HOST")
 
 # Configures the endpoint
 config :metaspexet, MetaspexetWeb.Endpoint,

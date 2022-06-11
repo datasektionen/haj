@@ -45,4 +45,8 @@ defmodule MetaspexetWeb.PageController do
     |> assign(:spex, all_spex)
     |> render("previous.html")
   end
+
+  def protected(conn, _params) do
+    conn |> text("Signed in!")
+  end
 end

@@ -1,6 +1,8 @@
 defmodule MetaspexetWeb.Router do
   use MetaspexetWeb, :router
 
+  import MetaspexetWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule MetaspexetWeb.Router do
     plug :put_root_layout, {MetaspexetWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -23,6 +26,16 @@ defmodule MetaspexetWeb.Router do
     get "/spexet", PageController, :spex
     get "/previous", PageController, :previous
     get "/about", PageController, :about
+
+    get "/login", SessionController, :login
+    get "/login/callback", SessionController, :callback
+    get "/logout", SessionController, :logout
+  end
+
+  scope "/", MetaspexetWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/protected", PageController, :protected
   end
 
   # Other scopes may use custom stacks.
