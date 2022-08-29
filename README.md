@@ -1,5 +1,7 @@
 # Haj
 
+### METAspexets interna system och hemsida, very much WIP.
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
