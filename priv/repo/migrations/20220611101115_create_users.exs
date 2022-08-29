@@ -1,4 +1,4 @@
-defmodule Metaspexet.Repo.Migrations.CreateUsers do
+defmodule Haj.Repo.Migrations.CreateUsers do
   use Ecto.Migration
 
   def change do

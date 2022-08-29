@@ -1,3 +1,3 @@
-defmodule MetaspexetWeb.PageControllerTest do
-  use MetaspexetWeb.ConnCase
+defmodule HajWeb.PageControllerTest do
+  use HajWeb.ConnCase
 end

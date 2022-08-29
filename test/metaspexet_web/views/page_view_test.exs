@@ -1,3 +1,3 @@
-defmodule MetaspexetWeb.PageViewTest do
-  use MetaspexetWeb.ConnCase, async: true
+defmodule HajWeb.PageViewTest do
+  use HajWeb.ConnCase, async: true
 end

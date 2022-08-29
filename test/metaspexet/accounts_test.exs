@@ -1,12 +1,12 @@
-defmodule Metaspexet.AccountsTest do
-  use Metaspexet.DataCase
+defmodule Haj.AccountsTest do
+  use Haj.DataCase
 
-  alias Metaspexet.Accounts
+  alias Haj.Accounts
 
   describe "users" do
-    alias Metaspexet.Accounts.User
+    alias Haj.Accounts.User
 
-    import Metaspexet.AccountsFixtures
+    import Haj.AccountsFixtures
 
     @invalid_attrs %{email: nil, first_name: nil, last_name: nil, username: nil}
 

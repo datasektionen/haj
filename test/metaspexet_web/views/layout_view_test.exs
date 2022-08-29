@@ -1,5 +1,5 @@
-defmodule MetaspexetWeb.LayoutViewTest do
-  use MetaspexetWeb.ConnCase, async: true
+defmodule HajWeb.LayoutViewTest do
+  use HajWeb.ConnCase, async: true
 
   # When testing helpers, you may want to import Phoenix.HTML and
   # use functions such as safe_to_string() to convert the helper

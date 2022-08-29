@@ -1,4 +1,4 @@
-# Metaspexet
+# Haj
 
 To start your Phoenix server:
 

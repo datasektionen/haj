@@ -1,7 +1,7 @@
-defmodule Metaspexet.AccountsFixtures do
+defmodule Haj.AccountsFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `Metaspexet.Accounts` context.
+  entities via the `Haj.Accounts` context.
   """
 
   @doc """
@@ -16,7 +16,7 @@ defmodule Metaspexet.AccountsFixtures do
         last_name: "some last_name",
         username: "some username"
       })
-      |> Metaspexet.Accounts.create_user()
+      |> Haj.Accounts.create_user()
 
     user
   end
