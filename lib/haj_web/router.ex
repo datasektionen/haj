@@ -31,16 +31,26 @@ defmodule HajWeb.Router do
     get "/previous", PageController, :previous
     get "/about", PageController, :about
 
+
     get "/login", SessionController, :login
     get "/login/callback", SessionController, :callback
     get "/logout", SessionController, :logout
   end
 
+  scope "haj", HajWeb do
+    pipe_through [:browser, :haj]
+
+    get "/", LoginController, :login
+    get "/unauthorized", LoginController, :unautorized
+
+  end
+
   scope "/haj", HajWeb do
     pipe_through [:browser, :haj, :require_authenticated_user]
 
-    get "/", DashboardController, :index
+    get "/dashboard", DashboardController, :index
     get "/user/:username", UserController, :user
+
     live "/members", MembersLive
     live "/groups", GroupsLive
 

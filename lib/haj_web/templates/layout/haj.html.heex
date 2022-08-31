@@ -2,8 +2,10 @@
   <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
   <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
   <%= render "_haj_navbar.html", conn: @conn %>
-  <div class="flex flex-col justify-between min-h-screen bg-gray-200">
-    <%= @inner_content %>
+  <div class="flex flex-col pt-24 justify-between min-h-screen bg-gray-200">
+    <div class="px-12">
+      <%= @inner_content %>
+    </div>
     <%= render "_footer.html", conn: @conn %>
   </div>
 </main>
