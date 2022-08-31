@@ -9,3 +9,13 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+Haj.Repo.insert!(%Haj.Spex.Show{
+  description: "Coolt spex",
+  title: "På västfronten intet spex",
+  year: ~D[2022-05-22],
+  or_title: "Test"
+})
+
+Haj.Repo.insert!(%Haj.Spex.Group{name: "Bygg"})
+Haj.Repo.insert!(%Haj.Spex.Group{name: "Chefsgruppen"})

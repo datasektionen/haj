@@ -40,6 +40,11 @@ defmodule HajWeb.Router do
     pipe_through [:browser, :haj, :require_authenticated_user]
 
     get "/", DashboardController, :index
+    get "/user/:username", UserController, :user
+    live "/members", MembersLive
+    live "/groups", GroupsLive
+
+    get "/group/:name", GroupController, :group
   end
 
   # Other scopes may use custom stacks.

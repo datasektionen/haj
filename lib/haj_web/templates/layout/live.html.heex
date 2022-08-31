@@ -1,4 +1,4 @@
-<main class="container">
+<main class="">
   <p class="alert alert-info" role="alert"
     phx-click="lv:clear-flash"
     phx-value-key="info"><%= live_flash(@flash, :info) %></p>
@@ -6,6 +6,11 @@
   <p class="alert alert-danger" role="alert"
     phx-click="lv:clear-flash"
     phx-value-key="error"><%= live_flash(@flash, :error) %></p>
-
-  <%= @inner_content %>
+  <%= render "_haj_navbar.html", conn: @socket %>
+  <div class="flex flex-col pt-24 justify-between min-h-screen bg-gray-200">
+    <div class="px-12">
+      <%= @inner_content %>
+    </div>
+    <%= render "_footer.html" %>
+  </div>
 </main>

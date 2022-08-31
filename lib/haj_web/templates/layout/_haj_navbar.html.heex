@@ -27,7 +27,7 @@
 
             <ul class="hidden space-x-6 font-medium text-lg md:flex">
                 <li><a href="/haj/groups">Grupper</a></li>
-                <li><a href="/haj/groups">Medlemmar</a></li>
+                <li><%= live_patch "Medlemmar", to: Routes.live_path(@conn, HajWeb.MembersLive) %></li>
                 <li><a href="/haj">Min Sida</a></li>
             </ul>
 

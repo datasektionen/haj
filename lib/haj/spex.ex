@@ -293,4 +293,131 @@ defmodule Haj.Spex do
   def change_group_membership(%GroupMembership{} = group_membership, attrs \\ %{}) do
     GroupMembership.changeset(group_membership, attrs)
   end
+
+
+  alias Haj.Spex.ShowGroup
+
+  @doc """
+  Returns the list of show_groups.
+
+  ## Examples
+
+      iex> list_show_groups()
+      [%ShowGroup{}, ...]
+
+  """
+  def list_show_groups do
+    Repo.all(ShowGroup)
+  end
+
+  @doc """
+  Gets a single show_group.
+
+  Raises `Ecto.NoResultsError` if the Show group does not exist.
+
+  ## Examples
+
+      iex> get_show_group!(123)
+      %ShowGroup{}
+
+      iex> get_show_group!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_show_group!(id), do: Repo.get!(ShowGroup, id)
+
+  @doc """
+  Creates a show_group.
+
+  ## Examples
+
+      iex> create_show_group(%{field: value})
+      {:ok, %ShowGroup{}}
+
+      iex> create_show_group(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_show_group(attrs \\ %{}) do
+    %ShowGroup{}
+    |> ShowGroup.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a show_group.
+
+  ## Examples
+
+      iex> update_show_group(show_group, %{field: new_value})
+      {:ok, %ShowGroup{}}
+
+      iex> update_show_group(show_group, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_show_group(%ShowGroup{} = show_group, attrs) do
+    show_group
+    |> ShowGroup.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a show_group.
+
+  ## Examples
+
+      iex> delete_show_group(show_group)
+      {:ok, %ShowGroup{}}
+
+      iex> delete_show_group(show_group)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_show_group(%ShowGroup{} = show_group) do
+    Repo.delete(show_group)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking show_group changes.
+
+  ## Examples
+
+      iex> change_show_group(show_group)
+      %Ecto.Changeset{data: %ShowGroup{}}
+
+  """
+  def change_show_group(%ShowGroup{} = show_group, attrs \\ %{}) do
+    ShowGroup.changeset(show_group, attrs)
+  end
+
+
+  def current_spex() do
+    Repo.one(from s in Show, order_by: s.year, limit: 1)
+  end
+
+  def get_current_members() do
+    %{id: spex_id} = current_spex()
+
+    query = from u in Haj.Accounts.User,
+              join: gm in GroupMembership,
+              join: g in Group, on: gm.group_id == g.id,
+              where: gm.show_id == ^spex_id
+
+    Repo.all(query)
+  end
+
+  def get_current_groups() do
+    %{id: spex_id} = current_spex()
+
+    query = from sg in ShowGroup,
+              join: g in Group, on: sg.group_id == g.id,
+              left_join: gm in GroupMembership, on: g.id == gm.group_id,
+              group_by: [g.id],
+              where: sg.show_id == ^spex_id,
+              select: %{group: g, members: count(gm)}
+
+    Repo.all(query)
+  end
+
 end
