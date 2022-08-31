@@ -13,6 +13,10 @@ defmodule HajWeb.Router do
     plug :fetch_current_user
   end
 
+  pipeline :haj do
+    plug :put_layout, {HajWeb.LayoutView, :haj}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -32,10 +36,10 @@ defmodule HajWeb.Router do
     get "/logout", SessionController, :logout
   end
 
-  scope "/", HajWeb do
-    pipe_through [:browser, :require_authenticated_user]
+  scope "/haj", HajWeb do
+    pipe_through [:browser, :haj, :require_authenticated_user]
 
-    get "/protected", PageController, :protected
+    get "/", DashboardController, :index
   end
 
   # Other scopes may use custom stacks.

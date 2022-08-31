@@ -20,4 +20,46 @@ defmodule Haj.SpexFixtures do
 
     show
   end
+
+  @doc """
+  Generate a group.
+  """
+  def group_fixture(attrs \\ %{}) do
+    {:ok, group} =
+      attrs
+      |> Enum.into(%{
+        name: "some name"
+      })
+      |> Haj.Spex.create_group()
+
+    group
+  end
+
+  @doc """
+  Generate a show_group.
+  """
+  def show_group_fixture(attrs \\ %{}) do
+    {:ok, show_group} =
+      attrs
+      |> Enum.into(%{
+
+      })
+      |> Haj.Spex.create_show_group()
+
+    show_group
+  end
+
+  @doc """
+  Generate a group_membership.
+  """
+  def group_membership_fixture(attrs \\ %{}) do
+    {:ok, group_membership} =
+      attrs
+      |> Enum.into(%{
+        role: :chef
+      })
+      |> Haj.Spex.create_group_membership()
+
+    group_membership
+  end
 end
