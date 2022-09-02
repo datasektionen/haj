@@ -3,31 +3,38 @@
         <%= render "_side_bar.html", user: @current_user, conn: @conn %>
     </div>
     <div class="flex-grow-[3]">
-       <%= form_for @changeset, Routes.dashboard_path(@conn, :update_user), [class: "flex flex-col w-full"] ,fn f ->  %>
-        <%= label f, :first_name, "Förnamn" %>
+       <%= form_for @changeset, Routes.dashboard_path(@conn, :update_user), [class: "flex flex-col"] ,fn f ->  %>
+       <div class="uppercase font-bold text-lg py-1 border-b-2 border-burgandy">Personuppgifter</div>
+        <%= label f, :first_name, "Förnamn", class: "pt-2 pb-1"%>
         <%= text_input f, :first_name %>
         <%= error_tag f, :first_name %>
         
-        <%= label f, :last_name, "Efternamn" %>
+        <%= label f, :last_name, "Efternamn", class: "pt-2 pb-1"%>
         <%= text_input f, :last_name %>
 
-        <%= label f, :email, "Email" %>
-        <%= text_input f, :email %>
-
-        <%= label f, :google_account, "Google-konto" %>
-        <%= text_input f, :google_account %>
-
-        <%= label f, :phone, "Telefonnr" %>
-        <%= text_input f, :phone %>
-
-        <%= label f, :class, "Årskurs (eg D-20 eller Media-21)" %>
-        <%= text_input f, :class %>
-
-        <%= label f, :personal_number, "Personummer"%>
+        <%= label f, :personal_number, "Personummer", class: "pt-2 pb-1"%>
         <%= text_input f, :personal_number %>
 
+        <%= label f, :class, "Årskurs (eg D-20 eller Media-21)", class: "pt-2 pb-1"%>
+        <%= text_input f, :class %>
 
-            <%= submit "Spara" %>
+         <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">Konton och kontakt</div>
+
+        <%= label f, :email, "Email", class: "pt-2 pb-1"%>
+        <%= text_input f, :email %>
+
+        <%= label f, :username, "KTH-id", class: "pt-2 pb-1"%>
+        <%= text_input f, :username, disabled: true, class: "bg-gray-200" %>
+
+        <%= label f, :google_account, "Google-konto", class: "pt-2 pb-1"%>
+        <%= text_input f, :google_account %>
+
+        <%= label f, :phone, "Telefonnr", class: "pt-2 pb-1"%>
+        <%= text_input f, :phone %>
+
+
+
+        <%= submit "Spara", [class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy text-white self-end text-lg uppercase"] %>
        <% end %>
     </div>
 </div>

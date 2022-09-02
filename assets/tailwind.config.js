@@ -10,12 +10,17 @@ module.exports = {
     extend: {
       screens: {
         'xs': '520px',
-      }
+      },
+      colors: {
+        'burgandy': '#6f1d1b',
+        'orange': '#bc827a'
+      },
     },
     fontFamily: {
       sans: ['Mukta', 'sans-serif'],
       title: ['Yeseva One', 'cursive']
     },
+
   },
   plugins: [
     require('@tailwindcss/forms')

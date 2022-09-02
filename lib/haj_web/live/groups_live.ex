@@ -4,10 +4,16 @@ defmodule HajWeb.GroupsLive do
   alias Haj.Spex
   import HajWeb.LiveComponents.Table
 
-  def mount(_params, _session, socket) do
+  def mount(_params, %{"user_token" => token}, socket) do
     groups = Spex.get_current_groups()
 
-    {:ok, socket |> assign(:groups, groups) |> assign(:title, "Grupper")}
+    socket =
+      socket
+      |> assign(:groups, groups)
+      |> assign(:title, "Grupper")
+      |> assign_new(:current_user, fn -> Haj.Accounts.get_user_by_session_token(token) end)
+
+    {:ok, socket}
   end
 
   def render(assigns) do

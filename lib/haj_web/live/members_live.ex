@@ -4,10 +4,16 @@ defmodule HajWeb.MembersLive do
   alias Haj.Spex
   import HajWeb.LiveComponents.Table
 
-  def mount(_params, _session, socket) do
+  def mount(_params, %{"user_token" => token}, socket) do
     members = Spex.get_current_members()
 
-    {:ok, socket |> assign(:members, members) |> assign(:title, "Medlemmar")}
+    socket =
+      socket
+      |> assign(:members, members)
+      |> assign(:title, "Medlemmar")
+      |> assign_new(:current_user, fn -> Haj.Accounts.get_user_by_session_token(token) end)
+
+    {:ok, socket}
   end
 
   def render(assigns) do

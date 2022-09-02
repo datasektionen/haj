@@ -7,9 +7,8 @@
             atTop = true
         }
         " x-init="window.pageYOffset > 10 ? atTop = false : atTop = true">
-    <div class="flex justify-center fixed  bg-[#5c3b29] h-16 py-3 text-white top-0 w-full z-30
-                transition-all duration-500"
-        :class="{'-translate-y-full bg-transparent': !atTop && !scrolledUp}">
+    <div class="flex justify-center fixed bg-burgandy h-16 py-3 text-white top-0 w-full z-30
+                transition-all duration-500" :class="{'-translate-y-full bg-transparent': !atTop && !scrolledUp}">
 
         <div class="flex justify-between items-center px-8 h-full w-full md:px-14 md:self-center md:max-w-7xl">
             <a href="/haj" class="h-full">
@@ -28,9 +27,13 @@
                 </button>
 
                 <ul class="hidden space-x-6 font-medium text-lg md:flex">
-                    <li><a href="/haj/groups">Grupper</a></li>
+                    
+                    <%= if @user.role == :admin do %>
+                    <li><%= link "Administrera", to: Routes.settings_path(@conn, :index) %></li>
+                    <% end %>
+                    <li><%= live_patch "Grupper", to: Routes.live_path(@conn, HajWeb.GroupsLive) %></li>
                     <li><%= live_patch "Medlemmar", to: Routes.live_path(@conn, HajWeb.MembersLive) %></li>
-                    <li><a href="/haj/dashboard">Min Sida</a></li>
+                    <li><%= link "Min Sida", to: Routes.dashboard_path(@conn, :index) %></li>
                 </ul>
 
             </nav>

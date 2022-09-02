@@ -52,12 +52,20 @@ defmodule HajWeb.Router do
     get "/dashboard/my-data", DashboardController, :edit_user
     put "/dashboard/my-data", DashboardController, :update_user
 
-
     get "/user/:username", UserController, :index
     get "/user/:username/groups", UserController, :groups
 
     live "/members", MembersLive
     live "/groups", GroupsLive
+
+    get "/settings", SettingsController, :index
+    get "/settings/groups", SettingsController, :groups
+    get "/settings/groups/:id", SettingsController, :edit_group
+    get "/settings/show/:id/groups", SettingsController, :show_groups
+    get "/settings/shows", SettingsController, :shows
+    get "/settings/show/:id", SettingsController, :show
+
+
 
     get "/group/:name", GroupController, :index
   end
