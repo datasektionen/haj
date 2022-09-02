@@ -294,7 +294,6 @@ defmodule Haj.Spex do
     GroupMembership.changeset(group_membership, attrs)
   end
 
-
   alias Haj.Spex.ShowGroup
 
   @doc """
@@ -391,7 +390,6 @@ defmodule Haj.Spex do
     ShowGroup.changeset(show_group, attrs)
   end
 
-
   def current_spex() do
     Repo.one(from s in Show, order_by: [desc: s.year], limit: 1)
   end
@@ -399,11 +397,13 @@ defmodule Haj.Spex do
   def get_current_members() do
     %{id: spex_id} = current_spex()
 
-    query = from u in Haj.Accounts.User,
-              join: gm in GroupMembership,
-              join: sg in ShowGroup, on: sg.id == gm.show_group_id,
-              distinct: u.id,
-              where: sg.show_id == ^spex_id
+    query =
+      from u in Haj.Accounts.User,
+        join: gm in GroupMembership,
+        join: sg in ShowGroup,
+        on: sg.id == gm.show_group_id,
+        distinct: u.id,
+        where: sg.show_id == ^spex_id
 
     Repo.all(query)
   end
@@ -411,26 +411,44 @@ defmodule Haj.Spex do
   def get_current_groups() do
     %{id: spex_id} = current_spex()
 
-    query = from sg in ShowGroup,
-              join: g in Group, on: sg.group_id == g.id,
-              join: gm in GroupMembership, on: sg.id == gm.show_group_id,
-              group_by: [g.id],
-              where: sg.show_id == ^spex_id,
-              select: %{group: g, members: count(gm)}
+    query =
+      from sg in ShowGroup,
+        where: sg.show_id == ^spex_id,
+        join: g in assoc(sg, :group),
+        join: gm in assoc(sg, :group_memberships),
+        group_by: [g.id],
+        select: %{group: g, members: count(gm)}
 
     Repo.all(query)
   end
 
   def get_user_groups(userid) do
-    query = from g in Group,
-      join: sg in ShowGroup, on: g.id == sg.group_id,
-      join: gm in GroupMembership, on: gm.show_group_id == sg.id,
-      join: s in Show, on: sg.show_id == s.id,
-      where: gm.user_id == ^userid,
-      select: %{group: g, year: s.year}
+    query =
+      from g in Group,
+        join: sg in assoc(g, :show_groups),
+        join: gm in assoc(sg, :group_memberships),
+        join: s in assoc(sg, :show),
+        where: gm.user_id == ^userid,
+        select: %{group: g, year: s.year}
 
     Repo.all(query)
   end
 
+  def get_group_by_name!(name) do
+    Repo.one!(from g in Group, where: g.name == ^name)
+  end
 
+  def get_group_members(group_id) do
+    %{id: spex_id} = current_spex()
+
+    query =
+      from g in Group,
+        join: sg in assoc(g, :show_groups),
+        join: gm in assoc(sg, :group_memberships),
+        join: u in assoc(gm, :user),
+        where: sg.show_id == ^spex_id and g.id == ^group_id,
+        select: u
+
+    Repo.all(query)
+  end
 end

@@ -49,6 +49,8 @@ defmodule HajWeb.Router do
     pipe_through [:browser, :haj, :require_authenticated_user]
 
     get "/dashboard", DashboardController, :index
+    get "/dashboard/my-data", DashboardController, :get_data
+    put "/dashboard/my-data", DashboardController, :update_data
 
 
     get "/user/:username", UserController, :index
@@ -58,7 +60,7 @@ defmodule HajWeb.Router do
     live "/members", MembersLive
     live "/groups", GroupsLive
 
-    get "/group/:name", GroupController, :group
+    get "/group/:name", GroupController, :index
   end
 
   # Other scopes may use custom stacks.

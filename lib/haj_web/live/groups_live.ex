@@ -14,7 +14,7 @@ defmodule HajWeb.GroupsLive do
     ~H"""
     <.table rows={@groups}>
       <:col let={group} label="Grupp">
-        <%= link "#{group.group.name}", to: Routes.group_path(HajWeb.Endpoint, :group, group.group.name)%>
+        <%= link "#{group.group.name}", to: Routes.group_path(HajWeb.Endpoint, :index, group.group.name)%>
       </:col>
       <:col let={group} label="Antal medlemmar">
         <%= group.members %>

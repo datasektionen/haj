@@ -13,7 +13,7 @@
                 <%= for group <- groups do %>
 
                 <div class="pb-1">
-                    <%= link "#{group.name}", to: Routes.group_path(@conn, :group, group.name) %>
+                    <%= link "#{group.name}", to: Routes.group_path(@conn, :index, group.name) %>
                 </div>
                 <% end %>
             </div>

@@ -1,0 +1,21 @@
+<div class="flex flex-col items-center gap-4 mb-8 overflow-x-auto lg:flex-row-reverse lg:justify-between lg:items-start">
+    <table class="text-left text-md w-full lg:w-auto lg:flex-grow">
+        <thead class="uppercase">
+            <th class="py-2 px-3 bg-gray-100 border-b border-gray-600">Namn</th>
+            <th class="py-2 px-3 bg-gray-100 border-b border-gray-600">KTH-id</th>
+            <th class="py-2 px-3 bg-gray-100 border-b border-gray-600">Email</th>
+        </thead>
+        <tbody>
+
+            <%= for user <- @members do %>
+            <tr class="bg-white">
+                <th class="py-2 px-3"><%= link "#{user.first_name} #{user.last_name}", to: Routes.user_path(@conn, :index, user.username) %></th>
+                <td class="py-2 px-3"><%= user.username %></td>
+                <td class="py-2 px-3"><%= user.email %></td>
+            </tr>
+            <% end %>
+
+
+        </tbody>
+    </table>
+</div>

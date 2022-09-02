@@ -4,8 +4,9 @@ defmodule Haj.Spex.ShowGroup do
 
   schema "show_groups" do
 
-    field :show_id, :id
-    field :group_id, :id
+    has_many :group_memberships, Haj.Spex.GroupMembership
+    belongs_to :group, Haj.Spex.Group
+    belongs_to :show, Haj.Spex.Show
 
     timestamps()
   end

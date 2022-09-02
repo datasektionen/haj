@@ -4,8 +4,9 @@ defmodule Haj.Spex.GroupMembership do
 
   schema "group_memberships" do
     field :role, Ecto.Enum, values: [:chef, :gruppis]
-    field :user_id, :id
-    field :show_group_id, :id
+
+    belongs_to :user, Haj.Accounts.User
+    belongs_to :show_group, Haj.Spex.ShowGroup
 
     timestamps()
   end

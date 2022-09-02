@@ -8,6 +8,8 @@ defmodule Haj.Spex.Show do
     field :title, :string
     field :year, :date
 
+    has_many :show_groups, Haj.Spex.ShowGroup
+
     timestamps()
   end
 

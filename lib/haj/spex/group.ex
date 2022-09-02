@@ -5,6 +5,8 @@ defmodule Haj.Spex.Group do
   schema "groups" do
     field :name, :string
 
+    has_many :show_groups, Haj.Spex.ShowGroup
+
     timestamps()
   end
 

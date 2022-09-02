@@ -18,8 +18,6 @@ defmodule HajWeb.UserController do
       Map.update(acc, y, [g], fn gs -> [g | gs] end)
     end)
 
-    IO.inspect(groups_by_year)
-
     conn
     |> assign(:user, user)
     |> assign(:groups, groups_by_year)

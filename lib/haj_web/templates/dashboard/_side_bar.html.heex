@@ -1,0 +1,8 @@
+<div class="flex flex-col">
+    <div class="px-3 py-2 bg-gray-100 uppercase font-bold"><%= "#{@user.first_name} #{@user.last_name}" %></div>
+    <div class="px-3 py-2 border-b border-gray-300"><%= link "Din sida", to: Routes.dashboard_path(@conn, :index) %></div>
+    <div class="px-3 py-2 border-b border-gray-300"><%= link "Dina uppgifter", to: Routes.dashboard_path(@conn, :get_data) %></div>
+    <div class="px-3 py-2 border-b border-gray-300"><%= link "Logga ut", to: Routes.session_path(@conn, :logout) %></div>
+
+
+</div>
