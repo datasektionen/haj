@@ -49,7 +49,11 @@ defmodule HajWeb.Router do
     pipe_through [:browser, :haj, :require_authenticated_user]
 
     get "/dashboard", DashboardController, :index
-    get "/user/:username", UserController, :user
+
+
+    get "/user/:username", UserController, :index
+    get "/user/:username/groups", UserController, :groups
+
 
     live "/members", MembersLive
     live "/groups", GroupsLive

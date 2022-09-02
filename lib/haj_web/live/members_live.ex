@@ -7,14 +7,14 @@ defmodule HajWeb.MembersLive do
   def mount(_params, _session, socket) do
     members = Spex.get_current_members()
 
-    {:ok, socket |> assign(:members, members)}
+    {:ok, socket |> assign(:members, members) |> assign(:title, "Medlemmar")}
   end
 
   def render(assigns) do
     ~H"""
     <.table rows={@members}>
       <:col let={member} label="Namn">
-        <%= link "#{member.first_name} #{member.last_name}", to: Routes.user_path(HajWeb.Endpoint, :user, member.username)%>
+        <%= link "#{member.first_name} #{member.last_name}", to: Routes.user_path(HajWeb.Endpoint, :index, member.username)%>
       </:col>
       <:col let={member} label="KTH-id">
         <%= member.username %>

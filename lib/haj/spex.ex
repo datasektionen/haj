@@ -393,7 +393,7 @@ defmodule Haj.Spex do
 
 
   def current_spex() do
-    Repo.one(from s in Show, order_by: s.year, limit: 1)
+    Repo.one(from s in Show, order_by: [desc: s.year], limit: 1)
   end
 
   def get_current_members() do
@@ -401,8 +401,9 @@ defmodule Haj.Spex do
 
     query = from u in Haj.Accounts.User,
               join: gm in GroupMembership,
-              join: g in Group, on: gm.group_id == g.id,
-              where: gm.show_id == ^spex_id
+              join: sg in ShowGroup, on: sg.id == gm.show_group_id,
+              distinct: u.id,
+              where: sg.show_id == ^spex_id
 
     Repo.all(query)
   end
@@ -412,12 +413,24 @@ defmodule Haj.Spex do
 
     query = from sg in ShowGroup,
               join: g in Group, on: sg.group_id == g.id,
-              left_join: gm in GroupMembership, on: g.id == gm.group_id,
+              join: gm in GroupMembership, on: sg.id == gm.show_group_id,
               group_by: [g.id],
               where: sg.show_id == ^spex_id,
               select: %{group: g, members: count(gm)}
 
     Repo.all(query)
   end
+
+  def get_user_groups(userid) do
+    query = from g in Group,
+      join: sg in ShowGroup, on: g.id == sg.group_id,
+      join: gm in GroupMembership, on: gm.show_group_id == sg.id,
+      join: s in Show, on: sg.show_id == s.id,
+      where: gm.user_id == ^userid,
+      select: %{group: g, year: s.year}
+
+    Repo.all(query)
+  end
+
 
 end

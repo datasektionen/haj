@@ -7,7 +7,7 @@ defmodule HajWeb.GroupsLive do
   def mount(_params, _session, socket) do
     groups = Spex.get_current_groups()
 
-    {:ok, socket |> assign(:groups, groups)}
+    {:ok, socket |> assign(:groups, groups) |> assign(:title, "Grupper")}
   end
 
   def render(assigns) do

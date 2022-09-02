@@ -6,7 +6,7 @@ defmodule HajWeb.LiveComponents.Table do
     ~H"""
     <table class="w-full">
       <thead>
-        <tr class="text-md font-semibold text-left text-left text-gray-900 bg-gray-100 uppercase">
+        <tr class="text-md font-semibold text-left text-left bg-gray-100 uppercase">
           <%= for col <- @col do %>
             <th class="px-4 py-3">
               <%= if col[:label] == nil, do: "", else: col.label %>
@@ -16,10 +16,10 @@ defmodule HajWeb.LiveComponents.Table do
       </thead>
       <tbody class="bg-white">
         <%= if @rows == [] do %>
-          <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">No results.</td>
+          <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium">No results.</td>
         <% else %>
           <%= for row <- @rows do %>
-            <tr class="text-gray-700">
+            <tr class="">
               <%= for col <- @col do %>
                 <td class="px-4 py-3 border">
                   <%= render_slot(col, row) %>
