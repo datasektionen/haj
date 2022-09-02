@@ -3,13 +3,29 @@
         <%= render "_side_bar.html", user: @current_user, conn: @conn %>
     </div>
     <div class="flex-grow-[3]">
-       <%= form_for @changeset, Routes.dashboard_path(@conn, :update_data), fn f ->  %>
-            <label>
-                Förnamn: <%= text_input f, :first_name %>
-            </label>
-            <label>
-                Efternamn: <%= text_input f, :last_name %>
-            </label>
+       <%= form_for @changeset, Routes.dashboard_path(@conn, :update_user), [class: "flex flex-col w-full"] ,fn f ->  %>
+        <%= label f, :first_name, "Förnamn" %>
+        <%= text_input f, :first_name %>
+        <%= error_tag f, :first_name %>
+        
+        <%= label f, :last_name, "Efternamn" %>
+        <%= text_input f, :last_name %>
+
+        <%= label f, :email, "Email" %>
+        <%= text_input f, :email %>
+
+        <%= label f, :google_account, "Google-konto" %>
+        <%= text_input f, :google_account %>
+
+        <%= label f, :phone, "Telefonnr" %>
+        <%= text_input f, :phone %>
+
+        <%= label f, :class, "Årskurs (eg D-20 eller Media-21)" %>
+        <%= text_input f, :class %>
+
+        <%= label f, :personal_number, "Personummer"%>
+        <%= text_input f, :personal_number %>
+
 
             <%= submit "Spara" %>
        <% end %>
