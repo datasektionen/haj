@@ -5,6 +5,15 @@ defmodule HajWeb.SettingsController do
     conn |> assign(:title, "Administrera") |> render("index.html")
   end
 
+  def groups(conn, _params) do
+    groups = Haj.Spex.list_groups()
+
+    conn
+    |> assign(:title, "Administrera grupper")
+    |> assign(:groups, groups)
+    |> render("groups.html")
+  end
+
   plug :authorize
 
   defp authorize(conn, _) do

@@ -60,6 +60,7 @@ defmodule HajWeb.Router do
 
     get "/settings", SettingsController, :index
     get "/settings/groups", SettingsController, :groups
+    get "/settings/groups/new", SettingsController, :new_group
     get "/settings/groups/:id", SettingsController, :edit_group
     get "/settings/show/:id/groups", SettingsController, :show_groups
     get "/settings/shows", SettingsController, :shows
