@@ -31,7 +31,8 @@ defmodule HajWeb do
     quote do
       use Phoenix.View,
         root: "lib/haj_web/templates",
-        namespace: HajWeb
+        namespace: HajWeb,
+        pattern: "**/*"
 
       # Import convenience functions from controllers
       import Phoenix.Controller,
