@@ -1,0 +1,116 @@
+defmodule HajWeb.GroupAdminLive do
+  use HajWeb, :live_view
+
+  import HajWeb.LiveComponents.Table
+
+  def mount(_params, %{"user_token" => token, "show_group_id" => id}, socket) do
+    socket =
+      socket
+      |> assign_new(:current_user, fn -> Haj.Accounts.get_user_by_session_token(token) end)
+      |> assign_new(:show_group, fn -> Haj.Spex.get_show_group!(id) end)
+      |> assign(
+        query: nil,
+        loading: false,
+        matches: [],
+        roles: [:gruppis, :chef],
+        role: :gruppis
+      )
+
+    {:ok, socket}
+  end
+
+  def handle_event("suggest", %{"search_form" => %{"q" => query}}, socket) do
+    users = Haj.Accounts.search_users(query)
+
+    {:noreply, assign(socket, matches: users)}
+  end
+
+  def handle_event("update_role", %{"role_form" => %{"role" => role}}, socket) do
+    {:noreply, assign(socket, role: role)}
+  end
+
+  def handle_event("add", _, %{assigns: %{matches: []}} = socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("add", _, %{assigns: %{matches: [user | _]}} = socket) do
+    add_user(user.id, socket.assigns.show_group.id, socket.assigns.role)
+
+    updated = Haj.Spex.get_show_group!(socket.assigns.show_group.id)
+
+    {:noreply, socket |> assign(show_group: updated, matches: [], query: nil)}
+  end
+
+  def handle_event("remove_user", %{"id" => id}, socket) do
+    membership = Haj.Spex.get_group_membership!(id)
+    {:ok, _} = Haj.Spex.delete_group_membership(membership)
+
+    updated = Haj.Spex.get_show_group!(socket.assigns.show_group.id)
+    {:noreply, assign(socket, show_group: updated)}
+  end
+
+  def handle_event("add_user", %{"user" => id}, socket) do
+    add_user(id, socket.assigns.show_group.id, socket.assigns.role)
+
+    updated = Haj.Spex.get_show_group!(socket.assigns.show_group.id)
+
+    {:noreply, socket |> assign(show_group: updated, matches: [], query: nil)}
+  end
+
+  defp add_user(user_id, show_group_id, role) do
+    {:ok, _} =
+      Haj.Spex.create_group_membership(%{
+        user_id: user_id,
+        show_group_id: show_group_id,
+        role: role
+      })
+  end
+
+  def render(assigns) do
+    ~H"""
+    <div class="flex flex-row items-stretch gap-2">
+      <%= form_for :role_form, "#", [phx_change: "update_role"], fn f ->  %>
+        <%= select f, :role, @roles, class: "h-full" %>
+      <% end %>
+
+      <%= form_for :search_form, "", [phx_change: "suggest", phx_submit: "add", autocomplete: :off, class: "flex-grow"], fn f -> %>
+        <%= text_input f, :q, value: @query, class: "w-full" %>
+        <% end %>
+    </div>
+
+    <div id="matches" class="flex flex-col bg-white mt-2">
+      <%= for {user, i} <- Enum.with_index(@matches) do %>
+      <%= if i == 0 do%>
+        <div value={user.id} class="px-3 py-2 bg-orange text-gray-100 hover:bg-orange/80" phx-click="add_user" phx-value-user={user.id}> <%= "#{user.first_name} #{user.last_name}" %> </div>
+      <%= else %>
+        <div value={user.id} class="px-3 py-2 hover:bg-gray-200" phx-click="add_user" phx-value-user={user.id}> <%= "#{user.first_name} #{user.last_name}" %> </div>
+      <% end %>
+      <% end %>
+    </div>
+
+    <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
+      <:col let={member} label={"Chefer"}>
+          <div class="flex flex-row justify-between">
+            <%= "#{member.user.first_name} #{member.user.last_name}" %>
+            <button class="bg-orange text-white px-2 py-0.5 rounded-sm" phx-click="remove_user" phx-value-id={member.id}>
+              Ta bort
+            </button>
+          </div>
+      </:col>
+    </.table>
+
+
+
+    <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :gruppis))}>
+      <:col let={member} label={"Gruppisar" }>
+        <div class="flex flex-row justify-between">
+          <%= "#{member.user.first_name} #{member.user.last_name}" %>
+          <button class="bg-orange text-white px-2 py-0.5 rounded-sm" phx-click="remove_user" phx-value-id={member.id}>
+            Ta bort
+          </button>
+        </div>
+      </:col>
+    </.table>
+    """
+  end
+end

@@ -7,7 +7,7 @@
         </thead>
         <tbody>
 
-            <%= for user <- @members do %>
+            <%= for %{user: user} <- @members do %>
             <tr class="bg-white">
                 <th class="py-2 px-3"><%= link "#{user.first_name} #{user.last_name}", to: Routes.user_path(@conn, :index, user.username) %></th>
                 <td class="py-2 px-3"><%= user.username %></td>

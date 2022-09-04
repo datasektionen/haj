@@ -14,7 +14,7 @@ defmodule Haj.Spex.ShowGroup do
   @doc false
   def changeset(show_group, attrs) do
     show_group
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:group_id, :show_id])
+    |> validate_required([:group_id, :show_id])
   end
 end

@@ -38,7 +38,6 @@ defmodule Haj.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-
   def get_user_by_username!(username) do
     Repo.get_by!(User, username: username)
   end
@@ -151,5 +150,17 @@ defmodule Haj.Accounts do
   def delete_session_token(token) do
     Repo.delete_all(UserToken.token_and_context_query(token, "session"))
     :ok
+  end
+
+  def search_users(search_phrase) do
+    start_char = String.slice(search_phrase, 0..1)
+
+    query =
+      from u in User,
+        where: ilike(u.first_name, ^"#{start_char}%") or ilike(u.last_name, ^"#{start_char}%"),
+        where: fragment("SIMILARITY(? || ?,?) > 0", u.first_name, u.last_name, ^search_phrase),
+        order_by: fragment("LEVENSHTEIN(? || ?,?) > 0", u.first_name, u.last_name, ^search_phrase)
+
+    Repo.all(query)
   end
 end

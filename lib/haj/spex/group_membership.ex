@@ -14,7 +14,7 @@ defmodule Haj.Spex.GroupMembership do
   @doc false
   def changeset(group_membership, attrs) do
     group_membership
-    |> cast(attrs, [:role])
+    |> cast(attrs, [:user_id, :show_group_id, :role])
     |> validate_required([:role])
   end
 end

@@ -1,19 +1,9 @@
-<main class="">
-  <p class="alert alert-info" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
+<p class="alert alert-info" role="alert"
+  phx-click="lv:clear-flash"
+  phx-value-key="info"><%= live_flash(@flash, :info) %></p>
 
-  <p class="alert alert-danger" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
-  <%= render "_haj_navbar.html", conn: @socket, user: @current_user %>
-  <div class="flex flex-col pt-16 justify-between min-h-screen bg-gray-200">
-      <%= if assigns[:title] do %>
-        <%= render "_title.html", title: @title %>
-      <% end %>
-    <div class="px-8 md:px-14 md:max-w-7xl md:self-center md:w-full">
-      <%= @inner_content %>
-    </div>
-    <%= render "_footer.html" %>
-  </div>
-</main>
+<p class="alert alert-danger" role="alert"
+  phx-click="lv:clear-flash"
+  phx-value-key="error"><%= live_flash(@flash, :error) %></p>
+  
+<%= @inner_content %>

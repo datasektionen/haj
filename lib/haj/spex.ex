@@ -323,7 +323,8 @@ defmodule Haj.Spex do
       ** (Ecto.NoResultsError)
 
   """
-  def get_show_group!(id), do: Repo.get!(ShowGroup, id)
+  def get_show_group!(id),
+    do: Repo.get!(ShowGroup, id) |> Repo.preload([:group, :show, [group_memberships: [user: []]]])
 
   @doc """
   Creates a show_group.
@@ -408,20 +409,6 @@ defmodule Haj.Spex do
     Repo.all(query)
   end
 
-  def get_current_groups() do
-    %{id: spex_id} = current_spex()
-
-    query =
-      from sg in ShowGroup,
-        where: sg.show_id == ^spex_id,
-        join: g in assoc(sg, :group),
-        join: gm in assoc(sg, :group_memberships),
-        group_by: [g.id],
-        select: %{group: g, members: count(gm)}
-
-    Repo.all(query)
-  end
-
   def get_user_groups(userid) do
     query =
       from g in Group,
@@ -448,6 +435,15 @@ defmodule Haj.Spex do
         join: u in assoc(gm, :user),
         where: sg.show_id == ^spex_id and g.id == ^group_id,
         select: u
+
+    Repo.all(query)
+  end
+
+  def get_show_groups_for_show(show_id) do
+    query =
+      from sg in ShowGroup,
+        where: sg.show_id == ^show_id,
+        preload: [group: []]
 
     Repo.all(query)
   end

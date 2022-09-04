@@ -3,6 +3,9 @@
         <%= render "_side_bar.html", conn: @conn, current_spex: @current_spex %>
     </div>
     <div class="flex-grow-[3]">
-        <%= render "groups/form.html", Map.put(assigns, :action, Routes.settings_path(@conn, :create_group)) %>
+        <%= live_render(@conn, HajWeb.GroupAdminLive, session: %{"show_group_id" => @show_group.id}) %>
+
+       
+
     </div>
 </div>

@@ -13,8 +13,6 @@ defmodule HajWeb.SessionController do
     callback = URI.encode("#{conn.scheme}://#{conn.host}:#{conn.port}/login/callback/?token=")
     url = "https://#{@host}/login?callback=#{callback}"
 
-    IO.inspect(@host)
-
     conn
     |> put_resp_header("location", url)
     |> send_resp(302, "")

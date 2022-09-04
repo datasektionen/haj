@@ -27,13 +27,15 @@
                 </button>
 
                 <ul class="hidden space-x-6 font-medium text-lg md:flex">
-                    
+                    <%= if @user do %>
+
                     <%= if @user.role == :admin do %>
                     <li><%= link "Administrera", to: Routes.settings_path(@conn, :index) %></li>
                     <% end %>
-                    <li><%= live_patch "Grupper", to: Routes.live_path(@conn, HajWeb.GroupsLive) %></li>
-                    <li><%= live_patch "Medlemmar", to: Routes.live_path(@conn, HajWeb.MembersLive) %></li>
+                    <li><%= live_patch "Grupper", to: Routes.group_path(@conn, :index) %></li>
+                    <li><%= live_patch "Medlemmar", to: Routes.members_path(@conn, :index) %></li>
                     <li><%= link "Min Sida", to: Routes.dashboard_path(@conn, :index) %></li>
+                    <% end %>
                 </ul>
 
             </nav>

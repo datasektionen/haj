@@ -2,8 +2,8 @@
     <div class="px-3 py-2 bg-gray-100 uppercase font-bold">Administrera</div>
     <div class="px-3 py-2 border-b border-gray-300"><%= link "Grupper", to: Routes.settings_path(@conn, :groups) %></div>
     <div class="px-3 py-2 border-b border-gray-300"><%= link "Alla spex", to: Routes.settings_path(@conn, :shows) %></div>
-    <div class="px-3 py-2 border-b border-gray-300"><%= link "Årets spex", to: Routes.settings_path(@conn, :show, @spex.id) %></div>
-    <div class="px-3 py-2 border-b border-gray-300"><%= link "Årets spexgrupper", to: Routes.settings_path(@conn, :show_groups, @spex.id) %></div>
+    <div class="px-3 py-2 border-b border-gray-300"><%= link "Årets spex", to: Routes.settings_path(@conn, :show, @current_spex.id) %></div>
+    <div class="px-3 py-2 border-b border-gray-300"><%= link "Årets spexgrupper", to: Routes.settings_path(@conn, :show_groups, @current_spex.id) %></div>
 
 
 </div>

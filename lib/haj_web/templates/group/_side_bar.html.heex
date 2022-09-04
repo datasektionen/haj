@@ -1,4 +1,4 @@
 <div class="flex flex-col">
-    <div class="px-3 py-2 bg-gray-100 uppercase font-bold"><%= @group.name %></div>
-    <div class="px-3 py-2 border-b border-gray-300"><%= link "Medlemmar", to: Routes.group_path(@conn, :index, @group.name) %></div>
+    <div class="px-3 py-2 bg-gray-100 uppercase font-bold"><%= @show_group.group.name %></div>
+    <div class="px-3 py-2 border-b border-gray-300"><%= link "Medlemmar", to: Routes.group_path(@conn, :group, @show_group.id) %></div>
 </div>

@@ -16,7 +16,7 @@ defmodule HajWeb.LiveComponents.Table do
       </thead>
       <tbody class="bg-white">
         <%= if @rows == [] do %>
-          <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium">No results.</td>
+          <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium">Här var det tomt.</td>
         <% else %>
           <%= for row <- @rows do %>
             <tr class="">
@@ -50,7 +50,7 @@ defmodule HajWeb.LiveComponents.Table do
       <tbody>
         <%= if @rows == [] do %>
           <tr class="bg-white">
-            <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">No results.</td>
+            <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Här var det tomt.</td>
             <%= for col <- Enum.drop(@col, 0) do %>
               <%= if col[:visible] != false do %>
                 <td></td>

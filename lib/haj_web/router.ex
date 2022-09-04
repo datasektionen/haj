@@ -55,8 +55,7 @@ defmodule HajWeb.Router do
     get "/user/:username", UserController, :index
     get "/user/:username/groups", UserController, :groups
 
-    live "/members", MembersLive
-    live "/groups", GroupsLive
+    get "/members", MembersController, :index
 
     get "/settings", SettingsController, :index
     get "/settings/groups", SettingsController, :groups
@@ -67,11 +66,16 @@ defmodule HajWeb.Router do
     delete "/settings/groups/:id", SettingsController, :delete_group
 
 
-    get "/settings/show/:id/groups", SettingsController, :show_groups
+    get "/settings/show/:show_id/groups", SettingsController, :show_groups
+    get "/settings/show-group/:id", SettingsController, :edit_show_group
+    delete "/settings/show-group/:id", SettingsController, :delete_show_group
+    post "/settings/show/:show_id/groups", SettingsController, :add_show_group
+
     get "/settings/shows", SettingsController, :shows
     get "/settings/show/:id", SettingsController, :show
 
-    get "/group/:name", GroupController, :index
+    get "/show-groups", GroupController, :index
+    get "/show-groups/:show_group_id", GroupController, :group
   end
 
   # Other scopes may use custom stacks.
