@@ -27,7 +27,7 @@
                 </button>
 
                 <ul class="hidden space-x-6 font-medium text-lg md:flex">
-                    <%= if @user do %>
+                    <%= if @user && Enum.member?([:admin, :chef, :spexare], @user.role) do %>
 
                     <%= if @user.role == :admin do %>
                     <li><%= link "Administrera", to: Routes.settings_path(@conn, :index) %></li>

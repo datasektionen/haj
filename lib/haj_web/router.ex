@@ -41,12 +41,12 @@ defmodule HajWeb.Router do
     pipe_through [:browser, :haj]
 
     get "/", LoginController, :login
-    get "/unauthorized", LoginController, :unautorized
+    get "/unauthorized", LoginController, :unauthorized
 
   end
 
   scope "/haj", HajWeb do
-    pipe_through [:browser, :haj, :require_authenticated_user]
+    pipe_through [:browser, :haj, :require_authenticated_user, :require_spex_access]
 
     get "/dashboard", DashboardController, :index
     get "/dashboard/my-data", DashboardController, :edit_user
@@ -76,6 +76,15 @@ defmodule HajWeb.Router do
 
     get "/show-groups", GroupController, :index
     get "/show-groups/:show_group_id", GroupController, :group
+    get "/show-groups/edit/:show_group_id", GroupController, :edit
+
+  end
+
+  scope "/sok", HajWeb do
+    pipe_through [:browser, :haj, :require_authenticated_user]
+
+    get "/", ApplicationController, :index
+    post "/", ApplicationController, :apply
   end
 
   # Other scopes may use custom stacks.

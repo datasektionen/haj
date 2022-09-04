@@ -4,8 +4,11 @@ defmodule Haj.Applications.Application do
 
   schema "applications" do
 
-    field :user_id, :id
-    field :group_id, :id
+    field :special_text, :string
+    field :other, :string
+
+    belongs_to :user, Haj.Accounts.User
+    has_many :application_show_groups, Haj.Applications.ApplicationShowGroup
 
     timestamps()
   end
@@ -13,7 +16,7 @@ defmodule Haj.Applications.Application do
   @doc false
   def changeset(application, attrs) do
     application
-    |> cast(attrs, [])
+    |> cast(attrs, [:special_text, :other, :user_id])
     |> validate_required([])
   end
 end

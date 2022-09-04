@@ -13,7 +13,7 @@ defmodule Haj.Accounts.User do
     field :class, :string
     field :personal_number, :string
 
-    field :role, Ecto.Enum, values: [:admin, :chef, :none], default: :none
+    field :role, Ecto.Enum, values: [:admin, :chef, :spexare, :none], default: :none
 
     timestamps()
   end

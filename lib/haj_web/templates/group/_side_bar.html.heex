@@ -1,4 +1,8 @@
 <div class="flex flex-col">
     <div class="px-3 py-2 bg-gray-100 uppercase font-bold"><%= @show_group.group.name %></div>
     <div class="px-3 py-2 border-b border-gray-300"><%= link "Medlemmar", to: Routes.group_path(@conn, :group, @show_group.id) %></div>
+
+    <%= if is_chef_for(@show_group, @conn.assigns.current_user) do %>
+    <div class="px-3 py-2 border-b border-gray-300"><%= link "Administrera", to: Routes.group_path(@conn, :edit, @show_group.id) %></div>
+    <% end %>
 </div>

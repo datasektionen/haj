@@ -1,14 +1,20 @@
 defmodule HajWeb.GroupAdminLive do
   use HajWeb, :live_view
 
+  alias Haj.Spex
+
   import HajWeb.LiveComponents.Table
 
   def mount(_params, %{"user_token" => token, "show_group_id" => id}, socket) do
+    show_group = Haj.Spex.get_show_group!(id)
+    changeset = Spex.change_show_group(show_group)
+
     socket =
       socket
       |> assign_new(:current_user, fn -> Haj.Accounts.get_user_by_session_token(token) end)
-      |> assign_new(:show_group, fn -> Haj.Spex.get_show_group!(id) end)
+      |> assign(:show_group, show_group)
       |> assign(
+        changeset: changeset,
         query: nil,
         loading: false,
         matches: [],
@@ -41,6 +47,19 @@ defmodule HajWeb.GroupAdminLive do
     {:noreply, socket |> assign(show_group: updated, matches: [], query: nil)}
   end
 
+  def handle_event("save", %{"show_group" => show_group}, socket) do
+    case Spex.update_show_group(socket.assigns.show_group, show_group) do
+      {:ok, show_group} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Sparat.")
+         |> assign(changeset: Spex.change_show_group(show_group))}
+
+      {:error, changeset} ->
+        {:noreply, socket |> put_flash(:error, "Något gick fel.") |> assign(changeset: changeset)}
+    end
+  end
+
   def handle_event("remove_user", %{"id" => id}, socket) do
     membership = Haj.Spex.get_group_membership!(id)
     {:ok, _} = Haj.Spex.delete_group_membership(membership)
@@ -68,6 +87,24 @@ defmodule HajWeb.GroupAdminLive do
 
   def render(assigns) do
     ~H"""
+
+    <.form let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
+      <%= label f, :application_description, "Beskrivning av gruppen på ansökningssidan.", class: "uppercase font-bold py-2" %>
+      <%= textarea f, :application_description, class: "mb-2" %>
+
+      <div class="mb-2 flex items-center gap-2">
+        <%= checkbox f, :application_open %>
+        <%= label f, :application_open, "Gruppen går att söka" %>
+      </div>
+
+      <%= submit "Spara", class: "self-start bg-burgandy px-3 py-2 rounded-sm text-white" %>
+    </.form>
+
+
+    <div class="uppercase font-bold">Lägg till medlemmar</div>
+    <p class="py-2">
+      Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
+    </p>
     <div class="flex flex-row items-stretch gap-2">
       <%= form_for :role_form, "#", [phx_change: "update_role"], fn f ->  %>
         <%= select f, :role, @roles, class: "h-full" %>
@@ -87,6 +124,9 @@ defmodule HajWeb.GroupAdminLive do
       <% end %>
       <% end %>
     </div>
+
+    <div class="uppercase font-bold py-2">Nuvarande medlemmar</div>
+
 
     <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
       <:col let={member} label={"Chefer"}>

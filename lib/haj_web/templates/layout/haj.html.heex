@@ -6,8 +6,8 @@
     <%= render "_title.html", conn: @conn, title: @title %>
     <% end %>
     <div class="px-8 md:px-14 md:max-w-7xl md:self-center md:w-full">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      <p class="alert alert-info mt-2" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger mt-2" role="alert"><%= get_flash(@conn, :error) %></p>
       <%= @inner_content %>
     </div>
     <%= render "_footer.html", conn: @conn %>

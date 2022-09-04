@@ -7,6 +7,7 @@ defmodule Haj.Applications do
   alias Haj.Repo
 
   alias Haj.Applications.Application
+  alias Haj.Applications.ApplicationShowGroup
 
   @doc """
   Returns the list of applications.
@@ -49,10 +50,20 @@ defmodule Haj.Applications do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_application(attrs \\ %{}) do
-    %Application{}
-    |> Application.changeset(attrs)
-    |> Repo.insert()
+  def create_application(%{"show_groups" => show_groups} = attrs \\ %{}) do
+    Repo.transaction(fn ->
+      {:ok, application} =
+        %Application{}
+        |> Application.changeset(attrs)
+        |> Repo.insert()
+
+      Enum.each(show_groups, fn show_group_id ->
+        Repo.insert(%ApplicationShowGroup{
+          application_id: application.id,
+          show_group_id: show_group_id
+        })
+      end)
+    end)
   end
 
   @doc """

@@ -443,7 +443,9 @@ defmodule Haj.Spex do
     query =
       from sg in ShowGroup,
         where: sg.show_id == ^show_id,
-        preload: [group: []]
+        left_join: gm in GroupMembership, on: gm.show_group_id == sg.id and gm.role == :chef,
+        left_join: u in assoc(gm, :user),
+        preload: [group: [], group_memberships: {gm, user: u}]
 
     Repo.all(query)
   end
