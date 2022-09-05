@@ -112,4 +112,13 @@ defmodule Haj.Applications do
   def change_application(%Application{} = application, attrs \\ %{}) do
     Application.changeset(application, attrs)
   end
+
+  def get_applications_for_show_group(show_group_id) do
+    query = from a in Application,
+      join: asg in ApplicationShowGroup, where: asg.application_id == a.id,
+      where: asg.show_group_id == ^show_group_id,
+      preload: [user: []]
+
+    Repo.all(query)
+  end
 end

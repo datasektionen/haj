@@ -6,11 +6,18 @@
         <.table rows={@show_groups}>
             <:col let={show_group} label={"Grupper i spexet #{@show.year.year}"}>
                 <div class="flex flex-row justify-between">
-                    <%= link "#{show_group.group.name}", to: Routes.settings_path(@conn, :edit_show_group, show_group.id)%>
+                    <div>
+                        <%= show_group.group.name %>
+                    </div>
 
-                    <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
-                        <%= link "Radera", to: Routes.settings_path(@conn, :delete_show_group, show_group), method: :delete %>
-                    </button>
+                    <div>
+                        <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
+                            <%= link "Redigera", to: Routes.settings_path(@conn, :edit_show_group, show_group.id)%>
+                        </button>
+                        <button class="bg-burgandy text-white px-2 py-0.5 rounded-sm">
+                            <%= link "Radera", to: Routes.settings_path(@conn, :delete_show_group, show_group), method: :delete, data: [confirm: "Är du helt säker på att du vill ta bort #{show_group.group.name}?"] %>
+                        </button>
+                    </div>
                 </div>
 
 

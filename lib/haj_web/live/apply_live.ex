@@ -19,20 +19,27 @@ defmodule HajWeb.ApplyLive do
   end
 
   def handle_event("apply", %{"application" => %{"show_groups" => groups} = application}, socket) do
-    {:ok, user} = Haj.Accounts.update_user(socket.assigns.current_user, application)
+    case Haj.Accounts.update_user(socket.assigns.current_user, application) do
+      {:ok, user} ->
+        application =
+          Map.put(application, "user_id", user.id)
+          |> Map.put("show_groups", selected_groups(groups))
 
-    selected_groups =
-      groups
-      |> Enum.reduce([], fn {k, v}, acc ->
-        case v do
-          "true" -> [String.to_integer(k) | acc]
-          "false" -> acc
+        case Haj.Applications.create_application(application) do
+          {:ok, _} ->
+            {:noreply, redirect(socket, to: Routes.application_path(socket, :created))}
         end
-      end)
+    end
+  end
 
-    {:ok, _} = Haj.Applications.create_application(Map.put(%{application | "show_groups" => selected_groups}, "user_id", user.id));
-
-    {:noreply, socket}
+  defp selected_groups(groups) do
+    groups
+    |> Enum.reduce([], fn {k, v}, acc ->
+      case v do
+        "true" -> [String.to_integer(k) | acc]
+        "false" -> acc
+      end
+    end)
   end
 
   def render(assigns) do

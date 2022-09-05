@@ -59,8 +59,8 @@ defmodule HajWeb.Router do
 
     get "/settings", SettingsController, :index
     get "/settings/groups", SettingsController, :groups
-    post "/settings/groups", SettingsController, :create_group
     get "/settings/groups/new", SettingsController, :new_group
+    post "/settings/groups", SettingsController, :create_group
     get "/settings/groups/:id", SettingsController, :edit_group
     put  "/settings/groups/:id", SettingsController, :update_group
     delete "/settings/groups/:id", SettingsController, :delete_group
@@ -72,18 +72,23 @@ defmodule HajWeb.Router do
     post "/settings/show/:show_id/groups", SettingsController, :add_show_group
 
     get "/settings/shows", SettingsController, :shows
-    get "/settings/show/:id", SettingsController, :show
+    get "/settings/show/new", SettingsController, :new_show
+    post "/settings/show", SettingsController, :create_show
+    get "/settings/show/:id", SettingsController, :edit_show
+    put "/settings/show/:id", SettingsController, :update_show
+
 
     get "/show-groups", GroupController, :index
-    get "/show-groups/:show_group_id", GroupController, :group
     get "/show-groups/edit/:show_group_id", GroupController, :edit
-
+    get "/show-groups/:show_group_id", GroupController, :group
+    get "/show-groups/:show_group_id/applications", GroupController, :applications
   end
 
   scope "/sok", HajWeb do
     pipe_through [:browser, :haj, :require_authenticated_user]
 
     get "/", ApplicationController, :index
+    get "/sucess", ApplicationController, :created
     post "/", ApplicationController, :apply
   end
 

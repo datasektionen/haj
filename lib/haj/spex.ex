@@ -18,7 +18,7 @@ defmodule Haj.Spex do
 
   """
   def list_shows do
-    Repo.all(Show)
+    Repo.all(from s in Show, order_by: [desc: s.year])
   end
 
   @doc """

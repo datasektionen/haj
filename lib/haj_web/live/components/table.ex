@@ -4,7 +4,7 @@ defmodule HajWeb.LiveComponents.Table do
 
   def table(assigns) do
     ~H"""
-    <table class="w-full">
+    <table class="w-full divide-y divide-gray-200">
       <thead>
         <tr class="text-md font-semibold text-left text-left bg-gray-100 uppercase">
           <%= for col <- @col do %>
@@ -18,8 +18,8 @@ defmodule HajWeb.LiveComponents.Table do
         <%= if @rows == [] do %>
           <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium">Här var det tomt.</td>
         <% else %>
-          <%= for row <- @rows do %>
-            <tr class="">
+          <%= for {row, i} <- Enum.with_index(@rows) do %>
+            <tr class={if rem(i, 2) == 0, do: "bg-white hover:bg-gray-100", else: "bg-gray-50 hover:bg-gray-100"}>
               <%= for col <- @col do %>
                 <td class="px-4 py-3 border">
                   <%= render_slot(col, row) %>

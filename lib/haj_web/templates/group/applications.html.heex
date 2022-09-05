@@ -1,0 +1,31 @@
+<div class="flex flex-col gap-4 md:flex-row">
+    <div class="flex-grow-[1]">
+        <%= render "_side_bar.html", show_group: @show_group, conn: @conn %>
+    </div>
+    <div class="flex-grow-[3]">
+        <.table rows={@applications}>
+            <:col let={application} label="Tid">
+                <%= application.inserted_at %>
+            </:col>
+            <:col let={application} label="Namn">
+                <%= "#{application.user.first_name} #{application.user.last_name}" %>
+            </:col>
+            <:col let={application} label="Email">
+                <%= application.user.email %>
+            </:col>
+            <:col let={application} label="Telefon">
+                <%= application.user.phone %>
+            </:col>
+            <:col let={application} label="Klass">
+                <%= application.user.class %>
+            </:col>
+            <:col let={application} label="Instrument/stämma">
+                <%= application.special_text %>
+            </:col>
+            <:col let={application} label="Övrigt">
+                <%= application.other %>
+            </:col>
+        </.table>
+
+    </div>
+</div>

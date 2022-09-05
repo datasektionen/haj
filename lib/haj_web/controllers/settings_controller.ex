@@ -119,16 +119,61 @@ defmodule HajWeb.SettingsController do
     |> assign(:show_group, show_group)
     |> assign(:title, "#{show_group.group.name} #{show_group.show.year.year}")
     |> render("show_groups/edit.html")
-
   end
 
-  def edit_show_groups(conn, %{"show_id" => show_id, "id" => show_group}) do
-    show_groups = Haj.Spex.get_current_show_groups()
+  def shows(conn, _oarams) do
+    shows = Haj.Spex.list_shows()
 
     conn
-    |> assign(:show_groups, show_groups)
-    |> assign(:title, "Nuvarande grupper")
-    |> render("show_groups/index.html")
+    |> assign(:shows, shows)
+    |> assign(:title, "Alla spex")
+    |> render("shows/index.html")
+  end
+
+  def new_show(conn, _params) do
+    changeset = Haj.Spex.change_show(%Haj.Spex.Show{})
+
+    conn
+    |> assign(:title, "Nytt spex")
+    |> assign(:changeset, changeset)
+    |> render("shows/new.html")
+  end
+
+  def create_show(conn, %{"show" => show_params}) do
+    case Haj.Spex.create_show(show_params) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Spex skapades.")
+        |> redirect(to: Routes.settings_path(conn, :shows))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "shows/new.html", changeset: changeset)
+    end
+  end
+
+  def edit_show(conn, %{"id" => id}) do
+    show = Haj.Spex.get_show!(id)
+    changeset = Haj.Spex.change_show(show)
+
+    conn
+    |> assign(:show, show)
+    |> assign(:title, "Redigera spex")
+    |> assign(:changeset, changeset)
+    |> render("shows/edit.html")
+  end
+
+  def update_show(conn, %{"id" => id, "show" => show_params}) do
+    show = Haj.Spex.get_show!(id)
+
+    case Haj.Spex.update_show(show, show_params) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Spex uppdaterades.")
+        |> redirect(to: Routes.settings_path(conn, :shows))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "shows/edit.html", show: show, changeset: changeset)
+    end
   end
 
   defp authorize(conn, _) do

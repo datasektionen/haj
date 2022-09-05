@@ -26,13 +26,7 @@ defmodule HajWeb.GroupController do
   def edit(conn, %{"show_group_id" => show_group_id}) do
     show_group = Haj.Spex.get_show_group!(show_group_id)
 
-    is_admin =
-      show_group.group_memberships
-      |> Enum.any?(fn %{user_id: id, role: role} ->
-        role == :chef && id == conn.assigns.current_user.id
-      end)
-
-    case is_admin do
+    case is_admin?(conn, show_group) do
       true ->
         conn
         |> assign(:show_group, show_group)
@@ -44,5 +38,31 @@ defmodule HajWeb.GroupController do
         |> put_flash(:error, "Du har inte rättigheter att redigera gruppen.")
         |> redirect(to: Routes.group_path(conn, :group, show_group_id))
     end
+  end
+
+  def applications(conn, %{"show_group_id" => show_group_id}) do
+    show_group = Haj.Spex.get_show_group!(show_group_id)
+    applications = Haj.Applications.get_applications_for_show_group(show_group_id)
+
+    case is_admin?(conn, show_group) do
+      true ->
+        conn
+        |> assign(:show_group, show_group)
+        |> assign(:applications, applications)
+        |> assign(:title, "Ansökningar: #{show_group.group.name} #{show_group.show.year.year}")
+        |> render("applications.html")
+
+      false ->
+        conn
+        |> put_flash(:error, "Du har inte rättigheter att se ansökningar.")
+        |> redirect(to: Routes.group_path(conn, :group, show_group_id))
+    end
+  end
+
+  defp is_admin?(conn, show_group) do
+    show_group.group_memberships
+    |> Enum.any?(fn %{user_id: id, role: role} ->
+      role == :chef && id == conn.assigns.current_user.id
+    end)
   end
 end

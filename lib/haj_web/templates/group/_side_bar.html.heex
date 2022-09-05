@@ -4,5 +4,6 @@
 
     <%= if is_chef_for(@show_group, @conn.assigns.current_user) do %>
     <div class="px-3 py-2 border-b border-gray-300"><%= link "Administrera", to: Routes.group_path(@conn, :edit, @show_group.id) %></div>
+    <div class="px-3 py-2 border-b border-gray-300"><%= link "Ansökningar", to: Routes.group_path(@conn, :applications, @show_group.id) %></div>
     <% end %>
 </div>
