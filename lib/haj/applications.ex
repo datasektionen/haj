@@ -50,8 +50,13 @@ defmodule Haj.Applications do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_application(%{"show_groups" => show_groups} = attrs \\ %{}) do
+  def create_application(%{"show_groups" => show_groups, "user_id" => user_id, "show_id" => show_id} = attrs \\ %{}) do
     Repo.transaction(fn ->
+
+      previous = Repo.one(from a in Application, where: a.show_id == ^show_id and a.user_id == ^user_id)
+
+      {:ok, _} = Repo.delete(previous)
+
       {:ok, application} =
         %Application{}
         |> Application.changeset(attrs)
@@ -118,6 +123,14 @@ defmodule Haj.Applications do
       join: asg in ApplicationShowGroup, where: asg.application_id == a.id,
       where: asg.show_group_id == ^show_group_id,
       preload: [user: []]
+
+    Repo.all(query)
+  end
+
+  def get_applications_for_user(user_id) do
+    query = from a in Application,
+      where: a.user_id == ^user_id,
+      preload: [application_show_groups: []]
 
     Repo.all(query)
   end

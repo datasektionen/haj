@@ -8,6 +8,7 @@ defmodule Haj.Applications.Application do
     field :other, :string
 
     belongs_to :user, Haj.Accounts.User
+    belongs_to :show, Haj.Spex.Show
     has_many :application_show_groups, Haj.Applications.ApplicationShowGroup
 
     timestamps()
@@ -16,7 +17,7 @@ defmodule Haj.Applications.Application do
   @doc false
   def changeset(application, attrs) do
     application
-    |> cast(attrs, [:special_text, :other, :user_id])
-    |> validate_required([])
+    |> cast(attrs, [:special_text, :other, :user_id, :show_id])
+    |> validate_required([:show_id, :user_id])
   end
 end
