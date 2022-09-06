@@ -3,8 +3,8 @@ defmodule Haj.Repo.Migrations.CreateApplcationGroups do
 
   def change do
     create table(:application_show_groups) do
-      add :application_id, references(:applications, on_delete: :cascade)
-      add :show_group_id, references(:show_groups, on_delete: :cascade)
+      add :application_id, references(:applications, on_delete: :delete_all)
+      add :show_group_id, references(:show_groups, on_delete: :delete_all)
 
       timestamps()
     end

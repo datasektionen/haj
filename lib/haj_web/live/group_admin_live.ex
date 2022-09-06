@@ -117,7 +117,7 @@ defmodule HajWeb.GroupAdminLive do
 
     <div id="matches" class="flex flex-col bg-white mt-2">
       <%= for {user, i} <- Enum.with_index(@matches) do %>
-      <%= if i == 0 do%>
+      <%= if i == 0 do %>
         <div value={user.id} class="px-3 py-2 bg-orange text-gray-100 hover:bg-orange/80" phx-click="add_user" phx-value-user={user.id}> <%= "#{user.first_name} #{user.last_name}" %> </div>
       <%= else %>
         <div value={user.id} class="px-3 py-2 hover:bg-gray-200" phx-click="add_user" phx-value-user={user.id}> <%= "#{user.first_name} #{user.last_name}" %> </div>

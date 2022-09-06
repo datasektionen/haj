@@ -3,17 +3,17 @@
         <%= render "_side_bar.html", user: @user, conn: @conn %>
     </div>
     <div class="flex-grow-[2]">
-        <%= for {year, groups} <- @groups do %>
+        <%= for {year, show_groups} <- @groups do %>
         <div>
             <div class="px-3 py-2 font-bold border-b border-gray-500 bg-gray-300">
                 <%= year.year %>
             </div>
 
             <div class="px-2 py-3">
-                <%= for group <- groups do %>
+                <%= for show_group <- show_groups do %>
 
                 <div class="pb-1">
-                    <%= link "#{group.name}", to: Routes.group_path(@conn, :index, group.name) %>
+                    <%= link "#{show_group.group.name}", to: Routes.group_path(@conn, :group, show_group.id) %>
                 </div>
                 <% end %>
             </div>

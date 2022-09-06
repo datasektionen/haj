@@ -3,15 +3,26 @@ defmodule HajWeb.SessionController do
   alias Haj.Accounts
   alias HajWeb.UserAuth
 
-  @host Application.get_env(:haj, :login_host)
-  @api_key Application.get_env(:haj, :login_api_key)
+  require Logger
 
   @doc """
   Issues a request to the login server, by redirecting the user there
   """
   def login(conn, _params) do
-    callback = URI.encode("#{conn.scheme}://#{conn.host}:#{conn.port}/login/callback/?token=")
-    url = "https://#{@host}/login?callback=#{callback}"
+    host = Application.get_env(:haj, :login_host)
+
+    scheme = case get_req_header(conn, "x-forwarded-proto") do
+      [scheme] -> scheme
+      [] -> conn.scheme
+    end
+
+    port = case get_req_header(conn, "x-forwarded-port") do
+      [port] -> port
+      [] -> conn.port
+    end
+
+    callback = URI.encode("#{scheme}://#{conn.host}:#{port}/login/callback/?token=")
+    url = "https://#{host}/login?callback=#{callback}"
 
     conn
     |> put_resp_header("location", url)
@@ -20,7 +31,10 @@ defmodule HajWeb.SessionController do
 
   def callback(conn, %{"token" => token}) do
     # Gets the users data from the login server
-    {:ok, response} = HTTPoison.get("https://#{@host}/verify/#{token}.json?api_key=#{@api_key}")
+    host = Application.get_env(:haj, :login_host)
+    api_key = Application.get_env(:haj, :login_api_key)
+
+    {:ok, response} = HTTPoison.get("https://#{host}/verify/#{token}.json?api_key=#{api_key}")
 
     case response do
       %{status_code: 200, body: data} ->

@@ -10,6 +10,10 @@ config :haj, Haj.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
+config :haj,
+  login_api_key: System.get_env("LOGIN_API_KEY"),
+  login_host: System.get_env("LOGIN_HOST")
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

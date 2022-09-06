@@ -8,13 +8,10 @@ defmodule HajWeb.Router do
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, {HajWeb.LayoutView, :root}
+    plug :put_layout, {HajWeb.LayoutView, :haj}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
-  end
-
-  pipeline :haj do
-    plug :put_layout, {HajWeb.LayoutView, :haj}
   end
 
   pipeline :api do
@@ -24,29 +21,24 @@ defmodule HajWeb.Router do
   scope "/", HajWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    get "/groups", PageController, :groups
-    get "/groups/:name", PageController, :group
-    get "/spexet", PageController, :spex
-    get "/previous", PageController, :previous
-    get "/about", PageController, :about
+    # get "/", PageController, :index
+    # get "/groups", PageController, :groups
+    # get "/groups/:name", PageController, :group
+    # get "/spexet", PageController, :spex
+    # get "/previous", PageController, :previous
+    # get "/about", PageController, :about
 
 
     get "/login", SessionController, :login
     get "/login/callback", SessionController, :callback
     get "/logout", SessionController, :logout
-  end
-
-  scope "haj", HajWeb do
-    pipe_through [:browser, :haj]
 
     get "/", LoginController, :login
     get "/unauthorized", LoginController, :unauthorized
-
   end
 
-  scope "/haj", HajWeb do
-    pipe_through [:browser, :haj, :require_authenticated_user, :require_spex_access]
+  scope "/", HajWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_spex_access]
 
     get "/dashboard", DashboardController, :index
     get "/dashboard/my-data", DashboardController, :edit_user
@@ -85,7 +77,7 @@ defmodule HajWeb.Router do
   end
 
   scope "/sok", HajWeb do
-    pipe_through [:browser, :haj, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user]
 
     get "/", ApplicationController, :index
     get "/sucess", ApplicationController, :created
@@ -110,7 +102,7 @@ defmodule HajWeb.Router do
     scope "/" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: HajWeb.Telemetry
+      live_dashboard "/live-dashboard", metrics: HajWeb.Telemetry
     end
   end
 

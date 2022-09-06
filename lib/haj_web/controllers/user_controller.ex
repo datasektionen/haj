@@ -12,11 +12,9 @@ defmodule HajWeb.UserController do
 
   def groups(conn, %{"username" => username}) do
     user = Haj.Accounts.get_user_by_username!(username)
-    groups = Haj.Spex.get_user_groups(user.id)
+    groups = Haj.Spex.get_show_groups_for_user(user.id)
 
-    groups_by_year = Enum.reduce(groups, %{}, fn %{group: g, year: y}, acc ->
-      Map.update(acc, y, [g], fn gs -> [g | gs] end)
-    end)
+    groups_by_year = Enum.group_by(groups, fn %{show: show} -> show.year end)
 
     conn
     |> assign(:user, user)

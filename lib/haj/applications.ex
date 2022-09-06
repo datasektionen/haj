@@ -55,7 +55,9 @@ defmodule Haj.Applications do
 
       previous = Repo.one(from a in Application, where: a.show_id == ^show_id and a.user_id == ^user_id)
 
-      {:ok, _} = Repo.delete(previous)
+      if previous != nil do
+        {:ok, _} = Repo.delete(previous)
+      end
 
       {:ok, application} =
         %Application{}

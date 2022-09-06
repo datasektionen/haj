@@ -132,7 +132,6 @@ defmodule HajWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, "You must log in to access this page.")
       |> maybe_store_return_to()
       |> redirect(to: Routes.session_path(conn, :login))
       |> halt()
@@ -156,5 +155,5 @@ defmodule HajWeb.UserAuth do
 
   defp maybe_store_return_to(conn), do: conn
 
-  defp signed_in_path(_conn), do: "/haj"
+  defp signed_in_path(conn), do: Routes.dashboard_path(conn, :index)
 end

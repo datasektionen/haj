@@ -8,9 +8,7 @@
 import Config
 
 config :haj,
-  ecto_repos: [Haj.Repo],
-  login_api_key: System.get_env("LOGIN_API_KEY"),
-  login_host: System.get_env("LOGIN_HOST")
+  ecto_repos: [Haj.Repo]
 
 # Configures the endpoint
 config :haj, HajWeb.Endpoint,
