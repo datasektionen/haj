@@ -395,16 +395,13 @@ defmodule Haj.Spex do
     Repo.one(from s in Show, order_by: [desc: s.year], limit: 1)
   end
 
-  def get_current_members() do
-    %{id: spex_id} = current_spex()
-
-    query =
-      from u in Haj.Accounts.User,
-        join: gm in GroupMembership,
-        join: sg in ShowGroup,
-        on: sg.id == gm.show_group_id,
-        distinct: u.id,
-        where: sg.show_id == ^spex_id
+  def list_members_for_show(show_id) do
+    query = from sg in ShowGroup,
+      join: gm in assoc(sg, :group_memberships),
+      join: u in assoc(gm, :user),
+      distinct: u.id,
+      where: sg.show_id == ^show_id,
+      select: u
 
     Repo.all(query)
   end

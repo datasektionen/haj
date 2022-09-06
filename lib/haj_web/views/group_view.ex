@@ -9,4 +9,11 @@ defmodule HajWeb.GroupView do
       role == :chef && id == user.id
     end)
   end
+
+  defp all_groups(application) do
+    Enum.map(application.application_show_groups, fn %{show_group: %{group: group}} ->
+      group.name
+    end)
+    |> Enum.join(", ")
+  end
 end

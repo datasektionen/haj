@@ -1,0 +1,50 @@
+<table class="w-full divide-y divide-gray-200">
+    <thead>
+        <tr class="text-md font-semibold text-left text-left bg-gray-100 uppercase">
+            <%= for col <- ["Namn", "Email", "Telefon", "Klass", "Grupper"] do %>
+            <th class="px-4 py-3">
+                <%= col %>
+            </th>
+            <% end %>
+        </tr>
+    </thead>
+    <tbody class="bg-white">
+        <%= if @applications == [] do %>
+        <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium">Här var det tomt.</td>
+        <% else %>
+        <%= for {application, i} <- Enum.with_index(@applications) do %>
+        <tbody x-data="{show: false}">
+        <tr class={if rem(i, 2)==0, do: "bg-white hover:bg-gray-100" , else: "bg-gray-50 hover:bg-gray-100" }>
+            <td class="px-4 py-3 border">
+                <div class="flex">
+                    <button class="px-2" x-on:click="show = !show">
+                        <Heroicons.Solid.chevron_down class="h-6 text-gray-800" />
+                    </button>
+                    <%= "#{application.user.first_name} #{application.user.last_name}" %>
+                </div>
+            </td>
+            <td class="px-4 py-3 border">
+                <%= application.user.email %>
+            </td>
+            <td class="px-4 py-3 border">
+                <%= application.user.phone %>
+            </td>
+            <td class="px-4 py-3 border">
+                <%= application.user.class %>
+            </td>
+            <td class="px-4 py-3 border">
+                <%= all_groups(application) %>
+            </td>
+        </tr>
+        <tr x-show="show">
+            <td colspan="5" class="px-4 py-3 gap-2 w-full">
+                <div>Tid för ansökan: <%= application.inserted_at %></div>
+                <div>Övrigt: <%= application.other %></div>
+                <div>Speciell text: <%= application.special_text %></div>
+            </td>
+        </tr>
+    </tbody>
+    <% end %>
+    <% end %>
+    </tbody>
+</table>

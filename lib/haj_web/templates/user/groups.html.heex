@@ -9,12 +9,10 @@
                 <%= year.year %>
             </div>
 
-            <div class="px-2 py-3">
+            <div class="">
                 <%= for show_group <- show_groups do %>
 
-                <div class="pb-1">
-                    <%= link "#{show_group.group.name}", to: Routes.group_path(@conn, :group, show_group.id) %>
-                </div>
+                <%= link "#{show_group.group.name}", to: Routes.group_path(@conn, :group, show_group.id), class: "block px-2 py-2 hover:bg-gray-200" %>
                 <% end %>
             </div>
         </div>

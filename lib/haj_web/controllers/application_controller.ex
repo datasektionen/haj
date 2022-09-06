@@ -1,41 +1,56 @@
 defmodule HajWeb.ApplicationController do
   use HajWeb, :controller
 
+  alias Haj.Spex
+  alias Haj.Applications
+
   def index(conn, _params) do
-    current_spex = Haj.Spex.current_spex()
-    changeset = Haj.Applications.change_application(%Haj.Applications.Application{})
+    current_spex = Spex.current_spex()
+    applications = Applications.list_applications_for_show(current_spex.id)
 
-    case application_open?(current_spex) do
-      true ->
-        conn
-        |> assign(:title, "Sök spexet #{current_spex.year.year}")
-        |> assign(:changeset, changeset)
-        |> render("index.html")
-
-      false ->
-        conn |> assign(:title, "Ansökan stängd") |> render("closed.html")
-    end
-  end
-
-  def created(conn, _params) do
     conn
-    |> assign(:title, "Tack för ansökan")
-    |> render("sucess.html")
+    |> assign(:title, "Ansökningar #{current_spex.year.year}")
+    |> assign(:show, current_spex)
+    |> assign(:applications, applications)
+    |> render("index.html")
   end
 
-  defp application_open?(show) do
-    current_date = DateTime.now!("Etc/UTC")
+  def export(conn, _params) do
+    current_spex = Spex.current_spex()
+    applications = Applications.list_applications_for_show(current_spex.id)
+    csv_data = to_csv(applications)
 
+    conn
+    |> put_resp_content_type("text/csv")
+    |> put_resp_header("content-disposition", "attachment; filename=\"applications.csv\"")
+    |> put_root_layout(false)
+    |> send_resp(200, csv_data)
+  end
 
-    case show.application_opens && DateTime.compare(show.application_opens, current_date) do
-      :lt ->
-        case DateTime.compare(show.application_closes, current_date) do
-          :gt -> true
-          _ -> false
-        end
+  defp to_csv(applications) do
+    titles = ["Namn", "Email", "Telefonnr", "Klass", "Tid", "Grupper", "Övrigt", "Speciell info, eg instrument/stämmor"]
 
-      _ ->
-        false
-    end
+    applications =
+      Enum.map(applications, fn app ->
+        [
+          "#{app.user.first_name} #{app.user.last_name}",
+          app.user.email,
+          app.user.phone,
+          app.user.class,
+          app.inserted_at,
+          all_groups(app),
+          app.other,
+          app.special_text
+        ]
+      end)
+
+    CSV.encode([titles | applications]) |> Enum.to_list()
+  end
+
+  defp all_groups(application) do
+    Enum.map(application.application_show_groups, fn %{show_group: %{group: group}} ->
+      group.name
+    end)
+    |> Enum.join(", ")
   end
 end

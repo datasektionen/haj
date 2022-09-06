@@ -16,8 +16,24 @@
                 <td class="py-2 px-3"><%= @user.username %></td>
             </tr>
             <tr class="bg-white">
+                <th class="py-2 px-3">Klass: </th>
+                <td class="py-2 px-3"><%= @user.class %></td>
+            </tr>
+            <tr class="bg-gray-100">
                 <th class="py-2 px-3">Email: </th>
                 <td class="py-2 px-3"><%= @user.email %></td>
+            </tr>
+            <tr class="bg-white">
+                <th class="py-2 px-3">Google-konto: </th>
+                <td class="py-2 px-3"><%= @user.google_account %></td>
+            </tr>
+            <tr class="bg-gray-100">
+                <th class="py-2 px-3">Telefonnr: </th>
+                <td class="py-2 px-3"><%= @user.phone %></td>
+            </tr>
+            <tr class="bg-white">
+                <th class="py-2 px-3">Personnr: </th>
+                <td class="py-2 px-3"><%= @user.personal_number %></td>
             </tr>
         </tbody>
     </table>

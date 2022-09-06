@@ -74,14 +74,17 @@ defmodule HajWeb.Router do
     get "/show-groups/edit/:show_group_id", GroupController, :edit
     get "/show-groups/:show_group_id", GroupController, :group
     get "/show-groups/:show_group_id/applications", GroupController, :applications
+
+    get "/applications", ApplicationController, :index
+    get "/applications/export", ApplicationController, :export
   end
 
   scope "/sok", HajWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/", ApplicationController, :index
-    get "/sucess", ApplicationController, :created
-    post "/", ApplicationController, :apply
+    get "/", ApplyController, :index
+    get "/sucess", ApplyController, :created
+    post "/", ApplyController, :apply
   end
 
   # Other scopes may use custom stacks.

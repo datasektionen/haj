@@ -124,7 +124,7 @@ defmodule Haj.Applications do
     query = from a in Application,
       join: asg in ApplicationShowGroup, where: asg.application_id == a.id,
       where: asg.show_group_id == ^show_group_id,
-      preload: [user: []]
+      preload: [user: [], application_show_groups: [show_group: [group: []]]]
 
     Repo.all(query)
   end
@@ -133,6 +133,14 @@ defmodule Haj.Applications do
     query = from a in Application,
       where: a.user_id == ^user_id,
       preload: [application_show_groups: []]
+
+    Repo.all(query)
+  end
+
+  def list_applications_for_show(show_id) do
+    query = from a in Application,
+      where: a.show_id == ^show_id,
+      preload: [application_show_groups: [show_group: [group: []]], user: []]
 
     Repo.all(query)
   end

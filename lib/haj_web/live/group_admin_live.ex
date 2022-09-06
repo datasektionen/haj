@@ -87,65 +87,84 @@ defmodule HajWeb.GroupAdminLive do
 
   def render(assigns) do
     ~H"""
-
     <.form let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
-      <%= label f, :application_description, "Beskrivning av gruppen på ansökningssidan.", class: "uppercase font-bold py-2" %>
-      <%= textarea f, :application_description, class: "mb-2" %>
+      <%= label(f, :application_description, "Beskrivning av gruppen på ansökningssidan.",
+        class: "uppercase font-bold py-2"
+      ) %>
+      <%= textarea(f, :application_description, class: "mb-2") %>
 
       <div class="mb-2 flex items-center gap-2">
-        <%= checkbox f, :application_open %>
-        <%= label f, :application_open, "Gruppen går att söka" %>
+        <%= checkbox(f, :application_open) %>
+        <%= label(f, :application_open, "Gruppen går att söka") %>
       </div>
 
-      <%= submit "Spara", class: "self-start bg-burgandy px-3 py-2 rounded-sm text-white" %>
+      <%= submit("Spara", class: "self-start bg-burgandy px-3 py-2 rounded-sm text-white") %>
     </.form>
-
 
     <div class="uppercase font-bold">Lägg till medlemmar</div>
     <p class="py-2">
       Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
     </p>
     <div class="flex flex-row items-stretch gap-2">
-      <%= form_for :role_form, "#", [phx_change: "update_role"], fn f ->  %>
-        <%= select f, :role, @roles, class: "h-full" %>
+      <%= form_for :role_form, "#", [phx_change: "update_role"], fn f -> %>
+        <%= select(f, :role, @roles, class: "h-full") %>
       <% end %>
 
       <%= form_for :search_form, "", [phx_change: "suggest", phx_submit: "add", autocomplete: :off, class: "flex-grow"], fn f -> %>
-        <%= text_input f, :q, value: @query, class: "w-full" %>
-        <% end %>
+        <%= text_input(f, :q, value: @query, class: "w-full") %>
+      <% end %>
     </div>
 
     <div id="matches" class="flex flex-col bg-white mt-2">
       <%= for {user, i} <- Enum.with_index(@matches) do %>
-      <%= if i == 0 do %>
-        <div value={user.id} class="px-3 py-2 bg-orange text-gray-100 hover:bg-orange/80" phx-click="add_user" phx-value-user={user.id}> <%= "#{user.first_name} #{user.last_name}" %> </div>
-      <%= else %>
-        <div value={user.id} class="px-3 py-2 hover:bg-gray-200" phx-click="add_user" phx-value-user={user.id}> <%= "#{user.first_name} #{user.last_name}" %> </div>
-      <% end %>
+        <%= if i == 0 do %>
+          <div
+            value={user.id}
+            class="px-3 py-2 bg-orange text-gray-100 hover:bg-orange/80"
+            phx-click="add_user"
+            phx-value-user={user.id}
+          >
+            <%= "#{user.first_name} #{user.last_name}" %>
+          </div>
+        <% else %>
+          <div
+            value={user.id}
+            class="px-3 py-2 hover:bg-gray-200"
+            phx-click="add_user"
+            phx-value-user={user.id}
+          >
+            <%= "#{user.first_name} #{user.last_name}" %>
+          </div>
+        <% end %>
       <% end %>
     </div>
 
     <div class="uppercase font-bold py-2">Nuvarande medlemmar</div>
 
-
     <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
-      <:col let={member} label={"Chefer"}>
-          <div class="flex flex-row justify-between">
-            <%= "#{member.user.first_name} #{member.user.last_name}" %>
-            <button class="bg-orange text-white px-2 py-0.5 rounded-sm" phx-click="remove_user" phx-value-id={member.id}>
-              Ta bort
-            </button>
-          </div>
+      <:col let={member} label="Chefer">
+        <div class="flex flex-row justify-between">
+          <%= "#{member.user.first_name} #{member.user.last_name}" %>
+          <button
+            class="bg-orange text-white px-2 py-0.5 rounded-sm"
+            phx-click="remove_user"
+            phx-value-id={member.id}
+          >
+            Ta bort
+          </button>
+        </div>
       </:col>
     </.table>
 
-
-
     <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :gruppis))}>
-      <:col let={member} label={"Gruppisar" }>
+      <:col let={member} label="Gruppisar">
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>
-          <button class="bg-orange text-white px-2 py-0.5 rounded-sm" phx-click="remove_user" phx-value-id={member.id}>
+          <button
+            class="bg-orange text-white px-2 py-0.5 rounded-sm"
+            phx-click="remove_user"
+            phx-value-id={member.id}
+          >
             Ta bort
           </button>
         </div>
