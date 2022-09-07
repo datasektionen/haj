@@ -40,6 +40,7 @@
             <td colspan="5" class="px-4 py-3 gap-2 w-full">
                 <div>Tid för ansökan: <%= application.inserted_at %></div>
                 <div>Övrigt: <%= application.other %></div>
+                <div>Eventuell rangordning: <%= application.ranking %></div>
                 <%= for asg <- application.application_show_groups do %>
                 <%= if asg.show_group.application_extra_question do %>
                 <div>

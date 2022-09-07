@@ -28,7 +28,7 @@ defmodule HajWeb.ApplicationController do
   end
 
   defp to_csv(applications) do
-    titles = ["Namn", "Email", "Telefonnr", "Klass", "Tid", "Grupper", "Övrigt", "Speciell info, eg instrument/stämmor"]
+    titles = ["Namn", "Email", "Telefonnr", "Klass", "Tid", "Grupper", "Övrigt", "Rangordning", "Speciell info"]
 
     applications =
       Enum.map(applications, fn app ->
@@ -40,7 +40,8 @@ defmodule HajWeb.ApplicationController do
           app.inserted_at,
           all_groups(app),
           app.other,
-          app.special_text
+          app.ranking,
+          special_text(app)
         ]
       end)
 
@@ -52,5 +53,11 @@ defmodule HajWeb.ApplicationController do
       group.name
     end)
     |> Enum.join(", ")
+  end
+
+  defp special_text(appliaction) do
+    Enum.map(appliaction.application_show_groups, fn %{special_text: text} ->
+      text
+    end) |> Enum.join(";")
   end
 end

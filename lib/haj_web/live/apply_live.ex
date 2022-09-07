@@ -172,6 +172,11 @@ defmodule HajWeb.ApplyLive do
 
         <div class="uppercase font-bold border-b-2 border-burgandy text-xl mt-2 mb-2">Övrigt</div>
 
+        <%= if @show_groups |> Enum.filter(fn x -> applied?(@application, x) end) |> length() > 1 do %>
+        <%= label(f, :ranking, "Eftersom du söker flera grupper: Rangordna vilka grupper du helst vill vara med i") %>
+        <%= textarea(f, :ranking, value: @application && @application.ranking) %>
+        <% end %>
+
         <%= inputs_for f, :extra_text, fn gf -> %>
           <%= for sg <- @show_groups |> Enum.filter(fn x -> applied?(@application, x) && x.application_extra_question end) do %>
             <div class="flex flex-col">
@@ -191,6 +196,10 @@ defmodule HajWeb.ApplyLive do
         <%= label(f, :other, "Har du något övrigt på hjärtat?") %>
         <%= textarea(f, :other, value: @application && @application.other) %>
 
+        <div>
+        <input type="checkbox" required class="mr-1"/>
+        Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR.
+        </div>
         <%= submit("Sök",
           class: "uppercase font-bold mt-1 text-white bg-burgandy text-lg px-3 py-2 self-start"
         ) %>
