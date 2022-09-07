@@ -438,7 +438,7 @@ defmodule Haj.Spex do
     query =
       from sg in ShowGroup,
         where: sg.show_id == ^show_id,
-        left_join: gm in GroupMembership, on: gm.show_group_id == sg.id and gm.role == :chef,
+        left_join: gm in GroupMembership, on: gm.show_group_id == sg.id,
         left_join: u in assoc(gm, :user),
         preload: [group: [], group_memberships: {gm, user: u}]
 

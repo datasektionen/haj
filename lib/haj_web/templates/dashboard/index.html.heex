@@ -3,6 +3,19 @@
         <%= render "_side_bar.html", user: @current_user, conn: @conn %>
     </div>
     <div class="flex-grow-[3]">
-        
+        <div class="grid md:grid-cols-3">
+            <%= for show_group <- @user_groups do %>
+
+            <%= link to: Routes.group_path(@conn, :group, show_group.id) do %>
+            <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
+                        md:flex-col">
+                <Heroicons.Solid.user_group class="h-10 md:h-14" />
+                <div class="text-lg text-center md:border-t-2 border-burgandy md:w-full">
+                    <%= show_group.group.name %>
+                </div>
+            </div>
+            <% end %>
+            <% end %>
+        </div>
     </div>
 </div>

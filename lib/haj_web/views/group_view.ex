@@ -3,11 +3,12 @@ defmodule HajWeb.GroupView do
 
   def table(assigns), do: HajWeb.LiveComponents.Table.table(assigns)
 
-  def is_chef_for(show_group, user) do
-    show_group.group_memberships
-    |> Enum.any?(fn %{user_id: id, role: role} ->
-      role == :chef && id == user.id
-    end)
+  defp is_admin?(show_group, user) do
+    user.role == :admin ||
+      show_group.group_memberships
+      |> Enum.any?(fn %{user_id: id, role: role} ->
+        role == :chef && id == user.id
+      end)
   end
 
   defp all_groups(application) do

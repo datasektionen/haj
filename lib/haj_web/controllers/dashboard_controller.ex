@@ -2,8 +2,15 @@ defmodule HajWeb.DashboardController do
   use HajWeb, :controller
 
   def index(conn, _params) do
+    current_show = Haj.Spex.current_spex()
+
+    user_groups =
+      Haj.Spex.get_show_groups_for_user(conn.assigns.current_user.id)
+      |> Enum.filter(fn %{show: show} -> show.id == current_show.id end)
+
     conn
     |> assign(:title, "Min Sida")
+    |> assign(:user_groups, user_groups)
     |> render("index.html")
   end
 

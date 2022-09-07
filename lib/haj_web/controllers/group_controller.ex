@@ -60,9 +60,10 @@ defmodule HajWeb.GroupController do
   end
 
   defp is_admin?(conn, show_group) do
-    show_group.group_memberships
-    |> Enum.any?(fn %{user_id: id, role: role} ->
-      role == :chef && id == conn.assigns.current_user.id
-    end)
+    conn.assigns.current_user.role == :admin ||
+      show_group.group_memberships
+      |> Enum.any?(fn %{user_id: id, role: role} ->
+        role == :chef && id == conn.assigns.current_user.id
+      end)
   end
 end
