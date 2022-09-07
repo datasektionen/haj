@@ -7,13 +7,12 @@ defmodule HajWeb.ApplyLive do
     user = Haj.Accounts.get_user_by_session_token(token)
     current_spex = Spex.current_spex()
 
-    application =
+    {application, pre_filled} =
       case Haj.Applications.get_applications_for_user(user.id)
            |> Enum.filter(fn %{show_id: id} -> id == current_spex.id end) do
-        [app | _] -> app
-        _ -> nil
+        [app | _] -> {app, true}
+        _ -> {%Haj.Applications.Application{}, false}
       end
-      |> Map.put(:extra_text, %{})
 
     show_groups =
       Spex.get_show_groups_for_show(current_spex.id)
@@ -24,20 +23,14 @@ defmodule HajWeb.ApplyLive do
         show_groups: show_groups,
         current_user: user,
         show: current_spex,
-        application: application
+        application: application |> Map.put(:extra_text, %{})
       )
 
     socket =
-      case application do
-        nil ->
-          socket
-
-        _ ->
-          socket
-          |> put_flash(
-            :info,
-            "Data fylld från tidigare ansökan. Du kan uppdatera den genom att fylla i nya uppfiter."
-          )
+      case pre_filled do
+        false -> socket
+        true -> put_flash(socket, :info, "Data fylld från tidigare ansökan. Du kan
+                                       uppdatera den genom att fylla i nya uppfiter.")
       end
 
     {:ok, socket}
@@ -68,7 +61,12 @@ defmodule HajWeb.ApplyLive do
     alias Haj.Applications.ApplicationShowGroup
 
     index = Map.keys(sgs) |> hd()
-    application_show_groups = socket.assigns.application.application_show_groups
+
+    application_show_groups =
+      case socket.assigns.application.application_show_groups do
+        app when is_list(app) -> app
+        _ -> []
+      end
 
     application_show_groups =
       case Map.get(sgs, index) do
@@ -103,6 +101,14 @@ defmodule HajWeb.ApplyLive do
      )}
   end
 
+  def handle_event("update_form", %{"application" => %{"other" => val}}, socket) do
+    {:noreply, assign(socket, application: %{socket.assigns.application | other: val})}
+  end
+
+  def handle_event("update_form", %{"application" => %{"ranking" => val}}, socket) do
+    {:noreply, assign(socket, application: %{socket.assigns.application | ranking: val})}
+  end
+
   defp selected_groups(groups, extra_text) do
     groups
     |> Enum.reduce([], fn {k, v}, acc ->
@@ -114,12 +120,14 @@ defmodule HajWeb.ApplyLive do
   end
 
   defp applied?(application, show_group) do
-    if application do
-      Enum.any?(application.application_show_groups, fn %{show_group_id: id} ->
-        id == show_group.id
-      end)
-    else
-      false
+    case application.application_show_groups do
+      show_groups when is_list(show_groups) ->
+        Enum.any?(application.application_show_groups, fn %{show_group_id: id} ->
+          id == show_group.id
+        end)
+
+      _ ->
+        false
     end
   end
 
@@ -173,8 +181,15 @@ defmodule HajWeb.ApplyLive do
         <div class="uppercase font-bold border-b-2 border-burgandy text-xl mt-2 mb-2">Övrigt</div>
 
         <%= if @show_groups |> Enum.filter(fn x -> applied?(@application, x) end) |> length() > 1 do %>
-        <%= label(f, :ranking, "Eftersom du söker flera grupper: Rangordna vilka grupper du helst vill vara med i") %>
-        <%= textarea(f, :ranking, value: @application && @application.ranking) %>
+          <%= label(
+            f,
+            :ranking,
+            "Eftersom du söker flera grupper: Rangordna vilka grupper du helst vill vara med i"
+          ) %>
+          <%= textarea(f, :ranking,
+            value: @application && @application.ranking,
+            phx_change: "update_form"
+          ) %>
         <% end %>
 
         <%= inputs_for f, :extra_text, fn gf -> %>
@@ -194,11 +209,11 @@ defmodule HajWeb.ApplyLive do
         <% end %>
 
         <%= label(f, :other, "Har du något övrigt på hjärtat?") %>
-        <%= textarea(f, :other, value: @application && @application.other) %>
+        <%= textarea(f, :other, value: @application && @application.other, phx_change: "update_form") %>
 
         <div>
-        <input type="checkbox" required class="mr-1"/>
-        Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR.
+          <input type="checkbox" required class="mr-1" />
+          Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR.
         </div>
         <%= submit("Sök",
           class: "uppercase font-bold mt-1 text-white bg-burgandy text-lg px-3 py-2 self-start"
