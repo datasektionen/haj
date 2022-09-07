@@ -131,6 +131,14 @@ defmodule HajWeb.ApplyLive do
     end
   end
 
+  defp chefer(group) do
+    Enum.filter(group.group_memberships, fn u -> u.role == :chef end)
+    |> Enum.map(fn chef ->
+      "#{chef.user.first_name} #{chef.user.last_name}"
+    end)
+    |> Enum.join(", ")
+  end
+
   def render(assigns) do
     ~H"""
     <div class="flex flex-col md:flex-row md:gap-8 ">
@@ -142,10 +150,7 @@ defmodule HajWeb.ApplyLive do
           <div>
             <h2 class="uppercase font-bold"><%= group.group.name %></h2>
             <h3 class="">
-              Chefer: <%= Enum.map(group.group_memberships, fn chef ->
-                "#{chef.user.first_name} #{chef.user.last_name}"
-              end)
-              |> Enum.join(", ") %>
+              Chefer: <%= chefer(group) %>
             </h3>
             <%= group.application_description %>
           </div>
