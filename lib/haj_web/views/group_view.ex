@@ -16,4 +16,22 @@ defmodule HajWeb.GroupView do
     end)
     |> Enum.join(", ")
   end
+
+  def number_of_members(show_group) do
+    Enum.count(show_group.group_memberships)
+  end
+
+  def chefer(show_group) do
+    Enum.filter(show_group.group_memberships, fn %{role: role} -> role == :chef end)
+    |> Enum.map(fn %{user: user} ->
+      user
+    end)
+  end
+
+  def gruppisar(show_group) do
+    Enum.filter(show_group.group_memberships, fn %{role: role} -> role == :gruppis end)
+    |> Enum.map(fn %{user: user} ->
+      user
+    end)
+  end
 end

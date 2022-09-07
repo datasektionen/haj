@@ -107,7 +107,7 @@ defmodule HajWeb.GroupAdminLive do
     </p>
     <div class="flex flex-row items-stretch gap-2">
       <%= form_for :role_form, "#", [phx_change: "update_role"], fn f -> %>
-        <%= select(f, :role, @roles, class: "h-full") %>
+        <%= select(f, :role, @roles, class: "h-full", value: @role) %>
       <% end %>
 
       <%= form_for :search_form, "", [phx_change: "suggest", phx_submit: "add", autocomplete: :off, class: "flex-grow"], fn f -> %>
