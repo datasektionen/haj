@@ -64,10 +64,11 @@ defmodule Haj.Applications do
         |> Application.changeset(attrs)
         |> Repo.insert()
 
-      Enum.each(show_groups, fn show_group_id ->
+      Enum.each(show_groups, fn %{id: id, special_text: text} ->
         Repo.insert(%ApplicationShowGroup{
           application_id: application.id,
-          show_group_id: show_group_id
+          show_group_id: id,
+          special_text: text
         })
       end)
     end)

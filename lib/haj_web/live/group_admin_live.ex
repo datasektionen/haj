@@ -93,6 +93,9 @@ defmodule HajWeb.GroupAdminLive do
       ) %>
       <%= textarea(f, :application_description, class: "mb-2") %>
 
+      <%= label(f, :application_extra_question, "Extra fråga i ansökan. Om du lämnar detta blankt kommer ingen extra fråga visas.") %>
+      <%= textarea(f, :application_extra_question, class: "mb-2") %>
+
       <div class="mb-2 flex items-center gap-2">
         <%= checkbox(f, :application_open) %>
         <%= label(f, :application_open, "Gruppen går att söka") %>

@@ -13,6 +13,7 @@ defmodule HajWeb.ApplyLive do
         [app | _] -> app
         _ -> nil
       end
+      |> Map.put(:extra_text, %{})
 
     show_groups =
       Spex.get_show_groups_for_show(current_spex.id)
@@ -45,9 +46,15 @@ defmodule HajWeb.ApplyLive do
   def handle_event("apply", %{"application" => %{"show_groups" => groups} = application}, socket) do
     case Haj.Accounts.update_user(socket.assigns.current_user, application) do
       {:ok, user} ->
+        extra_text =
+          case application do
+            %{"extra_text" => extra_text} -> extra_text
+            _ -> %{}
+          end
+
         application =
           Map.put(application, "user_id", user.id)
-          |> Map.put("show_groups", selected_groups(groups))
+          |> Map.put("show_groups", selected_groups(groups, extra_text))
           |> Map.put("show_id", socket.assigns.show.id)
 
         case Haj.Applications.create_application(application) do
@@ -57,11 +64,50 @@ defmodule HajWeb.ApplyLive do
     end
   end
 
-  defp selected_groups(groups) do
+  def handle_event("toggle_check", %{"application" => %{"show_groups" => sgs}}, socket) do
+    alias Haj.Applications.ApplicationShowGroup
+
+    index = Map.keys(sgs) |> hd()
+    application_show_groups = socket.assigns.application.application_show_groups
+
+    application_show_groups =
+      case Map.get(sgs, index) do
+        "true" ->
+          [
+            %ApplicationShowGroup{show_group_id: String.to_integer(index)}
+            | application_show_groups
+          ]
+
+        "false" ->
+          Enum.filter(application_show_groups, fn %{show_group_id: id} ->
+            id != String.to_integer(index)
+          end)
+      end
+
+    {:noreply,
+     assign(socket,
+       application: %{
+         socket.assigns.application
+         | application_show_groups: application_show_groups
+       }
+     )}
+  end
+
+  def handle_event("update_text", %{"application" => %{"extra_text" => extra_text}}, socket) do
+    {:noreply,
+     assign(socket,
+       application: %{
+         socket.assigns.application
+         | extra_text: Map.merge(socket.assigns.application.extra_text, extra_text)
+       }
+     )}
+  end
+
+  defp selected_groups(groups, extra_text) do
     groups
     |> Enum.reduce([], fn {k, v}, acc ->
       case v do
-        "true" -> [String.to_integer(k) | acc]
+        "true" -> [%{id: String.to_integer(k), special_text: Map.get(extra_text, k)} | acc]
         "false" -> acc
       end
     end)
@@ -115,19 +161,32 @@ defmodule HajWeb.ApplyLive do
         <%= inputs_for f, :show_groups, fn gf -> %>
           <%= for sg <- @show_groups do %>
             <div class="flex items-center">
-              <%= checkbox(gf, "#{sg.id}", value: applied?(@application, sg)) %>
+              <%= checkbox(gf, "#{sg.id}",
+                value: applied?(@application, sg),
+                phx_change: "toggle_check"
+              ) %>
               <%= label(gf, "#{sg.id}", "#{sg.group.name}", class: "uppercase font-bold px-2") %>
             </div>
           <% end %>
         <% end %>
 
         <div class="uppercase font-bold border-b-2 border-burgandy text-xl mt-2 mb-2">Övrigt</div>
-        <%= label(
-          f,
-          :special_text,
-          "Om du har sökt orquestern eller bandet, skriv vilka instrument och/eller vilka stämmor du sjunger!"
-        ) %>
-        <%= textarea(f, :special_text, value: @application && @application.special_text) %>
+
+        <%= inputs_for f, :extra_text, fn gf -> %>
+          <%= for sg <- @show_groups |> Enum.filter(fn x -> applied?(@application, x) && x.application_extra_question end) do %>
+            <div class="flex flex-col">
+              <%= label(
+                gf,
+                "#{sg.id}",
+                "Eftersom du söker #{sg.group.name}: #{sg.application_extra_question}"
+              ) %>
+              <%= textarea(gf, "#{sg.id}",
+                phx_change: "update_text",
+                value: Map.get(@application.extra_text, "#{sg.id}")
+              ) %>
+            </div>
+          <% end %>
+        <% end %>
 
         <%= label(f, :other, "Har du något övrigt på hjärtat?") %>
         <%= textarea(f, :other, value: @application && @application.other) %>

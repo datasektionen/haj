@@ -4,8 +4,8 @@ defmodule Haj.Applications.Application do
 
   schema "applications" do
 
-    field :special_text, :string
     field :other, :string
+    field :ranking, :string
 
     belongs_to :user, Haj.Accounts.User
     belongs_to :show, Haj.Spex.Show
@@ -17,7 +17,15 @@ defmodule Haj.Applications.Application do
   @doc false
   def changeset(application, attrs) do
     application
-    |> cast(attrs, [:special_text, :other, :user_id, :show_id])
+    |> cast(attrs, [:other, :user_id, :show_id, :ranking])
     |> validate_required([:show_id, :user_id])
   end
+
+    @doc false
+    def cast_changeset(application, attrs) do
+      application
+      |> cast(attrs, [:other, :user_id, :show_id, :ranking])
+      |> cast_assoc(:application_show_groups)
+      |> validate_required([])
+    end
 end

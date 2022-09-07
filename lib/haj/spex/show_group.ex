@@ -5,6 +5,7 @@ defmodule Haj.Spex.ShowGroup do
   schema "show_groups" do
 
     field :application_description, :string
+    field :application_extra_question, :string
     field :application_open, :boolean, default: false
 
     has_many :group_memberships, Haj.Spex.GroupMembership
@@ -19,7 +20,7 @@ defmodule Haj.Spex.ShowGroup do
   @doc false
   def changeset(show_group, attrs) do
     show_group
-    |> cast(attrs, [:group_id, :show_id, :application_description, :application_open])
+    |> cast(attrs, [:group_id, :show_id, :application_description, :application_open, :application_extra_question])
     |> validate_required([:group_id, :show_id])
   end
 end
