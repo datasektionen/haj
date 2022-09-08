@@ -13,6 +13,10 @@ defmodule Haj.Accounts.User do
     field :class, :string
     field :personal_number, :string
 
+    field :street, :string
+    field :zip, :string
+    field :city, :string
+
     field :role, Ecto.Enum, values: [:admin, :chef, :spexare, :none], default: :none
 
     timestamps()
@@ -21,9 +25,11 @@ defmodule Haj.Accounts.User do
   @doc false
   def changeset(user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:first_name, :last_name, :email, :username, :google_account, :phone, :class, :personal_number])
+    |> cast(attrs, [:first_name, :last_name, :email, :username, :google_account,
+                    :phone, :class, :personal_number, :street, :zip, :city])
     |> validate_format(:personal_number, ~r"^\d{10}$", message: "Personnummer måste vara 10 siffror")
     |> validate_format(:class, ~r"^(D|Media)-\d{2}$", message: "Klass måste vara på formen D-20 eller Media-09")
+    |> validate_format(:zip, ~r"^\d{5}$", message: "Postkod måste vara 5 siffror")
     |> validate_required([:first_name, :last_name, :email, :username])
   end
 end

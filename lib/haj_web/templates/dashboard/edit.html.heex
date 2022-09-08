@@ -38,6 +38,20 @@
         <%= text_input f, :phone %>
         <%= error_tag f, :phone %>
 
+        <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">Adressuppgifter</div>
+
+        <%= label f, :street, "Adress", class: "pt-2 pb-1"%>
+        <%= text_input f, :street %>
+        <%= error_tag f, :street %>
+
+        <%= label f, :zip, "Postnummer", class: "pt-2 pb-1"%>
+        <%= text_input f, :zip %>
+        <%= error_tag f, :zip %>
+
+        <%= label f, :city, "Ort", class: "pt-2 pb-1"%>
+        <%= text_input f, :city %>
+        <%= error_tag f, :city %>
+
         <%= submit "Spara", [class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy text-white self-end text-lg uppercase"] %>
        <% end %>
     </div>

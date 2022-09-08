@@ -36,6 +36,13 @@
                 <th class="py-2 px-3">Personnr: </th>
                 <td class="py-2 px-3"><%= @user.personal_number %></td>
             </tr>
+
+            <tr class="bg-gray-100">
+                <th class="py-2 px-3">Adress: </th>
+                <td class="py-2 px-3">
+                    <%= if @user.zip, do: "#{@user.street}, #{@user.zip} #{@user.city}" %>
+                </td>
+            </tr>
             <% end %>
         </tbody>
     </table>
