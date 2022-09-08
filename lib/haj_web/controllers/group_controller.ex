@@ -59,6 +59,19 @@ defmodule HajWeb.GroupController do
     end
   end
 
+  def vcard(conn, %{"show_group_id" => show_group_id}) do
+    show_group = Haj.Spex.get_show_group!(show_group_id)
+    users = Enum.map(show_group.group_memberships, fn %{user: user} -> user end)
+
+    vcard = Haj.Accounts.to_vcard(users, show_group.show)
+
+    conn
+    |> put_resp_content_type("text/x-vcard")
+    |> put_resp_header("content-disposition", "attachment; filename=\"#{show_group.group.name}-#{show_group.show.year.year}.vcf\"")
+    |> put_root_layout(false)
+    |> send_resp(200, vcard)
+  end
+
   defp is_admin?(conn, show_group) do
     conn.assigns.current_user.role == :admin ||
       show_group.group_memberships

@@ -73,7 +73,9 @@ defmodule HajWeb.Router do
     get "/show-groups", GroupController, :index
     get "/show-groups/edit/:show_group_id", GroupController, :edit
     get "/show-groups/:show_group_id", GroupController, :group
+    get "/show-groups/:show_group_id/vcard", GroupController, :vcard
     get "/show-groups/:show_group_id/applications", GroupController, :applications
+
 
     get "/applications", ApplicationController, :index
     get "/applications/export", ApplicationController, :export

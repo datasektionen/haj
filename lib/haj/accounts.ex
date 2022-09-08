@@ -163,4 +163,24 @@ defmodule Haj.Accounts do
 
     Repo.all(query)
   end
+
+  def to_vcard(users, show) do
+    Enum.map(users, &user_vcard(&1, show))
+    |> Enum.join("\r\n")
+  end
+
+  defp user_vcard(user, show) do
+    clrf = "\r\n"
+
+    "BEGIN:VCARD" <> clrf <>
+    "VERSION:3.0" <> clrf <>
+    "N:#{user.last_name};#{user.first_name};;;" <> clrf <>
+    "FN:#{user.first_name} #{user.last_name}" <> clrf <>
+    "ORG:Metaspexet #{show.year.year}" <> clrf <>
+    "TEL;VALUE=uri;TYPE=work:#{user.phone}" <> clrf <>
+    "EMAIL;PREF=1;TYPE=home:#{user.email}" <> clrf <>
+    "EMAIL;TYPE=work:#{user.username}@kth.se" <> clrf <>
+    "EMAIL;TYPE=work:#{user.google_account}" <> clrf <>
+    "END:VCARD"
+  end
 end
