@@ -141,23 +141,28 @@ defmodule HajWeb.ApplyLive do
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col md:flex-row md:gap-8 ">
-      <div class="md:flex-[1.5]">
+    <div class="flex flex-col mb-8 md:flex-row md:gap-8 ">
+      <div class="md:flex-[1.5]" x-data="{expanded: false}">
         <h1 class="uppercase font-bold border-b-2 border-burgandy text-xl mb-2">
           Beskrivning av grupperna
         </h1>
+        <div class="relative space-y-2 after:h-20 after:bg-gradient-to-t after:from-gray-100 after:absolute after:bottom-0 after:left-0 after:w-full"
+          x-show="expanded" x-collapse.min.600px :class="{'after:h-20': !expanded, 'after:h-0' : expanded}">
         <%= for group <- @show_groups do %>
           <div>
             <h2 class="uppercase font-bold"><%= group.group.name %></h2>
             <h3 class="">
               Chefer: <%= chefer(group) %>
             </h3>
-            <%= group.application_description %>
+            <div class="font-sm whitespace-pre-line"><%= group.application_description %></div>
           </div>
         <% end %>
+        </div>
+        <button @click="expanded = !expanded" class="font-bold text-lg"
+                x-text="expanded ? 'Visa färre grupper' : 'Visa fler grupper'"></button>
       </div>
 
-      <%= form_for :application, "#", [phx_submit: "apply", class: "flex flex-col gap-1 mb-4 mt-4 md:flex-[1] md:mt-0"], fn f -> %>
+      <%= form_for :application, "#", [phx_submit: "apply", class: "flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0"], fn f -> %>
         <h1 class="uppercase font-bold border-b-2 border-burgandy text-xl mb-2">Användaruppgifter</h1>
         <label>KTH-id:</label>
         <input type="text" value={"#{@current_user.username}@kth.se"} class="bg-gray-200" disabled />
@@ -218,7 +223,7 @@ defmodule HajWeb.ApplyLive do
 
         <div>
           <input type="checkbox" required class="mr-1" />
-          Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR.
+          Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR och kommer tas bort efter rekryteringen är färdig, senast 1a Januari 2023.
         </div>
         <%= submit("Sök",
           class: "uppercase font-bold mt-1 text-white bg-burgandy text-lg px-3 py-2 self-start"
