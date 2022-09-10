@@ -147,7 +147,7 @@ defmodule HajWeb.ApplyLive do
           Beskrivning av grupperna
         </h1>
         <div class="relative space-y-2 after:h-20 after:bg-gradient-to-t after:from-gray-100 after:absolute after:bottom-0 after:left-0 after:w-full"
-          x-show="expanded" x-collapse.min.600px :class="{'after:h-20': !expanded, 'after:h-0' : expanded}">
+          x-show="expanded" x-collapse.min.800px :class="{'after:h-20': !expanded, 'after:h-0' : expanded}">
         <%= for group <- @show_groups do %>
           <div>
             <h2 class="uppercase font-bold"><%= group.group.name %></h2>
