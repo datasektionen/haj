@@ -103,6 +103,14 @@ defmodule HajWeb.ApplyLive do
      )}
   end
 
+  def handle_event("update_form", %{"application" => %{"phone" => val}}, socket) do
+    {:noreply, assign(socket, current_user: %{socket.assigns.current_user | phone: val})}
+  end
+
+  def handle_event("update_form", %{"application" => %{"class" => val}}, socket) do
+    {:noreply, assign(socket, current_user: %{socket.assigns.current_user | class: val})}
+  end
+
   def handle_event("update_form", %{"application" => %{"other" => val}}, socket) do
     {:noreply, assign(socket, application: %{socket.assigns.application | other: val})}
   end
@@ -187,10 +195,10 @@ defmodule HajWeb.ApplyLive do
         <input type="text" value={"#{@current_user.username}@kth.se"} class="bg-gray-200" disabled />
 
         <%= label(f, :phone, "Telefonnummer") %>
-        <%= text_input(f, :phone, required: true, value: @current_user.phone) %>
+        <%= text_input(f, :phone, required: true, value: @current_user.phone, phx_change: "update_form", phx_debounce: "1000") %>
 
         <%= label(f, :class, "Klass (Exempelvis D-20 eller Media-21)") %>
-        <%= text_input(f, :class, required: true, value: @current_user.class) %>
+        <%= text_input(f, :class, required: true, value: @current_user.class, phx_change: "update_form", phx_debounce: "1000") %>
         <%= error_tag(f, :class) %>
         <h1 class="uppercase font-bold border-b-2 border-burgandy text-xl mt-2 mb-2">
           Vilka grupper vill du söka?
@@ -218,7 +226,8 @@ defmodule HajWeb.ApplyLive do
           ) %>
           <%= textarea(f, :ranking,
             value: @application && @application.ranking,
-            phx_change: "update_form"
+            phx_change: "update_form",
+            phx_debounce: "1000"
           ) %>
         <% end %>
 
@@ -232,6 +241,7 @@ defmodule HajWeb.ApplyLive do
               ) %>
               <%= textarea(gf, "#{sg.id}",
                 phx_change: "update_text",
+                phx_debounce: "1000",
                 value: Map.get(@application.extra_text, "#{sg.id}")
               ) %>
             </div>
@@ -239,7 +249,7 @@ defmodule HajWeb.ApplyLive do
         <% end %>
 
         <%= label(f, :other, "Har du något övrigt på hjärtat?") %>
-        <%= textarea(f, :other, value: @application && @application.other, phx_change: "update_form") %>
+        <%= textarea(f, :other, value: @application && @application.other, phx_change: "update_form", phx_debounce: "1000") %>
 
         <div>
           <input type="checkbox" required class="mr-1" />
