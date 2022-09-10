@@ -30,6 +30,10 @@
   <%= datetime_local_input f, :application_closes %>
   <%= error_tag f, :application_closes %>
 
+  <%= label f, :slack_webhook_url, "Slack webbhook url", class: "pt-2 pb-1"%>
+  <%= text_input f, :slack_webhook_url %>
+  <%= error_tag f, :slack_webhook_url %>
+
   <div>
     <%= submit "Spara", [class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy text-white self-end text-lg uppercase"] %>
   </div>

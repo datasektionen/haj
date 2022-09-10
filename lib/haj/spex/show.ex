@@ -9,6 +9,7 @@ defmodule Haj.Spex.Show do
     field :year, :date
     field :application_opens, :utc_datetime
     field :application_closes, :utc_datetime
+    field :slack_webhook_url, :string
 
     has_many :show_groups, Haj.Spex.ShowGroup
 
@@ -24,7 +25,8 @@ defmodule Haj.Spex.Show do
       :year,
       :description,
       :application_opens,
-      :application_closes
+      :application_closes,
+      :slack_webhook_url
     ])
     |> validate_dates_ok()
     |> validate_required([:title, :or_title, :year, :description])

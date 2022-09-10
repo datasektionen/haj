@@ -50,9 +50,11 @@ defmodule HajWeb.ApplyLive do
           |> Map.put("show_groups", selected_groups(groups, extra_text))
           |> Map.put("show_id", socket.assigns.show.id)
 
-        case Haj.Applications.create_application(application) do
-          {:ok, _} ->
-            {:noreply, redirect(socket, to: Routes.apply_path(socket, :created))}
+        slack_message = application_message(user, application, socket.assigns.show_groups)
+
+        with {:ok, _} <- Haj.Applications.create_application(application),
+             _ <- Haj.Slack.send_message(socket.assigns.show.slack_webhook_url, slack_message) do
+          {:noreply, redirect(socket, to: Routes.apply_path(socket, :created))}
         end
     end
   end
@@ -139,6 +141,15 @@ defmodule HajWeb.ApplyLive do
     |> Enum.join(", ")
   end
 
+  defp application_message(user, %{"show_groups" => selected_show_groups}, show_groups) do
+    groups = Enum.map(selected_show_groups, fn %{id: id} ->
+      %{group: %{name: name}} = Enum.find(show_groups, fn %{id: sg_id} -> id == sg_id end)
+      name
+    end) |> Enum.join(", ")
+
+    "#{user.first_name} #{user.last_name} (#{user.email}) sökte just till följande grupper: #{groups}"
+  end
+
   def render(assigns) do
     ~H"""
     <div class="flex flex-col mb-8 md:flex-row md:gap-8 ">
@@ -146,20 +157,28 @@ defmodule HajWeb.ApplyLive do
         <h1 class="uppercase font-bold border-b-2 border-burgandy text-xl mb-2">
           Beskrivning av grupperna
         </h1>
-        <div class="relative space-y-2 after:h-20 after:bg-gradient-to-t after:from-gray-100 after:absolute after:bottom-0 after:left-0 after:w-full"
-          x-show="expanded" x-collapse.min.1000px :class="{'after:h-20': !expanded, 'after:h-0' : expanded}">
-        <%= for group <- @show_groups do %>
-          <div>
-            <h2 class="uppercase font-bold"><%= group.group.name %></h2>
-            <h3 class="">
-              Chefer: <%= chefer(group) %>
-            </h3>
-            <div class="font-sm whitespace-pre-line"><%= group.application_description %></div>
-          </div>
-        <% end %>
+        <div
+          class="relative space-y-2 after:h-20 after:bg-gradient-to-t after:from-gray-100 after:absolute after:bottom-0 after:left-0 after:w-full"
+          x-show="expanded"
+          x-collapse.min.1000px
+          :class="{'after:h-20': !expanded, 'after:h-0' : expanded}"
+        >
+          <%= for group <- @show_groups do %>
+            <div>
+              <h2 class="uppercase font-bold"><%= group.group.name %></h2>
+              <h3 class="">
+                Chefer: <%= chefer(group) %>
+              </h3>
+              <div class="font-sm whitespace-pre-line"><%= group.application_description %></div>
+            </div>
+          <% end %>
         </div>
-        <button @click="expanded = !expanded" class="font-bold text-lg"
-                x-text="expanded ? 'Visa färre grupper' : 'Visa fler grupper'"></button>
+        <button
+          @click="expanded = !expanded"
+          class="font-bold text-lg"
+          x-text="expanded ? 'Visa färre grupper' : 'Visa fler grupper'"
+        >
+        </button>
       </div>
 
       <%= form_for :application, "#", [phx_submit: "apply", class: "flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0"], fn f -> %>
@@ -172,7 +191,7 @@ defmodule HajWeb.ApplyLive do
 
         <%= label(f, :class, "Klass (Exempelvis D-20 eller Media-21)") %>
         <%= text_input(f, :class, required: true, value: @current_user.class) %>
-        <%= error_tag f, :class %>
+        <%= error_tag(f, :class) %>
         <h1 class="uppercase font-bold border-b-2 border-burgandy text-xl mt-2 mb-2">
           Vilka grupper vill du söka?
         </h1>
