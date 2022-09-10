@@ -22,6 +22,7 @@ defmodule HajWeb.ApplyLive do
       assign(socket,
         show_groups: show_groups,
         current_user: user,
+        user: %{phone: user.phone || nil, class: user.class || nil},
         show: current_spex,
         application: application |> Map.put(:extra_text, %{})
       )
@@ -104,11 +105,11 @@ defmodule HajWeb.ApplyLive do
   end
 
   def handle_event("update_form", %{"application" => %{"phone" => val}}, socket) do
-    {:noreply, assign(socket, current_user: %{socket.assigns.current_user | phone: val})}
+    {:noreply, assign(socket, user: %{socket.assigns.user | phone: val})}
   end
 
   def handle_event("update_form", %{"application" => %{"class" => val}}, socket) do
-    {:noreply, assign(socket, current_user: %{socket.assigns.current_user | class: val})}
+    {:noreply, assign(socket, user: %{socket.assigns.user | class: val})}
   end
 
   def handle_event("update_form", %{"application" => %{"other" => val}}, socket) do
@@ -195,10 +196,10 @@ defmodule HajWeb.ApplyLive do
         <input type="text" value={"#{@current_user.username}@kth.se"} class="bg-gray-200" disabled />
 
         <%= label(f, :phone, "Telefonnummer") %>
-        <%= text_input(f, :phone, required: true, value: @current_user.phone, phx_change: "update_form", phx_debounce: "1000") %>
+        <%= text_input(f, :phone, required: true, value: @user.phone, phx_change: "update_form", phx_debounce: "1000") %>
 
         <%= label(f, :class, "Klass (Exempelvis D-20 eller Media-21)") %>
-        <%= text_input(f, :class, required: true, value: @current_user.class, phx_change: "update_form", phx_debounce: "1000") %>
+        <%= text_input(f, :class, required: true, value: @user.class, phx_change: "update_form", phx_debounce: "1000") %>
         <%= error_tag(f, :class) %>
         <h1 class="uppercase font-bold border-b-2 border-burgandy text-xl mt-2 mb-2">
           Vilka grupper vill du söka?
