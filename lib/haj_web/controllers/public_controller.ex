@@ -1,4 +1,4 @@
-defmodule HajWeb.PageController do
+defmodule HajWeb.PublicController do
   use HajWeb, :controller
 
   def index(conn, _params) do
@@ -46,7 +46,10 @@ defmodule HajWeb.PageController do
     |> render("previous.html")
   end
 
-  def protected(conn, _params) do
-    conn |> text("Signed in!")
+  def sok(conn, _params) do
+    redirect(conn, external: haj_path(conn) <> "/sok")
   end
+
+  defp haj_path(conn), do: "#{conn.scheme}://#{Application.get_env(:haj, :haj_subdomain)}.#{conn.host}:#{conn.port}"
+
 end

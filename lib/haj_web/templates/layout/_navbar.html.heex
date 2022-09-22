@@ -30,7 +30,7 @@
                 <li><a href="/about">Om METAspexet</a></li>
                 <li><a href="/groups">Grupper</a></li>
                 <li><a href="/previous">Tidigare spex</a></li>
-                <li><a href="/haj">Intranät</a></li>
+                <li><%= link "Intranät", to: "#{@conn.scheme}://#{Application.get_env(:haj, :haj_subdomain)}.#{@conn.host}:#{@conn.port}" %></li>
             </ul>
 
         </nav>

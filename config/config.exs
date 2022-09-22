@@ -12,7 +12,7 @@ config :haj,
 
 # Configures the endpoint
 config :haj, HajWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "datasektionen.se"],
   render_errors: [view: HajWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Haj.PubSub,
   live_view: [signing_salt: "fyBG7qXk"]

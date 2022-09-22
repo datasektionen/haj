@@ -1,4 +1,4 @@
-defmodule HajWeb.PageView do
+defmodule HajWeb.PublicView do
   use HajWeb, :view
 
   def format_time(datetime) do
