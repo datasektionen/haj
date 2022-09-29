@@ -30,7 +30,8 @@
                 <li><a href="/about">Om METAspexet</a></li>
                 <li><a href="/groups">Grupper</a></li>
                 <li><a href="/previous">Tidigare spex</a></li>
-                <li><%= link "Intranät", to: "#{@conn.scheme}://#{Application.get_env(:haj, :haj_subdomain)}.#{@conn.host}:#{@conn.port}" %></li>
+                <li><%= link "Intranät", to: "#{@conn.scheme}://#{Application.get_env(:haj, :haj_subdomain)}.#{@conn.host}:#{@conn.port}" %>
+                </li>
             </ul>
 
         </nav>
@@ -46,6 +47,8 @@
         <li><a href="/about">Om METAspexet</a></li>
         <li><a href="/groups">Grupper</a></li>
         <li><a href="/previous">Tidigare spex</a></li>
-        <li class="justify-self-end mt-auto"><a>Intranät</a></li>
+        <li class="justify-self-end mt-auto">
+            <%= link "Intranät", to: "#{@conn.scheme}://#{Application.get_env(:haj, :haj_subdomain)}.#{@conn.host}:#{@conn.port}" %>
+        </li>
     </ul>
 </header>

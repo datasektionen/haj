@@ -31,7 +31,7 @@ defmodule Haj.Content.About do
         title: "Spexhistoria",
         description: "METAspexet grundades 2012 och har vuxit storartat under den tiden.",
         call_to_action: "Alla spex",
-        image: "/images/gruppbild.jpg",
+        image: "/images/jubileum.jpg",
         link: "/previous"
       }
     ]

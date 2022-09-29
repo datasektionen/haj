@@ -6,6 +6,7 @@ defmodule HajWeb.PublicController do
 
     conn
     |> assign(:cards, card_content)
+    |> assign(:page_title, "")
     |> render("index.html")
   end
 
