@@ -1,8 +1,14 @@
 <div class="flex flex-col gap-4 md:flex-row">
-    <div class="flex-grow-[1]">
+    <div class="flex-grow-[1] md:min-w-[220px]">
         <%= render "_side_bar.html", user: @current_user, conn: @conn %>
     </div>
-    <div class="flex-grow-[3]">
+    <div class="flex-grow-[2]">
+        <div>
+            Genom att fylla i data i här godkänner du att uppgifterna sparas för användning i spexsyfte.
+            Om du vill veta mer om hur uppgifterna används eller att dina uppgifter ska tas bort kan du höra av dig
+            till <a href="mailto:webb@metaspexet.se">webbansvarig</a>.
+        </div>
+
        <%= form_for @changeset, Routes.dashboard_path(@conn, :update_user), [class: "flex flex-col"] ,fn f ->  %>
        <div class="uppercase font-bold text-lg py-1 border-b-2 border-burgandy">Personuppgifter</div>
         <%= label f, :first_name, "Förnamn", class: "pt-2 pb-1"%>
@@ -14,6 +20,10 @@
         <%= error_tag f, :last_name %>
 
         <%= label f, :personal_number, "Personummer", class: "pt-2 pb-1"%>
+        <div class="pb-1">
+            Detta är endast synligt för administratörer och samlas då uppgifterna
+            behövs för att få pengar från ABF.
+        </div>
         <%= text_input f, :personal_number %>
         <%= error_tag f, :personal_number %>
 
@@ -39,6 +49,11 @@
         <%= error_tag f, :phone %>
 
         <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">Adressuppgifter</div>
+        
+        <div>
+            Dessa uppgifter är endast synliga för administratörer och samlas då uppgifterna
+            behövs för att få pengar från ABF.
+        </div>
 
         <%= label f, :street, "Adress", class: "pt-2 pb-1"%>
         <%= text_input f, :street %>
