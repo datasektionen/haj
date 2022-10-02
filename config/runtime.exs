@@ -36,10 +36,15 @@ if config_env() == :prod do
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     socket_options: maybe_ipv6
 
+  login_api_key = System.get_env("LOGIN_API_KEY") || raise "LOGIN_API_KEY is missing"
+  login_host = System.get_env("LOGIN_HOST") || raise "LOGIN_HOST is missing"
+  haj_subdomain = System.get_env("HAJ_SUBDOMAIN") || raise "HAJ_SUBDOMAIN is missing"
+
+
   config :haj,
-    login_api_key: System.get_env("LOGIN_API_KEY"),
-    login_host: System.get_env("LOGIN_HOST"),
-    haj_subdomain: System.get_env("HAJ_SUBDOMAIN") || raise "HAJ_SUBDOMAIN is missing"
+    login_api_key: login_api_key,
+    login_host: login_host,
+    haj_subdomain: haj_subdomain
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
