@@ -21,14 +21,6 @@ defmodule HajWeb.Router do
   scope "/", HajWeb do
     pipe_through :browser
 
-    # get "/", PageController, :index
-    # get "/groups", PageController, :groups
-    # get "/groups/:name", PageController, :group
-    # get "/spexet", PageController, :spex
-    # get "/previous", PageController, :previous
-    # get "/about", PageController, :about
-
-
     get "/login", SessionController, :login
     get "/login/callback", SessionController, :callback
     get "/logout", SessionController, :logout
@@ -74,6 +66,7 @@ defmodule HajWeb.Router do
     get "/show-groups/edit/:show_group_id", GroupController, :edit
     get "/show-groups/:show_group_id", GroupController, :group
     get "/show-groups/:show_group_id/vcard", GroupController, :vcard
+    get "/show-groups/:show_group_id/csv", GroupController, :csv
     get "/show-groups/:show_group_id/applications", GroupController, :applications
 
 

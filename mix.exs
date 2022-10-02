@@ -51,7 +51,8 @@ defmodule Haj.MixProject do
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:heroicons, "~> 0.3.2"},
       {:httpoison, "~> 1.8"},
-      {:csv, "~> 2.4"}
+      {:csv, "~> 2.4"},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 
