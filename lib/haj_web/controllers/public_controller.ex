@@ -6,7 +6,7 @@ defmodule HajWeb.PublicController do
 
     conn
     |> assign(:cards, card_content)
-    |> assign(:page_title, "")
+    |> assign(:page_title, "Hem")
     |> render("index.html")
   end
 
@@ -15,11 +15,13 @@ defmodule HajWeb.PublicController do
 
     conn
     |> assign(:shows, shows)
+    |> assign(:page_title, "Årets spex")
     |> render("spexet.html")
   end
 
   def about(conn, _params) do
     conn
+    |> assign(:page_title, "Om")
     |> render("about.html")
   end
 
@@ -28,6 +30,7 @@ defmodule HajWeb.PublicController do
 
     conn
     |> assign(:groups, all_groups)
+    |> assign(:page_title, "Grupper")
     |> render("groups.html")
   end
 
@@ -36,7 +39,7 @@ defmodule HajWeb.PublicController do
 
     case group do
       nil -> conn |> put_status(:not_found) |> put_view(HajWeb.ErrorView) |> render(:"404")
-      group -> conn |> render("group.html", group: group)
+      group -> conn |> render("group.html", group: group, page_title: group.name)
     end
   end
 
@@ -44,6 +47,7 @@ defmodule HajWeb.PublicController do
     all_spex = Haj.Content.About.get_previous_spex()
     conn
     |> assign(:spex, all_spex)
+    |> assign(:page_title, "Historia")
     |> render("previous.html")
   end
 
