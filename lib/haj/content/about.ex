@@ -16,7 +16,7 @@ defmodule Haj.Content.About do
         description:
           "METAspexet är ett spex gjord i samarbete mellan Datasektionen och Medieteknik på KTH. Vi består av ett stort antal grupper som tillsammans gör en sak på ett bra sätt och med hjälp av varandra har vi till slut en föreställning att presentera!",
         call_to_action: "Läs mer",
-        image: "/images/gruppbild.jpg",
+        image: "/images/spex-kram.jpg",
         link: "/about"
       },
       %{

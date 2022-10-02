@@ -5,7 +5,9 @@
 
     </div>
 
-    <div class="absolute top-0 left-0 h-full w-full bg-[url('/images/gruppbild.jpg')] bg-cover bg-center" x-data
+    <div class="absolute top-0 left-0 h-full w-full bg-[url('/images/gruppbild.jpg')] bg-cover bg-center
+                from-black after:bg-gradient-to-t after:overflow-hidden after:visible after:absolute 
+                            after:top-0 after:left-0 after:w-full after:h-full after:z-0" x-data
         x-intersect.once="$el.classList.add('scroll-in')">
     </div>
 </section>
@@ -16,7 +18,7 @@
                 elemBounds = elem.getBoundingClientRect(); highestBounds = highest.getBoundingClientRect();
                 return ((highestBounds.bottom < 90) || (elemBounds.top < highestBounds.top)) ? elem : highest}, elements[0]).id;">
 
-    <div class="flex p-6 md:px-14 text-lg justify-center gap-10">
+    <div class="flex p-6 pb-12 md:pt-12 md:pb-20 md:px-14 text-lg justify-center gap-10">
         <div class="max-w-3xl space-y-6">
             <%= for group <- @groups do %>
             <div id={group.name} class="group scroll-mt-20 space-y-2"

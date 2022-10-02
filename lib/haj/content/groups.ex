@@ -36,7 +36,7 @@ defmodule Haj.Content.Gropus do
         "Anja Studic",
         "Erik Hedlund",
         "Elsa Benzinger",
-        "Isak Karlander",
+        "Rej Karlander",
         "Gabriella Dalman",
         "Johan Lam",
         "Tobias Hansson",
@@ -70,7 +70,7 @@ defmodule Haj.Content.Gropus do
       members: [
         "Klara Sandström",
         "My Andersson",
-        "Isak Karlander",
+        "Rej Karlander",
         "Adrian Salamon",
         "Tobias Hansson",
         "Oscar Bergström",
@@ -139,14 +139,14 @@ defmodule Haj.Content.Gropus do
         "Tore Forslin",
         "Bahar Kimanos",
         "Kristin Eriksson",
-        "Isak Karlander",
+        "Rej Karlander",
         "Meya Wikner"
       ],
       image: "/images/requisita.jpg",
       description: "Om du ser någon liten revisita på scen så är det rekvisitagruppen som har konstruerat eller införskaffat."
     },
     %{
-      name: "Dirrarna",
+      name: "Direqtionen",
       members: ["Christian Stjernberg", "Anja Studic", "Erik Hedlund"],
       image: "/images/Direqtionen.jpg",
       description: "Direqteurerna är högsta hönsen ytterst ansvariga för METAspexet. De leder chefsgruppen och
@@ -322,7 +322,7 @@ defmodule Haj.Content.Gropus do
       name: "Grafik",
       members: [
         "Gabriella Dalman",
-        "Isak Karlander",
+        "Rej Karlander",
         "Isadora Winter",
         "Julia Wang",
         "Max Wippich",
