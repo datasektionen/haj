@@ -256,6 +256,10 @@ defmodule HajWeb.ApplyLive do
           <input type="checkbox" required class="mr-1" />
           Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR och kommer tas bort efter rekryteringen är färdig, senast 1a Januari 2023.
         </div>
+        <div>
+          Informationen hanteras i enlighet med Datasektionens <a href="https://styrdokument.datasektionen.se/informationshanteringspolicy" class="font-bold text-burgandy">informationshanteringspolicy</a>.
+          Om du vill att uppgifterna ska tas bort kan du maila <a href="mailto:direqtionen@metaspexet.se" class="font-bold text-burgandy">Direqtionen</a>.
+        </div>
         <%= submit("Sök",
           class: "uppercase font-bold mt-1 text-white bg-burgandy text-lg px-3 py-2 self-start"
         ) %>
