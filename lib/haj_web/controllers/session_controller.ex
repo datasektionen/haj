@@ -9,6 +9,7 @@ defmodule HajWeb.SessionController do
   Issues a request to the login server, by redirecting the user there
   """
   def login(conn, _params) do
+    Logger.info("logging in")
     host = Application.get_env(:haj, :login_host)
 
     scheme = case get_req_header(conn, "x-forwarded-proto") do
