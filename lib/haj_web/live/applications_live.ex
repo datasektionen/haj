@@ -4,7 +4,7 @@ defmodule HajWeb.ApplicationsLive do
   alias Haj.Spex
   alias Haj.Applications
 
-  def mount(_params, %{"user_token" => token}, socket) do
+  def mount(_params, _session, socket) do
     current_spex = Spex.current_spex() |> Haj.Repo.preload(show_groups: [group: []])
     applications = Applications.list_applications_for_show(current_spex.id)
 
