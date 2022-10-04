@@ -26,7 +26,7 @@ defmodule Haj.Accounts.User do
   def changeset(user, attrs \\ %{}) do
     user
     |> cast(attrs, [:first_name, :last_name, :email, :username, :google_account,
-                    :phone, :class, :personal_number, :street, :zip, :city])
+                    :phone, :class, :personal_number, :street, :zip, :city, :role])
     |> validate_format(:personal_number, ~r"^\d{10}$", message: "Personnummer måste vara 10 siffror")
     #|> validate_format(:class, ~r"^(D|Media)-\d{2}$", message: "Klass måste vara på formen D-20 eller Media-09")
     |> validate_format(:zip, ~r"^\d{5}$", message: "Postkod måste vara 5 siffror")

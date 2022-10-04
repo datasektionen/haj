@@ -35,6 +35,11 @@
             <td class="px-4 py-3 border">
                 <%= all_groups(application) %>
             </td>
+            <td>
+                <%= button "Antag", to: Routes.group_path(@conn, :accept_user, @show_group.id, application.user.id),
+                                    class: "bg-orange text-white px-2 py-0.5 rounded-sm",
+                                    data: [confirm: "Är du helt säker på att du vill anta #{application.user.first_name} #{application.user.last_name} till #{@show_group.group.name}?"] %>
+            </td>
         </tr>
         <tr x-show="show" class={if rem(i, 2)==0, do: "bg-white" , else: "bg-gray-50" }>
             <td colspan="5" class="px-4 py-3 gap-2 w-full">
