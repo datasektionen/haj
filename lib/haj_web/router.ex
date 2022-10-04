@@ -61,6 +61,10 @@ defmodule HajWeb.Router do
     get "/settings/show/:id", SettingsController, :edit_show
     put "/settings/show/:id", SettingsController, :update_show
 
+    get "/settings/users", SettingsController, :users
+    get "/settings/user/new", SettingsController, :new_user
+    get "/settings/users/:id", SettingsController, :edit_user
+    put "/settings/users/:id", SettingsController, :update_user
 
     get "/show-groups", GroupController, :index
     get "/show-groups/edit/:show_group_id", GroupController, :edit
@@ -68,6 +72,7 @@ defmodule HajWeb.Router do
     get "/show-groups/:show_group_id/vcard", GroupController, :vcard
     get "/show-groups/:show_group_id/csv", GroupController, :csv
     get "/show-groups/:show_group_id/applications", GroupController, :applications
+    post "/show-groups/:show_group_id/accept/:user_id", GroupController, :accept_user
 
 
     get "/applications", ApplicationController, :index

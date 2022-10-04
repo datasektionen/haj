@@ -1,0 +1,16 @@
+<.form let={f} for={@changeset} action={@action} class="flex flex-col">
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, något gick fel, kolla på felen nedan.</p>
+    </div>
+  <% end %>
+
+  <%= label f, "Roll", class: "pt-2 pb-1"%>
+  <%= select f, :role, ["Admin": :admin, "Chef": :chef, "Spexare": :spexare, "Ingen": :none] %>
+  <%= error_tag f, :role %>
+
+
+  <div>
+    <%= submit "Spara", [class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy text-white self-end text-lg uppercase"] %>
+  </div>
+</.form>
