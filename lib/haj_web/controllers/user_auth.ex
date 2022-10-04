@@ -149,6 +149,17 @@ defmodule HajWeb.UserAuth do
     end
   end
 
+  def require_admin_access(conn, _opts) do
+    if conn.assigns.current_user.role == :admin do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Du har inte access här.")
+      |> redirect(to: Routes.login_path(conn, :unauthorized))
+      |> halt()
+    end
+  end
+
   defp maybe_store_return_to(%{method: "GET"} = conn) do
     put_session(conn, :user_return_to, current_path(conn))
   end

@@ -2,7 +2,9 @@ defmodule HajWeb.UserController do
   use HajWeb, :controller
 
   def index(conn, %{"username" => username}) do
-    user = Haj.Accounts.get_user_by_username!(username)
+    user =
+      Haj.Accounts.get_user_by_username!(username)
+      |> Haj.Repo.preload(:foods)
 
     conn
     |> assign(:user, user)

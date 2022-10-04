@@ -31,13 +31,17 @@
                 <th class="py-2 px-3">Telefonnr: </th>
                 <td class="py-2 px-3"><%= @user.phone %></td>
             </tr>
-            <%= if Enum.member?([:chef, :admin], @conn.assigns.current_user.role) do %>
             <tr class="bg-white">
+                <th class="py-2 px-3">Matpreferenser: </th>
+                <td class="py-2 px-3"><%= display_foods(@user) %></td>
+            </tr>
+            <%= if Enum.member?([:admin], @conn.assigns.current_user.role) do %>
+            <tr class="bg-gray-100">
                 <th class="py-2 px-3">Personnr: </th>
                 <td class="py-2 px-3"><%= @user.personal_number %></td>
             </tr>
 
-            <tr class="bg-gray-100">
+            <tr class="bg-white">
                 <th class="py-2 px-3">Adress: </th>
                 <td class="py-2 px-3">
                     <%= if @user.zip, do: "#{@user.street}, #{@user.zip} #{@user.city}" %>
