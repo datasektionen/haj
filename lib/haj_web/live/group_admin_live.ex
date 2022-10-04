@@ -69,11 +69,19 @@ defmodule HajWeb.GroupAdminLive do
   end
 
   def handle_event("add_user", %{"user" => id}, socket) do
-    add_user(id, socket.assigns.show_group.id, socket.assigns.role)
+    memberships = socket.assigns.show_group.group_memberships
 
-    updated = Haj.Spex.get_show_group!(socket.assigns.show_group.id)
+    if Enum.any?(memberships, fn %{user_id: user_id} -> user_id == id |> String.to_integer() end) do
+      {:noreply,
+       socket
+       |> assign(matches: [], query: nil)
+       |> put_flash(:error, "Personen är redan medlem i gruppen.")}
+    else
+      add_user(id, socket.assigns.show_group.id, socket.assigns.role)
+      updated = Haj.Spex.get_show_group!(socket.assigns.show_group.id)
 
-    {:noreply, socket |> assign(show_group: updated, matches: [], query: nil)}
+      {:noreply, socket |> assign(show_group: updated, matches: [], query: nil)}
+    end
   end
 
   defp add_user(user_id, show_group_id, role) do
@@ -93,7 +101,11 @@ defmodule HajWeb.GroupAdminLive do
       ) %>
       <%= textarea(f, :application_description, class: "mb-2") %>
 
-      <%= label(f, :application_extra_question, "Extra fråga i ansökan. Om du lämnar detta blankt kommer ingen extra fråga visas.") %>
+      <%= label(
+        f,
+        :application_extra_question,
+        "Extra fråga i ansökan. Om du lämnar detta blankt kommer ingen extra fråga visas."
+      ) %>
       <%= textarea(f, :application_extra_question, class: "mb-2") %>
 
       <div class="mb-2 flex items-center gap-2">

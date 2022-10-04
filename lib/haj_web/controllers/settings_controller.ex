@@ -1,6 +1,10 @@
 defmodule HajWeb.SettingsController do
   use HajWeb, :controller
 
+  alias Haj.Accounts.User
+  alias Haj.Foods
+  alias Haj.Foods.Food
+
   plug :authorize
 
   def index(conn, _params) do
@@ -174,6 +178,103 @@ defmodule HajWeb.SettingsController do
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "shows/edit.html", show: show, changeset: changeset)
     end
+  end
+
+  def users(conn, _params) do
+    users =
+      Haj.Accounts.list_users()
+      |> Enum.sort_by(fn %User{first_name: name} -> name end)
+      |> Enum.group_by(fn %User{role: role} -> role end)
+      |> Map.put_new(:admin, [])
+      |> Map.put_new(:chef, [])
+      |> Map.put_new(:spexare, [])
+      |> Map.put_new(:none, [])
+
+    conn
+    |> assign(:users, users)
+    |> assign(:title, "Användare")
+    |> render("users/index.html")
+  end
+
+  def edit_user(conn, %{"id" => id}) do
+    user = Haj.Accounts.get_user!(id)
+    changeset = Haj.Accounts.change_user(user)
+
+    conn
+    |> assign(:user, user)
+    |> assign(:title, "Redigera #{user.first_name} #{user.last_name}")
+    |> assign(:changeset, changeset)
+    |> render("users/edit.html")
+  end
+
+  def update_user(conn, %{"id" => id, "user" => user_params}) do
+    user = Haj.Accounts.get_user!(id)
+
+    case Haj.Accounts.update_user(user, user_params) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Användare uppdaterades.")
+        |> redirect(to: Routes.settings_path(conn, :users))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "users/edit.html", user: user, changeset: changeset)
+    end
+  end
+
+  def foods(conn, _params) do
+    foods = Foods.list_foods()
+    render(conn, "foods/index.html", foods: foods, title: "Matpreferenser")
+  end
+
+  def new_food(conn, _params) do
+    changeset = Foods.change_food(%Food{})
+    render(conn, "foods/new.html", changeset: changeset, title: "Ny matpreferens")
+  end
+
+  def create_food(conn, %{"food" => food_params}) do
+    case Foods.create_food(food_params) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Mat skapades.")
+        |> redirect(to: Routes.settings_path(conn, :foods))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "foods/new.html", changeset: changeset)
+    end
+  end
+
+  def edit_food(conn, %{"id" => id}) do
+    food = Foods.get_food!(id)
+    changeset = Foods.change_food(food)
+
+    render(conn, "foods/edit.html",
+      food: food,
+      changeset: changeset,
+      title: "Redigera matpreferens"
+    )
+  end
+
+  def update_food(conn, %{"id" => id, "food" => food_params}) do
+    food = Foods.get_food!(id)
+
+    case Foods.update_food(food, food_params) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Mat uppdaterades.")
+        |> redirect(to: Routes.settings_path(conn, :foods))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "foods/edit.html", food: food, changeset: changeset)
+    end
+  end
+
+  def delete_food(conn, %{"id" => id}) do
+    food = Foods.get_food!(id)
+    {:ok, _food} = Foods.delete_food(food)
+
+    conn
+    |> put_flash(:info, "Mat togs bort.")
+    |> redirect(to: Routes.settings_path(conn, :foods))
   end
 
   defp authorize(conn, _) do

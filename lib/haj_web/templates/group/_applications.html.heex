@@ -1,6 +1,6 @@
 <table class="w-full divide-y divide-gray-200">
     <thead>
-        <tr class="text-md font-semibold text-left text-left bg-gray-100 uppercase">
+        <tr class="text-md font-semibold text-left bg-gray-100 uppercase">
             <%= for col <- ["Namn", "Email", "Telefon", "Klass", "Grupper"] do %>
             <th class="px-4 py-3">
                 <%= col %>
@@ -35,9 +35,18 @@
             <td class="px-4 py-3 border">
                 <%= all_groups(application) %>
             </td>
+            <td>
+                <%= if member_of_show_group?(application.user.id, @show_group) do %>
+                    <button disabled class="bg-gray-200 text-black px-2 py-0.5 rounded-sm cursor-not-allowed">Antag</button>
+                <% else %>
+                    <%= button "Antag", to: Routes.group_path(@conn, :accept_user, @show_group.id, application.user.id),
+                                        class: "bg-orange text-white px-2 py-0.5 rounded-sm",
+                                        data: [confirm: "Är du helt säker på att du vill anta #{application.user.first_name} #{application.user.last_name} till #{@show_group.group.name}?"] %>
+                <% end %>
+            </td>
         </tr>
         <tr x-show="show" class={if rem(i, 2)==0, do: "bg-white" , else: "bg-gray-50" }>
-            <td colspan="5" class="px-4 py-3 gap-2 w-full">
+            <td colspan="6" class="px-4 py-3 gap-2 w-full">
                 <div>Tid för ansökan: <%= application.inserted_at %></div>
                 <div>Övrigt: <%= application.other %></div>
                 <div>Eventuell rangordning: <%= application.ranking %></div>

@@ -4,6 +4,8 @@
     <div class="px-3 py-2 border-b border-gray-300"><%= link "Alla spex", to: Routes.settings_path(@conn, :shows) %></div>
     <div class="px-3 py-2 border-b border-gray-300"><%= link "Årets spex", to: Routes.settings_path(@conn, :edit_show, @current_spex.id) %></div>
     <div class="px-3 py-2 border-b border-gray-300"><%= link "Årets spexgrupper", to: Routes.settings_path(@conn, :show_groups, @current_spex.id) %></div>
+    <div class="px-3 py-2 border-b border-gray-300"><%= link "Användare", to: Routes.settings_path(@conn, :users) %></div>
+    <div class="px-3 py-2 border-b border-gray-300"><%= link "Mat", to: Routes.settings_path(@conn, :foods) %></div>
 
 
 </div>

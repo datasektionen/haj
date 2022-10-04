@@ -9,17 +9,17 @@
             till <a href="mailto:webb@metaspexet.se">webbansvarig</a>.
         </div>
 
-       <%= form_for @changeset, Routes.dashboard_path(@conn, :update_user), [class: "flex flex-col"] ,fn f ->  %>
-       <div class="uppercase font-bold text-lg py-1 border-b-2 border-burgandy">Personuppgifter</div>
+        <%= form_for @changeset, Routes.dashboard_path(@conn, :update_user), [class: "flex flex-col"] ,fn f ->  %>
+        <div class="uppercase font-bold text-lg py-1 border-b-2 border-burgandy">Personuppgifter</div>
         <%= label f, :first_name, "Förnamn", class: "pt-2 pb-1"%>
         <%= text_input f, :first_name %>
         <%= error_tag f, :first_name %>
-        
+
         <%= label f, :last_name, "Efternamn", class: "pt-2 pb-1"%>
         <%= text_input f, :last_name %>
         <%= error_tag f, :last_name %>
 
-        <%= label f, :personal_number, "Personummer", class: "pt-2 pb-1"%>
+        <%= label f, :personal_number, "Personummer (ÅÅMMDDXXXX)", class: "pt-2 pb-1"%>
         <div class="pb-1">
             Detta är endast synligt för administratörer och samlas då uppgifterna
             behövs för att få pengar från ABF.
@@ -48,8 +48,27 @@
         <%= text_input f, :phone %>
         <%= error_tag f, :phone %>
 
+        <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">Matpreferenser</div>
+
+        <%= label f, :foods, "Matpreferenser, klicka i alla som stämmer.", class: "pt-2 pb-1" %>
+
+        <div class="flex flex-col gap-1 md:flex-row md:gap-6">
+            <%= for food <- @food_options do %>
+            <label class="flex flex-row items-center gap-2">
+                <input name="user[foods_ids][]" type="checkbox" value={food.id}
+                    checked={Enum.any?(@changeset.data.foods, fn %{id: id} -> id == food.id end)}>
+                <%= food.name %>
+            </label>
+            <% end %>
+        </div>
+
+
+        <%= label f, :food_preference_other, "Övriga matpreferenser eller mer detaljer. Om du inte har några preferenser, lämna blankt.", class: "pt-2 pb-1"%>
+        <%= text_input f, :food_preference_other %>
+        <%= error_tag f, :food_preference_other %>
+
         <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">Adressuppgifter</div>
-        
+
         <div>
             Dessa uppgifter är endast synliga för administratörer och samlas då uppgifterna
             behövs för att få pengar från ABF.
@@ -67,7 +86,10 @@
         <%= text_input f, :city %>
         <%= error_tag f, :city %>
 
+
+
         <%= submit "Spara", [class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy text-white self-end text-lg uppercase"] %>
-       <% end %>
+
+        <% end %>
     </div>
 </div>

@@ -35,4 +35,8 @@ defmodule HajWeb.GroupView do
       user
     end)
   end
+
+  def member_of_show_group?(user_id, %{group_memberships: members}) do
+    Enum.any?(members, fn %{user_id: id} -> id == user_id end)
+  end
 end

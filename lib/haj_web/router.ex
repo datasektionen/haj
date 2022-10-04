@@ -41,25 +41,6 @@ defmodule HajWeb.Router do
 
     get "/members", MembersController, :index
 
-    get "/settings", SettingsController, :index
-    get "/settings/groups", SettingsController, :groups
-    get "/settings/groups/new", SettingsController, :new_group
-    post "/settings/groups", SettingsController, :create_group
-    get "/settings/groups/:id", SettingsController, :edit_group
-    put  "/settings/groups/:id", SettingsController, :update_group
-    delete "/settings/groups/:id", SettingsController, :delete_group
-
-
-    get "/settings/show/:show_id/groups", SettingsController, :show_groups
-    get "/settings/show-group/:id", SettingsController, :edit_show_group
-    delete "/settings/show-group/:id", SettingsController, :delete_show_group
-    post "/settings/show/:show_id/groups", SettingsController, :add_show_group
-
-    get "/settings/shows", SettingsController, :shows
-    get "/settings/show/new", SettingsController, :new_show
-    post "/settings/show", SettingsController, :create_show
-    get "/settings/show/:id", SettingsController, :edit_show
-    put "/settings/show/:id", SettingsController, :update_show
 
 
     get "/show-groups", GroupController, :index
@@ -68,10 +49,50 @@ defmodule HajWeb.Router do
     get "/show-groups/:show_group_id/vcard", GroupController, :vcard
     get "/show-groups/:show_group_id/csv", GroupController, :csv
     get "/show-groups/:show_group_id/applications", GroupController, :applications
+    post "/show-groups/:show_group_id/accept/:user_id", GroupController, :accept_user
+
 
 
     get "/applications", ApplicationController, :index
     get "/applications/export", ApplicationController, :export
+  end
+
+  scope "/settings", HajWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_admin_access]
+
+
+    get "/", SettingsController, :index
+    get "/groups", SettingsController, :groups
+    get "/groups/new", SettingsController, :new_group
+    post "/groups", SettingsController, :create_group
+    get "/groups/:id", SettingsController, :edit_group
+    put  "/groups/:id", SettingsController, :update_group
+    delete "/groups/:id", SettingsController, :delete_group
+
+
+    get "/show/:show_id/groups", SettingsController, :show_groups
+    get "/show-group/:id", SettingsController, :edit_show_group
+    delete "/show-group/:id", SettingsController, :delete_show_group
+    post "/show/:show_id/groups", SettingsController, :add_show_group
+
+    get "/shows", SettingsController, :shows
+    get "/show/new", SettingsController, :new_show
+    post "/show", SettingsController, :create_show
+    get "/show/:id", SettingsController, :edit_show
+    put "/show/:id", SettingsController, :update_show
+
+    get "/users", SettingsController, :users
+    get "/user/new", SettingsController, :new_user
+    get "/users/:id", SettingsController, :edit_user
+    put "/users/:id", SettingsController, :update_user
+
+    get "/foods", SettingsController, :foods
+    get "/foods/new", SettingsController, :new_food
+    post "/foods/new", SettingsController, :create_food
+    get "/foods/:id", SettingsController, :edit_food
+    put "/foods/:id", SettingsController, :update_food
+    delete "/foods/:id", SettingsController, :delete_food
+
   end
 
   scope "/sok", HajWeb do
