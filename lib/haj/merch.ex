@@ -1,0 +1,305 @@
+defmodule Haj.Merch do
+  @moduledoc """
+  The Merch context.
+  """
+
+  import Ecto.Query, warn: false
+  alias Haj.Repo
+
+  alias Haj.Merch.MerchItem
+
+  @doc """
+  Returns the list of merch_items.
+
+  ## Examples
+
+      iex> list_merch_items()
+      [%MerchItem{}, ...]
+
+  """
+  def list_merch_items do
+    Repo.all(MerchItem)
+  end
+
+  @doc """
+  Gets a single merch_item.
+
+  Raises `Ecto.NoResultsError` if the Merch item does not exist.
+
+  ## Examples
+
+      iex> get_merch_item!(123)
+      %MerchItem{}
+
+      iex> get_merch_item!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_merch_item!(id), do: Repo.get!(MerchItem, id)
+
+  @doc """
+  Creates a merch_item.
+
+  ## Examples
+
+      iex> create_merch_item(%{field: value})
+      {:ok, %MerchItem{}}
+
+      iex> create_merch_item(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_merch_item(attrs \\ %{}) do
+    %MerchItem{}
+    |> MerchItem.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a merch_item.
+
+  ## Examples
+
+      iex> update_merch_item(merch_item, %{field: new_value})
+      {:ok, %MerchItem{}}
+
+      iex> update_merch_item(merch_item, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_merch_item(%MerchItem{} = merch_item, attrs) do
+    merch_item
+    |> MerchItem.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a merch_item.
+
+  ## Examples
+
+      iex> delete_merch_item(merch_item)
+      {:ok, %MerchItem{}}
+
+      iex> delete_merch_item(merch_item)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_merch_item(%MerchItem{} = merch_item) do
+    Repo.delete(merch_item)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking merch_item changes.
+
+  ## Examples
+
+      iex> change_merch_item(merch_item)
+      %Ecto.Changeset{data: %MerchItem{}}
+
+  """
+  def change_merch_item(%MerchItem{} = merch_item, attrs \\ %{}) do
+    MerchItem.changeset(merch_item, attrs)
+  end
+
+  alias Haj.Merch.MerchOrder
+
+  @doc """
+  Returns the list of merch_orders.
+
+  ## Examples
+
+      iex> list_merch_orders()
+      [%MerchOrder{}, ...]
+
+  """
+  def list_merch_orders do
+    Repo.all(MerchOrder)
+  end
+
+  @doc """
+  Gets a single merch_order.
+
+  Raises `Ecto.NoResultsError` if the Merch order does not exist.
+
+  ## Examples
+
+      iex> get_merch_order!(123)
+      %MerchOrder{}
+
+      iex> get_merch_order!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_merch_order!(id), do: Repo.get!(MerchOrder, id)
+
+  @doc """
+  Creates a merch_order.
+
+  ## Examples
+
+      iex> create_merch_order(%{field: value})
+      {:ok, %MerchOrder{}}
+
+      iex> create_merch_order(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_merch_order(attrs \\ %{}) do
+    %MerchOrder{}
+    |> MerchOrder.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a merch_order.
+
+  ## Examples
+
+      iex> update_merch_order(merch_order, %{field: new_value})
+      {:ok, %MerchOrder{}}
+
+      iex> update_merch_order(merch_order, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_merch_order(%MerchOrder{} = merch_order, attrs) do
+    merch_order
+    |> MerchOrder.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a merch_order.
+
+  ## Examples
+
+      iex> delete_merch_order(merch_order)
+      {:ok, %MerchOrder{}}
+
+      iex> delete_merch_order(merch_order)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_merch_order(%MerchOrder{} = merch_order) do
+    Repo.delete(merch_order)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking merch_order changes.
+
+  ## Examples
+
+      iex> change_merch_order(merch_order)
+      %Ecto.Changeset{data: %MerchOrder{}}
+
+  """
+  def change_merch_order(%MerchOrder{} = merch_order, attrs \\ %{}) do
+    MerchOrder.changeset(merch_order, attrs)
+  end
+
+  alias Haj.Merch.MerchOrderItem
+
+  @doc """
+  Returns the list of merch_order_items.
+
+  ## Examples
+
+      iex> list_merch_order_items()
+      [%MerchOrderItem{}, ...]
+
+  """
+  def list_merch_order_items do
+    Repo.all(MerchOrderItem)
+  end
+
+  @doc """
+  Gets a single merch_order_item.
+
+  Raises `Ecto.NoResultsError` if the Merch order item does not exist.
+
+  ## Examples
+
+      iex> get_merch_order_item!(123)
+      %MerchOrderItem{}
+
+      iex> get_merch_order_item!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_merch_order_item!(id), do: Repo.get!(MerchOrderItem, id)
+
+  @doc """
+  Creates a merch_order_item.
+
+  ## Examples
+
+      iex> create_merch_order_item(%{field: value})
+      {:ok, %MerchOrderItem{}}
+
+      iex> create_merch_order_item(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_merch_order_item(attrs \\ %{}) do
+    %MerchOrderItem{}
+    |> MerchOrderItem.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a merch_order_item.
+
+  ## Examples
+
+      iex> update_merch_order_item(merch_order_item, %{field: new_value})
+      {:ok, %MerchOrderItem{}}
+
+      iex> update_merch_order_item(merch_order_item, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_merch_order_item(%MerchOrderItem{} = merch_order_item, attrs) do
+    merch_order_item
+    |> MerchOrderItem.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a merch_order_item.
+
+  ## Examples
+
+      iex> delete_merch_order_item(merch_order_item)
+      {:ok, %MerchOrderItem{}}
+
+      iex> delete_merch_order_item(merch_order_item)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_merch_order_item(%MerchOrderItem{} = merch_order_item) do
+    Repo.delete(merch_order_item)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking merch_order_item changes.
+
+  ## Examples
+
+      iex> change_merch_order_item(merch_order_item)
+      %Ecto.Changeset{data: %MerchOrderItem{}}
+
+  """
+  def change_merch_order_item(%MerchOrderItem{} = merch_order_item, attrs \\ %{}) do
+    MerchOrderItem.changeset(merch_order_item, attrs)
+  end
+
+  def get_merch_orders_for_user(user_id) do
+    query =
+      from mo in MerchOrder,
+        where: mo.user_id == ^user_id,
+        preload: [merch_order_items: [merch_item: []]]
+
+    Repo.all(query)
+  end
+end

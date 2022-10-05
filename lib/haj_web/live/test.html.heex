@@ -1,9 +1,0 @@
-
-    <form phx-change="suggest" phx-submit="search" autocomplete="off">
-      <input type="text" name="q" value={@query} list="matches" class="w-full">
-      <div id="matches" class="flex flex-col bg-white">
-        <%= for user <- @matches do %>
-          <option value={user.id} class="px-3 py-2 hover:bg-gray-300"> <%= "#{user.first_name} #{user.last_name}" %> </option>
-        <% end %>
-      </div>
-    </form>

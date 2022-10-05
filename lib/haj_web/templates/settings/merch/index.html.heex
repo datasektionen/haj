@@ -1,0 +1,27 @@
+<div class="flex flex-col gap-4 md:flex-row">
+    <div class="flex-grow-[1]">
+        <%= render "_side_bar.html", conn: @conn, current_spex: @current_spex %>
+    </div>
+    <div class="flex-grow-[3]">
+        <.table rows={@merch}>
+            <:col let={merch} label="Merch" >
+                <div class="flex flex-row justify-between">
+                    <%= merch.name %>
+                    <div>
+                        <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
+                            <%= link "Redigera", to: Routes.settings_path(@conn, :edit_merch, merch) %>
+                        </button>
+                        <button class="bg-burgandy text-white px-2 py-0.5 rounded-sm">
+                            <%= link "Radera", to: Routes.settings_path(@conn, :delete_merch, @show, merch), method: :delete, data: [confirm: "Är du säker?"]  %>
+                        </button>
+                    </div>
+                </div>
+            </:col>
+        </.table>
+
+        <button class="px-3 py-2 bg-burgandy text-white mt-4">
+            <%= link "Ny merch", to: Routes.settings_path(@conn, :new_merch, @show) %>
+        </button>
+
+    </div>
+</div>

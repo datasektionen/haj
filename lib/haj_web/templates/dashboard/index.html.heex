@@ -16,6 +16,16 @@
             </div>
             <% end %>
             <% end %>
+
+            <%= link to: Routes.dashboard_path(@conn, :order_merch) do %>
+            <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
+                            md:flex-col">
+                <Heroicons.Solid.shopping_cart class="h-10 md:h-14" />
+                <div class="text-lg text-center md:border-t-2 border-burgandy md:w-full">
+                    Beställ merch
+                </div>
+            </div>
+            <% end %>
         </div>
     </div>
 </div>

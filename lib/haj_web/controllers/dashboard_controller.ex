@@ -1,6 +1,9 @@
 defmodule HajWeb.DashboardController do
   use HajWeb, :controller
 
+  alias Haj.Merch
+  alias Haj.Spex
+
   def index(conn, _params) do
     current_show = Haj.Spex.current_spex()
 
@@ -46,6 +49,90 @@ defmodule HajWeb.DashboardController do
           changeset: changeset,
           title: "Dina uppgifter: #{user.first_name} #{user.last_name}"
         )
+    end
+  end
+
+  def order_merch(conn, _params) do
+    user = conn.assigns[:current_user]
+    current_show = Spex.current_spex()
+
+    prev_order =
+      Merch.get_merch_orders_for_user(user.id)
+      |> Enum.filter(fn %{show_id: show_id} -> show_id == current_show.id end)
+
+    conn
+    |> assign(:title, "Dina merchbeställningar")
+    |> assign(:order, prev_order)
+    |> render("merch.html")
+  end
+
+  def new_order_item(conn, _params) do
+    changeset = Merch.change_merch_order_item(%Merch.MerchOrderItem{})
+    options = Merch.list_merch_items()
+
+    render(conn, "new_order_item.html",
+      changeset: changeset,
+      options: options,
+      title: "Ny beställning"
+    )
+  end
+
+  def create_order_item(conn, %{"merch_order_item" => params}) do
+    case Merch.create_merch_order_item(params) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Merch lades till.")
+        |> redirect(to: Routes.dashboard_path(conn, :order_merch))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "new_order_item.html",
+          changeset: changeset,
+          title: "Redigera rad"
+        )
+    end
+
+  end
+
+
+  def edit_order_item(conn, %{"id" => id}) do
+    order_item = Merch.get_merch_order_item!(id) |> Haj.Repo.preload(:merch_order)
+
+    if order_item.merch_order.user_id == conn.assigns[:current_user].id do
+      changeset = Merch.change_merch_order_item(order_item)
+
+      render(conn, "edit_order_item.html",
+        order_item: order_item,
+        changeset: changeset,
+        title: "Redigera rad"
+      )
+    else
+      conn
+      |> put_flash(:error, "Du kan inte ändra på andras beställningar.")
+      |> redirect(to: Routes.dashboard_path(conn, :order_merch))
+    end
+  end
+
+  def update_order_item(conn, %{"id" => id, "merch_order_item" => params}) do
+    order_item = Merch.get_merch_order_item!(id) |> Haj.Repo.preload(:merch_order)
+
+    if order_item.merch_order.user_id == conn.assigns[:current_user].id do
+      case Merch.update_merch_order_item(order_item, params) do
+        {:ok, _} ->
+          conn
+          |> put_flash(:info, "Rad uppdaterades.")
+          |> redirect(to: Routes.dashboard_path(conn, :order_merch))
+
+        {:error, %Ecto.Changeset{} = changeset} ->
+          render(conn, "edit_order_item.html",
+            order_item: order_item,
+            changeset: changeset,
+            title: "Redigera rad"
+          )
+      end
+    else
+      conn
+      |> put_flash(:error, "Du kan inte ändra på andras beställningar.")
+      |> redirect(to: Routes.dashboard_path(conn, :order_merch))
     end
   end
 end
