@@ -56,24 +56,57 @@ defmodule HajWeb.DashboardController do
     user = conn.assigns[:current_user]
     current_show = Spex.current_spex()
 
-    prev_order =
+    orders =
       Merch.get_merch_orders_for_user(user.id)
       |> Enum.filter(fn %{show_id: show_id} -> show_id == current_show.id end)
+
+    prev_order =
+      case orders do
+        [] -> nil
+        [o] -> o
+      end
+
+    options = Merch.list_merch_items()
+
+    # options =
+    #   case prev_order do
+    #     nil ->
+    #       options
+
+    #     order ->
+    #       options
+    #       |> Enum.filter(fn %{id: id} ->
+    #         !Enum.any?(order.merch_order_items, fn %{merch_item_id: item_id} -> id == item_id end)
+    #       end)
+    #   end
 
     conn
     |> assign(:title, "Dina merchbeställningar")
     |> assign(:order, prev_order)
+    |> assign(:options, options)
     |> render("merch.html")
   end
 
-  def new_order_item(conn, _params) do
+  def new_order_item(conn, %{"item_id" => item_id}) do
     changeset = Merch.change_merch_order_item(%Merch.MerchOrderItem{})
-    options = Merch.list_merch_items()
+    current_show = Spex.current_spex()
+    orders =
+      Merch.get_merch_orders_for_user(conn.assigns[:current_user].id)
+      |> Enum.filter(fn %{show_id: show_id} -> show_id == current_show.id end)
+
+    item = Merch.get_merch_item!(item_id)
+
+    prev_order =
+      case orders do
+        [] -> nil
+        [o] -> o
+      end
 
     render(conn, "new_order_item.html",
+      item: item,
+      order: prev_order,
       changeset: changeset,
-      options: options,
-      title: "Ny beställning"
+      title: "Ny beställning: #{item.name}"
     )
   end
 
@@ -90,9 +123,7 @@ defmodule HajWeb.DashboardController do
           title: "Redigera rad"
         )
     end
-
   end
-
 
   def edit_order_item(conn, %{"id" => id}) do
     order_item = Merch.get_merch_order_item!(id) |> Haj.Repo.preload(:merch_order)
@@ -134,5 +165,14 @@ defmodule HajWeb.DashboardController do
       |> put_flash(:error, "Du kan inte ändra på andras beställningar.")
       |> redirect(to: Routes.dashboard_path(conn, :order_merch))
     end
+  end
+
+  def delete_order_item(conn, %{"id" => id}) do
+    order_item = Merch.get_merch_order_item!(id)
+    {:ok, _order} = Merch.delete_merch_order_item(order_item)
+
+    conn
+    |> put_flash(:info, "Merch togs bort.")
+    |> redirect(to: Routes.dashboard_path(conn, :order_merch))
   end
 end

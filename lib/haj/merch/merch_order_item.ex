@@ -15,7 +15,7 @@ defmodule Haj.Merch.MerchOrderItem do
   @doc false
   def changeset(merch_order_item, attrs) do
     merch_order_item
-    |> cast(attrs, [:size, :count])
+    |> cast(attrs, [:size, :count, :merch_order_id, :merch_item_id])
     |> validate_required([:size, :count])
   end
 end

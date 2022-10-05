@@ -38,10 +38,11 @@ defmodule HajWeb.Router do
 
     get "/dashboard/order-merch", DashboardController, :order_merch
     get "/dashboard/order-item/new", DashboardController, :new_order_item
-    post "/dashboard/order-item", DashboardController, :create_order_item
+    get "/dashboard/order-item/new/:item_id", DashboardController, :new_order_item
+    post "/dashboard/order-item/new", DashboardController, :create_order_item
     get "/dashboard/order-item/:id/edit", DashboardController, :edit_order_item
     put "/dashboard/order-item/:id/edit", DashboardController, :update_order_item
-
+    delete "/dashboard/order-item/:id", DashboardController, :delete_order_item
 
     get "/user/:username", UserController, :index
     get "/user/:username/groups", UserController, :groups
