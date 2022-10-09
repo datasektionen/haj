@@ -187,9 +187,7 @@ defmodule HajWeb.ApplyLive do
           Beskrivning av grupperna
         </h1>
         <div
-          class="relative space-y-2 after:h-20 after:bg-gradient-to-t after:from-gray-100 after:absolute after:bottom-0 after:left-0 after:w-full"
-          x-show="expanded"
-          x-collapse.min.1000px
+          class="relative space-y-2"
           :class="{'after:h-20': !expanded, 'after:h-0' : expanded}"
         >
           <%= for group <- @show_groups do %>
@@ -202,12 +200,7 @@ defmodule HajWeb.ApplyLive do
             </div>
           <% end %>
         </div>
-        <button
-          @click="expanded = !expanded"
-          class="font-bold text-lg"
-          x-text="expanded ? 'Visa färre grupper' : 'Visa fler grupper'"
-        >
-        </button>
+
       </div>
 
       <%= form_for :application, "#", [phx_submit: "apply", class: "flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0"], fn f -> %>

@@ -108,7 +108,7 @@ defmodule HajWeb.ApplicationsLive do
 
   defp group_options(show_group) do
     show_group
-    |> Enum.filter(fn %{application_open: open} -> open end)
+    #|> Enum.filter(fn %{application_open: open} -> open end) # commented out to only allow SpexM to be applicable
     |> Enum.map(fn %{id: id, group: g} -> [key: g.name, value: id] end)
   end
 
