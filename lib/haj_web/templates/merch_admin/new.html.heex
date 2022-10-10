@@ -1,0 +1,8 @@
+<div class="flex flex-col gap-4 md:flex-row">
+    <div class="flex-grow-[1]">
+        <%= render "_side_bar.html", conn: @conn, show: @show %>
+    </div>
+    <div class="flex-grow-[3]">
+        <%= render "form.html", Map.put(assigns, :action, Routes.merch_admin_path(@conn, :create, @show)) %>
+    </div>
+</div>

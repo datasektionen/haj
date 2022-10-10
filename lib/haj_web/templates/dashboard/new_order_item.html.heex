@@ -2,8 +2,24 @@
     <div class="flex-grow-[1]">
         <%= render "_side_bar.html", user: @current_user, conn: @conn %>
     </div>
-    <div class="flex-grow-[3]">
+    <div class="flex-grow-[3] mb-8">
+        <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Beskrivning</h1>
 
+        <div class="mt-4 flex flex-col md:flex-row md:gap-4">
+            <img src={@item.image} alt={"Bild på #{@item.name}"} class="w-full aspect-square object-cover md:w-72">
+            <div class="flex flex-col gap-1 py-2 flex-shrink">
+                <%= link to: Routes.dashboard_path(@conn, :new_order_item, @item.id) do %>
+                <div class="font-bold text-lg uppercase"><%= @item.name %></div>
+                <% end %>
+                <div class="text-burgandy"><%= @item.price %> kr</div>
+                <%= if  @item.purchase_deadline do  %>
+                <div class="">Sista beställning: <%= @item.purchase_deadline |> DateTime.to_date() |> Date.to_string() %></div>
+                <% end %>
+                <div class=""><%= @item.description %></div>
+            </div>
+        </div>
+
+        <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Beställ</h1>
         <.form let={f} for={@changeset} action={Routes.dashboard_path(@conn, :create_order_item)} class="flex flex-col">
             <%= if @changeset.action do %>
             <div class="alert alert-danger">

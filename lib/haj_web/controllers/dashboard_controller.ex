@@ -68,18 +68,6 @@ defmodule HajWeb.DashboardController do
 
     options = Merch.list_merch_items()
 
-    # options =
-    #   case prev_order do
-    #     nil ->
-    #       options
-
-    #     order ->
-    #       options
-    #       |> Enum.filter(fn %{id: id} ->
-    #         !Enum.any?(order.merch_order_items, fn %{merch_item_id: item_id} -> id == item_id end)
-    #       end)
-    #   end
-
     conn
     |> assign(:title, "Dina merchbeställningar")
     |> assign(:order, prev_order)
@@ -90,6 +78,7 @@ defmodule HajWeb.DashboardController do
   def new_order_item(conn, %{"item_id" => item_id}) do
     changeset = Merch.change_merch_order_item(%Merch.MerchOrderItem{})
     current_show = Spex.current_spex()
+
     orders =
       Merch.get_merch_orders_for_user(conn.assigns[:current_user].id)
       |> Enum.filter(fn %{show_id: show_id} -> show_id == current_show.id end)
@@ -102,12 +91,18 @@ defmodule HajWeb.DashboardController do
         [o] -> o
       end
 
-    render(conn, "new_order_item.html",
-      item: item,
-      order: prev_order,
-      changeset: changeset,
-      title: "Ny beställning: #{item.name}"
-    )
+    if past_deadline?(item) do
+      conn
+      |> put_flash(:error, "Denna merch går inte att beställa längre")
+      |> redirect(to: Routes.dashboard_path(conn, :order_merch))
+    else
+      render(conn, "new_order_item.html",
+        item: item,
+        order: prev_order,
+        changeset: changeset,
+        title: "Ny beställning: #{item.name}"
+      )
+    end
   end
 
   def create_order_item(conn, %{"merch_order_item" => params}) do
@@ -126,20 +121,26 @@ defmodule HajWeb.DashboardController do
   end
 
   def edit_order_item(conn, %{"id" => id}) do
-    order_item = Merch.get_merch_order_item!(id) |> Haj.Repo.preload(:merch_order)
+    order_item = Merch.get_merch_order_item!(id) |> Haj.Repo.preload([:merch_order, :merch_item])
 
-    if order_item.merch_order.user_id == conn.assigns[:current_user].id do
-      changeset = Merch.change_merch_order_item(order_item)
-
-      render(conn, "edit_order_item.html",
-        order_item: order_item,
-        changeset: changeset,
-        title: "Redigera rad"
-      )
-    else
+    if past_deadline?(order_item.merch_item) do
       conn
-      |> put_flash(:error, "Du kan inte ändra på andras beställningar.")
+      |> put_flash(:error, "Det går inte längre att ändra på denna")
       |> redirect(to: Routes.dashboard_path(conn, :order_merch))
+    else
+      if order_item.merch_order.user_id == conn.assigns[:current_user].id do
+        changeset = Merch.change_merch_order_item(order_item)
+
+        render(conn, "edit_order_item.html",
+          order_item: order_item,
+          changeset: changeset,
+          title: "Redigera rad"
+        )
+      else
+        conn
+        |> put_flash(:error, "Du kan inte ändra på andras beställningar.")
+        |> redirect(to: Routes.dashboard_path(conn, :order_merch))
+      end
     end
   end
 
@@ -168,11 +169,26 @@ defmodule HajWeb.DashboardController do
   end
 
   def delete_order_item(conn, %{"id" => id}) do
-    order_item = Merch.get_merch_order_item!(id)
-    {:ok, _order} = Merch.delete_merch_order_item(order_item)
+    order_item = Merch.get_merch_order_item!(id) |> Haj.Repo.preload(:merch_item)
 
-    conn
-    |> put_flash(:info, "Merch togs bort.")
-    |> redirect(to: Routes.dashboard_path(conn, :order_merch))
+    if past_deadline?(order_item.merch_item) do
+      conn
+      |> put_flash(:error, "Det går inte längre att ändra på denna.")
+      |> redirect(to: Routes.dashboard_path(conn, :order_merch))
+    else
+      {:ok, _order} = Merch.delete_merch_order_item(order_item)
+
+      conn
+      |> put_flash(:info, "Merch togs bort.")
+      |> redirect(to: Routes.dashboard_path(conn, :order_merch))
+    end
+
+  end
+
+  defp past_deadline?(item) do
+    case item.purchase_deadline && DateTime.compare(item.purchase_deadline, DateTime.utc_now()) do
+      :lt -> true
+      _ -> false
+    end
   end
 end
