@@ -1,6 +1,9 @@
 defmodule Haj.Slack do
   require Logger
 
+  @doc """
+  Sends a message to a slack webhook url
+  """
   def send_message(webhook_url, message) do
     if webhook_url do
       Logger.info("Sent slack message to #{webhook_url}")

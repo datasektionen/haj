@@ -17,5 +17,6 @@ defmodule Haj.Merch.MerchOrderItem do
     merch_order_item
     |> cast(attrs, [:size, :count, :merch_order_id, :merch_item_id])
     |> validate_required([:size, :count])
+    |> validate_number(:count, greater_than: 0)
   end
 end

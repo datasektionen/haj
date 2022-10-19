@@ -1,0 +1,96 @@
+<div class="flex flex-col gap-4 md:flex-row">
+    <div class="flex-grow-[1]">
+        <%= render "_side_bar.html", conn: @conn, show: @show %>
+    </div>
+    <div class="flex-grow-[3]">
+        <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Sammanfattning</h1>
+        <div class="overflow-x-auto">
+            <table class="w-full divide-y divide-gray-200">
+                <thead>
+                    <tr class="text-md font-semibold text-left bg-gray-100 uppercase">
+                        <%= for col <- ["Plagg", "Storlek", "Antal"] do %>
+                        <th class="px-4 py-3">
+                            <%= col %>
+                        </th>
+                        <% end %>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+
+                <%= for {order, i} <- Enum.with_index(@order_summary) do %>
+                <tbody x-data="{show: false}">
+                    <tr class={ if rem(i, 2)==0, do: "bg-white hover:bg-gray-100" , else: "bg-gray-50 hover:bg-gray-100"
+                        }>
+                        <td class="px-4 py-3 border">
+                            <%= order.item.name %>
+                        </td>
+                        <td class="px-4 py-3 border">
+                            <%= order.size %>
+                        </td>
+                        <td class="px-4 py-3 border">
+                            <%= order.count %>
+                        </td>
+                    </tr>
+                </tbody>
+                <% end %>
+                </tbody>
+            </table>
+        </div>
+
+
+        <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Alla beställningar</h1>
+        <div class="pb-6">
+            <div class="overflow-x-auto">
+                <table class="w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr class="text-md font-semibold text-left bg-gray-100 uppercase">
+                            <%= for col <- ["Namn", "Beställningar"] do %>
+                            <th class="px-4 py-3">
+                                <%= col %>
+                            </th>
+                            <% end %>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        <%= if @orders == [] do %>
+                        <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium">Här var det tomt.</td>
+                        <% else %>
+                        <%= for {order, i} <- Enum.with_index(@orders) do %>
+                    <tbody x-data="{show: false}">
+                        <tr class={ if rem(i, 2)==0, do: "bg-white hover:bg-gray-100" ,
+                            else: "bg-gray-50 hover:bg-gray-100" }>
+                            <td class="px-4 py-3 border">
+                                <div class="flex">
+                                    <button class="px-2" x-on:click="show = !show">
+                                        <Heroicons.Solid.chevron_down class="h-6 text-gray-800" />
+                                    </button>
+                                    <%= "#{order.user.first_name} #{order.user.last_name}" %>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 border">
+                                <%= list_items(order) %>
+                            </td>
+                        </tr>
+                        <tr x-show="show" class={if rem(i, 2)==0, do: "bg-white" , else: "bg-gray-50" }>
+                            <td colspan="2" class="px-4 py-3 gap-2 w-full">
+                                <div class="flex flex-col">
+                                    <%= for item <- order.merch_order_items do %>
+                                    <div class="">
+                                        <%= "#{item.count} x #{item.merch_item.name} i #{item.size}" %>
+                                    </div>
+                                    <% end %>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <% end %>
+                    <% end %>
+                    </tbody>
+                </table>
+            </div>
+            <button class="px-3 py-2 bg-burgandy text-white mt-4">
+                <%= link "Exportera som csv", to: Routes.merch_admin_path(@conn, :csv, @show) %>
+            </button>
+        </div>
+    </div>
+</div>

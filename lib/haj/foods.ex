@@ -21,6 +21,13 @@ defmodule Haj.Foods do
     Repo.all(Food)
   end
 
+  @doc """
+  Lists foods with ids
+
+  ## Examples
+      iex> list_foods_with_ids(["2", "3"])
+      [%Food{id: 2}, ...]
+  """
   def list_foods_with_ids(ids) do
     Repo.all(from f in Food, where: f.id in ^ids)
   end

@@ -65,8 +65,9 @@ defmodule HajWeb.Router do
     get "/applications", ApplicationController, :index
     get "/applications/export", ApplicationController, :export
 
-
     get "/merch-admin/:show_id", MerchAdminController, :index
+    get "/merch-admin/:show_id/orders", MerchAdminController, :orders
+    get "/merch-admin/:show_id/csv", MerchAdminController, :csv
     get "/merch-admin/:show_id/new", MerchAdminController, :new
     post "/merch-admin/:show_id/new", MerchAdminController, :create
     get "/merch-admin/:id/edit", MerchAdminController, :edit

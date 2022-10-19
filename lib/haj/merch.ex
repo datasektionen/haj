@@ -22,6 +22,20 @@ defmodule Haj.Merch do
   end
 
   @doc """
+  Returns the list of merch_items for a show
+
+  ## Examples
+
+      iex> list_merch_items(123)
+      [%MerchItem{}, ...]
+
+  """
+  def list_merch_items_for_show(show_id) do
+    Repo.all(from mi in MerchItem, where: mi.show_id == ^show_id)
+  end
+
+
+  @doc """
   Gets a single merch_item.
 
   Raises `Ecto.NoResultsError` if the Merch item does not exist.
@@ -115,6 +129,13 @@ defmodule Haj.Merch do
   """
   def list_merch_orders do
     Repo.all(MerchOrder)
+  end
+
+  @doc """
+  Returns the list of merch orders for a show
+  """
+  def list_merch_orders_for_show(show_id) do
+    Repo.all(from mo in MerchOrder, where: mo.show_id == ^show_id)
   end
 
   @doc """
@@ -294,11 +315,33 @@ defmodule Haj.Merch do
     MerchOrderItem.changeset(merch_order_item, attrs)
   end
 
+  @doc """
+  Returns all merch orders for a user.
+  """
   def get_merch_orders_for_user(user_id) do
     query =
       from mo in MerchOrder,
         where: mo.user_id == ^user_id,
         preload: [merch_order_items: [merch_item: []]]
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Gets a summary of merch orders for a show
+
+  ## Examples
+
+    iex> get_merch_order_summary(4)
+    {:ok, [%{item: %MerchItem{}, count: 2, size: 'XL'}, ...]}
+  """
+  def get_merch_order_summary(show_id) do
+    query = from mi in MerchItem,
+      join: moi in assoc(mi, :merch_order_items),
+      where: mi.show_id == ^show_id,
+      group_by: [mi.id, moi.size],
+      order_by: [mi.id, moi.size],
+      select: %{item: mi, count: sum(moi.count), size: moi.size}
 
     Repo.all(query)
   end

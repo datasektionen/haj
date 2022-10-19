@@ -26,15 +26,16 @@
                 </div>
             </div>
             <% end %>
-
-            <%= link to: Routes.merch_admin_path(@conn, :index, 4) do %>
-            <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
-                            md:flex-col">
-                <Heroicons.Solid.shopping_cart class="h-10 md:h-14" />
-                <div class="text-lg text-center md:border-t-2 border-burgandy md:w-full">
-                    Administrera merch
+            <%= if Enum.member?([:chef,:admin], @current_user.role) do %>
+                <%= link to: Routes.merch_admin_path(@conn, :orders, @current_show.id) do %>
+                <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
+                                md:flex-col">
+                    <Heroicons.Solid.shopping_cart class="h-10 md:h-14" />
+                    <div class="text-lg text-center md:border-t-2 border-burgandy md:w-full">
+                        Administrera merch
+                    </div>
                 </div>
-            </div>
+                <% end %>
             <% end %>
         </div>
     </div>

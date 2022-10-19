@@ -3,7 +3,6 @@ defmodule Haj.Applications.Application do
   import Ecto.Changeset
 
   schema "applications" do
-
     field :other, :string
     field :ranking, :string
 
@@ -20,12 +19,4 @@ defmodule Haj.Applications.Application do
     |> cast(attrs, [:other, :user_id, :show_id, :ranking])
     |> validate_required([:show_id, :user_id])
   end
-
-    @doc false
-    def cast_changeset(application, attrs) do
-      application
-      |> cast(attrs, [:other, :user_id, :show_id, :ranking])
-      |> cast_assoc(:application_show_groups)
-      |> validate_required([])
-    end
 end

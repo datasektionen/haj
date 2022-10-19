@@ -14,6 +14,7 @@ defmodule HajWeb.DashboardController do
     conn
     |> assign(:title, "Min Sida")
     |> assign(:user_groups, user_groups)
+    |> assign(:current_show, current_show)
     |> render("index.html")
   end
 
