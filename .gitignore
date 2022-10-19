@@ -35,3 +35,5 @@ npm-debug.log
 /config/.env
 
 .DS_Store
+
+.elixir_ls/
