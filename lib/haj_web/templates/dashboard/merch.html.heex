@@ -16,7 +16,11 @@
                         <%= link to: Routes.dashboard_path(@conn, :new_order_item, merch.id) do %>
                         <div class="font-bold text-lg uppercase"><%= merch.name %></div>
                         <% end %>
-                        <div class="text-burgandy"><%= merch.price %> kr</div>
+                        <div class="text-burgandy"><%= merch.price %> kr 
+                            <%= if merch.purchase_deadline do %>
+                                <span class="text-black"> | beställ innan <%= merch.purchase_deadline |> Calendar.strftime("%d/%m %Y") %> </span>
+                            <% end %>
+                        </div>
                         <div class="text-ellipsis line-clamp-3"><%= merch.description %></div>
                     </div>
                 </div>
