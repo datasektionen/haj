@@ -49,7 +49,7 @@ defmodule Haj.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
-      {:heroicons, "~> 0.3.2"},
+      {:heroicons, "~> 0.4.1"},
       {:httpoison, "~> 1.8"},
       {:csv, "~> 2.4"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false}

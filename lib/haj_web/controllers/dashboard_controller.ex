@@ -30,6 +30,7 @@ defmodule HajWeb.DashboardController do
   def update_user(conn, %{"user" => user_params}) do
     user = conn.assigns[:current_user] |> Haj.Repo.preload(:foods)
     foods = Haj.Foods.list_foods_with_ids(user_params["foods_ids"] || [])
+    food_options = Haj.Foods.list_foods()
 
     changeset =
       Haj.Accounts.change_user(user, user_params)
@@ -43,6 +44,7 @@ defmodule HajWeb.DashboardController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html",
+          food_options: food_options,
           changeset: changeset,
           title: "Dina uppgifter: #{user.first_name} #{user.last_name}"
         )
