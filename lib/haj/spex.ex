@@ -409,10 +409,10 @@ defmodule Haj.Spex do
     query = from sg in ShowGroup,
       join: gm in assoc(sg, :group_memberships),
       join: u in assoc(gm, :user),
-      distinct: u.id,
       where: sg.show_id == ^show_id,
-      order_by: [u.first_name, u.last_name],
-      select: u
+      select: u,
+      distinct: true,
+      order_by: [u.first_name, u.last_name]
 
     Repo.all(query)
   end
