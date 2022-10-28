@@ -3,57 +3,63 @@ defmodule Haj.SpexTest do
 
   alias Haj.Spex
 
-  describe "group" do
-    alias Haj.Spex.Groups
+  describe "shows" do
+    alias Haj.Spex.Show
 
     import Haj.SpexFixtures
 
-    @invalid_attrs %{name: nil}
+    @invalid_attrs %{description: nil, or_title: nil, title: nil, year: nil}
 
-    test "list_group/0 returns all group" do
-      groups = groups_fixture()
-      assert Spex.list_group() == [groups]
+    test "list_shows/0 returns all shows" do
+      show = show_fixture()
+      assert Spex.list_shows() == [show]
     end
 
-    test "get_groups!/1 returns the groups with given id" do
-      groups = groups_fixture()
-      assert Spex.get_groups!(groups.id) == groups
+    test "get_show!/1 returns the show with given id" do
+      show = show_fixture()
+      assert Spex.get_show!(show.id) == show
     end
 
-    test "create_groups/1 with valid data creates a groups" do
-      valid_attrs = %{name: "some name"}
+    test "create_show/1 with valid data creates a show" do
+      valid_attrs = %{description: "some description", or_title: "some or_title", title: "some title", year: ~D[2022-06-15]}
 
-      assert {:ok, %Groups{} = groups} = Spex.create_groups(valid_attrs)
-      assert groups.name == "some name"
+      assert {:ok, %Show{} = show} = Spex.create_show(valid_attrs)
+      assert show.description == "some description"
+      assert show.or_title == "some or_title"
+      assert show.title == "some title"
+      assert show.year == ~D[2022-06-15]
     end
 
-    test "create_groups/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Spex.create_groups(@invalid_attrs)
+    test "create_show/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Spex.create_show(@invalid_attrs)
     end
 
-    test "update_groups/2 with valid data updates the groups" do
-      groups = groups_fixture()
-      update_attrs = %{name: "some updated name"}
+    test "update_show/2 with valid data updates the show" do
+      show = show_fixture()
+      update_attrs = %{description: "some updated description", or_title: "some updated or_title", title: "some updated title", year: ~D[2022-06-16]}
 
-      assert {:ok, %Groups{} = groups} = Spex.update_groups(groups, update_attrs)
-      assert groups.name == "some updated name"
+      assert {:ok, %Show{} = show} = Spex.update_show(show, update_attrs)
+      assert show.description == "some updated description"
+      assert show.or_title == "some updated or_title"
+      assert show.title == "some updated title"
+      assert show.year == ~D[2022-06-16]
     end
 
-    test "update_groups/2 with invalid data returns error changeset" do
-      groups = groups_fixture()
-      assert {:error, %Ecto.Changeset{}} = Spex.update_groups(groups, @invalid_attrs)
-      assert groups == Spex.get_groups!(groups.id)
+    test "update_show/2 with invalid data returns error changeset" do
+      show = show_fixture()
+      assert {:error, %Ecto.Changeset{}} = Spex.update_show(show, @invalid_attrs)
+      assert show == Spex.get_show!(show.id)
     end
 
-    test "delete_groups/1 deletes the groups" do
-      groups = groups_fixture()
-      assert {:ok, %Groups{}} = Spex.delete_groups(groups)
-      assert_raise Ecto.NoResultsError, fn -> Spex.get_groups!(groups.id) end
+    test "delete_show/1 deletes the show" do
+      show = show_fixture()
+      assert {:ok, %Show{}} = Spex.delete_show(show)
+      assert_raise Ecto.NoResultsError, fn -> Spex.get_show!(show.id) end
     end
 
-    test "change_groups/1 returns a groups changeset" do
-      groups = groups_fixture()
-      assert %Ecto.Changeset{} = Spex.change_groups(groups)
+    test "change_show/1 returns a show changeset" do
+      show = show_fixture()
+      assert %Ecto.Changeset{} = Spex.change_show(show)
     end
   end
 
@@ -124,14 +130,17 @@ defmodule Haj.SpexTest do
     end
 
     test "get_show_group!/1 returns the show_group with given id" do
-      show_group = show_group_fixture()
+      show_group = show_group_fixture() |> Haj.Repo.preload([:group, :show, :group_memberships])
       assert Spex.get_show_group!(show_group.id) == show_group
     end
 
     test "create_show_group/1 with valid data creates a show_group" do
-      valid_attrs = %{}
+      group = group_fixture()
+      show = show_fixture()
 
-      assert {:ok, %ShowGroup{} = show_group} = Spex.create_show_group(valid_attrs)
+      valid_attrs = %{show_id: show.id, group_id: group.id}
+
+      assert {:ok, %ShowGroup{} = _show_group} = Spex.create_show_group(valid_attrs)
     end
 
     test "create_show_group/1 with invalid data returns error changeset" do
@@ -142,13 +151,7 @@ defmodule Haj.SpexTest do
       show_group = show_group_fixture()
       update_attrs = %{}
 
-      assert {:ok, %ShowGroup{} = show_group} = Spex.update_show_group(show_group, update_attrs)
-    end
-
-    test "update_show_group/2 with invalid data returns error changeset" do
-      show_group = show_group_fixture()
-      assert {:error, %Ecto.Changeset{}} = Spex.update_show_group(show_group, @invalid_attrs)
-      assert show_group == Spex.get_show_group!(show_group.id)
+      assert {:ok, %ShowGroup{} = _show_group} = Spex.update_show_group(show_group, update_attrs)
     end
 
     test "delete_show_group/1 deletes the show_group" do
@@ -170,9 +173,9 @@ defmodule Haj.SpexTest do
 
     @invalid_attrs %{role: nil}
 
-    test "list_group_membership/0 returns all group_membership" do
+    test "list_group_memberships/0 returns all group_memberships" do
       group_membership = group_membership_fixture()
-      assert Spex.list_group_membership() == [group_membership]
+      assert Spex.list_group_memberships() == [group_membership]
     end
 
     test "get_group_membership!/1 returns the group_membership with given id" do

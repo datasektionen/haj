@@ -38,25 +38,29 @@ defmodule HajWeb.ApplyLive do
   end
 
   def handle_event("apply", %{"application" => %{"show_groups" => groups} = application}, socket) do
-    case Haj.Accounts.update_user(socket.assigns.current_user, application) do
-      {:ok, user} ->
-        extra_text =
-          case application do
-            %{"extra_text" => extra_text} -> extra_text
-            _ -> %{}
+    if application_open?(socket.assigns.show) do
+      case Haj.Accounts.update_user(socket.assigns.current_user, application) do
+        {:ok, user} ->
+          extra_text =
+            case application do
+              %{"extra_text" => extra_text} -> extra_text
+              _ -> %{}
+            end
+
+          application =
+            Map.put(application, "user_id", user.id)
+            |> Map.put("show_groups", selected_groups(groups, extra_text))
+            |> Map.put("show_id", socket.assigns.show.id)
+
+          slack_message = application_message(user, application, socket.assigns.show_groups)
+
+          with {:ok, _} <- Haj.Applications.create_application(application),
+               _ <- Haj.Slack.send_message(socket.assigns.show.slack_webhook_url, slack_message) do
+            {:noreply, redirect(socket, to: Routes.apply_path(socket, :created))}
           end
-
-        application =
-          Map.put(application, "user_id", user.id)
-          |> Map.put("show_groups", selected_groups(groups, extra_text))
-          |> Map.put("show_id", socket.assigns.show.id)
-
-        slack_message = application_message(user, application, socket.assigns.show_groups)
-
-        with {:ok, _} <- Haj.Applications.create_application(application),
-             _ <- Haj.Slack.send_message(socket.assigns.show.slack_webhook_url, slack_message) do
-          {:noreply, redirect(socket, to: Routes.apply_path(socket, :created))}
-        end
+      end
+    else
+      {:noreply, redirect(socket, to: Routes.apply_path(socket, :index))}
     end
   end
 
@@ -159,6 +163,22 @@ defmodule HajWeb.ApplyLive do
     "#{user.first_name} #{user.last_name} (#{user.email}) sökte just till följande grupper: #{groups}"
   end
 
+  defp application_open?(show) do
+    current_date = DateTime.now!("Etc/UTC")
+
+
+    case show.application_opens && DateTime.compare(show.application_opens, current_date) do
+      :lt ->
+        case DateTime.compare(show.application_closes, current_date) do
+          :gt -> true
+          _ -> false
+        end
+
+      _ ->
+        false
+    end
+  end
+
   def render(assigns) do
     ~H"""
     <div class="flex flex-col mb-8 md:flex-row md:gap-8 ">
@@ -167,9 +187,7 @@ defmodule HajWeb.ApplyLive do
           Beskrivning av grupperna
         </h1>
         <div
-          class="relative space-y-2 after:h-20 after:bg-gradient-to-t after:from-gray-100 after:absolute after:bottom-0 after:left-0 after:w-full"
-          x-show="expanded"
-          x-collapse.min.1000px
+          class="relative space-y-2"
           :class="{'after:h-20': !expanded, 'after:h-0' : expanded}"
         >
           <%= for group <- @show_groups do %>
@@ -182,12 +200,7 @@ defmodule HajWeb.ApplyLive do
             </div>
           <% end %>
         </div>
-        <button
-          @click="expanded = !expanded"
-          class="font-bold text-lg"
-          x-text="expanded ? 'Visa färre grupper' : 'Visa fler grupper'"
-        >
-        </button>
+
       </div>
 
       <%= form_for :application, "#", [phx_submit: "apply", class: "flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0"], fn f -> %>

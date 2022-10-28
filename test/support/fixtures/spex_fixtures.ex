@@ -39,10 +39,13 @@ defmodule Haj.SpexFixtures do
   Generate a show_group.
   """
   def show_group_fixture(attrs \\ %{}) do
+    show = show_fixture()
+    group = group_fixture()
     {:ok, show_group} =
       attrs
       |> Enum.into(%{
-
+        group_id: group.id,
+        show_id: show.id
       })
       |> Haj.Spex.create_show_group()
 

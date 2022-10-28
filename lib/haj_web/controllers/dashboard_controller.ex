@@ -34,6 +34,7 @@ defmodule HajWeb.DashboardController do
   def update_user(conn, %{"user" => user_params}) do
     user = conn.assigns[:current_user] |> Haj.Repo.preload(:foods)
     foods = Haj.Foods.list_foods_with_ids(user_params["foods_ids"] || [])
+    food_options = Haj.Foods.list_foods()
 
     changeset =
       Haj.Accounts.change_user(user, user_params)
@@ -46,10 +47,12 @@ defmodule HajWeb.DashboardController do
         |> redirect(to: Routes.dashboard_path(conn, :edit_user))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html",
-          changeset: changeset,
-          title: "Dina uppgifter: #{user.first_name} #{user.last_name}"
-        )
+        conn
+        |> put_flash(:error, "Något fylldes i fel, kolla fel nedan.")
+        |> assign(:title, "Dina uppgifter: #{user.first_name} #{user.last_name}")
+        |> assign(:food_options, food_options)
+        |> assign(:changeset, changeset)
+        |> render("edit.html")
     end
   end
 

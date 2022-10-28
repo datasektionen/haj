@@ -1,4 +1,7 @@
 defmodule HajWeb.PublicRouter do
+  @moduledoc """
+  Rouder for the public part of the site
+  """
   use HajWeb, :router
 
   pipeline :browser do

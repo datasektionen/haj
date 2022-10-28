@@ -8,7 +8,7 @@ defmodule HajWeb.ApplyController do
     case application_open?(current_spex) do
       true ->
         conn
-        |> assign(:title, "Sök spexet #{current_spex.year.year}")
+        |> assign(:title, "Sök SpexM #{current_spex.year.year}")
         |> assign(:changeset, changeset)
         |> render("index.html")
 

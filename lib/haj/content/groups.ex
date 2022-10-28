@@ -352,7 +352,7 @@ defmodule Haj.Content.Gropus do
   ]
 
   def get_groups() do
-    @groups
+    @groups |> Enum.sort_by(fn %{name: name} -> name end)
   end
 
   def get_group_by_name(search) do
