@@ -33,7 +33,7 @@ defmodule Haj.Accounts.User do
                     :food_preference_other])
     |> validate_format(:personal_number, ~r"^\d{10}$", message: "Personnummer måste vara 10 siffror, utan bindestreck.")
     #|> validate_format(:class, ~r"^(D|Media)-\d{2}$", message: "Klass måste vara på formen D-20 eller Media-09")
-    |> validate_format(:zip, ~r"^\d{5}$", message: "Postkod måste vara 5 siffror")
+    |> validate_format(:zip, ~r"^(\d{5}|\d{3}\s\d{2})$", message: "Postkod måste vara 5 siffror")
     |> validate_required([:first_name, :last_name, :email, :username])
   end
 end
