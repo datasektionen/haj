@@ -34,7 +34,6 @@ defmodule Haj.Merch do
     Repo.all(from mi in MerchItem, where: mi.show_id == ^show_id)
   end
 
-
   @doc """
   Gets a single merch_item.
 
@@ -336,13 +335,38 @@ defmodule Haj.Merch do
     {:ok, [%{item: %MerchItem{}, count: 2, size: 'XL'}, ...]}
   """
   def get_merch_order_summary(show_id) do
-    query = from mi in MerchItem,
-      join: moi in assoc(mi, :merch_order_items),
-      where: mi.show_id == ^show_id,
-      group_by: [mi.id, moi.size],
-      order_by: [mi.id, moi.size],
-      select: %{item: mi, count: sum(moi.count), size: moi.size}
+    query =
+      from mi in MerchItem,
+        join: moi in assoc(mi, :merch_order_items),
+        where: mi.show_id == ^show_id,
+        group_by: [mi.id, moi.size],
+        order_by: [mi.id, moi.size],
+        select: %{item: mi, count: sum(moi.count), size: moi.size}
 
     Repo.all(query)
+  end
+
+  @doc """
+  Gets the previous order for for current show for a particular user, if there
+  are none, returns `nil`.
+
+  ## Examples
+
+    iex> get_previous_order(4)
+    %Order{}
+
+
+    iex> get_previous_order(3)
+    nil
+  """
+  def get_previous_order(user_id) do
+    current_show = Haj.Spex.current_spex()
+
+    query =
+      from mo in MerchOrder,
+        where: mo.user_id == ^user_id and mo.show_id == ^current_show.id,
+        preload: [merch_order_items: [merch_item: []]]
+
+    Repo.one(query)
   end
 end

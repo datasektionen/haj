@@ -22,7 +22,7 @@
         <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Beställ</h1>
         <.form let={f} for={@changeset} action={Routes.dashboard_path(@conn, :create_order_item)} class="flex flex-col">
             <%= if @changeset.action do %>
-            <div class="alert alert-danger">
+            <div class="mt-4 alert alert-danger">
                 <p>Oops, något gick fel, kolla på felen nedan.</p>
             </div>
             <% end %>

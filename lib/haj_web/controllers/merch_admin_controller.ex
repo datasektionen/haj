@@ -59,9 +59,13 @@ defmodule HajWeb.MerchAdminController do
         |> redirect(to: Routes.merch_admin_path(conn, :edit, id))
 
       {:error, %Ecto.Changeset{} = changeset} ->
+
+        show = Haj.Spex.current_spex()
+
         render(conn, "edit.html",
           merch: merch,
           changeset: changeset,
+          show: show,
           title: "Redigera merch"
         )
     end

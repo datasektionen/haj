@@ -78,19 +78,9 @@ defmodule HajWeb.DashboardController do
 
   def new_order_item(conn, %{"item_id" => item_id}) do
     changeset = Merch.change_merch_order_item(%Merch.MerchOrderItem{})
-    current_show = Spex.current_spex()
-
-    orders =
-      Merch.get_merch_orders_for_user(conn.assigns[:current_user].id)
-      |> Enum.filter(fn %{show_id: show_id} -> show_id == current_show.id end)
 
     item = Merch.get_merch_item!(item_id)
-
-    prev_order =
-      case orders do
-        [] -> nil
-        [o] -> o
-      end
+    prev_order = Merch.get_previous_order(conn.assigns[:current_user].id)
 
     if past_deadline?(item) do
       conn
@@ -114,9 +104,15 @@ defmodule HajWeb.DashboardController do
         |> redirect(to: Routes.dashboard_path(conn, :order_merch))
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        %{"merch_item_id" => item_id} = params
+        item = Merch.get_merch_item!(item_id)
+        prev_order = Merch.get_previous_order(conn.assigns[:current_user].id)
+
         render(conn, "new_order_item.html",
           changeset: changeset,
-          title: "Redigera rad"
+          item: item,
+          order: prev_order,
+          title: "Ny beställning: #{item.name}"
         )
     end
   end
@@ -183,7 +179,6 @@ defmodule HajWeb.DashboardController do
       |> put_flash(:info, "Merch togs bort.")
       |> redirect(to: Routes.dashboard_path(conn, :order_merch))
     end
-
   end
 
   defp past_deadline?(item) do
