@@ -15,7 +15,7 @@ defmodule Haj.Merch.MerchOrder do
   @doc false
   def changeset(merch_order, attrs) do
     merch_order
-    |> cast(attrs, [:paid])
+    |> cast(attrs, [:paid, :user_id, :show_id])
     |> validate_required([:paid])
   end
 end

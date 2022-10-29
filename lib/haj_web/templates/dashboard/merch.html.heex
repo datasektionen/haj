@@ -16,9 +16,10 @@
                         <%= link to: Routes.dashboard_path(@conn, :new_order_item, merch.id) do %>
                         <div class="font-bold text-lg uppercase"><%= merch.name %></div>
                         <% end %>
-                        <div class="text-burgandy"><%= merch.price %> kr 
+                        <div class="text-burgandy"><%= merch.price %> kr
                             <%= if merch.purchase_deadline do %>
-                                <span class="text-black"> | beställ innan <%= merch.purchase_deadline |> Calendar.strftime("%d/%m %Y") %> </span>
+                            <span class="text-black"> | beställ innan
+                                <%= merch.purchase_deadline |> Calendar.strftime("%d/%m %Y") %> </span>
                             <% end %>
                         </div>
                         <div class="text-ellipsis line-clamp-3"><%= merch.description %></div>
@@ -29,6 +30,7 @@
 
             <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Beställd merch</h1>
 
+            <%= if @order do %>
             <.table rows={@order.merch_order_items}>
                 <:col let={item} label="Namn">
                     <%= item.merch_item.name %>
@@ -51,6 +53,7 @@
                 </:col>
 
             </.table>
+            <% end %>
 
             <div x-data="{selected: ''}">
 
@@ -66,7 +69,7 @@
                     x-bind:disabled="selected == ''">
                     <a x-bind:href={"selected==='' ? '#' : '#{Routes.dashboard_path(@conn, :new_order_item)}/' +
                         selected"} :class="selected === '' ? 'cursor-not-allowed' : ''">
-                        Lägg till merch
+                        Lägg till i beställning
                     </a>
                 </button>
 

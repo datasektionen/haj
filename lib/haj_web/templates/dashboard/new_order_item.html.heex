@@ -36,7 +36,9 @@
             <%= error_tag f, :count %>
 
             <%= hidden_input f, :merch_item_id, value: @item.id %>
+            <%= if @order do %>
             <%= hidden_input f, :merch_order_id, value: @order.id %>
+            <% end %>
 
             <div>
                 <%= submit "Spara", [class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy text-white self-end text-lg uppercase"] %>

@@ -58,32 +58,23 @@ defmodule HajWeb.DashboardController do
 
   def order_merch(conn, _params) do
     user = conn.assigns[:current_user]
-    current_show = Spex.current_spex()
 
-    orders =
-      Merch.get_merch_orders_for_user(user.id)
-      |> Enum.filter(fn %{show_id: show_id} -> show_id == current_show.id end)
-
-    prev_order =
-      case orders do
-        [] -> nil
-        [o] -> o
-      end
-
+    {:ok, order} = Merch.create_or_get_previous_order(user.id)
     options = Merch.list_merch_items()
 
     conn
     |> assign(:title, "Dina merchbeställningar")
-    |> assign(:order, prev_order)
+    |> assign(:order, order)
     |> assign(:options, options)
     |> render("merch.html")
   end
 
   def new_order_item(conn, %{"item_id" => item_id}) do
+    user = conn.assigns[:current_user]
     changeset = Merch.change_merch_order_item(%Merch.MerchOrderItem{})
 
     item = Merch.get_merch_item!(item_id)
-    prev_order = Merch.get_previous_order(conn.assigns[:current_user].id)
+    {:ok, order} = Merch.create_or_get_previous_order(user.id)
 
     if past_deadline?(item) do
       conn
@@ -92,7 +83,7 @@ defmodule HajWeb.DashboardController do
     else
       render(conn, "new_order_item.html",
         item: item,
-        order: prev_order,
+        order: order,
         changeset: changeset,
         title: "Ny beställning: #{item.name}"
       )
@@ -109,12 +100,12 @@ defmodule HajWeb.DashboardController do
       {:error, %Ecto.Changeset{} = changeset} ->
         %{"merch_item_id" => item_id} = params
         item = Merch.get_merch_item!(item_id)
-        prev_order = Merch.get_previous_order(conn.assigns[:current_user].id)
+        {:ok, order} = Merch.create_or_get_previous_order(conn.assigns[:current_user].id)
 
         render(conn, "new_order_item.html",
           changeset: changeset,
           item: item,
-          order: prev_order,
+          order: order,
           title: "Ny beställning: #{item.name}"
         )
     end

@@ -348,18 +348,18 @@ defmodule Haj.Merch do
 
   @doc """
   Gets the previous order for for current show for a particular user, if there
-  are none, returns `nil`.
+  are none, creates a new order.
 
   ## Examples
 
-    iex> get_previous_order(4)
-    %Order{}
+    iex> get_previous_order(4, 2)
+    {:ok, %Order{}}
 
 
-    iex> get_previous_order(3)
-    nil
+    iex> get_previous_order(3, 1)
+    {:error, changeset}
   """
-  def get_previous_order(user_id) do
+  def create_or_get_previous_order(user_id) do
     current_show = Haj.Spex.current_spex()
 
     query =
@@ -367,6 +367,9 @@ defmodule Haj.Merch do
         where: mo.user_id == ^user_id and mo.show_id == ^current_show.id,
         preload: [merch_order_items: [merch_item: []]]
 
-    Repo.one(query)
+    case Repo.one(query) do
+      %MerchOrder{} = order -> {:ok, order}
+      nil -> create_merch_order(%{"user_id" => user_id, "show_id" => current_show.id})
+    end
   end
 end
