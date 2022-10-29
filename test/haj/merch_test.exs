@@ -21,12 +21,12 @@ defmodule Haj.MerchTest do
     end
 
     test "create_merch_item/1 with valid data creates a merch_item" do
-      valid_attrs = %{name: "some name", price: 42, sizes: []}
+      valid_attrs = %{name: "some name", price: 42, sizes: ["XS","S","L"]}
 
       assert {:ok, %MerchItem{} = merch_item} = Merch.create_merch_item(valid_attrs)
       assert merch_item.name == "some name"
       assert merch_item.price == 42
-      assert merch_item.sizes == []
+      assert merch_item.sizes == ["XS", "S", "L"]
     end
 
     test "create_merch_item/1 with invalid data returns error changeset" do
@@ -35,12 +35,12 @@ defmodule Haj.MerchTest do
 
     test "update_merch_item/2 with valid data updates the merch_item" do
       merch_item = merch_item_fixture()
-      update_attrs = %{name: "some updated name", price: 43, sizes: []}
+      update_attrs = %{name: "some updated name", price: 43, sizes: ["X"]}
 
       assert {:ok, %MerchItem{} = merch_item} = Merch.update_merch_item(merch_item, update_attrs)
       assert merch_item.name == "some updated name"
       assert merch_item.price == 43
-      assert merch_item.sizes == []
+      assert merch_item.sizes == ["X"]
     end
 
     test "update_merch_item/2 with invalid data returns error changeset" do

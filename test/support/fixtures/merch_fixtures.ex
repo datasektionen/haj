@@ -13,7 +13,7 @@ defmodule Haj.MerchFixtures do
       |> Enum.into(%{
         name: "some name",
         price: 42,
-        sizes: []
+        sizes: ["XS","S"]
       })
       |> Haj.Merch.create_merch_item()
 
