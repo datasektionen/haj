@@ -17,7 +17,7 @@
             <h1 class="font-title text-3xl md:text-4xl">Om spexet</h1>
 
             <div class="relative space-y-4  after:h-20 after:bg-gradient-to-t after:from-gray-200 after:absolute after:bottom-0 after:left-0 after:w-full"
-                x-show="expanded" x-collapse.min.480px :class="{'after:h-20': !expanded, 'after:h-0' : expanded}">
+                x-show="expanded" x-collapse.min.480px x-bind:class="{'after:h-20': !expanded, 'after:h-0' : expanded}">
                 <p>
                     Ett världsomspännande krig. Två sidor. Miljontals liv på spel. Genom en stor del av Frankrike,
                     Tyskland

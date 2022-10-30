@@ -8,7 +8,8 @@
         }
         " x-init="window.pageYOffset > 10 ? atTop = false : atTop = true">
     <div class="flex justify-center fixed bg-burgandy h-16 py-3 text-white top-0 w-full z-30
-                transition-all duration-500" :class="{'-translate-y-full bg-transparent': !atTop && !scrolledUp}">
+                transition-all duration-500"
+        x-bind:class="{'-translate-y-full bg-transparent': !atTop && !scrolledUp}">
 
         <div class="flex justify-between items-center px-8 h-full w-full md:px-14 md:self-center md:max-w-7xl">
 
@@ -35,10 +36,11 @@
                     <% end %>
 
                     <%= if @user.role == :admin do %>
-                    <li><%= link "Administrera", to: Routes.settings_path(@conn, :index) %></li>
+                    <li>
+                        <%= link "Administrera", to: Routes.settings_path(@conn, :index) %></li>
                     <% end %>
-                    <li><%= live_patch "Grupper", to: Routes.group_path(@conn, :index) %></li>
-                    <li><%= live_patch "Medlemmar", to: Routes.members_path(@conn, :index) %></li>
+                    <li><%= link "Grupper", to: Routes.group_path(@conn, :index) %></li>
+                    <li><%= link "Medlemmar", to: Routes.members_path(@conn, :index) %></li>
                     <li><%= link "Min Sida", to: Routes.dashboard_path(@conn, :index) %></li>
                 </ul>
                 <% end %>
@@ -53,7 +55,7 @@
                transform translate-x-full opacity-0
                transition duration-300
                md:hidden"
-        :class="{'translate-x-full opacity-0': !navbarOpen, 'translate-x-0 opacity-100': navbarOpen}">
+        x-bind:class="{'translate-x-full opacity-0': !navbarOpen, 'translate-x-0 opacity-100': navbarOpen}">
 
         <%= if Enum.member?([:admin, :chef], @user.role) do %>
         <li><%= link "Ansökningar", to: Routes.application_path(@conn, :index) %></li>
@@ -62,8 +64,8 @@
         <%= if @user.role == :admin do %>
         <li><%= link "Administrera", to: Routes.settings_path(@conn, :index) %></li>
         <% end %>
-        <li><%= live_patch "Grupper", to: Routes.group_path(@conn, :index) %></li>
-        <li><%= live_patch "Medlemmar", to: Routes.members_path(@conn, :index) %></li>
+        <li><%= link "Grupper", to: Routes.group_path(@conn, :index) %></li>
+        <li><%= link "Medlemmar", to: Routes.members_path(@conn, :index) %></li>
         <li><%= link "Min Sida", to: Routes.dashboard_path(@conn, :index) %></li>
     </ul>
     <% end %>

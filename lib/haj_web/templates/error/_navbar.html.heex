@@ -9,7 +9,7 @@
         " x-init="window.pageYOffset > 10 ? atTop = false : atTop = true">
     <div class="flex fixed justify-between items-center px-8 md:px-14 bg-transparent h-20 md:h-28 py-5 text-white top-0 w-full z-30
                 transition-all duration-500"
-        :class="{'bg-transparent h-20 md:h-28 py-5': atTop, 'bg-black py-4 h-16 md:h-18': !atTop, '-translate-y-full bg-transparent': !atTop && !scrolledUp}">
+        x-bind:class="{'bg-transparent h-20 md:h-28 py-5': atTop, 'bg-black py-4 h-16 md:h-18': !atTop, '-translate-y-full bg-transparent': !atTop && !scrolledUp}">
         <a href="/" class="h-full">
             <svg class="fill-white h-full" viewBox="0 0 391.85 526.59">
                 <path
@@ -42,7 +42,7 @@
                transform translate-x-full opacity-0
                transition duration-300
                md:hidden"
-        :class="{'translate-x-full opacity-0': !navbarOpen, 'translate-x-0 opacity-100': navbarOpen}">
+        x-bind:class="{'translate-x-full opacity-0': !navbarOpen, 'translate-x-0 opacity-100': navbarOpen}">
         <li><a href="/spexet">Årets spex</a></li>
         <li><a href="/about">Om METAspexet</a></li>
         <li><a href="/groups">Grupper</a></li>

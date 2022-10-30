@@ -15,7 +15,7 @@
                             after:top-0 after:left-0 after:w-full after:h-full after:z-0"
     x-intersect.once="$el.classList.add('scroll-in')">
     <video class=" object-cover h-full w-full transition-opacity duration-700" x-ref="video"
-      :class="{'opacity-none': playing, 'opacity-0': !playing}" playsinline="" autoplay="" loop=""
+      x-bind:class="{'opacity-none': playing, 'opacity-0': !playing}" playsinline="" autoplay="" loop=""
       poster="/images/home-bg.jpg">
       <source src="/images/clip.mp4">
     </video>

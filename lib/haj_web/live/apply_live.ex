@@ -188,7 +188,7 @@ defmodule HajWeb.ApplyLive do
         </h1>
         <div
           class="relative space-y-2"
-          :class="{'after:h-20': !expanded, 'after:h-0' : expanded}"
+          x-bind:class="{'after:h-20': !expanded, 'after:h-0' : expanded}"
         >
           <%= for group <- @show_groups do %>
             <div>

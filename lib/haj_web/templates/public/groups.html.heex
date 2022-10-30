@@ -37,7 +37,7 @@
             <h1 class="font-title text-xl mb-3">Alla grupper</h1>
             <ul class="flex flex-col leading-relaxed">
                 <%= for group <- @groups do %>
-                <li :class={"{'font-bold' : atElement==='#{group.name}' }"}>
+                <li x-bind:class={"{'font-bold' : atElement==='#{group.name}' }"}>
                     <a href={"\##{group.name}"}> <%= group.name %></a>
                 </li>
                 <% end %>
