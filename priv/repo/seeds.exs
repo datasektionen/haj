@@ -17,7 +17,7 @@ show =
   Repo.insert!(%Haj.Spex.Show{
     description: "Coolt spex",
     title: "På västfronten intet spex",
-    year: ~D[2024-10-10],
+    year: ~D[2022-05-23],
     or_title: "Test"
   })
 
