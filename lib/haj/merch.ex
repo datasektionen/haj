@@ -368,8 +368,12 @@ defmodule Haj.Merch do
         preload: [merch_order_items: [merch_item: []]]
 
     case Repo.one(query) do
-      %MerchOrder{} = order -> {:ok, order}
-      nil -> create_merch_order(%{"user_id" => user_id, "show_id" => current_show.id})
+      %MerchOrder{} = order ->
+        {:ok, order}
+
+      nil ->
+        {:ok, order} = create_merch_order(%{"user_id" => user_id, "show_id" => current_show.id})
+        {:ok, order |> Repo.preload(merch_order_items: [merch_item: []])}
     end
   end
 end
