@@ -7,6 +7,5 @@ defmodule Haj.ApplicationsTest do
     alias Haj.Applications.Application
 
     import Haj.ApplicationsFixtures
-
   end
 end

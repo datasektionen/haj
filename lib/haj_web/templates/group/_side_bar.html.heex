@@ -1,12 +1,22 @@
 <div class="flex flex-col">
-    <div class="px-3 py-2 bg-gray-100 uppercase font-bold"><%= @show_group.group.name %></div>
-    <div class="px-3 py-2 border-b border-gray-300"><%= link "Medlemmar", to: Routes.group_path(@conn, :group, @show_group.id) %></div>
+  <div class="px-3 py-2 bg-gray-100 uppercase font-bold"><%= @show_group.group.name %></div>
+  <div class="px-3 py-2 border-b border-gray-300">
+    <%= link("Medlemmar", to: Routes.group_path(@conn, :group, @show_group.id)) %>
+  </div>
 
-    <%= if is_admin?(@show_group, @conn.assigns.current_user) do %>
-    <div class="px-3 py-2 border-b border-gray-300"><%= link "Administrera", to: Routes.group_path(@conn, :edit, @show_group.id) %></div>
-    <div class="px-3 py-2 border-b border-gray-300"><%= link "Ansökningar", to: Routes.group_path(@conn, :applications, @show_group.id) %></div>
-    <div class="px-3 py-2 border-b border-gray-300"><%= link "Ladda ner csv", to: Routes.group_path(@conn, :csv, @show_group.id) %></div>
-    <% end %>
+  <%= if is_admin?(@show_group, @conn.assigns.current_user) do %>
+    <div class="px-3 py-2 border-b border-gray-300">
+      <%= link("Administrera", to: Routes.group_path(@conn, :edit, @show_group.id)) %>
+    </div>
+    <div class="px-3 py-2 border-b border-gray-300">
+      <%= link("Ansökningar", to: Routes.group_path(@conn, :applications, @show_group.id)) %>
+    </div>
+    <div class="px-3 py-2 border-b border-gray-300">
+      <%= link("Ladda ner csv", to: Routes.group_path(@conn, :csv, @show_group.id)) %>
+    </div>
+  <% end %>
 
-    <div class="px-3 py-2 border-b border-gray-300"><%= link "Ladda ner vcard", to: Routes.group_path(@conn, :vcard, @show_group.id) %></div>
+  <div class="px-3 py-2 border-b border-gray-300">
+    <%= link("Ladda ner vcard", to: Routes.group_path(@conn, :vcard, @show_group.id)) %>
+  </div>
 </div>

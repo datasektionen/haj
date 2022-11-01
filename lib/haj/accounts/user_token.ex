@@ -57,8 +57,7 @@ defmodule Haj.Accounts.UserToken do
     {:ok, query}
   end
 
-
-   @doc """
+  @doc """
   Returns the token struct for the given token value and context.
   """
   def token_and_context_query(token, context) do

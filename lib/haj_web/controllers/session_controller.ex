@@ -12,15 +12,17 @@ defmodule HajWeb.SessionController do
     Logger.info("logging in")
     host = Application.get_env(:haj, :login_host)
 
-    scheme = case get_req_header(conn, "x-forwarded-proto") do
-      [scheme] -> scheme
-      [] -> conn.scheme
-    end
+    scheme =
+      case get_req_header(conn, "x-forwarded-proto") do
+        [scheme] -> scheme
+        [] -> conn.scheme
+      end
 
-    port = case get_req_header(conn, "x-forwarded-port") do
-      [port] -> port
-      [] -> conn.port
-    end
+    port =
+      case get_req_header(conn, "x-forwarded-port") do
+        [port] -> port
+        [] -> conn.port
+      end
 
     callback = URI.encode("#{scheme}://#{conn.host}:#{port}/login/callback/?token=")
     url = "https://#{host}/login?callback=#{callback}"

@@ -100,7 +100,8 @@ defmodule Haj.Content.Gropus do
         "Philip Berrez"
       ],
       image: "/images/Arr.jpg",
-      description: "För varje enastående musiknummer som syns på scen så har Arrgruppen arrangerat låtarna
+      description:
+        "För varje enastående musiknummer som syns på scen så har Arrgruppen arrangerat låtarna
                     för bandet att spela eller för kören och squådis att sjunga."
     },
     %{
@@ -115,7 +116,8 @@ defmodule Haj.Content.Gropus do
         "Martin Mörsell"
       ],
       image: "/images/Orqester.jpg",
-      description: "Ett spex är inget spex utan massor av musik, och det är vi i orquestern som spelar musiken, live, under föreställningarna.
+      description:
+        "Ett spex är inget spex utan massor av musik, och det är vi i orquestern som spelar musiken, live, under föreställningarna.
                     Vi spelar även på spexpubar när andan faller på."
     },
     %{
@@ -143,13 +145,15 @@ defmodule Haj.Content.Gropus do
         "Meya Wikner"
       ],
       image: "/images/requisita.jpg",
-      description: "Om du ser någon liten revisita på scen så är det rekvisitagruppen som har konstruerat eller införskaffat."
+      description:
+        "Om du ser någon liten revisita på scen så är det rekvisitagruppen som har konstruerat eller införskaffat."
     },
     %{
       name: "Direqtionen",
       members: ["Christian Stjernberg", "Anja Studic", "Erik Hedlund"],
       image: "/images/Direqtionen.jpg",
-      description: "Direqteurerna är högsta hönsen ytterst ansvariga för METAspexet. De leder chefsgruppen och
+      description:
+        "Direqteurerna är högsta hönsen ytterst ansvariga för METAspexet. De leder chefsgruppen och
                     ser till hela spexarbetet flyter på bra."
     },
     %{
@@ -161,7 +165,8 @@ defmodule Haj.Content.Gropus do
         "Jonathan Hedin"
       ],
       image: "/images/synk.jpg",
-      description: "Utan synk skulle spexet aldrig gå ihop. Synkchefer är exempelvis Musikproducent, Scenograf eller Kommunikatör.
+      description:
+        "Utan synk skulle spexet aldrig gå ihop. Synkchefer är exempelvis Musikproducent, Scenograf eller Kommunikatör.
                     Ekonomiansvarige är ansvariga för budge, bokföring, fakturor, utbetalningar och allt annat som har med ekonomi att göra."
     },
     %{
@@ -177,7 +182,8 @@ defmodule Haj.Content.Gropus do
         "Anders Steen"
       ],
       image: "/images/koren.jpg",
-      description: "Kören är gruppen som står för ljuvlig harmoni och härlig stämning inom spexet. Vi sjunger under musiknummer och
+      description:
+        "Kören är gruppen som står för ljuvlig harmoni och härlig stämning inom spexet. Vi sjunger under musiknummer och
                     spelar statist- och ensembleroller under föreställningarna."
     },
     %{
@@ -197,7 +203,8 @@ defmodule Haj.Content.Gropus do
         "Dante Ardström"
       ],
       image: "/images/skådis.jpg",
-      description: "Utan squådisgruppen blir det inget spex! Det är squådisar som gestaltar manusets karaktärer och b
+      description:
+        "Utan squådisgruppen blir det inget spex! Det är squådisar som gestaltar manusets karaktärer och b
                     låser liv i dem för publikens nöje! Har du något att säga till de? Gör ett utrop!"
     },
     %{
@@ -220,7 +227,8 @@ defmodule Haj.Content.Gropus do
         "Julia Hallberg"
       ],
       image: "/images/fotofilm.jpg",
-      description: "Fotofilmgruppen dokumenterar spexet från början till slut, genom att fotografera och filma större rep,
+      description:
+        "Fotofilmgruppen dokumenterar spexet från början till slut, genom att fotografera och filma större rep,
                     gruppmöten, pubar och event, och till slut föreställningarna under våren!"
     },
     %{
@@ -241,7 +249,8 @@ defmodule Haj.Content.Gropus do
         "Sofia Eriksson"
       ],
       image: "/images/kostym.jpg",
-      description: "Kostymgruppen är den grupp som designar kostymer till spexets olika karaktärer och alla  andra som står på scen.
+      description:
+        "Kostymgruppen är den grupp som designar kostymer till spexets olika karaktärer och alla  andra som står på scen.
                     Vi arbetar tillsammans med Sminq och Dekåren för att ta fram och ge liv åt de karaktärer som Manusgruppen skapat."
     },
     %{
@@ -259,7 +268,8 @@ defmodule Haj.Content.Gropus do
         "Saga Jonasson"
       ],
       image: "/images/lyrique.jpg",
-      description: "Lyriquegruppen skriver texterna till spexets många och viktiga musiknummer.
+      description:
+        "Lyriquegruppen skriver texterna till spexets många och viktiga musiknummer.
                     Vi skriver nya texter för redan existerande låtar så att de ska passa till spexet."
     },
     %{
@@ -275,7 +285,8 @@ defmodule Haj.Content.Gropus do
         "Filip Ramslöv"
       ],
       image: "/images/LOL.jpg",
-      description: "Det är vi i Ljud- och Ljusgruppen (även kallad LoL) som fixar med det mesta som gäller teknik i spexet.
+      description:
+        "Det är vi i Ljud- och Ljusgruppen (även kallad LoL) som fixar med det mesta som gäller teknik i spexet.
                     Vi ser till att bandet hörs och sqådis syns, fixar så att det lyser i fina färger, trasslar med sladdar och petar på coola prylar."
     },
     %{
@@ -299,7 +310,8 @@ defmodule Haj.Content.Gropus do
         "Emilia Rosenqvist"
       ],
       image: "/images/manus.jpg",
-      description: "Vad vore ett spex utan ett manus? Fullständigt kaotiskt, såklart!
+      description:
+        "Vad vore ett spex utan ett manus? Fullständigt kaotiskt, såklart!
                     Manusgruppen är de som ansvarar för att lägga grunden för hela spexet.
                     Vi skriver repliker, brainstormar skämt och ordvitsar samt ser till att spexet följer en fin dramaturgi som publiken kan följa med i."
     },
@@ -315,7 +327,8 @@ defmodule Haj.Content.Gropus do
         "Sandra Reinecke"
       ],
       image: "/images/Smink_Hår.jpg",
-      description: "Sminq & Hår-gruppen är de som teatersminkar och hårfixar på de som står på scen!
+      description:
+        "Sminq & Hår-gruppen är de som teatersminkar och hårfixar på de som står på scen!
       Sminq planerar också karaktärers smink baserat på karaktärernas personligheter!"
     },
     %{
@@ -330,7 +343,8 @@ defmodule Haj.Content.Gropus do
         "Julia Hallberg"
       ],
       image: "/images/grafik2.jpg",
-      description: "Grafikgruppen tar fram allt grafiskt material som behövs för spexet, både internt och externt.
+      description:
+        "Grafikgruppen tar fram allt grafiskt material som behövs för spexet, både internt och externt.
                     Det kan vara allt från märken och merch till posters och programblad eller vad vi är taggade på att göra!"
     },
     %{
@@ -347,7 +361,8 @@ defmodule Haj.Content.Gropus do
         "Douglas Fischer"
       ],
       image: "/images/webb.jpg",
-      description: "Webbgruppen jobbar för att utveckla och förbättra spexets hemsida samt interna system för spexet."
+      description:
+        "Webbgruppen jobbar för att utveckla och förbättra spexets hemsida samt interna system för spexet."
     }
   ]
 

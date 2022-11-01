@@ -23,15 +23,16 @@ show =
 
 # Users
 
-user_data = [
-  %User{first_name: "Adrian", last_name: "Salamon", username: "asalamon", role: :admin},
-  %User{first_name: "Hampus", last_name: "Hallkvist", username: "hallkvi", role: :admin},
-  %User{first_name: "Isak", last_name: "Lefevre", username: "lefevre", role: :admin},
-  %User{first_name: "Martin", last_name: "Ryberg Laude", username: "mrl", role: :admin}
-]
-|> Enum.map(fn user ->
-  %User{user | email: "#{user.username}@kth.se"}
-end)
+user_data =
+  [
+    %User{first_name: "Adrian", last_name: "Salamon", username: "asalamon", role: :admin},
+    %User{first_name: "Hampus", last_name: "Hallkvist", username: "hallkvi", role: :admin},
+    %User{first_name: "Isak", last_name: "Lefevre", username: "lefevre", role: :admin},
+    %User{first_name: "Martin", last_name: "Ryberg Laude", username: "mrl", role: :admin}
+  ]
+  |> Enum.map(fn user ->
+    %User{user | email: "#{user.username}@kth.se"}
+  end)
 
 users =
   Enum.map(user_data, fn user ->
@@ -45,38 +46,39 @@ users =
 
 groups = ~w"Webb Chefsgruppen Bygg"
 
-show_groups = Enum.map(groups, fn name ->
-  group = Repo.insert!(%Haj.Spex.Group{name: name})
+show_groups =
+  Enum.map(groups, fn name ->
+    group = Repo.insert!(%Haj.Spex.Group{name: name})
 
-  show_group =
-    Ecto.build_assoc(group, :show_groups, %{show: show})
+    show_group =
+      Ecto.build_assoc(group, :show_groups, %{show: show})
+      |> Repo.insert!()
+
+    shuffled = Enum.shuffle(users)
+
+    Ecto.build_assoc(show_group, :group_memberships, %{
+      show: show,
+      user: Enum.at(shuffled, 1),
+      role: :chef
+    })
     |> Repo.insert!()
 
-  shuffled = Enum.shuffle(users)
+    Ecto.build_assoc(show_group, :group_memberships, %{
+      show: show,
+      user: Enum.at(shuffled, 2),
+      role: :gruppis
+    })
+    |> Repo.insert!()
 
-  Ecto.build_assoc(show_group, :group_memberships, %{
-    show: show,
-    user: Enum.at(shuffled, 1),
-    role: :chef
-  })
-  |> Repo.insert!()
+    Ecto.build_assoc(show_group, :group_memberships, %{
+      show: show,
+      user: Enum.at(shuffled, 3),
+      role: :gruppis
+    })
+    |> Repo.insert!()
 
-  Ecto.build_assoc(show_group, :group_memberships, %{
-    show: show,
-    user: Enum.at(shuffled, 2),
-    role: :gruppis
-  })
-  |> Repo.insert!()
-
-  Ecto.build_assoc(show_group, :group_memberships, %{
-    show: show,
-    user: Enum.at(shuffled, 3),
-    role: :gruppis
-  })
-  |> Repo.insert!()
-
-  show_group
-end)
+    show_group
+  end)
 
 # Foods
 
@@ -94,14 +96,15 @@ end)
 
 # Applications
 
-app_user_data = [
-  %User{first_name: "Spex", last_name: "Spexsson", username: "spexsson", role: :none},
-  %User{first_name: "Spexare", last_name: "Maximus", username: "maxspex", role: :none},
-  %User{first_name: "Sältränare", last_name: "Klimt", username: "sältränare", role: :none},
-]
-|> Enum.map(fn user ->
-  %User{user | email: "#{user.username}@kth.se"}
-end)
+app_user_data =
+  [
+    %User{first_name: "Spex", last_name: "Spexsson", username: "spexsson", role: :none},
+    %User{first_name: "Spexare", last_name: "Maximus", username: "maxspex", role: :none},
+    %User{first_name: "Sältränare", last_name: "Klimt", username: "sältränare", role: :none}
+  ]
+  |> Enum.map(fn user ->
+    %User{user | email: "#{user.username}@kth.se"}
+  end)
 
 applicants =
   Enum.map(app_user_data, fn user ->
@@ -112,10 +115,12 @@ applicants =
   end)
 
 Enum.each(applicants, fn user ->
-
   Repo.transaction(fn ->
-
-    previous = Repo.one(from a in Haj.Applications.Application, where: a.show_id == ^show.id and a.user_id == ^user.id)
+    previous =
+      Repo.one(
+        from a in Haj.Applications.Application,
+          where: a.show_id == ^show.id and a.user_id == ^user.id
+      )
 
     if previous != nil do
       Repo.delete!(previous)

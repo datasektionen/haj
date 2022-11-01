@@ -45,6 +45,7 @@ defmodule HajWeb.PublicController do
 
   def previous(conn, _params) do
     all_spex = Haj.Content.About.get_previous_spex()
+
     conn
     |> assign(:spex, all_spex)
     |> assign(:page_title, "Historia")
@@ -55,6 +56,6 @@ defmodule HajWeb.PublicController do
     redirect(conn, external: haj_path(conn) <> "/sok")
   end
 
-  defp haj_path(conn), do: "#{conn.scheme}://#{Application.get_env(:haj, :haj_subdomain)}.#{conn.host}:#{conn.port}"
-
+  defp haj_path(conn),
+    do: "#{conn.scheme}://#{Application.get_env(:haj, :haj_subdomain)}.#{conn.host}:#{conn.port}"
 end
