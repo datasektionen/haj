@@ -1,5 +1,5 @@
 defmodule HajWeb.DashboardView do
   use HajWeb, :view
 
-  import HajWeb.LiveComponents.Table
+  import HajWeb.Components.Table
 end

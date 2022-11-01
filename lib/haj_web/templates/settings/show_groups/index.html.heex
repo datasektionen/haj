@@ -25,9 +25,9 @@
         </.table>
 
         <h1 class="uppercase font-bold px-3 py-2">Lägg till grupper</h1>
-        <%= form_for @conn, Routes.settings_path(@conn, :add_show_group, @show.id), fn f -> %>
-        <%= select f, :group, Enum.map(@groups, &{&1.name,&1.id}), prompt: "Välj grupp" %>
-        <%= submit "Lägg till" %>
-        <% end %>
+        <.form let={f} for={@conn} action={Routes.settings_path(@conn, :add_show_group, @show.id)}>
+            <%= select f, :group, Enum.map(@groups, &{&1.name,&1.id}), prompt: "Välj grupp" %>
+            <%= submit "Lägg till" %>
+        </.form>
     </div>
 </div>
