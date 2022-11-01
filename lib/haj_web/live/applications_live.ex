@@ -32,7 +32,7 @@ defmodule HajWeb.ApplicationsLive do
     <div class="flex flex-col py-2 mb-2 gap-2 md:flex-row md:items-center border-burgandy border-b-2">
       <div class="uppercase font-bold">Filtrera</div>
 
-      <.form let={f} for={:filter} phx_change="filter" class="w-full md:w-auto">
+      <.form :let={f} for={:filter} phx-change="filter" class="w-full md:w-auto">
         <%= select(f, :show_group, group_options(@show.show_groups),
           class: "h-full w-full",
           prompt: "Alla grupper"
@@ -108,7 +108,7 @@ defmodule HajWeb.ApplicationsLive do
 
   defp group_options(show_group) do
     show_group
-    #|> Enum.filter(fn %{application_open: open} -> open end) # commented out to only allow SpexM to be applicable
+    # |> Enum.filter(fn %{application_open: open} -> open end) # commented out to only allow SpexM to be applicable
     |> Enum.map(fn %{id: id, group: g} -> [key: g.name, value: id] end)
   end
 

@@ -280,7 +280,6 @@ defmodule HajWeb.SettingsController do
     |> redirect(to: Routes.settings_path(conn, :foods))
   end
 
-
   defp authorize(conn, _) do
     if conn.assigns.current_user.role == :admin do
       current_spex = Haj.Spex.current_spex()

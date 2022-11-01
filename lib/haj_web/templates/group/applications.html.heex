@@ -1,8 +1,12 @@
 <div class="flex flex-col gap-4 md:flex-row">
-    <div class="flex-grow-[1]">
-        <%= render "_side_bar.html", show_group: @show_group, conn: @conn %>
-    </div>
-    <div class="flex-grow-[3] overflow-x-auto">
-        <%= render "_applications.html", applications: @applications, show_group: @show_group, conn: @conn %>
-    </div>
+  <div class="flex-grow-[1]">
+    <%= render("_side_bar.html", show_group: @show_group, conn: @conn) %>
+  </div>
+  <div class="flex-grow-[3] overflow-x-auto">
+    <%= render("_applications.html",
+      applications: @applications,
+      show_group: @show_group,
+      conn: @conn
+    ) %>
+  </div>
 </div>

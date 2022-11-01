@@ -3,7 +3,6 @@ defmodule Haj.Applications.ApplicationShowGroup do
   import Ecto.Changeset
 
   schema "application_show_groups" do
-
     belongs_to :application, Haj.Applications.Application
     belongs_to :show_group, Haj.Spex.ShowGroup
 

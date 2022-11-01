@@ -7,11 +7,13 @@ defmodule HajWeb.Plugs.SubdomainRouter do
   def call(%Plug.Conn{host: host} = conn, opts) do
     root_host = HajWeb.Endpoint.config(:url)[:host]
     haj_subdomain = Application.get_env(:haj, :haj_subdomain)
+
     case extract_subdomain(host, root_host) do
       subdomain when byte_size(subdomain) > 0 ->
         case subdomain do
           ^haj_subdomain -> HajWeb.Router.call(conn, opts)
         end
+
       _ ->
         HajWeb.PublicRouter.call(conn, opts)
     end

@@ -95,7 +95,7 @@ defmodule HajWeb.GroupAdminLive do
 
   def render(assigns) do
     ~H"""
-    <.form let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
+    <.form :let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
       <%= label(f, :application_description, "Beskrivning av gruppen på ansökningssidan.",
         class: "uppercase font-bold py-2"
       ) %>
@@ -121,11 +121,18 @@ defmodule HajWeb.GroupAdminLive do
       Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
     </p>
     <div class="flex flex-row items-stretch gap-2">
-      <.form let={f} for={:role_form} phx_change="update_role">
+      <.form :let={f} for={:role_form} phx-change="update_role">
         <%= select(f, :role, @roles, class: "h-full", value: @role) %>
       </.form>
 
-      <.form let={f} for={:search_form} phx_change="suggest" phx_submit="add" autocomplete={:off} class="flex-grow">
+      <.form
+        :let={f}
+        for={:search_form}
+        phx-change="suggest"
+        phx-submit="add"
+        autocomplete={:off}
+        class="flex-grow"
+      >
         <%= text_input(f, :q, value: @query, class: "w-full") %>
       </.form>
     </div>
@@ -157,7 +164,7 @@ defmodule HajWeb.GroupAdminLive do
     <div class="uppercase font-bold py-2">Nuvarande medlemmar</div>
 
     <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
-      <:col let={member} label="Chefer">
+      <:col :let={member} label="Chefer">
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>
           <button
@@ -172,7 +179,7 @@ defmodule HajWeb.GroupAdminLive do
     </.table>
 
     <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :gruppis))}>
-      <:col let={member} label="Gruppisar">
+      <:col :let={member} label="Gruppisar">
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>
           <button

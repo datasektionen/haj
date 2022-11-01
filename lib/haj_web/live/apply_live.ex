@@ -155,17 +155,18 @@ defmodule HajWeb.ApplyLive do
   end
 
   defp application_message(user, %{"show_groups" => selected_show_groups}, show_groups) do
-    groups = Enum.map(selected_show_groups, fn %{id: id} ->
-      %{group: %{name: name}} = Enum.find(show_groups, fn %{id: sg_id} -> id == sg_id end)
-      name
-    end) |> Enum.join(", ")
+    groups =
+      Enum.map(selected_show_groups, fn %{id: id} ->
+        %{group: %{name: name}} = Enum.find(show_groups, fn %{id: sg_id} -> id == sg_id end)
+        name
+      end)
+      |> Enum.join(", ")
 
     "#{user.first_name} #{user.last_name} (#{user.email}) sökte just till följande grupper: #{groups}"
   end
 
   defp application_open?(show) do
     current_date = DateTime.now!("Etc/UTC")
-
 
     case show.application_opens && DateTime.compare(show.application_opens, current_date) do
       :lt ->
@@ -188,7 +189,7 @@ defmodule HajWeb.ApplyLive do
         </h1>
         <div
           class="relative space-y-2"
-          :class="{'after:h-20': !expanded, 'after:h-0' : expanded}"
+          x-bind:class="{'after:h-20': !expanded, 'after:h-0' : expanded}"
         >
           <%= for group <- @show_groups do %>
             <div>
@@ -200,19 +201,33 @@ defmodule HajWeb.ApplyLive do
             </div>
           <% end %>
         </div>
-
       </div>
 
-      <.form let={f} for={:application} phx_submit="apply"  class="flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0">
+      <.form
+        :let={f}
+        for={:application}
+        phx-submit="apply"
+        class="flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0"
+      >
         <h1 class="uppercase font-bold border-b-2 border-burgandy text-xl mb-2">Användaruppgifter</h1>
         <label>KTH-id:</label>
         <input type="text" value={"#{@current_user.username}@kth.se"} class="bg-gray-200" disabled />
 
         <%= label(f, :phone, "Telefonnummer") %>
-        <%= text_input(f, :phone, required: true, value: @user.phone, phx_change: "update_form", phx_debounce: "1000") %>
+        <%= text_input(f, :phone,
+          required: true,
+          value: @user.phone,
+          phx_change: "update_form",
+          phx_debounce: "1000"
+        ) %>
 
         <%= label(f, :class, "Klass (Exempelvis D-20 eller Media-21)") %>
-        <%= text_input(f, :class, required: true, value: @user.class, phx_change: "update_form", phx_debounce: "1000") %>
+        <%= text_input(f, :class,
+          required: true,
+          value: @user.class,
+          phx_change: "update_form",
+          phx_debounce: "1000"
+        ) %>
         <%= error_tag(f, :class) %>
         <h1 class="uppercase font-bold border-b-2 border-burgandy text-xl mt-2 mb-2">
           Vilka grupper vill du söka?
@@ -263,15 +278,25 @@ defmodule HajWeb.ApplyLive do
         <% end %>
 
         <%= label(f, :other, "Har du något övrigt på hjärtat?") %>
-        <%= textarea(f, :other, value: @application && @application.other, phx_change: "update_form", phx_debounce: "1000") %>
+        <%= textarea(f, :other,
+          value: @application && @application.other,
+          phx_change: "update_form",
+          phx_debounce: "1000"
+        ) %>
 
         <div>
           <input type="checkbox" required class="mr-1" />
           Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR och kommer tas bort efter rekryteringen är färdig, senast 1a Januari 2023.
         </div>
         <div>
-          Informationen hanteras i enlighet med Datasektionens <a href="https://styrdokument.datasektionen.se/informationshanteringspolicy" class="font-bold text-burgandy">informationshanteringspolicy</a>.
-          Om du vill att uppgifterna ska tas bort kan du maila <a href="mailto:direqtionen@metaspexet.se" class="font-bold text-burgandy">Direqtionen</a>.
+          Informationen hanteras i enlighet med Datasektionens <a
+            href="https://styrdokument.datasektionen.se/informationshanteringspolicy"
+            class="font-bold text-burgandy"
+          >informationshanteringspolicy</a>.
+          Om du vill att uppgifterna ska tas bort kan du maila <a
+            href="mailto:direqtionen@metaspexet.se"
+            class="font-bold text-burgandy"
+          >Direqtionen</a>.
         </div>
         <%= submit("Sök",
           class: "uppercase font-bold mt-1 text-white bg-burgandy text-lg px-3 py-2 self-start"

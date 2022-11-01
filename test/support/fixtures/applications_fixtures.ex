@@ -10,9 +10,7 @@ defmodule Haj.ApplicationsFixtures do
   def application_fixture(attrs \\ %{}) do
     {:ok, application} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> Haj.Applications.create_application()
 
     application

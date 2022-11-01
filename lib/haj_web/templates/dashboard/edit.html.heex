@@ -1,93 +1,115 @@
 <div class="flex flex-col gap-4 md:flex-row">
-    <div class="flex-grow-[1] md:min-w-[220px]">
-        <%= render "_side_bar.html", user: @current_user, conn: @conn %>
+  <div class="flex-grow-[1] md:min-w-[220px]">
+    <%= render("_side_bar.html", user: @current_user, conn: @conn) %>
+  </div>
+  <div class="flex-grow-[2]">
+    <div>
+      Genom att fylla i data i här godkänner du att uppgifterna sparas för användning i spexsyfte.
+      Om du vill veta mer om hur uppgifterna används eller att dina uppgifter ska tas bort kan du höra av dig
+      till <a href="mailto:webb@metaspexet.se">webbansvarig</a>.
     </div>
-    <div class="flex-grow-[2]">
-        <div>
-            Genom att fylla i data i här godkänner du att uppgifterna sparas för användning i spexsyfte.
-            Om du vill veta mer om hur uppgifterna används eller att dina uppgifter ska tas bort kan du höra av dig
-            till <a href="mailto:webb@metaspexet.se">webbansvarig</a>.
-        </div>
 
-        <.form let={f} for={@changeset} action={Routes.dashboard_path(@conn, :update_user)} class="flex flex-col">
-            <div class="uppercase font-bold text-lg py-1 border-b-2 border-burgandy">Personuppgifter</div>
-            <%= label f, :first_name, "Förnamn", class: "pt-2 pb-1"%>
-            <%= text_input f, :first_name %>
-            <%= error_tag f, :first_name %>
+    <.form
+      :let={f}
+      for={@changeset}
+      action={Routes.dashboard_path(@conn, :update_user)}
+      class="flex flex-col"
+    >
+      <div class="uppercase font-bold text-lg py-1 border-b-2 border-burgandy">
+        Personuppgifter
+      </div>
+      <%= label(f, :first_name, "Förnamn", class: "pt-2 pb-1") %>
+      <%= text_input(f, :first_name) %>
+      <%= error_tag(f, :first_name) %>
 
-            <%= label f, :last_name, "Efternamn", class: "pt-2 pb-1"%>
-            <%= text_input f, :last_name %>
-            <%= error_tag f, :last_name %>
+      <%= label(f, :last_name, "Efternamn", class: "pt-2 pb-1") %>
+      <%= text_input(f, :last_name) %>
+      <%= error_tag(f, :last_name) %>
 
-            <%= label f, :personal_number, "Personummer (ÅÅMMDDXXXX)", class: "pt-2 pb-1"%>
-            <div class="pb-1">
-                Detta är endast synligt för administratörer och samlas då uppgifterna
-                behövs för att få pengar från ABF.
-            </div>
-            <%= text_input f, :personal_number %>
-            <%= error_tag f, :personal_number %>
+      <%= label(f, :personal_number, "Personummer (ÅÅMMDDXXXX)", class: "pt-2 pb-1") %>
+      <div class="pb-1">
+        Detta är endast synligt för administratörer och samlas då uppgifterna
+        behövs för att få pengar från ABF.
+      </div>
+      <%= text_input(f, :personal_number) %>
+      <%= error_tag(f, :personal_number) %>
 
-            <%= label f, :class, "Årskurs (eg D-20 eller Media-21)", class: "pt-2 pb-1"%>
-            <%= text_input f, :class %>
-            <%= error_tag f, :class %>
+      <%= label(f, :class, "Årskurs (eg D-20 eller Media-21)", class: "pt-2 pb-1") %>
+      <%= text_input(f, :class) %>
+      <%= error_tag(f, :class) %>
 
-            <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">Konton och kontakt</div>
+      <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">
+        Konton och kontakt
+      </div>
 
-            <%= label f, :email, "Email", class: "pt-2 pb-1"%>
-            <%= text_input f, :email %>
-            <%= error_tag f, :email %>
+      <%= label(f, :email, "Email", class: "pt-2 pb-1") %>
+      <%= text_input(f, :email) %>
+      <%= error_tag(f, :email) %>
 
-            <%= label f, :username, "KTH-id", class: "pt-2 pb-1"%>
-            <%= text_input f, :username, disabled: true, class: "bg-gray-200" %>
+      <%= label(f, :username, "KTH-id", class: "pt-2 pb-1") %>
+      <%= text_input(f, :username, disabled: true, class: "bg-gray-200") %>
 
-            <%= label f, :google_account, "Google-konto", class: "pt-2 pb-1"%>
-            <%= text_input f, :google_account %>
-            <%= error_tag f, :google_account %>
+      <%= label(f, :google_account, "Google-konto", class: "pt-2 pb-1") %>
+      <%= text_input(f, :google_account) %>
+      <%= error_tag(f, :google_account) %>
 
-            <%= label f, :phone, "Telefonnr", class: "pt-2 pb-1"%>
-            <%= text_input f, :phone %>
-            <%= error_tag f, :phone %>
+      <%= label(f, :phone, "Telefonnr", class: "pt-2 pb-1") %>
+      <%= text_input(f, :phone) %>
+      <%= error_tag(f, :phone) %>
 
-            <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">Matpreferenser</div>
+      <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">
+        Matpreferenser
+      </div>
 
-            <%= label f, :foods, "Matpreferenser, klicka i alla som stämmer.", class: "pt-2 pb-1" %>
+      <%= label(f, :foods, "Matpreferenser, klicka i alla som stämmer.", class: "pt-2 pb-1") %>
 
-            <div class="flex flex-col gap-1 md:flex-row md:gap-6">
-                <%= for food <- @food_options do %>
-                <label class="flex flex-row items-center gap-2">
-                    <input name="user[foods_ids][]" type="checkbox" value={food.id}
-                        checked={Enum.any?(@changeset.data.foods, fn %{id: id} -> id == food.id end)}>
-                    <%= food.name %>
-                </label>
-                <% end %>
-            </div>
+      <div class="flex flex-col gap-1 md:flex-row md:gap-6">
+        <%= for food <- @food_options do %>
+          <label class="flex flex-row items-center gap-2">
+            <input
+              name="user[foods_ids][]"
+              type="checkbox"
+              value={food.id}
+              checked={Enum.any?(@changeset.data.foods, fn %{id: id} -> id == food.id end)}
+            />
+            <%= food.name %>
+          </label>
+        <% end %>
+      </div>
 
+      <%= label(
+        f,
+        :food_preference_other,
+        "Övriga matpreferenser eller mer detaljer. Om du inte har några preferenser, lämna blankt.",
+        class: "pt-2 pb-1"
+      ) %>
+      <%= text_input(f, :food_preference_other) %>
+      <%= error_tag(f, :food_preference_other) %>
 
-            <%= label f, :food_preference_other, "Övriga matpreferenser eller mer detaljer. Om du inte har några preferenser, lämna blankt.", class: "pt-2 pb-1"%>
-            <%= text_input f, :food_preference_other %>
-            <%= error_tag f, :food_preference_other %>
+      <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">
+        Adressuppgifter
+      </div>
 
-            <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">Adressuppgifter</div>
+      <div>
+        Dessa uppgifter är endast synliga för administratörer och samlas då uppgifterna
+        behövs för att få pengar från ABF.
+      </div>
 
-            <div>
-                Dessa uppgifter är endast synliga för administratörer och samlas då uppgifterna
-                behövs för att få pengar från ABF.
-            </div>
+      <%= label(f, :street, "Adress", class: "pt-2 pb-1") %>
+      <%= text_input(f, :street) %>
+      <%= error_tag(f, :street) %>
 
-            <%= label f, :street, "Adress", class: "pt-2 pb-1"%>
-            <%= text_input f, :street %>
-            <%= error_tag f, :street %>
+      <%= label(f, :zip, "Postnummer", class: "pt-2 pb-1") %>
+      <%= text_input(f, :zip) %>
+      <%= error_tag(f, :zip) %>
 
-            <%= label f, :zip, "Postnummer", class: "pt-2 pb-1"%>
-            <%= text_input f, :zip %>
-            <%= error_tag f, :zip %>
+      <%= label(f, :city, "Ort", class: "pt-2 pb-1") %>
+      <%= text_input(f, :city) %>
+      <%= error_tag(f, :city) %>
 
-            <%= label f, :city, "Ort", class: "pt-2 pb-1"%>
-            <%= text_input f, :city %>
-            <%= error_tag f, :city %>
-
-            <%= submit "Spara", [class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy text-white self-end text-lg uppercase"] %>
-
-        </.form>
-    </div>
+      <%= submit("Spara",
+        class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy text-white self-end text-lg uppercase"
+      ) %>
+    </.form>
+  </div>
 </div>

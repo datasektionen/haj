@@ -30,9 +30,7 @@ defmodule HajWeb.PublicRouter do
 
     get "/sok", PublicController, :sok
     get "/hajardu", PublicController, :sok
-
   end
-
 
   # Other scopes may use custom stacks.
   # scope "/api", HajWeb do

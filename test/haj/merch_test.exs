@@ -21,7 +21,7 @@ defmodule Haj.MerchTest do
     end
 
     test "create_merch_item/1 with valid data creates a merch_item" do
-      valid_attrs = %{name: "some name", price: 42, sizes: ["XS","S","L"]}
+      valid_attrs = %{name: "some name", price: 42, sizes: ["XS", "S", "L"]}
 
       assert {:ok, %MerchItem{} = merch_item} = Merch.create_merch_item(valid_attrs)
       assert merch_item.name == "some name"
@@ -93,7 +93,9 @@ defmodule Haj.MerchTest do
       merch_order = merch_order_fixture()
       update_attrs = %{paid: false}
 
-      assert {:ok, %MerchOrder{} = merch_order} = Merch.update_merch_order(merch_order, update_attrs)
+      assert {:ok, %MerchOrder{} = merch_order} =
+               Merch.update_merch_order(merch_order, update_attrs)
+
       assert merch_order.paid == false
     end
 
@@ -135,7 +137,9 @@ defmodule Haj.MerchTest do
     test "create_merch_order_item/1 with valid data creates a merch_order_item" do
       valid_attrs = %{count: 42, size: "some size"}
 
-      assert {:ok, %MerchOrderItem{} = merch_order_item} = Merch.create_merch_order_item(valid_attrs)
+      assert {:ok, %MerchOrderItem{} = merch_order_item} =
+               Merch.create_merch_order_item(valid_attrs)
+
       assert merch_order_item.count == 42
       assert merch_order_item.size == "some size"
     end
@@ -148,14 +152,19 @@ defmodule Haj.MerchTest do
       merch_order_item = merch_order_item_fixture()
       update_attrs = %{count: 43, size: "some updated size"}
 
-      assert {:ok, %MerchOrderItem{} = merch_order_item} = Merch.update_merch_order_item(merch_order_item, update_attrs)
+      assert {:ok, %MerchOrderItem{} = merch_order_item} =
+               Merch.update_merch_order_item(merch_order_item, update_attrs)
+
       assert merch_order_item.count == 43
       assert merch_order_item.size == "some updated size"
     end
 
     test "update_merch_order_item/2 with invalid data returns error changeset" do
       merch_order_item = merch_order_item_fixture()
-      assert {:error, %Ecto.Changeset{}} = Merch.update_merch_order_item(merch_order_item, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Merch.update_merch_order_item(merch_order_item, @invalid_attrs)
+
       assert merch_order_item == Merch.get_merch_order_item!(merch_order_item.id)
     end
 

@@ -70,7 +70,7 @@ defmodule HajWeb.GroupController do
           {:ok, _} = Haj.Accounts.update_user(user, %{"role" => "spexare"})
         end
 
-        if Enum.any?(user_groups, fn %{id: id} -> id == show_group_id |> String.to_integer end) do
+        if Enum.any?(user_groups, fn %{id: id} -> id == show_group_id |> String.to_integer() end) do
           conn
           |> put_flash(
             :error,

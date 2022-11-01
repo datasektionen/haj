@@ -7,6 +7,5 @@ defmodule Haj.Repo.Migrations.AddApplicationShowAssoc do
     end
 
     create index(:applications, [:show_id])
-
   end
 end
