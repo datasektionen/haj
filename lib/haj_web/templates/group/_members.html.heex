@@ -1,16 +1,19 @@
 <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Chefer</h1>
 
 <.table rows={chefer(@show_group)}>
-  <:col let={chef} label="Namn">
-    <%= link "#{chef.first_name} #{chef.last_name}", to: Routes.user_path(HajWeb.Endpoint, :index, chef.username), class: "font-bold"%>
+  <:col :let={chef} label="Namn">
+    <%= link("#{chef.first_name} #{chef.last_name}",
+      to: Routes.user_path(HajWeb.Endpoint, :index, chef.username),
+      class: "font-bold"
+    ) %>
   </:col>
-  <:col let={chef} label="KTH-id">
+  <:col :let={chef} label="KTH-id">
     <%= chef.username %>
   </:col>
-  <:col let={chef} label="Telefonnr">
+  <:col :let={chef} label="Telefonnr">
     <%= chef.phone %>
   </:col>
-  <:col let={chef} label="Email">
+  <:col :let={chef} label="Email">
     <%= chef.email %>
   </:col>
 </.table>
@@ -18,16 +21,19 @@
 <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Medlemmar</h1>
 
 <.table rows={gruppisar(@show_group)}>
-  <:col let={member} label="Namn">
-    <%= link "#{member.first_name} #{member.last_name}", to: Routes.user_path(HajWeb.Endpoint, :index, member.username), class: "font-bold"%>
+  <:col :let={member} label="Namn">
+    <%= link("#{member.first_name} #{member.last_name}",
+      to: Routes.user_path(HajWeb.Endpoint, :index, member.username),
+      class: "font-bold"
+    ) %>
   </:col>
-  <:col let={member} label="KTH-id">
+  <:col :let={member} label="KTH-id">
     <%= member.username %>
   </:col>
-  <:col let={member} label="Telefonnr">
+  <:col :let={member} label="Telefonnr">
     <%= member.phone %>
   </:col>
-  <:col let={member} label="Email">
+  <:col :let={member} label="Email">
     <%= member.email %>
   </:col>
 </.table>

@@ -324,14 +324,16 @@ defmodule Haj.Spex do
 
   """
   def get_show_group!(id) do
-    group_memberships_query = from gm in GroupMembership,
-      join: u in assoc(gm, :user),
-      order_by: [u.first_name, u.last_name],
-      preload: [:user]
+    group_memberships_query =
+      from gm in GroupMembership,
+        join: u in assoc(gm, :user),
+        order_by: [u.first_name, u.last_name],
+        preload: [:user]
 
-    query = from sg in ShowGroup,
-      where: sg.id == ^id,
-      preload: [:show, :group, group_memberships: ^group_memberships_query]
+    query =
+      from sg in ShowGroup,
+        where: sg.id == ^id,
+        preload: [:show, :group, group_memberships: ^group_memberships_query]
 
     Repo.one!(query)
   end
@@ -406,13 +408,14 @@ defmodule Haj.Spex do
   end
 
   def list_members_for_show(show_id) do
-    query = from sg in ShowGroup,
-      join: gm in assoc(sg, :group_memberships),
-      join: u in assoc(gm, :user),
-      where: sg.show_id == ^show_id,
-      select: u,
-      distinct: true,
-      order_by: [u.first_name, u.last_name]
+    query =
+      from sg in ShowGroup,
+        join: gm in assoc(sg, :group_memberships),
+        join: u in assoc(gm, :user),
+        where: sg.show_id == ^show_id,
+        select: u,
+        distinct: true,
+        order_by: [u.first_name, u.last_name]
 
     Repo.all(query)
   end
@@ -450,7 +453,8 @@ defmodule Haj.Spex do
       from sg in ShowGroup,
         where: sg.show_id == ^show_id,
         join: g in assoc(sg, :group),
-        left_join: gm in GroupMembership, on: gm.show_group_id == sg.id,
+        left_join: gm in GroupMembership,
+        on: gm.show_group_id == sg.id,
         left_join: u in assoc(gm, :user),
         order_by: g.name,
         preload: [group: [], group_memberships: {gm, user: u}]

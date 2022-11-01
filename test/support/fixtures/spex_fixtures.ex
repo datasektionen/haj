@@ -41,6 +41,7 @@ defmodule Haj.SpexFixtures do
   def show_group_fixture(attrs \\ %{}) do
     show = show_fixture()
     group = group_fixture()
+
     {:ok, show_group} =
       attrs
       |> Enum.into(%{

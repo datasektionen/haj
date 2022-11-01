@@ -40,7 +40,6 @@ if config_env() == :prod do
   login_host = System.get_env("LOGIN_HOST") || raise "LOGIN_HOST is missing"
   haj_subdomain = System.get_env("HAJ_SUBDOMAIN") || raise "HAJ_SUBDOMAIN is missing"
 
-
   config :haj,
     login_api_key: login_api_key,
     login_host: login_host,

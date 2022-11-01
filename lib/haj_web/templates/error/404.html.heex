@@ -1,52 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content={csrf_token_value()}>
+    <meta name="csrf-token" content={csrf_token_value()} />
     <.live_title prefix="Metaspexet · ">
-        <%= assigns[:page_title] || "Fel" %>
+      <%= assigns[:page_title] || "Fel" %>
     </.live_title>
-    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css" )} />
-    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-    <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js" )}></script>
-</head>
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <script
+      defer
+      phx-track-static
+      type="text/javascript"
+      src={Routes.static_path(@conn, "/assets/app.js")}
+    >
+    </script>
+  </head>
 
-<body class="">
+  <body class="">
     <main class="">
-        <%= render "_navbar.html", conn: @conn %>
-        <div class="flex flex-col justify-between min-h-screen bg-gray-200">
+      <%= render("_navbar.html", conn: @conn) %>
+      <div class="flex flex-col justify-between min-h-screen bg-gray-200">
+        <section class="flex relative h-screen max-h-[60vh] pt-48 pb-10 w-full overflow-hidden bg-black">
+          <div class="flex flex-col justify-end flex-1 p-6 md:px-14 text-white space-y-3 z-10 max-w-lg mr-auto">
+            <h1 class="font-title text-5xl md:text-5xl">Här var det tomt</h1>
+            <h2 class="font-title text-2xl md:text-4xl">Eller välkommen till 404-sidan</h2>
+          </div>
 
-            <section class="flex relative h-screen max-h-[60vh] pt-48 pb-10 w-full overflow-hidden bg-black">
-                <div class="flex flex-col justify-end flex-1 p-6 md:px-14 text-white space-y-3 z-10 max-w-lg mr-auto">
-                    <h1 class="font-title text-5xl md:text-5xl">Här var det tomt</h1>
-                    <h2 class="font-title text-2xl md:text-4xl">Eller välkommen till 404-sidan</h2>
-                </div>
+          <div
+            class="absolute top-0 left-0 h-full w-full bg-[url('/images/404.jpg')] bg-cover bg-center
+                 from-black after:bg-gradient-to-t after:overflow-hidden after:visible after:absolute 
+                   after:top-0 after:left-0 after:w-full after:h-full after:z-0"
+            x-data
+            x-intersect.once="$el.classList.add('scroll-in')"
+          >
+          </div>
+        </section>
 
-
-                <div class="absolute top-0 left-0 h-full w-full bg-[url('/images/404.jpg')] bg-cover bg-center
-                            from-black after:bg-gradient-to-t after:overflow-hidden after:visible after:absolute 
-                            after:top-0 after:left-0 after:w-full after:h-full after:z-0" x-data
-                    x-intersect.once="$el.classList.add('scroll-in')">
-                </div>
-            </section>
-
-            <section class="bg-gray-200 p-6 pb-12 md:pt-12 md:pb-20 md:px-14 text-lg">
-                <p>
-                    OOPSIE WOOPSIE!! Uwu We make a fucky wucky!! A wittle fucko boingo! The code monkeys at our
-                    headquarters are working VEWY HAWD to fix this!
-                </p>
-                <p class="pt-2">
-                    Om du tror att det inte ska vara så här kan du höra av dig till <a class="font-bold"
-                        href="mailto:webb@metaspexet.se">Webbgruppen</a>.
-                </p>
-            </section>
-            <%= render "_footer.html", conn: @conn %>
-        </div>
+        <section class="bg-gray-200 p-6 pb-12 md:pt-12 md:pb-20 md:px-14 text-lg">
+          <p>
+            OOPSIE WOOPSIE!! Uwu We make a fucky wucky!! A wittle fucko boingo! The code monkeys at our
+            headquarters are working VEWY HAWD to fix this!
+          </p>
+          <p class="pt-2">
+            Om du tror att det inte ska vara så här kan du höra av dig till <a
+              class="font-bold"
+              href="mailto:webb@metaspexet.se"
+            >Webbgruppen</a>.
+          </p>
+        </section>
+        <%= render("_footer.html", conn: @conn) %>
+      </div>
     </main>
-</body>
-
+  </body>
 </html>

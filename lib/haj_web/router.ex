@@ -44,8 +44,6 @@ defmodule HajWeb.Router do
 
     get "/members", MembersController, :index
 
-
-
     get "/show-groups", GroupController, :index
     get "/show-groups/edit/:show_group_id", GroupController, :edit
     get "/show-groups/:show_group_id", GroupController, :group
@@ -54,8 +52,6 @@ defmodule HajWeb.Router do
     get "/show-groups/:show_group_id/applications", GroupController, :applications
     post "/show-groups/:show_group_id/accept/:user_id", GroupController, :accept_user
 
-
-
     get "/applications", ApplicationController, :index
     get "/applications/export", ApplicationController, :export
   end
@@ -63,15 +59,13 @@ defmodule HajWeb.Router do
   scope "/settings", HajWeb do
     pipe_through [:browser, :require_authenticated_user, :require_admin_access]
 
-
     get "/", SettingsController, :index
     get "/groups", SettingsController, :groups
     get "/groups/new", SettingsController, :new_group
     post "/groups", SettingsController, :create_group
     get "/groups/:id", SettingsController, :edit_group
-    put  "/groups/:id", SettingsController, :update_group
+    put "/groups/:id", SettingsController, :update_group
     delete "/groups/:id", SettingsController, :delete_group
-
 
     get "/show/:show_id/groups", SettingsController, :show_groups
     get "/show-group/:id", SettingsController, :edit_show_group
@@ -95,7 +89,6 @@ defmodule HajWeb.Router do
     get "/foods/:id", SettingsController, :edit_food
     put "/foods/:id", SettingsController, :update_food
     delete "/foods/:id", SettingsController, :delete_food
-
   end
 
   scope "/sok", HajWeb do

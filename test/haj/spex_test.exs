@@ -21,7 +21,12 @@ defmodule Haj.SpexTest do
     end
 
     test "create_show/1 with valid data creates a show" do
-      valid_attrs = %{description: "some description", or_title: "some or_title", title: "some title", year: ~D[2022-06-15]}
+      valid_attrs = %{
+        description: "some description",
+        or_title: "some or_title",
+        title: "some title",
+        year: ~D[2022-06-15]
+      }
 
       assert {:ok, %Show{} = show} = Spex.create_show(valid_attrs)
       assert show.description == "some description"
@@ -36,7 +41,13 @@ defmodule Haj.SpexTest do
 
     test "update_show/2 with valid data updates the show" do
       show = show_fixture()
-      update_attrs = %{description: "some updated description", or_title: "some updated or_title", title: "some updated title", year: ~D[2022-06-16]}
+
+      update_attrs = %{
+        description: "some updated description",
+        or_title: "some updated or_title",
+        title: "some updated title",
+        year: ~D[2022-06-16]
+      }
 
       assert {:ok, %Show{} = show} = Spex.update_show(show, update_attrs)
       assert show.description == "some updated description"
@@ -186,7 +197,9 @@ defmodule Haj.SpexTest do
     test "create_group_membership/1 with valid data creates a group_membership" do
       valid_attrs = %{role: :chef}
 
-      assert {:ok, %GroupMembership{} = group_membership} = Spex.create_group_membership(valid_attrs)
+      assert {:ok, %GroupMembership{} = group_membership} =
+               Spex.create_group_membership(valid_attrs)
+
       assert group_membership.role == :chef
     end
 
@@ -198,13 +211,18 @@ defmodule Haj.SpexTest do
       group_membership = group_membership_fixture()
       update_attrs = %{role: :gruppis}
 
-      assert {:ok, %GroupMembership{} = group_membership} = Spex.update_group_membership(group_membership, update_attrs)
+      assert {:ok, %GroupMembership{} = group_membership} =
+               Spex.update_group_membership(group_membership, update_attrs)
+
       assert group_membership.role == :gruppis
     end
 
     test "update_group_membership/2 with invalid data returns error changeset" do
       group_membership = group_membership_fixture()
-      assert {:error, %Ecto.Changeset{}} = Spex.update_group_membership(group_membership, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Spex.update_group_membership(group_membership, @invalid_attrs)
+
       assert group_membership == Spex.get_group_membership!(group_membership.id)
     end
 
@@ -240,7 +258,9 @@ defmodule Haj.SpexTest do
     test "create_group_membership/1 with valid data creates a group_membership" do
       valid_attrs = %{role: :chef}
 
-      assert {:ok, %GroupMembership{} = group_membership} = Spex.create_group_membership(valid_attrs)
+      assert {:ok, %GroupMembership{} = group_membership} =
+               Spex.create_group_membership(valid_attrs)
+
       assert group_membership.role == :chef
     end
 
@@ -252,13 +272,18 @@ defmodule Haj.SpexTest do
       group_membership = group_membership_fixture()
       update_attrs = %{role: :gruppis}
 
-      assert {:ok, %GroupMembership{} = group_membership} = Spex.update_group_membership(group_membership, update_attrs)
+      assert {:ok, %GroupMembership{} = group_membership} =
+               Spex.update_group_membership(group_membership, update_attrs)
+
       assert group_membership.role == :gruppis
     end
 
     test "update_group_membership/2 with invalid data returns error changeset" do
       group_membership = group_membership_fixture()
-      assert {:error, %Ecto.Changeset{}} = Spex.update_group_membership(group_membership, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Spex.update_group_membership(group_membership, @invalid_attrs)
+
       assert group_membership == Spex.get_group_membership!(group_membership.id)
     end
 

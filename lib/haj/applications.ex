@@ -50,10 +50,12 @@ defmodule Haj.Applications do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_application(%{"show_groups" => show_groups, "user_id" => user_id, "show_id" => show_id} = attrs \\ %{}) do
+  def create_application(
+        %{"show_groups" => show_groups, "user_id" => user_id, "show_id" => show_id} = attrs \\ %{}
+      ) do
     Repo.transaction(fn ->
-
-      previous = Repo.one(from a in Application, where: a.show_id == ^show_id and a.user_id == ^user_id)
+      previous =
+        Repo.one(from a in Application, where: a.show_id == ^show_id and a.user_id == ^user_id)
 
       if previous != nil do
         {:ok, _} = Repo.delete(previous)
@@ -122,26 +124,30 @@ defmodule Haj.Applications do
   end
 
   def get_applications_for_show_group(show_group_id) do
-    query = from a in Application,
-      join: asg in ApplicationShowGroup, where: asg.application_id == a.id,
-      where: asg.show_group_id == ^show_group_id,
-      preload: [user: [], application_show_groups: [show_group: [group: []]]]
+    query =
+      from a in Application,
+        join: asg in ApplicationShowGroup,
+        where: asg.application_id == a.id,
+        where: asg.show_group_id == ^show_group_id,
+        preload: [user: [], application_show_groups: [show_group: [group: []]]]
 
     Repo.all(query)
   end
 
   def get_applications_for_user(user_id) do
-    query = from a in Application,
-      where: a.user_id == ^user_id,
-      preload: [application_show_groups: []]
+    query =
+      from a in Application,
+        where: a.user_id == ^user_id,
+        preload: [application_show_groups: []]
 
     Repo.all(query)
   end
 
   def list_applications_for_show(show_id) do
-    query = from a in Application,
-      where: a.show_id == ^show_id,
-      preload: [application_show_groups: [show_group: [group: []]], user: []]
+    query =
+      from a in Application,
+        where: a.show_id == ^show_id,
+        preload: [application_show_groups: [show_group: [group: []]], user: []]
 
     Repo.all(query)
   end

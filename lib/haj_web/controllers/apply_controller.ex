@@ -26,7 +26,6 @@ defmodule HajWeb.ApplyController do
   defp application_open?(show) do
     current_date = DateTime.now!("Etc/UTC")
 
-
     case show.application_opens && DateTime.compare(show.application_opens, current_date) do
       :lt ->
         case DateTime.compare(show.application_closes, current_date) do

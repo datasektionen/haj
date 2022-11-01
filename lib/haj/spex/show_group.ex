@@ -3,7 +3,6 @@ defmodule Haj.Spex.ShowGroup do
   import Ecto.Changeset
 
   schema "show_groups" do
-
     field :application_description, :string
     field :application_extra_question, :string
     field :application_open, :boolean, default: false
@@ -20,7 +19,13 @@ defmodule Haj.Spex.ShowGroup do
   @doc false
   def changeset(show_group, attrs) do
     show_group
-    |> cast(attrs, [:group_id, :show_id, :application_description, :application_open, :application_extra_question])
+    |> cast(attrs, [
+      :group_id,
+      :show_id,
+      :application_description,
+      :application_open,
+      :application_extra_question
+    ])
     |> validate_required([:group_id, :show_id])
   end
 end

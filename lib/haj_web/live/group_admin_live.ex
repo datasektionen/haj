@@ -95,7 +95,7 @@ defmodule HajWeb.GroupAdminLive do
 
   def render(assigns) do
     ~H"""
-    <.form let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
+    <.form :let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
       <%= label(f, :application_description, "Beskrivning av gruppen på ansökningssidan.",
         class: "uppercase font-bold py-2"
       ) %>
@@ -157,7 +157,7 @@ defmodule HajWeb.GroupAdminLive do
     <div class="uppercase font-bold py-2">Nuvarande medlemmar</div>
 
     <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
-      <:col let={member} label="Chefer">
+      <:col :let={member} label="Chefer">
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>
           <button
@@ -172,7 +172,7 @@ defmodule HajWeb.GroupAdminLive do
     </.table>
 
     <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :gruppis))}>
-      <:col let={member} label="Gruppisar">
+      <:col :let={member} label="Gruppisar">
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>
           <button
