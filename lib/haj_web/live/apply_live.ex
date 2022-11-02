@@ -203,7 +203,12 @@ defmodule HajWeb.ApplyLive do
         </div>
       </div>
 
-      <%= form_for :application, "#", [phx_submit: "apply", class: "flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0"], fn f -> %>
+      <.form
+        :let={f}
+        for={:application}
+        phx-submit="apply"
+        class="flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0"
+      >
         <h1 class="uppercase font-bold border-b-2 border-burgandy text-xl mb-2">Användaruppgifter</h1>
         <label>KTH-id:</label>
         <input type="text" value={"#{@current_user.username}@kth.se"} class="bg-gray-200" disabled />
@@ -296,7 +301,7 @@ defmodule HajWeb.ApplyLive do
         <%= submit("Sök",
           class: "uppercase font-bold mt-1 text-white bg-burgandy text-lg px-3 py-2 self-start"
         ) %>
-      <% end %>
+      </.form>
     </div>
     """
   end

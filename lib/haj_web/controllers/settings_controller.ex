@@ -5,6 +5,9 @@ defmodule HajWeb.SettingsController do
   alias Haj.Foods
   alias Haj.Foods.Food
 
+  alias Haj.Merch
+  alias Haj.Merch.MerchItem
+
   plug :authorize
 
   def index(conn, _params) do

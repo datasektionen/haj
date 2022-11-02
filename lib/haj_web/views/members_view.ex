@@ -1,5 +1,5 @@
 defmodule HajWeb.MembersView do
   use HajWeb, :view
 
-  def table(assigns), do: HajWeb.LiveComponents.Table.table(assigns)
+  def table(assigns), do: HajWeb.Components.Table.table(assigns)
 end

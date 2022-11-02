@@ -3,7 +3,7 @@ defmodule HajWeb.GroupAdminLive do
 
   alias Haj.Spex
 
-  import HajWeb.LiveComponents.Table
+  import HajWeb.Components.Table
 
   def mount(_params, %{"user_token" => token, "show_group_id" => id}, socket) do
     show_group = Haj.Spex.get_show_group!(id)
@@ -121,13 +121,20 @@ defmodule HajWeb.GroupAdminLive do
       Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
     </p>
     <div class="flex flex-row items-stretch gap-2">
-      <%= form_for :role_form, "#", [phx_change: "update_role"], fn f -> %>
+      <.form :let={f} for={:role_form} phx-change="update_role">
         <%= select(f, :role, @roles, class: "h-full", value: @role) %>
-      <% end %>
+      </.form>
 
-      <%= form_for :search_form, "", [phx_change: "suggest", phx_submit: "add", autocomplete: :off, class: "flex-grow"], fn f -> %>
+      <.form
+        :let={f}
+        for={:search_form}
+        phx-change="suggest"
+        phx-submit="add"
+        autocomplete={:off}
+        class="flex-grow"
+      >
         <%= text_input(f, :q, value: @query, class: "w-full") %>
-      <% end %>
+      </.form>
     </div>
 
     <div id="matches" class="flex flex-col bg-white mt-2">

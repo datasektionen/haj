@@ -35,25 +35,46 @@ defmodule HajWeb.Router do
   scope "/", HajWeb do
     pipe_through [:browser, :require_authenticated_user, :require_spex_access]
 
-    get "/dashboard", DashboardController, :index
-    get "/dashboard/my-data", DashboardController, :edit_user
-    put "/dashboard/my-data", DashboardController, :update_user
+    scope "/dashboard" do
+      get "/", DashboardController, :index
+      get "/my-data", DashboardController, :edit_user
+      put "/my-data", DashboardController, :update_user
+
+      get "/order-merch", DashboardController, :order_merch
+      get "/order-item/new", DashboardController, :new_order_item
+      get "/order-item/new/:item_id", DashboardController, :new_order_item
+      post "/order-item/new", DashboardController, :create_order_item
+      get "/order-item/:id/edit", DashboardController, :edit_order_item
+      put "/order-item/:id/edit", DashboardController, :update_order_item
+      delete "/order-item/:id", DashboardController, :delete_order_item
+    end
 
     get "/user/:username", UserController, :index
     get "/user/:username/groups", UserController, :groups
 
     get "/members", MembersController, :index
 
-    get "/show-groups", GroupController, :index
-    get "/show-groups/edit/:show_group_id", GroupController, :edit
-    get "/show-groups/:show_group_id", GroupController, :group
-    get "/show-groups/:show_group_id/vcard", GroupController, :vcard
-    get "/show-groups/:show_group_id/csv", GroupController, :csv
-    get "/show-groups/:show_group_id/applications", GroupController, :applications
-    post "/show-groups/:show_group_id/accept/:user_id", GroupController, :accept_user
+    scope "/show-groups" do
+      get "/", GroupController, :index
+      get "/edit/:show_group_id", GroupController, :edit
+      get "/:show_group_id", GroupController, :group
+      get "/:show_group_id/vcard", GroupController, :vcard
+      get "/:show_group_id/csv", GroupController, :csv
+      get "/:show_group_id/applications", GroupController, :applications
+      post "/:show_group_id/accept/:user_id", GroupController, :accept_user
+    end
 
     get "/applications", ApplicationController, :index
     get "/applications/export", ApplicationController, :export
+
+    get "/merch-admin/:show_id", MerchAdminController, :index
+    get "/merch-admin/:show_id/orders", MerchAdminController, :orders
+    get "/merch-admin/:show_id/csv", MerchAdminController, :csv
+    get "/merch-admin/:show_id/new", MerchAdminController, :new
+    post "/merch-admin/:show_id/new", MerchAdminController, :create
+    get "/merch-admin/:id/edit", MerchAdminController, :edit
+    put "/merch-admin/:id/edit", MerchAdminController, :update
+    delete "/merch-admin/:show_id/:id", MerchAdminController, :delete
   end
 
   scope "/settings", HajWeb do

@@ -9,7 +9,12 @@
       till <a href="mailto:webb@metaspexet.se">webbansvarig</a>.
     </div>
 
-    <%= form_for @changeset, Routes.dashboard_path(@conn, :update_user), [class: "flex flex-col"] ,fn f -> %>
+    <.form
+      :let={f}
+      for={@changeset}
+      action={Routes.dashboard_path(@conn, :update_user)}
+      class="flex flex-col"
+    >
       <div class="uppercase font-bold text-lg py-1 border-b-2 border-burgandy">
         Personuppgifter
       </div>
@@ -105,6 +110,6 @@
       <%= submit("Spara",
         class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy text-white self-end text-lg uppercase"
       ) %>
-    <% end %>
+    </.form>
   </div>
 </div>

@@ -1,4 +1,4 @@
-defmodule HajWeb.LiveComponents.Table do
+defmodule HajWeb.Components.Table do
   # From https://gist.github.com/bratsche/30fe2c2f89756edc33b0793f9b9f8c3e
   use Phoenix.Component
 
@@ -7,7 +7,7 @@ defmodule HajWeb.LiveComponents.Table do
     <div class="overflow-x-auto">
       <table class="w-full divide-y divide-gray-200">
         <thead>
-          <tr class="text-md font-semibold text-left text-left bg-gray-100 uppercase">
+          <tr class="text-md font-semibold text-left bg-gray-100 uppercase">
             <%= for col <- @col do %>
               <th class="px-4 py-3">
                 <%= if col[:label] == nil, do: "", else: col.label %>

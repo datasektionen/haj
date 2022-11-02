@@ -39,16 +39,8 @@ defmodule Haj.Applications do
   def get_application!(id), do: Repo.get!(Application, id)
 
   @doc """
-  Creates a application.
-
-  ## Examples
-
-      iex> create_application(%{field: value})
-      {:ok, %Application{}}
-
-      iex> create_application(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
+  Creates an application. Takes a list of show, groups, user id and a show id.
+  If there is already an application for that show for that user, replaces and creates a new applicaiton.
   """
   def create_application(
         %{"show_groups" => show_groups, "user_id" => user_id, "show_id" => show_id} = attrs \\ %{}
@@ -123,6 +115,9 @@ defmodule Haj.Applications do
     Application.changeset(application, attrs)
   end
 
+  @doc """
+  Returns a list of applications for a show group.
+  """
   def get_applications_for_show_group(show_group_id) do
     query =
       from a in Application,
@@ -134,6 +129,9 @@ defmodule Haj.Applications do
     Repo.all(query)
   end
 
+  @doc """
+  Returns a list of applicaitons for a user.
+  """
   def get_applications_for_user(user_id) do
     query =
       from a in Application,
@@ -143,6 +141,9 @@ defmodule Haj.Applications do
     Repo.all(query)
   end
 
+  @doc """
+  Returns all application for a show.
+  """
   def list_applications_for_show(show_id) do
     query =
       from a in Application,

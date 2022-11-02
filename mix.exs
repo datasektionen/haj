@@ -52,7 +52,8 @@ defmodule Haj.MixProject do
       {:heroicons, "~> 0.4.1"},
       {:httpoison, "~> 1.8"},
       {:csv, "~> 2.4"},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
     ]
   end
 

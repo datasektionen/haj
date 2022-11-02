@@ -152,6 +152,9 @@ defmodule Haj.Accounts do
     :ok
   end
 
+  @doc """
+  Searches for users based on a search phrase
+  """
   def search_users(search_phrase) do
     start_char = String.slice(search_phrase, 0..1)
 
@@ -164,6 +167,9 @@ defmodule Haj.Accounts do
     Repo.all(query)
   end
 
+  @doc """
+  Creates a vcard string based on users and show, the show is needed to create organization year
+  """
   def to_vcard(users, show) do
     Enum.map(users, &user_vcard(&1, show))
     |> Enum.join("\r\n")

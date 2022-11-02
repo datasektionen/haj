@@ -1,7 +1,7 @@
 defmodule HajWeb.GroupView do
   use HajWeb, :view
 
-  def table(assigns), do: HajWeb.LiveComponents.Table.table(assigns)
+  def table(assigns), do: HajWeb.Components.Table.table(assigns)
 
   defp is_admin?(show_group, user) do
     user.role == :admin ||
