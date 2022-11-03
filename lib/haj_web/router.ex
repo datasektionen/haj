@@ -28,8 +28,20 @@ defmodule HajWeb.Router do
     get "/login/callback", SessionController, :callback
     get "/logout", SessionController, :logout
 
+    live_session :default, on_mount: [{HajWeb.UserAuth, :current_user}] do
+      live "/signin", SignInLive, :index
+    end
+
     get "/", LoginController, :login
     get "/unauthorized", LoginController, :unauthorized
+  end
+
+  scope "/live", HajWeb do
+    pipe_through :browser
+
+    live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}] do
+      live "/members", MembersLive, :index
+    end
   end
 
   scope "/", HajWeb do

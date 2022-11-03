@@ -20,6 +20,8 @@ defmodule Haj.Accounts.User do
     field :role, Ecto.Enum, values: [:admin, :chef, :spexare, :none], default: :none
 
     many_to_many :foods, Haj.Foods.Food, join_through: "food_preferences", on_replace: :delete
+    has_many :group_memberships, Haj.Spex.GroupMembership
+
     field :food_preference_other, :string
 
     timestamps()

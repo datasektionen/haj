@@ -37,6 +37,7 @@ defmodule HajWeb.SessionController do
     host = Application.get_env(:haj, :login_host)
     api_key = Application.get_env(:haj, :login_api_key)
 
+    # TODO, move this to backend Haj.Login module
     {:ok, response} = HTTPoison.get("https://#{host}/verify/#{token}.json?api_key=#{api_key}")
 
     case response do

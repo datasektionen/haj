@@ -43,10 +43,17 @@ defmodule HajWeb do
     end
   end
 
-  def live_view do
+  def live_view(opts \\ []) do
     quote do
-      use Phoenix.LiveView,
-        layout: {HajWeb.LayoutView, :live}
+      @opts Keyword.merge(
+              [
+                layout: {HajWeb.LayoutView, "live.html"},
+                container: {:div, class: "relative flex bg-white"}
+              ],
+              unquote(opts)
+            )
+
+      use Phoenix.LiveView, @opts
 
       unquote(view_helpers())
     end
@@ -97,8 +104,10 @@ defmodule HajWeb do
       import Phoenix.View
 
       import HajWeb.ErrorHelpers
+      import HajWeb.LiveHelpers
       import HajWeb.Gettext
       alias HajWeb.Router.Helpers, as: Routes
+      alias Phoenix.LiveView.JS
     end
   end
 

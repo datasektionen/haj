@@ -420,6 +420,21 @@ defmodule Haj.Spex do
     Repo.all(query)
   end
 
+  @doc """
+  Preloads all current group membership information from a list of users
+  """
+  def preload_user_groups(users) do
+    %{id: show_id} = current_spex()
+
+    query =
+      from gm in GroupMembership,
+        join: sg in assoc(gm, :show_group),
+        where: sg.show_id == ^show_id,
+        order_by: sg.id
+
+    Repo.preload(users, group_memberships: {query, [show_group: [group: []]]})
+  end
+
   def get_show_groups_for_user(userid) do
     query =
       from sg in ShowGroup,
@@ -458,6 +473,46 @@ defmodule Haj.Spex do
         left_join: u in assoc(gm, :user),
         order_by: g.name,
         preload: [group: [], group_memberships: {gm, user: u}]
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Searches for members based on a search phrase for a given show
+  """
+  def search_show_members(show_id, search_phrase) do
+    query =
+      from sg in ShowGroup,
+        join: gm in assoc(sg, :group_memberships),
+        join: u in assoc(gm, :user),
+        where:
+          sg.show_id == ^show_id and
+            (fragment("SIMILARITY(?, ?) > 0.3", u.first_name, ^search_phrase) or
+               fragment("SIMILARITY(?, ?) > 0.3", u.last_name, ^search_phrase) or
+               fragment("SIMILARITY(?, ?) > 0.3", u.username, ^search_phrase)),
+        order_by: fragment("LEVENSHTEIN(? || ?,?)", u.first_name, u.last_name, ^search_phrase),
+        select: u,
+        distinct: u
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Searches for members based on a search phrase for a given show
+  """
+  def search_group_members(show_group_id, search_phrase) do
+    query =
+      from sg in ShowGroup,
+        join: gm in assoc(sg, :group_memberships),
+        join: u in assoc(gm, :user),
+        where:
+          sg.id == ^show_group_id and
+            (fragment("SIMILARITY(?, ?) > 0.3", u.first_name, ^search_phrase) or
+               fragment("SIMILARITY(?, ?) > 0.3", u.last_name, ^search_phrase) or
+               fragment("SIMILARITY(?, ?) > 0.3", u.username, ^search_phrase)),
+        order_by: fragment("LEVENSHTEIN(? || ?,?)", u.first_name, u.last_name, ^search_phrase),
+        select: u,
+        distinct: u
 
     Repo.all(query)
   end
