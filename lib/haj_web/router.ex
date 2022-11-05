@@ -41,6 +41,9 @@ defmodule HajWeb.Router do
 
     live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}] do
       live "/members", MembersLive, :index
+      live "/user/:username", UserLive, :index
+      live "/groups", GroupsLive, :index
+      live "/group/:show_group_id", GroupLive, :index
     end
   end
 

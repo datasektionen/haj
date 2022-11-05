@@ -24,11 +24,17 @@ defmodule HajWeb.LayoutView do
           }
         />
         <.nav_link
-          navigate={Routes.group_path(Endpoint, :index)}
+          navigate={Routes.groups_path(Endpoint, :index)}
           icon_name={:user_group}
           title="Grupper"
           }
         />
+        <%= for g <- @current_user.group_memberships do %>
+          <.nav_group_link
+            navigate={Routes.group_path(Endpoint, :index, g.show_group.id)}
+            title={g.show_group.group.name}
+          />
+        <% end %>
       <% end %>
     </div>
     """
@@ -38,12 +44,22 @@ defmodule HajWeb.LayoutView do
     ~H"""
     <.link
       navigate={@navigate}
-      class="text-gray-700 hover:text-gray-900 hover:bg-gray-50 group flex items-center px-2 py-2 rounded-md"
+      class="text-burgandy-light hover:text-gray-700 hover:bg-burgandy-light group flex items-center px-2 py-2 rounded-md"
     >
-      <.icon
-        name={@icon_name}
-        class="text-gray-700 group-hover:text-gray-900 mr-3 flex-shrink-0 h-6 w-6"
-      /> <%= @title %>
+      <.icon name={@icon_name} class=" group-hover:text-gray-900 mr-3 flex-shrink-0 h-6 w-6" />
+      <%= @title %>
+    </.link>
+    """
+  end
+
+  # Link for a show group, should be indented and whtihout a logo
+  def nav_group_link(assigns) do
+    ~H"""
+    <.link
+      navigate={@navigate}
+      class="text-burgandy-light hover:text-gray-700 hover:bg-burgandy-light flex items-center pl-8 px-2 py-2 rounded-md"
+    >
+      <%= @title %>
     </.link>
     """
   end

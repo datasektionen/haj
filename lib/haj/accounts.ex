@@ -198,4 +198,8 @@ defmodule Haj.Accounts do
       clrf <>
       "END:VCARD"
   end
+
+  def preload(users, args \\ []) do
+    Repo.preload(users, args)
+  end
 end

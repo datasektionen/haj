@@ -11,7 +11,9 @@ defmodule HajWeb.GroupAdminLive do
 
     socket =
       socket
-      |> assign_new(:current_user, fn -> Haj.Accounts.get_user_by_session_token(token) end)
+      |> assign_new(:current_user, fn ->
+        Haj.Accounts.get_user_by_session_token(token) |> Haj.Spex.preload_user_groups()
+      end)
       |> assign(:show_group, show_group)
       |> assign(
         changeset: changeset,

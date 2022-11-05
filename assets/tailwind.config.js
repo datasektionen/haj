@@ -13,7 +13,8 @@ module.exports = {
       },
       colors: {
         'burgandy': '#6f1d1b',
-        'orange': '#bc827a'
+        'orange': '#bc827a',
+        'burgandy-light': "#F1E8E8"
       },
     },
     fontFamily: {

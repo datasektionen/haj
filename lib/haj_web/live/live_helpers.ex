@@ -2,7 +2,8 @@ defmodule HajWeb.LiveHelpers do
   use Phoenix.Component
 
   alias Haj.Accounts
-  alias LiveBeatsWeb.Router.Helpers, as: Routes
+  alias HajWeb.Endpoint
+  alias HajWeb.Router.Helpers, as: Routes
   alias Phoenix.LiveView.JS
 
   def home_path(), do: "/"
@@ -25,6 +26,67 @@ defmodule HajWeb.LiveHelpers do
         <%= apply(Heroicons.Solid, @name, [Map.to_list(@rest)]) %>
       <% end %>
     <% end %>
+    """
+  end
+
+  attr :rows, :list, required: true
+
+  slot :col do
+    attr :label, :string, required: true
+    attr :class, :string
+  end
+
+  def live_table(assigns) do
+    ~H"""
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left">
+        <thead class="text-xs text-gray-700 uppercase">
+          <tr class="border-b-2">
+            <%= for col <- @col do %>
+              <th scope="col" class={"py-3 pl-2 pr-6 #{col[:class]}"}>
+                <%= col.label %>
+              </th>
+            <% end %>
+          </tr>
+        </thead>
+
+        <tbody>
+          <%= for {row, _i} <- Enum.with_index(@rows) do %>
+            <tr class="hover:bg-gray-50 rounded-full border-b">
+              <%= for col <- @col do %>
+                <td
+                  scope="row"
+                  class={"py-4 px-2 font-medium text-gray-900 whitespace-nowrap #{} #{col[:class]}"}
+                >
+                  <%= render_slot(col, row) %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    """
+  end
+
+  attr :user, :map
+
+  def user_card(assigns) do
+    ~H"""
+    <div class="flex flex-row">
+      <.link
+        navigate={Routes.user_path(Endpoint, :index, @user.username)}
+        class="group flex flex-row items-center"
+      >
+        <img
+          src={"https://zfinger.datasektionen.se/user/#{@user.username}/image/100"}
+          class="h-8 w-8 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
+        />
+        <span class="text-gray-700 text-md px-2 group-hover:text-gray-900">
+          <%= full_name(@user) %>
+        </span>
+      </.link>
+    </div>
     """
   end
 
@@ -123,4 +185,6 @@ defmodule HajWeb.LiveHelpers do
          "transform opacity-0 scale-95"}
     )
   end
+
+  def full_name(%Accounts.User{} = user), do: "#{user.first_name} #{user.last_name}"
 end
