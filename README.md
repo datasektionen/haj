@@ -10,10 +10,19 @@ Prerequisites:
 
 To start your Phoenix server:
 
-  * Install dependencies with `mix deps.get`
-  * Install npm dependencies with `cd assets && npm install`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+**Mac**  
+  This process requires docker, if you don't have it you can either install it [here](https://www.docker.com/products/docker-desktop/) or follow the general instructions below.
+  1. Setup environment with ```make mac-install-env```
+  2. Set correct data in the .env file in config/.env
+  3. Run ```make run-dev```, this should open up the website (you will have to reload it the first time)
+
+
+**Windows and general instructions**    
+
+  1. Install dependencies with `mix deps.get`
+  2. Install npm dependencies with `cd assets && npm install`
+  3. Create and migrate your database with `mix ecto.setup`
+  4. Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
 Now you can visit [`localhost.datasektionen.se:4001`](http://localhost.datasektionen.se:4001) from your browser.
 
