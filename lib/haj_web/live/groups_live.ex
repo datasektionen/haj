@@ -34,7 +34,7 @@ defmodule HajWeb.GroupsLive do
       navigate={Routes.group_path(Endpoint, :index, @show_group.id)}
       class="flex flex-col gap-1 sm:gap-1.5 border rounded-lg px-4 py-4 hover:bg-gray-50"
     >
-      <div class="text-lg font-bold text-burgandy">
+      <div class="text-lg font-bold text-burgandy-500">
         <%= @show_group.group.name %>
       </div>
       <div class="text-gray-500">

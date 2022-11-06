@@ -11,7 +11,7 @@
             <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
               <%= link("Redigera", to: Routes.settings_path(@conn, :edit_food, food)) %>
             </button>
-            <button class="bg-burgandy text-white px-2 py-0.5 rounded-sm">
+            <button class="bg-burgandy-500 text-white px-2 py-0.5 rounded-sm">
               <%= link("Radera",
                 to: Routes.settings_path(@conn, :delete_food, food),
                 method: :delete,
@@ -23,7 +23,7 @@
       </:col>
     </.table>
 
-    <button class="px-3 py-2 bg-burgandy text-white mt-4">
+    <button class="px-3 py-2 bg-burgandy-500 text-white mt-4">
       <%= link("Ny matpreferens", to: Routes.settings_path(@conn, :new_food)) %>
     </button>
   </div>

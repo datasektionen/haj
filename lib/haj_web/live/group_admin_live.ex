@@ -115,7 +115,7 @@ defmodule HajWeb.GroupAdminLive do
         <%= label(f, :application_open, "Gruppen går att söka") %>
       </div>
 
-      <%= submit("Spara", class: "self-start bg-burgandy px-3 py-2 rounded-sm text-white") %>
+      <%= submit("Spara", class: "self-start bg-burgandy-500 px-3 py-2 rounded-sm text-white") %>
     </.form>
 
     <div class="uppercase font-bold">Lägg till medlemmar</div>

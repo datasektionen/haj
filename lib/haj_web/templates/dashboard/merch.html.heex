@@ -4,7 +4,7 @@
   </div>
   <div class="flex-grow-[3] mb-8">
     <div class="">
-      <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">
+      <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy-500">
         Beskrivning av merch
       </h1>
 
@@ -22,7 +22,7 @@
               <%= link to: Routes.dashboard_path(@conn, :new_order_item, merch.id) do %>
                 <div class="font-bold text-lg uppercase"><%= merch.name %></div>
               <% end %>
-              <div class="text-burgandy">
+              <div class="text-burgandy-500">
                 <%= merch.price %> kr
                 <%= if merch.purchase_deadline do %>
                   <span class="text-black">
@@ -36,7 +36,7 @@
         <% end %>
       </div>
 
-      <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Beställd merch</h1>
+      <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy-500">Beställd merch</h1>
 
       <%= if @order do %>
         <.table rows={@order.merch_order_items}>
@@ -56,7 +56,7 @@
                 class: "bg-orange text-white px-2 py-0.5 rounded-sm"
               ) %>
 
-              <button class="bg-burgandy text-white px-2 py-0.5 rounded-sm">
+              <button class="bg-burgandy-500 text-white px-2 py-0.5 rounded-sm">
                 <%= link("Radera",
                   to: Routes.dashboard_path(@conn, :delete_order_item, item.id),
                   method: :delete
@@ -78,7 +78,7 @@
 
         <button
           class="px-3 py-2 text-white mt-4"
-          x-bind:class="selected === '' ? 'bg-gray-400 cursor-not-allowed' : 'bg-burgandy'"
+          x-bind:class="selected === '' ? 'bg-gray-400 cursor-not-allowed' : 'bg-burgandy-500'"
           x-bind:disabled="selected == ''"
         >
           <a

@@ -440,7 +440,7 @@ defmodule Haj.Spex do
       from sg in ShowGroup,
         join: gm in assoc(sg, :group_memberships),
         where: gm.user_id == ^userid,
-        preload: [show: [], group: []]
+        preload: [show: [], group: [], group_memberships: []]
 
     Repo.all(query)
   end

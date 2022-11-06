@@ -51,7 +51,7 @@ defmodule HajWeb.GroupLive do
           <span class="text-sm text-gray-500 ">Totalt <%= length(@group.group_memberships) %></span>
         </div>
         <.link
-          navigate={Routes.group_path(Endpoint, :vcard, @group.id)}
+          href={Routes.group_path(Endpoint, :vcard, @group.id)}
           class="ml-auto flex flex-row items-center gap-2 border rounded-lg px-3 py-2
                  hover:bg-gray-50"
         >

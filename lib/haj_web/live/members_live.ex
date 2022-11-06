@@ -15,9 +15,9 @@ defmodule HajWeb.MembersLive do
 
     socket =
       socket
-      |> assign(show_id: show_id, members: members, query: nil, groups: groups, group: nil)
+      |> assign(show_id: show_id, query: nil, groups: groups, group: nil)
 
-    {:ok, socket}
+    {:ok, socket, temporary_assigns: [members: members]}
   end
 
   def handle_event("filter", %{"search_form" => %{"q" => query, "group" => group}}, socket) do

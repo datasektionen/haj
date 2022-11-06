@@ -6,7 +6,7 @@ defmodule HajWeb.LiveHelpers do
   alias HajWeb.Router.Helpers, as: Routes
   alias Phoenix.LiveView.JS
 
-  def home_path(), do: "/"
+  def home_path(), do: Routes.dashboard_path(Endpoint, :index)
 
   attr :name, :atom, required: true
   attr :outlined, :boolean, default: false
@@ -30,6 +30,7 @@ defmodule HajWeb.LiveHelpers do
   end
 
   attr :rows, :list, required: true
+  attr :name, :string, default: ""
 
   slot :col do
     attr :label, :string, required: true
@@ -51,8 +52,8 @@ defmodule HajWeb.LiveHelpers do
         </thead>
 
         <tbody>
-          <%= for {row, _i} <- Enum.with_index(@rows) do %>
-            <tr class="hover:bg-gray-50 rounded-full border-b">
+          <%= for {row, i} <- Enum.with_index(@rows) do %>
+            <tr id={"row_#{i}"} class="hover:bg-gray-50 rounded-full border-b">
               <%= for col <- @col do %>
                 <td
                   scope="row"
@@ -88,6 +89,16 @@ defmodule HajWeb.LiveHelpers do
       </.link>
     </div>
     """
+  end
+
+  def show_user_dropdown(js \\ %JS{}) do
+    js
+    |> JS.show(to: "#user-dropdown", transition: "fade-in")
+  end
+
+  def hide_user_dropdown(js \\ %JS{}) do
+    js
+    |> JS.hide(to: "#user-dropdown")
   end
 
   def show_mobile_sidebar(js \\ %JS{}) do

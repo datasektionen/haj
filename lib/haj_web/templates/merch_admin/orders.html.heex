@@ -3,7 +3,7 @@
     <%= render("_side_bar.html", conn: @conn, show: @show) %>
   </div>
   <div class="flex-grow-[3]">
-    <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Sammanfattning</h1>
+    <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy-500">Sammanfattning</h1>
     <div class="overflow-x-auto">
       <table class="w-full divide-y divide-gray-200">
         <thead>
@@ -39,7 +39,9 @@
       </table>
     </div>
 
-    <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy">Alla beställningar</h1>
+    <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy-500">
+      Alla beställningar
+    </h1>
     <div class="pb-6">
       <div class="overflow-x-auto">
         <table class="w-full divide-y divide-gray-200">
@@ -92,7 +94,7 @@
           </tbody>
         </table>
       </div>
-      <button class="px-3 py-2 bg-burgandy text-white mt-4">
+      <button class="px-3 py-2 bg-burgandy-500 text-white mt-4">
         <%= link("Exportera som csv", to: Routes.merch_admin_path(@conn, :csv, @show)) %>
       </button>
     </div>

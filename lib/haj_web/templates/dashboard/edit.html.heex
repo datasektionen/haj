@@ -15,7 +15,7 @@
       action={Routes.dashboard_path(@conn, :update_user)}
       class="flex flex-col"
     >
-      <div class="uppercase font-bold text-lg py-1 border-b-2 border-burgandy">
+      <div class="uppercase font-bold text-lg py-1 border-b-2 border-burgandy-500">
         Personuppgifter
       </div>
       <%= label(f, :first_name, "Förnamn", class: "pt-2 pb-1") %>
@@ -38,7 +38,7 @@
       <%= text_input(f, :class) %>
       <%= error_tag(f, :class) %>
 
-      <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">
+      <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy-500">
         Konton och kontakt
       </div>
 
@@ -57,7 +57,7 @@
       <%= text_input(f, :phone) %>
       <%= error_tag(f, :phone) %>
 
-      <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">
+      <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy-500">
         Matpreferenser
       </div>
 
@@ -86,7 +86,7 @@
       <%= text_input(f, :food_preference_other) %>
       <%= error_tag(f, :food_preference_other) %>
 
-      <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy">
+      <div class="uppercase font-bold text-lg py-1 mt-3 mb-1 border-b-2 border-burgandy-500">
         Adressuppgifter
       </div>
 
@@ -108,7 +108,7 @@
       <%= error_tag(f, :city) %>
 
       <%= submit("Spara",
-        class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy text-white self-end text-lg uppercase"
+        class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy-500 text-white self-end text-lg uppercase"
       ) %>
     </.form>
   </div>
