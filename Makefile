@@ -4,6 +4,7 @@ mac-install-env:
 	cd assets && npm install
 	make start-db
 	make populate-db
+	make stop-db
 	cat ./config/.env.example > ./config/.env
 	
 populate-db:
@@ -11,6 +12,9 @@ populate-db:
 
 start-db:
 	docker run --rm -d -p 5432:5432 -v haj-data:/var/lib/postgresql/data --name=Haj-DB -e POSTGRES_PASSWORD=postgres postgres:12
+
+stop-db:
+	docker stop Haj-DB
 
 start-server:
 	open "https://localhost.datasektionen.se:4001"

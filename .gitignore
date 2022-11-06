@@ -32,7 +32,7 @@ haj-*.tar
 npm-debug.log
 /assets/node_modules/
 
-/config/.env
+*/.env
 
 .DS_Store
 
