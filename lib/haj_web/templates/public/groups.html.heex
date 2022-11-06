@@ -5,9 +5,10 @@
   </div>
 
   <div
-    class="absolute top-0 left-0 h-full w-full bg-[url('/images/gruppbild.jpg')] bg-cover bg-center
-                from-black after:bg-gradient-to-t after:overflow-hidden after:visible after:absolute 
-                            after:top-0 after:left-0 after:w-full after:h-full after:z-0"
+    class="absolute top-0 left-0 h-full w-full bg-cover bg-center
+         from-black after:bg-gradient-to-t after:overflow-hidden after:visible after:absolute 
+           after:top-0 after:left-0 after:w-full after:h-full after:z-0"
+    style={"background-image: url('#{Haj.Image.new('/images/gruppbild.jpg') |> Imgproxy.resize(2400, 1600) |> to_string()}');"}
     x-data
     x-intersect.once="$el.classList.add('scroll-in')"
   >

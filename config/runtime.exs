@@ -45,6 +45,14 @@ if config_env() == :prod do
     login_host: login_host,
     haj_subdomain: haj_subdomain
 
+  # Variables for imgproxy
+  imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "LOGIN_API_KEY is missing"
+  imgproxy_salt = System.get_env("IMGPROXY_SALT") || raise "LOGIN_API_KEY is missing"
+
+  config :imgproxy,
+    key: imgproxy_key,
+    salt: imgproxy_salt
+
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
   # want to use a different value for prod and you most likely don't want
