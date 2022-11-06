@@ -4,6 +4,7 @@ mac-install-env:
 	cd assets && npm install
 	make start-db
 	make populate-db
+	cat ./config/.env.example > ./config/.env
 	
 populate-db:
 	mix ecto.setup
