@@ -23,7 +23,7 @@ defmodule HajWeb.MerchAdminLive do
         show_options: show_options,
         changesets: changesets
       )
-      |> allow_upload(:img,
+      |> allow_upload(:image,
         accept: ~w(.jpg .jpeg),
         max_entries: 1,
         external: &presign_upload/2
@@ -35,7 +35,7 @@ defmodule HajWeb.MerchAdminLive do
   defp presign_upload(entry, socket) do
     uploads = socket.assigns.uploads
     bucket = "metaspexet-haj"
-    key = "images/merch/#{entry.client_name}"
+    key = "/images/merch/#{entry.client_name}"
 
     config = %{
       region: "eu-north-1",
@@ -112,7 +112,12 @@ defmodule HajWeb.MerchAdminLive do
     end
   end
 
-  def handle_event("update_merch", %{"merch_item" => merch_params}, socket) do
+  def handle_event("save_merch", %{"merch_item" => merch_params}, socket) do
+    merch_params =
+      merch_params
+      |> split_merch_comma_separated()
+      |> put_image_url(socket)
+
     case merch_params["id"] do
       "" ->
         # No id so new item
@@ -170,7 +175,7 @@ defmodule HajWeb.MerchAdminLive do
   defp update_merch(merch_params, socket) do
     merch_item = Merch.get_merch_item!(merch_params["id"])
 
-    case Merch.update_merch_item(merch_item, merch_params |> split_merch_comma_separated()) do
+    case Merch.update_merch_item(merch_item, merch_params) do
       {:ok, _} ->
         {:noreply,
          socket
@@ -198,9 +203,8 @@ defmodule HajWeb.MerchAdminLive do
     merch_params =
       merch_params
       |> Map.put("show_id", socket.assigns.show.id)
-      |> split_merch_comma_separated()
 
-    case Merch.create_merch_item(merch_params) do
+    case Merch.create_merch_item(merch_params, &consume_images(socket, &1)) do
       {:ok, item} ->
         # Delete the temporary one with the created item
         changesets =
@@ -230,6 +234,26 @@ defmodule HajWeb.MerchAdminLive do
          |> put_flash(:error, "Något gick fel.")
          |> assign(changesets: changesets)}
     end
+  end
+
+  defp put_image_url(params, socket) do
+    {completed, []} = uploaded_entries(socket, :image)
+
+    paths =
+      for entry <- completed do
+        "/images/merch/#{entry.client_name}"
+      end
+
+    case paths do
+      [] -> params
+      [path | _] -> Map.put(params, "image", path)
+    end
+  end
+
+  defp consume_images(socket, %Merch.MerchItem{} = merch) do
+    consume_uploaded_entries(socket, :image, fn _meta, _entry -> :ok end)
+
+    {:ok, merch}
   end
 
   defp get_temp_id, do: :crypto.strong_rand_bytes(5) |> Base.url_encode64() |> binary_part(0, 5)
@@ -270,7 +294,7 @@ defmodule HajWeb.MerchAdminLive do
           for={changeset}
           id={"merch_item_#{changeset.data.id}_#{changeset.data.temp_id}"}
           phx-change="validate_merch"
-          phx-submit="update_merch"
+          phx-submit="save_merch"
           class="flex flex-col gap-4 bg-gray-50 py-4 px-4 rounded-lg border"
         >
           <%= hidden_input(f, :id) %>
@@ -288,13 +312,8 @@ defmodule HajWeb.MerchAdminLive do
             <%= error_tag(f, :description) %>
           </div>
 
-          <div>
-            <%= label(f, "Bildlänk", class: "input-label") %>
-            <%= text_input(f, :image, class: "input") %>
-            <%= error_tag(f, :image) %>
-          </div>
-
-          <.live_file_input upload={@uploads.img} />
+          <img src={Imgproxy.new(f.data.image) |> Imgproxy.resize(100, 100)} />
+          <.live_file_input upload={@uploads.image} />
 
           <div>
             <%= label(f, "Pris (kr)", class: "input-label") %>

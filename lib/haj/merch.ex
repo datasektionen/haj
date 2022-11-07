@@ -62,10 +62,11 @@ defmodule Haj.Merch do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_merch_item(attrs \\ %{}) do
+  def create_merch_item(attrs \\ %{}, after_save \\ &{:ok, &1}) do
     %MerchItem{}
     |> MerchItem.changeset(attrs)
     |> Repo.insert()
+    |> after_save(after_save)
   end
 
   @doc """
@@ -381,4 +382,10 @@ defmodule Haj.Merch do
         {:ok, order |> Repo.preload(merch_order_items: [merch_item: []])}
     end
   end
+
+  defp after_save({:ok, result}, func) do
+    {:ok, _result} = func.(result)
+  end
+
+  defp after_save(error, _func), do: error
 end
