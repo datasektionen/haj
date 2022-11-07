@@ -209,19 +209,19 @@ defmodule HajWeb.Components.MerchAdminForm do
         <div>
           <%= label(f, "Namn", class: "input-label") %>
           <%= text_input(f, :name, class: "input") %>
-          <%= error_tag(f, :name) %>
+          <%= error_tag(f, :name, class: "pt-1 text-sm") %>
         </div>
 
         <div>
           <%= label(f, "Beskrivning", class: "input-label") %>
           <%= textarea(f, :description, class: "input") %>
-          <%= error_tag(f, :description) %>
+          <%= error_tag(f, :description, class: "pt-1 text-sm") %>
         </div>
 
         <div>
           <%= label(f, "Pris (kr)", class: "input-label") %>
           <%= number_input(f, :price, class: "input") %>
-          <%= error_tag(f, :price) %>
+          <%= error_tag(f, :price, class: "pt-1 text-sm") %>
         </div>
 
         <div>
@@ -230,13 +230,13 @@ defmodule HajWeb.Components.MerchAdminForm do
             value: (Ecto.Changeset.get_field(@changeset, :sizes, []) || []) |> Enum.join(","),
             class: "input"
           ) %>
-          <%= error_tag(f, :sizes) %>
+          <%= error_tag(f, :sizes, class: "pt-1 text-sm") %>
         </div>
 
         <div>
           <%= label(f, "Beställningsdeadline", class: "input-label") %>
           <%= datetime_local_input(f, :purchase_deadline, class: "input") %>
-          <%= error_tag(f, :purchase_deadline) %>
+          <%= error_tag(f, :purchase_deadline, class: "pt-1 text-sm") %>
         </div>
 
         <div class="flex items-center justify-end gap-2 pt-4">

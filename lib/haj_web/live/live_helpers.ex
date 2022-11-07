@@ -144,6 +144,7 @@ defmodule HajWeb.LiveHelpers do
           |> JS.remove_class("fade-in-scale", to: "#flash")
           |> hide("#flash")
         }
+        phx-hook="Flash"
       >
         <div class="flex justify-between items-center gap-3 text-red-700">
           <.icon name={:exclamation_circle} />
@@ -171,6 +172,7 @@ defmodule HajWeb.LiveHelpers do
           |> JS.remove_class("fade-in-scale", to: "#flash")
           |> hide("#flash")
         }
+        phx-hook="Flash"
       >
         <div class="flex justify-between items-center gap-3 text-blue-700">
           <.icon name={:exclamation_circle} />

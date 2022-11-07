@@ -33,7 +33,20 @@ Alpine.plugin(intersect)
 Alpine.plugin(collapse)
 Alpine.start()
 
-let hooks = {};
+let Hooks = {};
+
+Hooks.Flash = {
+    mounted() {
+        let hide = () => liveSocket.execJS(this.el, this.el.getAttribute("phx-click"))
+        this.timer = setTimeout(() => hide(), 8000)
+        this.el.addEventListener("phx:hide-start", () => clearTimeout(this.timer))
+        this.el.addEventListener("mouseover", () => {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => hide(), 8000)
+        })
+    },
+    destroyed() { clearTimeout(this.timer) }
+}
 
 let Uploaders = {}
 
@@ -67,7 +80,7 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 let liveSocket = new LiveSocket("/live", Socket, {
     params: { _csrf_token: csrfToken },
     uploaders: Uploaders,
-    hooks: hooks,
+    hooks: Hooks,
     dom: {
         onBeforeElUpdated(from, to) {
             if (from._x_dataStack) {

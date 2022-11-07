@@ -1,6 +1,10 @@
 defmodule HajWeb.LiveFlash do
   import Phoenix.LiveView
 
+  @moduledoc """
+  Enables usage of push_flash() in a livecomponent to send errors to parent liveview.
+  """
+
   def on_mount(:default, _params, _session, socket) do
     {:cont, attach_hook(socket, :flash, :handle_info, &handle_flash/2)}
   end
