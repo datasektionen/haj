@@ -13,6 +13,7 @@ processes = []
   IMGPROXY_USE_S3 = true
   IMGPROXY_TTL = 31536000
   AWS_REGION = "eu-north-1"
+  IMGPROXY_BASE_URL = "s3://metaspexet-haj"
 
 [experimental]
   allowed_public_ports = []

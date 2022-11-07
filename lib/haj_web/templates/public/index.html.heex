@@ -29,7 +29,7 @@
       loop=""
       poster={Haj.Image.new('/images/home-bg.jpg') |> Imgproxy.resize(2400, 1600) |> to_string()}
     >
-      <source src="/images/clip.mp4" />
+      <source src={Haj.Image.video_url("/clip.mp4")} />
     </video>
   </div>
 

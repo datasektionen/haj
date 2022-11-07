@@ -4,6 +4,13 @@ defmodule Haj.Image do
   """
 
   def new(path) do
-    Imgproxy.new("s3://metaspexet-haj#{path}") |> Imgproxy.set_extension("webp")
+    Imgproxy.new("#{path}") |> Imgproxy.set_extension("webp")
+  end
+
+  # generates a url for path
+  def video_url(path) do
+    prefix = Application.get_env(:imgproxy, :prefix)
+
+    "#{prefix}/videos#{path}"
   end
 end
