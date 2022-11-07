@@ -23,8 +23,43 @@ defmodule HajWeb.MerchAdminLive do
         show_options: show_options,
         changesets: changesets
       )
+      |> allow_upload(:img,
+        accept: ~w(.jpg .jpeg),
+        max_entries: 1,
+        external: &presign_upload/2
+      )
 
     {:ok, socket}
+  end
+
+  defp presign_upload(entry, socket) do
+    uploads = socket.assigns.uploads
+    bucket = "metaspexet-haj"
+    key = "images/merch/#{entry.client_name}"
+
+    config = %{
+      region: "eu-north-1",
+      access_key_id: System.fetch_env!("AWS_ACCESS_KEY_ID"),
+      secret_access_key: System.fetch_env!("AWS_SECRET_ACCESS_KEY")
+    }
+
+    {:ok, fields} =
+      SimpleS3Upload.sign_form_upload(config, bucket,
+        key: key,
+        content_type: entry.client_type,
+        max_file_size: uploads[entry.upload_config].max_file_size,
+        expires_in: :timer.hours(1)
+      )
+
+    meta = %{
+      uploader: "S3",
+      key: key,
+      url: "https://#{bucket}.s3-#{config.region}.amazonaws.com",
+      fields: fields
+    }
+
+    dbg(meta)
+    {:ok, meta, socket}
   end
 
   def handle_event("select_show", %{"show" => %{"show" => show_id}}, socket) do
@@ -258,6 +293,8 @@ defmodule HajWeb.MerchAdminLive do
             <%= text_input(f, :image, class: "input") %>
             <%= error_tag(f, :image) %>
           </div>
+
+          <.live_file_input upload={@uploads.img} />
 
           <div>
             <%= label(f, "Pris (kr)", class: "input-label") %>
