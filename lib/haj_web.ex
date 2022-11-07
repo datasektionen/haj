@@ -47,7 +47,7 @@ defmodule HajWeb do
     quote do
       @opts Keyword.merge(
               [
-                layout: {HajWeb.LayoutView, "live.html"},
+                layout: {HajWeb.LayoutView, :live},
                 container: {:div, class: "relative flex bg-white"}
               ],
               unquote(opts)
