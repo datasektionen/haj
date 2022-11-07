@@ -100,7 +100,10 @@ defmodule Haj.Merch do
 
   """
   def delete_merch_item(%MerchItem{} = merch_item) do
-    Repo.delete(merch_item)
+    merch_item
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.no_assoc_constraint(:merch_order_items)
+    |> Repo.delete()
   end
 
   @doc """

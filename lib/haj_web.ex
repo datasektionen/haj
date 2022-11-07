@@ -55,6 +55,8 @@ defmodule HajWeb do
 
       use Phoenix.LiveView, @opts
 
+      on_mount HajWeb.LiveFlash
+
       unquote(view_helpers())
     end
   end
@@ -62,6 +64,8 @@ defmodule HajWeb do
   def live_component do
     quote do
       use Phoenix.LiveComponent
+
+      import HajWeb.LiveFlash, only: [push_flash: 2]
 
       unquote(view_helpers())
     end
