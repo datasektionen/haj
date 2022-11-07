@@ -17,6 +17,10 @@ config :haj,
   port: 4001,
   haj_subdomain: "localhost"
 
+config :imgproxy,
+  key: System.get_env("IMGPROXY_KEY"),
+  salt: System.get_env("IMGPROXY_SALT")
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

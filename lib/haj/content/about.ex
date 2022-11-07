@@ -1,4 +1,6 @@
 defmodule Haj.Content.About do
+  alias Haj.Image
+
   # Todo: fixa tidszoner på rimligt sätt
 
   def get_shows() do
@@ -35,6 +37,11 @@ defmodule Haj.Content.About do
         link: "/previous"
       }
     ]
+    |> Enum.map(fn data ->
+      Map.update!(data, :image, fn image ->
+        Image.new(image) |> Imgproxy.resize(1800, 1200) |> to_string()
+      end)
+    end)
   end
 
   def get_previous_spex() do
