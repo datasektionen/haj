@@ -46,8 +46,8 @@ if config_env() == :prod do
     haj_subdomain: haj_subdomain
 
   # Variables for imgproxy
-  imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "LOGIN_API_KEY is missing"
-  imgproxy_salt = System.get_env("IMGPROXY_SALT") || raise "LOGIN_API_KEY is missing"
+  imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"
+  imgproxy_salt = System.get_env("IMGPROXY_SALT") || raise "IMGPROXY_SALT is missing"
 
   config :imgproxy,
     key: imgproxy_key,
