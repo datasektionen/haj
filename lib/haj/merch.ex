@@ -62,10 +62,11 @@ defmodule Haj.Merch do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_merch_item(attrs \\ %{}) do
+  def create_merch_item(attrs \\ %{}, after_save \\ &{:ok, &1}) do
     %MerchItem{}
     |> MerchItem.changeset(attrs)
     |> Repo.insert()
+    |> after_save(after_save)
   end
 
   @doc """
@@ -80,10 +81,11 @@ defmodule Haj.Merch do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_merch_item(%MerchItem{} = merch_item, attrs) do
+  def update_merch_item(%MerchItem{} = merch_item, attrs, after_save \\ &{:ok, &1}) do
     merch_item
     |> MerchItem.changeset(attrs)
     |> Repo.update()
+    |> after_save(after_save)
   end
 
   @doc """
@@ -99,7 +101,10 @@ defmodule Haj.Merch do
 
   """
   def delete_merch_item(%MerchItem{} = merch_item) do
-    Repo.delete(merch_item)
+    merch_item
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.no_assoc_constraint(:merch_order_items)
+    |> Repo.delete()
   end
 
   @doc """
@@ -381,4 +386,10 @@ defmodule Haj.Merch do
         {:ok, order |> Repo.preload(merch_order_items: [merch_item: []])}
     end
   end
+
+  defp after_save({:ok, result}, func) do
+    {:ok, _result} = func.(result)
+  end
+
+  defp after_save(error, _func), do: error
 end

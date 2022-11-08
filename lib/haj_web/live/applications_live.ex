@@ -4,12 +4,15 @@ defmodule HajWeb.ApplicationsLive do
   alias Haj.Spex
   alias Haj.Applications
 
-  def mount(_params, _session, socket) do
+  def mount(_params, %{"user_token" => token}, socket) do
     current_spex = Spex.current_spex() |> Haj.Repo.preload(show_groups: [group: []])
     applications = Applications.list_applications_for_show(current_spex.id)
 
     socket =
       socket
+      |> assign_new(:current_user, fn ->
+        Haj.Accounts.get_user_by_session_token(token) |> Haj.Spex.preload_user_groups()
+      end)
       |> assign(:title, "Ansökningar #{current_spex.year.year}")
       |> assign(:show, current_spex)
       |> assign(:applications, applications)
@@ -29,7 +32,7 @@ defmodule HajWeb.ApplicationsLive do
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col py-2 mb-2 gap-2 md:flex-row md:items-center border-burgandy border-b-2">
+    <div class="flex flex-col py-2 mb-2 gap-2 md:flex-row md:items-center border-burgandy-500 border-b-2">
       <div class="uppercase font-bold">Filtrera</div>
 
       <.form :let={f} for={:filter} phx-change="filter" class="w-full md:w-auto">

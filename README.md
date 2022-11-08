@@ -7,6 +7,8 @@ Prerequisites:
 
   * You will need an env variables `LOGIN_API_KEY`, and `LOGIN_HOST` set. You need to obtain an api key to `login` (https://login.datasektionen.se).
   * In order to run on local machine, you will need to alias DNS records between `localhost.datasektionen.se` and `datasektionen.se` to localhost.
+  * Our images are served by an [imgproxy](https://github.com/imgproxy/imgproxy) server behind a Cloudfront CDN. You will need to use correct
+  `IMGPROXY_KEY` and `IMGPROXY_SALT` env variables set. 
 
 To start your Phoenix server:
 

@@ -4,7 +4,8 @@
   </div>
 
   <div
-    class="absolute top-0 left-0 h-full w-full bg-[url('/images/spex-kram.jpg')] bg-cover bg-center"
+    class="absolute top-0 left-0 h-full w-full bg-cover bg-center"
+    style={"background-image: url('#{Haj.Image.new('/images/spex-kram.jpg') |> Imgproxy.resize(1800, 1200) |> to_string() }');"}
     x-data
     x-intersect.once="$el.classList.add('scroll-in')"
   >

@@ -12,7 +12,7 @@
   x-init="window.pageYOffset > 10 ? atTop = false : atTop = true"
 >
   <div
-    class="flex justify-center fixed bg-burgandy h-16 py-3 text-white top-0 w-full z-30
+    class="flex justify-center fixed bg-burgandy-500 h-16 py-3 text-white top-0 w-full z-30
                 transition-all duration-500"
     x-bind:class="{'-translate-y-full bg-transparent': !atTop && !scrolledUp}"
   >
@@ -51,7 +51,7 @@
 
   <%= if @user && Enum.member?([:admin, :chef, :spexare], @user.role) do %>
     <ul
-      class="fixed left-0 w-full pt-24 min-h-screen bg-burgandy px-8 z-20
+      class="fixed left-0 w-full pt-24 min-h-screen bg-burgandy-500 px-8 z-20
                text-white text-right space-y-2 font-bold text-xl
                transform translate-x-full opacity-0
                transition duration-300

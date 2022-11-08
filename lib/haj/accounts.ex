@@ -156,13 +156,12 @@ defmodule Haj.Accounts do
   Searches for users based on a search phrase
   """
   def search_users(search_phrase) do
-    start_char = String.slice(search_phrase, 0..1)
-
     query =
       from u in User,
-        where: ilike(u.first_name, ^"#{start_char}%") or ilike(u.last_name, ^"#{start_char}%"),
-        where: fragment("SIMILARITY(? || ?,?) > 0", u.first_name, u.last_name, ^search_phrase),
-        order_by: fragment("LEVENSHTEIN(? || ?,?) > 0", u.first_name, u.last_name, ^search_phrase)
+        where:
+          fragment("SIMILARITY(?,?) > 0.3", u.first_name, ^search_phrase) or
+            fragment("SIMILARITY(?,?) > 0.3", u.last_name, ^search_phrase),
+        order_by: fragment("LEVENSHTEIN(? || ?,?)", u.first_name, u.last_name, ^search_phrase)
 
     Repo.all(query)
   end
@@ -197,5 +196,9 @@ defmodule Haj.Accounts do
       "EMAIL;TYPE=work:#{user.google_account}" <>
       clrf <>
       "END:VCARD"
+  end
+
+  def preload(users, args \\ []) do
+    Repo.preload(users, args)
   end
 end
