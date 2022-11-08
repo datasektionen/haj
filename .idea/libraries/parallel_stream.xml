@@ -1,0 +1,28 @@
+<component name="libraryTable">
+  <library name="parallel_stream" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/parallel_stream/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/parallel_stream/lib" />
+      <root url="file://$PROJECT_DIR$/deps/parallel_stream/lib" />
+      <root url="file://$PROJECT_DIR$/deps/parallel_stream/lib" />
+      <root url="file://$PROJECT_DIR$/deps/parallel_stream/lib" />
+      <root url="file://$PROJECT_DIR$/deps/parallel_stream/lib" />
+      <root url="file://$PROJECT_DIR$/deps/parallel_stream/lib" />
+      <root url="file://$PROJECT_DIR$/deps/parallel_stream/lib" />
+    </SOURCES>
+  </library>
+</component>
