@@ -4,13 +4,18 @@ defmodule HajWeb.Components.MerchAdminForm do
   alias Haj.Merch
 
   def mount(socket) do
+    # This is technically an atom-leak, this is not garbage collected, but should be fine.
+    # Hopefully noone will add more than 1048576 merch items for one spex
+    upload_name = String.to_atom("image_#{socket.assigns.myself.cid}")
+
     socket =
       socket
-      |> allow_upload(:image,
+      |> allow_upload(upload_name,
         accept: ~w(.jpg .jpeg),
         max_entries: 1,
         external: &presign_upload/2
       )
+      |> assign(:upload_name, upload_name)
 
     {:ok, socket}
   end
@@ -84,13 +89,13 @@ defmodule HajWeb.Components.MerchAdminForm do
   end
 
   def handle_event("cancel-upload", %{"ref" => ref}, socket) do
-    {:noreply, cancel_upload(socket, :image, ref)}
+    {:noreply, cancel_upload(socket, socket.assigns.upload_name, ref)}
   end
 
   defp update_merch(merch_params, socket) do
     merch_item = Merch.get_merch_item!(merch_params["id"])
 
-    case Merch.update_merch_item(merch_item, merch_params) do
+    case Merch.update_merch_item(merch_item, merch_params, &consume_images(socket, &1)) do
       {:ok, item} ->
         changeset =
           Merch.change_merch_item(item)
@@ -130,7 +135,7 @@ defmodule HajWeb.Components.MerchAdminForm do
   end
 
   defp put_image_url(params, socket) do
-    {completed, []} = uploaded_entries(socket, :image)
+    {completed, []} = uploaded_entries(socket, socket.assigns.upload_name)
 
     paths =
       for entry <- completed do
@@ -144,7 +149,7 @@ defmodule HajWeb.Components.MerchAdminForm do
   end
 
   defp consume_images(socket, %Merch.MerchItem{} = merch) do
-    consume_uploaded_entries(socket, :image, fn _meta, _entry -> :ok end)
+    consume_uploaded_entries(socket, socket.assigns.upload_name, fn _meta, _entry -> :ok end)
 
     {:ok, merch}
   end
@@ -204,6 +209,7 @@ defmodule HajWeb.Components.MerchAdminForm do
           uploads={@uploads}
           target={@myself}
           image={Ecto.Changeset.get_field(@changeset, :image)}
+          upload_name={@upload_name}
         />
 
         <div>
@@ -278,7 +284,7 @@ defmodule HajWeb.Components.MerchAdminForm do
   defp image_upload_component(assigns) do
     ~H"""
     <div class="flex flex-col md:flex-row gap-6">
-      <%= for entry <- @uploads.image.entries do %>
+      <%= for entry <- @uploads[@upload_name].entries do %>
         <article class="">
           <figure class="w-48 h-32 rounded-md overflow-hidden">
             <.live_img_preview entry={entry} />
@@ -294,13 +300,13 @@ defmodule HajWeb.Components.MerchAdminForm do
             &times;
           </button>
 
-          <%= for err <- upload_errors(@uploads.image, entry) do %>
+          <%= for err <- upload_errors(@uploads[@upload_name], entry) do %>
             <p class="alert alert-danger"><%= err %></p>
           <% end %>
         </article>
       <% end %>
 
-      <%= if @uploads.image.entries == [] do %>
+      <%= if @uploads[@upload_name].entries == [] do %>
         <article class="">
           <figure class="w-48 h-32 rounded-md overflow-hidden">
             <%= if @image do %>
@@ -314,7 +320,7 @@ defmodule HajWeb.Components.MerchAdminForm do
 
       <div>
         <label class="input-label">Ladda upp bild</label>
-        <.live_file_input upload={@uploads.image} class="text-sm pt-2" />
+        <.live_file_input upload={@uploads[@upload_name]} class="text-sm pt-2" />
       </div>
     </div>
     """

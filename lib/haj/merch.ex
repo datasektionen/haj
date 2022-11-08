@@ -81,10 +81,11 @@ defmodule Haj.Merch do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_merch_item(%MerchItem{} = merch_item, attrs) do
+  def update_merch_item(%MerchItem{} = merch_item, attrs, after_save \\ &{:ok, &1}) do
     merch_item
     |> MerchItem.changeset(attrs)
     |> Repo.update()
+    |> after_save(after_save)
   end
 
   @doc """
