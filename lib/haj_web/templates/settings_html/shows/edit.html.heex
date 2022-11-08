@@ -1,11 +1,11 @@
 <div class="flex flex-col gap-4 md:flex-row">
   <div class="flex-grow-[1]">
-    <%= render("_side_bar.html", conn: @conn, current_spex: @current_spex) %>
+    <._side_bar current_spex={@current_spex} conn={@conn} />
   </div>
   <div class="flex-grow-[3]">
     <%= render(
       "shows/form.html",
-      Map.put(assigns, :action, Routes.settings_path(@conn, :create_show))
+      Map.put(assigns, :action, Routes.settings_path(@conn, :update_show, @show))
     ) %>
   </div>
 </div>

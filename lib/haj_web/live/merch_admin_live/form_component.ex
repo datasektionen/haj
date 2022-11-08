@@ -1,4 +1,4 @@
-defmodule HajWeb.Components.MerchAdminForm do
+defmodule HajWeb.MerchAdminLive.FormComponent do
   use HajWeb, :live_component
 
   alias Haj.Merch

@@ -1,5 +1,5 @@
-defmodule HajWeb.SettingsView do
+defmodule HajWeb.SettingsHTML do
   use HajWeb, :view
 
-  import HajWeb.Components.Table
+  embed_templates("../templates/settings_html/*")
 end

@@ -1,7 +1,7 @@
-defmodule HajWeb.GroupView do
+defmodule HajWeb.GroupHTML do
   use HajWeb, :view
 
-  def table(assigns), do: HajWeb.Components.Table.table(assigns)
+  embed_templates("../templates/group/*")
 
   defp is_admin?(show_group, user) do
     user.role == :admin ||

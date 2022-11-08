@@ -126,68 +126,68 @@ defmodule HajWeb.LiveHelpers do
     |> JS.dispatch("js:exec", to: "#show-mobile-sidebar", detail: %{call: "focus", args: []})
   end
 
-  @doc """
-  Renders a flash, maybe this looks better on top than bottom?
-  """
+  # @doc """
+  # Renders a flash, maybe this looks better on top than bottom?
+  # """
 
-  attr :flash, :map
-  attr :kind, :atom
+  # attr :flash, :map
+  # attr :kind, :atom
 
-  def flash(%{kind: :error} = assigns) do
-    ~H"""
-    <%= if live_flash(@flash, @kind) do %>
-      <div
-        id="flash"
-        class="rounded-md bg-red-50 p-4 fixed bottom-4 left-4 right-4 sm:left-auto sm:w-96 fade-in-scale z-50"
-        phx-click={
-          JS.push("lv:clear-flash")
-          |> JS.remove_class("fade-in-scale", to: "#flash")
-          |> hide("#flash")
-        }
-        phx-hook="Flash"
-      >
-        <div class="flex justify-between items-center gap-3 text-red-700">
-          <.icon name={:exclamation_circle} />
-          <p class="flex-1 text-sm font-medium">
-            <%= live_flash(@flash, @kind) %>
-          </p>
-          <button class="inline-flex bg-red-50 rounded-md text-red-700 focus:outline-none focus:ring-2
-                         focus:ring-offset-2 focus:ring-offset-red-50 focus:ring-red-700">
-            <.icon name={:x_mark} class="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    <% end %>
-    """
-  end
+  # def flash(%{kind: :error} = assigns) do
+  #   ~H"""
+  #   <%= if live_flash(@flash, @kind) do %>
+  #     <div
+  #       id="flash"
+  #       class="rounded-md bg-red-50 p-4 fixed bottom-4 left-4 right-4 sm:left-auto sm:w-96 fade-in-scale z-50"
+  #       phx-click={
+  #         JS.push("lv:clear-flash")
+  #         |> JS.remove_class("fade-in-scale", to: "#flash")
+  #         |> hide("#flash")
+  #       }
+  #       phx-hook="Flash"
+  #     >
+  #       <div class="flex justify-between items-center gap-3 text-red-700">
+  #         <.icon name={:exclamation_circle} />
+  #         <p class="flex-1 text-sm font-medium">
+  #           <%= live_flash(@flash, @kind) %>
+  #         </p>
+  #         <button class="inline-flex bg-red-50 rounded-md text-red-700 focus:outline-none focus:ring-2
+  #                        focus:ring-offset-2 focus:ring-offset-red-50 focus:ring-red-700">
+  #           <.icon name={:x_mark} class="w-5 h-5" />
+  #         </button>
+  #       </div>
+  #     </div>
+  #   <% end %>
+  #   """
+  # end
 
-  def flash(%{kind: :info} = assigns) do
-    ~H"""
-    <%= if live_flash(@flash, @kind) do %>
-      <div
-        id="flash"
-        class="rounded-md bg-blue-50 p-4 fixed bottom-4 left-4 right-4 sm:left-auto sm:w-96 fade-in-scale z-50"
-        phx-click={
-          JS.push("lv:clear-flash")
-          |> JS.remove_class("fade-in-scale", to: "#flash")
-          |> hide("#flash")
-        }
-        phx-hook="Flash"
-      >
-        <div class="flex justify-between items-center gap-3 text-blue-700">
-          <.icon name={:exclamation_circle} />
-          <p class="flex-1 text-sm font-medium">
-            <%= live_flash(@flash, @kind) %>
-          </p>
-          <button class="inline-flex bg-blue-50 rounded-md text-blue-700 focus:outline-none focus:ring-2
-                         focus:ring-offset-2 focus:ring-offset-blue-50 focus:ring-blue-700">
-            <.icon name={:x_mark} class="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    <% end %>
-    """
-  end
+  # def flash(%{kind: :info} = assigns) do
+  #   ~H"""
+  #   <%= if live_flash(@flash, @kind) do %>
+  #     <div
+  #       id="flash"
+  #       class="rounded-md bg-blue-50 p-4 fixed bottom-4 left-4 right-4 sm:left-auto sm:w-96 fade-in-scale z-50"
+  #       phx-click={
+  #         JS.push("lv:clear-flash")
+  #         |> JS.remove_class("fade-in-scale", to: "#flash")
+  #         |> hide("#flash")
+  #       }
+  #       phx-hook="Flash"
+  #     >
+  #       <div class="flex justify-between items-center gap-3 text-blue-700">
+  #         <.icon name={:exclamation_circle} />
+  #         <p class="flex-1 text-sm font-medium">
+  #           <%= live_flash(@flash, @kind) %>
+  #         </p>
+  #         <button class="inline-flex bg-blue-50 rounded-md text-blue-700 focus:outline-none focus:ring-2
+  #                        focus:ring-offset-2 focus:ring-offset-blue-50 focus:ring-blue-700">
+  #           <.icon name={:x_mark} class="w-5 h-5" />
+  #         </button>
+  #       </div>
+  #     </div>
+  #   <% end %>
+  #   """
+  # end
 
   def hide(js \\ %JS{}, selector) do
     JS.hide(js,

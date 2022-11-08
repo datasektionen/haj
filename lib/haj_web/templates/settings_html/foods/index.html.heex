@@ -1,21 +1,21 @@
 <div class="flex flex-col gap-4 md:flex-row">
   <div class="flex-grow-[1]">
-    <%= render("_side_bar.html", conn: @conn, current_spex: @current_spex) %>
+    <._side_bar current_spex={@current_spex} conn={@conn} />
   </div>
   <div class="flex-grow-[3]">
-    <.table rows={@groups}>
-      <:col :let={group} label="Grupper">
+    <.table id="foods-table" rows={@foods}>
+      <:col :let={food} label="Matpreferenser">
         <div class="flex flex-row justify-between">
-          <%= group.name %>
+          <%= food.name %>
           <div>
             <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
-              <%= link("Redigera", to: Routes.settings_path(@conn, :edit_group, group.id)) %>
+              <%= link("Redigera", to: Routes.settings_path(@conn, :edit_food, food)) %>
             </button>
             <button class="bg-burgandy-500 text-white px-2 py-0.5 rounded-sm">
               <%= link("Radera",
-                to: Routes.settings_path(@conn, :delete_group, group),
+                to: Routes.settings_path(@conn, :delete_food, food),
                 method: :delete,
-                data: [confirm: "Är du helt säker på att du vill ta bort #{group.name}?"]
+                data: [confirm: "Är du säker?"]
               ) %>
             </button>
           </div>
@@ -24,7 +24,7 @@
     </.table>
 
     <button class="px-3 py-2 bg-burgandy-500 text-white mt-4">
-      <%= link("Ny grupp", to: Routes.settings_path(@conn, :new_group)) %>
+      <%= link("Ny matpreferens", to: Routes.settings_path(@conn, :new_food)) %>
     </button>
   </div>
 </div>

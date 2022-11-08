@@ -1,10 +1,8 @@
-defmodule HajWeb.MerchAdminLive do
+defmodule HajWeb.MerchAdminLive.Index do
   use HajWeb, :live_view
 
   alias Haj.Spex
   alias Haj.Merch
-
-  alias HajWeb.Components.MerchAdminForm
 
   def mount(_params, _session, socket) do
     show = Spex.current_spex()
@@ -131,7 +129,7 @@ defmodule HajWeb.MerchAdminLive do
     <div class="grid gap-6 pt-4 xl:grid-cols-2">
       <%= for changeset <- @changesets do %>
         <.live_component
-          module={MerchAdminForm}
+          module={HajWeb.MerchAdminLive.FormComponent}
           id={"form_#{changeset.data.id}_#{changeset.data.temp_id}"}
           changeset={changeset}
           flash={@flash}

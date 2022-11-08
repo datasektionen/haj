@@ -1,8 +1,8 @@
 <div class="flex flex-col gap-4 md:flex-row">
   <div class="flex-grow-[1]">
-    <%= render("_side_bar.html", user: @user, conn: @conn) %>
+    <._side_bar user={@user} conn={@conn} />
   </div>
   <div class="flex-grow-[3]">
-    <%= render("_user_info.html", user: @user, conn: @conn) %>
+    <._user_info user={@user} conn={@conn} />
   </div>
 </div>
