@@ -13,11 +13,8 @@ defmodule HajWeb.MembersLive do
       Spex.get_show_groups_for_show(show_id)
       |> Enum.map(fn %{id: id, group: g} -> [key: g.name, value: id] end)
 
-    socket =
-      socket
-      |> assign(show_id: show_id, query: nil, groups: groups, group: nil)
-
-    {:ok, socket, temporary_assigns: [members: members]}
+    {:ok,
+     assign(socket, show_id: show_id, query: nil, groups: groups, group: nil, members: members)}
   end
 
   def handle_event("filter", %{"search_form" => %{"q" => query, "group" => group}}, socket) do
