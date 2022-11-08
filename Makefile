@@ -19,7 +19,7 @@ mac-install-env:
 	@make start-db
 	@make populate-db
 	@make stop-db
-	@cat ./config/.env.example > ./config/.env
+	@cat ./config/.env.example >> ./config/.env
 	@echo ""
 	@echo "Success! Now you can run 'make start-server' to start the server."
 	@echo ""
