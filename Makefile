@@ -46,7 +46,7 @@ stop-db:
 start-server:
 	@echo "${CYAN}Starting server @ https://localhost.datasektionen.se:4001...${WHITE}"
 	@echo ""
-	@mix phx.server
+	source config/.env && mix phx.server
 
 .PHONY: start-dev
 start-dev:
