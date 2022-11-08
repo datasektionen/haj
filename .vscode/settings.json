@@ -1,0 +1,23 @@
+{
+    "tailwindCSS.includeLanguages": {
+        "elixir": "html",
+        "phoenix-heex": "html"
+    },
+    "files.associations": {
+        "*.heex": "phoenix-heex"
+    },
+    "emmet.includeLanguages": {
+        "phoenix-heex": "html",
+        "elixir": "html"
+    },
+    "[phoenix-heex]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "animus-coop.vscode-elixir-mix-formatter",
+        "editor.tabSize": 2,
+    },
+    "[elixir]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "animus-coop.vscode-elixir-mix-formatter",
+    },
+    
+}
