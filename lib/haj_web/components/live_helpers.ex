@@ -9,7 +9,8 @@ defmodule HajWeb.LiveHelpers do
   def home_path(), do: Routes.dashboard_path(Endpoint, :index)
 
   attr :name, :atom, required: true
-  attr :outlined, :boolean, default: false
+  attr :outline, :boolean, default: false
+  attr :solid, :boolean, default: false
   attr :mini, :boolean, default: false
   attr :rest, :global, default: %{class: "w-4 h-4 inline_block"}
 
@@ -17,15 +18,7 @@ defmodule HajWeb.LiveHelpers do
     assigns = assign_new(assigns, :"aria-hidden", fn -> !Map.has_key?(assigns, :"aria-label") end)
 
     ~H"""
-    <%= if @outlined do %>
-      <%= apply(Heroicons.Outline, @name, [Map.to_list(@rest)]) %>
-    <% else %>
-      <%= if @mini do %>
-        <%= apply(Heroicons.Mini, @name, [Map.to_list(@rest)]) %>
-      <% else %>
-        <%= apply(Heroicons.Solid, @name, [Map.to_list(@rest)]) %>
-      <% end %>
-    <% end %>
+    <%= apply(Heroicons, @name, [assigns]) %>
     """
   end
 
@@ -91,19 +84,9 @@ defmodule HajWeb.LiveHelpers do
     """
   end
 
-  def show_user_dropdown(js \\ %JS{}) do
-    js
-    |> JS.show(to: "#user-dropdown", transition: "fade-in")
-  end
-
-  def hide_user_dropdown(js \\ %JS{}) do
-    js
-    |> JS.hide(to: "#user-dropdown")
-  end
-
   def show_mobile_sidebar(js \\ %JS{}) do
     js
-    |> JS.show(to: "#mobile-sidebar-container", transition: "fade-in")
+    |> JS.show(to: "#mobile-sidebar-container", transition: "fade-in", time: 100)
     |> JS.show(
       to: "#mobile-sidebar",
       display: "flex",
@@ -188,16 +171,6 @@ defmodule HajWeb.LiveHelpers do
   #   <% end %>
   #   """
   # end
-
-  def hide(js \\ %JS{}, selector) do
-    JS.hide(js,
-      to: selector,
-      time: 300,
-      transition:
-        {"transition ease-in duration-300", "transform opacity-100 scale-100",
-         "transform opacity-0 scale-95"}
-    )
-  end
 
   def full_name(%Accounts.User{} = user), do: "#{user.first_name} #{user.last_name}"
 end

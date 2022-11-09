@@ -13,7 +13,7 @@ defmodule HajWeb.Layouts do
         <.nav_link navigate={~p"/live/members"} icon_name={:user} title="Medlemmar" } />
         <.nav_link navigate={~p"/live/groups"} icon_name={:user_group} title="Grupper" } />
         <%= for g <- @current_user.group_memberships do %>
-          <.nav_group_link navigate={~p"/live/group/#{g.id}"} title={g.show_group.group.name} />
+          <.nav_group_link navigate={~p"/live/group/#{g.show_group}"} title={g.show_group.group.name} />
         <% end %>
       <% end %>
     </div>
@@ -26,7 +26,7 @@ defmodule HajWeb.Layouts do
       navigate={@navigate}
       class="text-white hover:text-gray-700 hover:bg-white group flex items-center px-2 py-2 rounded-md"
     >
-      <.icon name={@icon_name} class=" group-hover:text-gray-900 mr-3 flex-shrink-0 h-6 w-6" />
+      <.icon name={@icon_name} solid class="group-hover:text-gray-900 mr-3 flex-shrink-0 h-6 w-6" />
       <%= @title %>
     </.link>
     """

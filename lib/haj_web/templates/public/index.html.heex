@@ -9,7 +9,7 @@
     <h2 class="font-title text-2xl md:text-3xl">Eller andra sidan är ni klara?</h2>
     <a class="flex link-underline items-center space-x-2 pt-4 mr-auto" href="/spexet">
       <h3 class="font-light uppercase text-xl md:text-2xl">köp biljetter</h3>
-      <Heroicons.Solid.arrow_right class="w-4 h-4" />
+      <Heroicons.arrow_right solid class="w-4 h-4" />
     </a>
   </div>
 
@@ -37,8 +37,8 @@
     class="absolute right-6 bottom-6 z-10 text-white flex items-center space-x-2"
     @click="playing = !playing"
   >
-    <Heroicons.Outline.pause class="h-10 w-10" x-show="playing" />
-    <Heroicons.Outline.play class="h-10 w-10" x-show="!playing" />
+    <Heroicons.pause outline class="h-10 w-10" x-show="playing" />
+    <Heroicons.play outline class="h-10 w-10" x-show="!playing" />
   </button>
 </section>
 
@@ -52,7 +52,7 @@
     </p>
     <a href="/spexet" class="link-underline flex items-center space-x-2 pt-4 mr-auto">
       <h3 class="font-light text-xl uppercase md:text-2xl">Läs mer om årets spex</h3>
-      <Heroicons.Solid.arrow_right class="w-4 h-4" />
+      <Heroicons.arrow_right solid class="w-4 h-4" />
     </a>
   </div>
 
@@ -77,7 +77,7 @@
             class="flex items-center link-underline mr-auto space-x-2 pt-4 md:pt-6 xl:pt-4"
           >
             <h3 class="font-light uppercase text-xl md:text-2xl"><%= card.call_to_action %></h3>
-            <Heroicons.Solid.arrow_right class="w-4 h-4" />
+            <Heroicons.arrow_right solid class="w-4 h-4" />
           </a>
         </div>
       </div>

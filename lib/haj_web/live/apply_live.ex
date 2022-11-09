@@ -4,7 +4,10 @@ defmodule HajWeb.ApplyLive do
   alias Haj.Spex
 
   def mount(_params, %{"user_token" => token}, socket) do
-    user = Haj.Accounts.get_user_by_session_token(token)
+    user =
+      Haj.Accounts.get_user_by_session_token(token)
+      |> Haj.Spex.preload_user_groups()
+
     current_spex = Spex.current_spex()
 
     {application, pre_filled} =
@@ -209,7 +212,9 @@ defmodule HajWeb.ApplyLive do
         phx-submit="apply"
         class="flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0"
       >
-        <h1 class="uppercase font-bold border-b-2 border-burgandy-500 text-xl mb-2">Användaruppgifter</h1>
+        <h1 class="uppercase font-bold border-b-2 border-burgandy-500 text-xl mb-2">
+          Användaruppgifter
+        </h1>
         <label>KTH-id:</label>
         <input type="text" value={"#{@current_user.username}@kth.se"} class="bg-gray-200" disabled />
 

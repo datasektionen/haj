@@ -68,7 +68,7 @@ defmodule HajWeb.ApplicationsLive do
                   <td class="px-4 py-3 border">
                     <div class="flex">
                       <button class="px-2" x-on:click="show = !show">
-                        <Heroicons.Solid.chevron_down class="h-6 text-gray-800" />
+                        <Heroicons.chevron_down solid class="h-6 text-gray-800" />
                       </button>
                       <%= "#{application.user.first_name} #{application.user.last_name}" %>
                     </div>
