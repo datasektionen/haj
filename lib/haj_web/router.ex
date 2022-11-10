@@ -48,6 +48,8 @@ defmodule HajWeb.Router do
       live "/group/:show_group_id", GroupLive, :index
 
       live "/merch-admin", MerchAdminLive.Index, :index
+      live "/merch-admin/new", MerchAdminLive.Index, :new
+      live "/merch-admin/:id/edit", MerchAdminLive.Index, :edit
     end
   end
 

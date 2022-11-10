@@ -3,7 +3,9 @@ defmodule HajWeb.MerchAdminLive.Index do
 
   alias Haj.Spex
   alias Haj.Merch
+  alias Haj.Merch.MerchItem
 
+  @impl true
   def mount(_params, _session, socket) do
     show = Spex.current_spex()
 
@@ -13,129 +15,62 @@ defmodule HajWeb.MerchAdminLive.Index do
         [key: "#{year.year}: #{title}", value: id]
       end)
 
-    merch_items = Merch.list_merch_items_for_show(show.id)
-
-    changesets =
-      merch_items
-      |> Enum.sort_by(& &1.inserted_at, {:desc, Time})
-      |> Enum.map(&Merch.change_merch_item/1)
+    merch_items = Merch.list_merch_items_for_show(show.id) |> Enum.sort()
 
     socket =
       socket
       |> assign(
         show: show,
         show_options: show_options,
-        changesets: changesets
+        merch_items: merch_items
       )
 
     {:ok, socket}
   end
 
-  def handle_info({:updated_changeset, :new, changeset}, socket) do
-    changesets =
-      Enum.map(socket.assigns.changesets, fn old ->
-        case old.data.temp_id == changeset.data.temp_id do
-          true -> changeset
-          false -> old
-        end
-      end)
-
-    {:noreply, assign(socket, changesets: changesets)}
+  @impl true
+  def handle_params(params, _url, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  def handle_info({:updated_changeset, :edit, changeset}, socket) do
-    changesets =
-      Enum.map(socket.assigns.changesets, fn old ->
-        case old.data.id == changeset.data.id do
-          true -> changeset
-          false -> old
-        end
-      end)
-
-    {:noreply, assign(socket, changesets: changesets)}
+  defp apply_action(socket, :edit, %{"id" => id}) do
+    socket
+    |> assign(:page_title, "Redigera Merch")
+    |> assign(:merch_item, Merch.get_merch_item!(id))
   end
 
-  def handle_info({:created_merch, merch, temp_id}, socket) do
-    # Delete the temporary one with the created item
-    changesets =
-      Enum.map(socket.assigns.changesets, fn changeset ->
-        case changeset.data.temp_id == temp_id do
-          true -> Merch.change_merch_item(merch)
-          false -> changeset
-        end
-      end)
-
-    {:noreply, assign(socket, changesets: changesets)}
+  defp apply_action(socket, :new, _params) do
+    socket
+    |> assign(:page_title, "Ny Merch")
+    |> assign(:merch_item, %MerchItem{})
   end
 
-  def handle_info({:removed_merch, temp_id}, socket) do
-    changesets =
-      Enum.filter(socket.assigns.changesets, fn changeset ->
-        changeset.data.temp_id != temp_id
-      end)
-
-    {:noreply, assign(socket, changesets: changesets)}
-  end
-
-  def handle_info({:deleted_merch, merch_item_id}, socket) do
-    changesets =
-      Enum.filter(socket.assigns.changesets, fn changeset ->
-        changeset.data.id != merch_item_id
-      end)
-
-    {:noreply, assign(socket, changesets: changesets)}
+  defp apply_action(socket, :index, _params) do
+    socket
+    |> assign(:page_title, "Visar Merch")
+    |> assign(:merch_item, nil)
   end
 
   def handle_event("select_show", %{"show" => %{"show" => show_id}}, socket) do
-    show = Spex.get_show!(show_id)
-    merch_items = Merch.list_merch_items_for_show(show.id)
-    changesets = merch_items |> Enum.map(&Merch.change_merch_item/1)
+    %{id: id} = Spex.get_show!(show_id)
+    merch_items = Merch.list_merch_items_for_show(id)
 
-    {:noreply, assign(socket, show: show, changesets: changesets)}
+    {:noreply, assign(socket, :merch_items, merch_items)}
   end
 
-  def handle_event("add_merch", _params, socket) do
-    changeset = Merch.change_merch_item(%Merch.MerchItem{temp_id: get_temp_id()})
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    merch_item = Merch.get_merch_item!(id)
+    {:ok, _} = Merch.delete_merch_item(merch_item)
 
-    {:noreply, assign(socket, changesets: [changeset | socket.assigns.changesets])}
+    {:noreply, assign(socket, :merch_items, Merch.list_merch_items())}
   end
 
-  defp get_temp_id, do: :crypto.strong_rand_bytes(5) |> Base.url_encode64() |> binary_part(0, 5)
-
-  def render(assigns) do
+  defp field(assigns) do
     ~H"""
-    <div class="pb-4 border-b">
-      <h3 class="font-bold text-2xl py-2">Administrera merch</h3>
-      <.form :let={f} for={:show} phx-change="select_show" class="">
-        <div class="">
-          <%= label(f, :show, "Välj spex", class: "input-label") %>
-          <div class="flex flex-row gap-4">
-            <%= select(f, :show, @show_options, class: "input") %>
-            <div class="flex justify-end mt-1 flex-shrink-0">
-              <button
-                type="button"
-                class="h-full rounded-md border border-transparent py-2 px-4 bg-burgandy-500 text-sm font-medium text-white shadow-sm
-                hover:bg-burgandy-600 focus:outline-none focus:ring-2 focus:ring-burgandy-500 focus:ring-offset-2"
-                phx-click="add_merch"
-              >
-                Ny merch
-              </button>
-            </div>
-          </div>
-        </div>
-      </.form>
-    </div>
-
-    <div class="grid gap-6 pt-4 xl:grid-cols-2">
-      <%= for changeset <- @changesets do %>
-        <.live_component
-          module={HajWeb.MerchAdminLive.FormComponent}
-          id={"form_#{changeset.data.id}_#{changeset.data.temp_id}"}
-          changeset={changeset}
-          flash={@flash}
-          show_id={@show.id}
-        />
-      <% end %>
+    <div class="border-b pt-2 pb-2">
+      <span class="text-sm text-gray-500 block pb-1"><%= @title %></span>
+      <span class="text-sm block"><%= @text %></span>
     </div>
     """
   end

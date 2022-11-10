@@ -192,7 +192,7 @@ defmodule HajWeb.CoreComponents do
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="space-y-8 bg-white mt-10">
+      <div class="space-y-4 bg-white mt-10">
         <%= render_slot(@inner_block, f) %>
         <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
           <%= render_slot(action, f) %>
@@ -213,6 +213,7 @@ defmodule HajWeb.CoreComponents do
   attr :type, :string, default: nil
   attr :class, :string, default: nil
   attr :rest, :global, include: ~w(disabled form name value)
+  attr :danger, :boolean, default: false
 
   slot :inner_block, required: true
 
@@ -221,8 +222,11 @@ defmodule HajWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
+        "phx-submit-loading:opacity-75 rounded-lg py-2 px-3",
         "text-sm font-semibold leading-6 text-white active:text-white/80",
+        "focus:outline-none focus:ring-2 focus:ring-offset-2",
+        "#{@danger || "bg-burgandy-500 hover:bg-burgandy-600 focus:ring-burgandy-500"}",
+        "#{!@danger || "bg-red-700 hover:bg-red-800 focus:ring-red-700"}",
         @class
       ]}
       {@rest}

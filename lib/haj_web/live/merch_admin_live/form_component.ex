@@ -3,50 +3,62 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
 
   alias Haj.Merch
 
-  def mount(socket) do
-    # This is technically an atom-leak, this is not garbage collected, but should be fine.
-    # Hopefully noone will add more than 1048576 merch items for one spex
-    upload_name = String.to_atom("image_#{socket.assigns.myself.cid}")
+  def render(assigns) do
+    ~H"""
+    <div>
+      <.simple_form
+        :let={f}
+        for={@changeset}
+        id="merch-form"
+        phx-target={@myself}
+        phx-change="validate"
+        phx-submit="save"
+      >
+        <.image_upload_component {assigns} />
+        <.input field={{f, :name}} label="Namn" type="text" />
+        <.input field={{f, :description}} label="Beskrivning" type="textarea" />
+        <.input field={{f, :price}} label="Pris (kr)" type="number" />
+        <.input
+          field={{f, :sizes}}
+          label="Storlekar, fyll i som kommaseparerat"
+          type="text"
+          value={(Ecto.Changeset.get_field(@changeset, :sizes, []) || []) |> Enum.join(",")}
+        />
+        <%!-- For the input with datetime-local does not work properly. See issue: https://github.com/phoenixframework/phoenix/issues/5098 --%>
+        <.input field={{f, :purchase_deadline}} type="datetime-local" label="Beställningsdeadline" />
 
-    socket =
-      socket
-      |> allow_upload(upload_name,
-        accept: ~w(.jpg .jpeg),
-        max_entries: 1,
-        external: &presign_upload/2
-      )
-      |> assign(:upload_name, upload_name)
+        <:actions>
+          <.button phx-disable-with="Sparar...">Spara</.button>
+        </:actions>
+      </.simple_form>
+    </div>
+    """
+  end
 
-    {:ok, socket}
+  def update(%{merch_item: merch_item} = assigns, socket) do
+    changeset = Merch.change_merch_item(merch_item)
+
+    {:ok,
+     socket
+     |> allow_upload(:image,
+       accept: ~w(.jpg .jpeg),
+       max_entries: 1,
+       external: &presign_upload/2
+     )
+     |> assign(assigns)
+     |> assign(:image, merch_item.image)
+     |> assign(:changeset, changeset)}
   end
 
   def handle_event("validate", %{"merch_item" => merch_params}, socket) do
-    case merch_params["id"] do
-      "" ->
-        # New item, only has temp_id
-        temp_id = merch_params["temp_id"]
+    merch_params = merch_params |> split_merch_comma_separated()
 
-        changeset =
-          %Merch.MerchItem{temp_id: temp_id}
-          |> Merch.change_merch_item(merch_params |> split_merch_comma_separated())
-          |> Map.put(:action, :insert)
+    changeset =
+      socket.assigns.merch_item
+      |> Merch.change_merch_item(merch_params)
+      |> Map.put(:action, :validate)
 
-        send(self(), {:updated_changeset, :new, changeset})
-        {:noreply, socket}
-
-      string_id ->
-        # Normal already existing item
-        id = string_id |> String.to_integer()
-
-        changeset =
-          %Merch.MerchItem{id: id}
-          |> Merch.change_merch_item(merch_params |> split_merch_comma_separated())
-          |> Map.put(:action, :insert)
-
-        send(self(), {:updated_changeset, :edit, changeset})
-
-        {:noreply, socket}
-    end
+    {:noreply, assign(socket, :changeset, changeset)}
   end
 
   def handle_event("save", %{"merch_item" => merch_params}, socket) do
@@ -55,87 +67,49 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
       |> split_merch_comma_separated()
       |> put_image_url(socket)
 
-    case merch_params["id"] do
-      "" ->
-        # No id so new item
-        create_merch(merch_params, socket)
-
-      _id ->
-        # Update already existing item
-        update_merch(merch_params, socket)
-    end
-  end
-
-  def handle_event("remove", %{"value" => temp_id}, socket) do
-    send(self(), {:removed_merch, temp_id})
-    {:noreply, socket}
-  end
-
-  def handle_event("delete", %{"value" => id}, socket) do
-    merch_item = Merch.get_merch_item!(id)
-
-    case Merch.delete_merch_item(merch_item) do
-      {:ok, _merch} ->
-        send(self(), {:deleted_merch, merch_item.id})
-        push_flash(:info, "Merch raderades.")
-        {:noreply, socket}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        send(self(), {:updated_changeset, :edit, changeset})
-
-        push_flash(:error, "Något gick fel.")
-        {:noreply, socket}
-    end
+    save_merch(socket, socket.assigns.action, merch_params)
   end
 
   def handle_event("cancel-upload", %{"ref" => ref}, socket) do
     {:noreply, cancel_upload(socket, socket.assigns.upload_name, ref)}
   end
 
-  defp update_merch(merch_params, socket) do
-    merch_item = Merch.get_merch_item!(merch_params["id"])
-
-    case Merch.update_merch_item(merch_item, merch_params, &consume_images(socket, &1)) do
-      {:ok, item} ->
-        changeset =
-          Merch.change_merch_item(item)
-          |> Map.put(:action, :insert)
-
-        send(self(), {:updated_changeset, :edit, changeset})
-        push_flash(:info, "Merch uppdaterades.")
-
-        {:noreply, socket}
+  defp save_merch(socket, :edit, merch_params) do
+    case Merch.update_merch_item(
+           socket.assigns.merch_item,
+           merch_params,
+           &consume_images(socket, &1)
+         ) do
+      {:ok, _item} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Merch uppdaterades.")
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        send(self(), {:updated_changeset, :edit, changeset})
-
-        push_flash(:error, "Något gick fel.")
-        {:noreply, socket}
+        {:noreply, assign(socket, changeset: changeset)}
     end
   end
 
-  defp create_merch(merch_params, socket) do
-    temp_id = merch_params["temp_id"]
-
+  defp save_merch(socket, :new, merch_params) do
     merch_params =
       merch_params
-      |> Map.put("show_id", socket.assigns.show_id)
+      |> Map.put("show_id", socket.assigns.show.id)
 
     case Merch.create_merch_item(merch_params, &consume_images(socket, &1)) do
-      {:ok, item} ->
-        send(self(), {:created_merch, item, temp_id})
-        push_flash(:info, "Merch skapades.")
-        {:noreply, socket}
+      {:ok, _item} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Merch skapades.")
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        send(self(), {:updated_changeset, :new, changeset})
-        push_flash(:error, "Något gick fel.")
-        {:noreply, socket}
+        {:noreply, assign(socket, changeset: changeset)}
     end
   end
 
   defp put_image_url(params, socket) do
-    {completed, []} = uploaded_entries(socket, socket.assigns.upload_name)
+    {completed, []} = uploaded_entries(socket, :image)
 
     paths =
       for entry <- completed do
@@ -149,7 +123,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
   end
 
   defp consume_images(socket, %Merch.MerchItem{} = merch) do
-    consume_uploaded_entries(socket, socket.assigns.upload_name, fn _meta, _entry -> :ok end)
+    consume_uploaded_entries(socket, :image, fn _meta, _entry -> :ok end)
 
     {:ok, merch}
   end
@@ -188,103 +162,10 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
     {:ok, meta, socket}
   end
 
-  def render(assigns) do
-    ~H"""
-    <div>
-      <.form
-        :let={f}
-        for={@changeset}
-        phx-change="validate"
-        phx-submit="save"
-        phx-target={@myself}
-        id={"form_#{@changeset.data.id}_#{@changeset.data.temp_id}"}
-        class="flex flex-col gap-4 bg-gray-50 py-4 px-4 rounded-lg border"
-      >
-        <%= hidden_input(f, :id) %>
-        <%= hidden_input(f, :temp_id) %>
-        <%= hidden_input(f, :image) %>
-
-        <.image_upload_component
-          f={f}
-          uploads={@uploads}
-          target={@myself}
-          image={Ecto.Changeset.get_field(@changeset, :image)}
-          upload_name={@upload_name}
-        />
-
-        <div>
-          <%= label(f, "Namn", class: "input-label") %>
-          <%= text_input(f, :name, class: "input") %>
-          <%= error_tag(f, :name, class: "pt-1 text-sm") %>
-        </div>
-
-        <div>
-          <%= label(f, "Beskrivning", class: "input-label") %>
-          <%= textarea(f, :description, class: "input") %>
-          <%= error_tag(f, :description, class: "pt-1 text-sm") %>
-        </div>
-
-        <div>
-          <%= label(f, "Pris (kr)", class: "input-label") %>
-          <%= number_input(f, :price, class: "input") %>
-          <%= error_tag(f, :price, class: "pt-1 text-sm") %>
-        </div>
-
-        <div>
-          <%= label(f, "Storlekar, fyll i som kommaseparerat", class: "input-label") %>
-          <%= text_input(f, :sizes,
-            value: (Ecto.Changeset.get_field(@changeset, :sizes, []) || []) |> Enum.join(","),
-            class: "input"
-          ) %>
-          <%= error_tag(f, :sizes, class: "pt-1 text-sm") %>
-        </div>
-
-        <div>
-          <%= label(f, "Beställningsdeadline", class: "input-label") %>
-          <%= datetime_local_input(f, :purchase_deadline, class: "input") %>
-          <%= error_tag(f, :purchase_deadline, class: "pt-1 text-sm") %>
-        </div>
-
-        <div class="flex items-center justify-end gap-2 pt-4">
-          <%= if is_nil(f.data.temp_id) || !is_nil(f.data.id) do %>
-            <button
-              type="button"
-              phx-click="delete"
-              phx-target={@myself}
-              value={f.data.id}
-              class="inline-flex items-center rounded-md border border-transparent py-2 px-4 bg-red-700 text-sm font-medium text-white shadow-sm
-                    hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2"
-            >
-              <.icon name={:trash} mini />
-              <span>Radera</span>
-            </button>
-          <% else %>
-            <button
-              type="button"
-              phx-click="remove"
-              phx-target={@myself}
-              value={f.data.temp_id}
-              class="inline-flex items-center rounded-md border border-transparent py-2 px-4 bg-red-700 text-sm font-medium text-white shadow-sm
-                    hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2"
-            >
-              <span>Ta bort</span>
-            </button>
-          <% end %>
-          <%= submit("Spara",
-            class:
-              "inline-flex justify-center rounded-md border border-transparent py-2 px-4 bg-burgandy-500 text-sm font-medium text-white shadow-sm
-                hover:bg-burgandy-600 focus:outline-none focus:ring-2 focus:ring-burgandy-500 focus:ring-offset-2"
-          ) %>
-        </div>
-      </.form>
-    </div>
-    """
-  end
-
   defp image_upload_component(assigns) do
     ~H"""
     <div class="flex flex-col md:flex-row gap-6">
-      <%= for entry <- @uploads[@upload_name].entries do %>
+      <%= for entry <- @uploads.image.entries do %>
         <article class="">
           <figure class="w-48 h-32 rounded-md overflow-hidden">
             <.live_img_preview entry={entry} />
@@ -294,19 +175,19 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
             type="button"
             phx-click="cancel-upload"
             phx-value-ref={entry.ref}
-            phx-target={@target}
+            phx-target={@myself}
             aria-label="cancel"
           >
             &times;
           </button>
 
-          <%= for err <- upload_errors(@uploads[@upload_name], entry) do %>
+          <%= for err <- upload_errors(@uploads.image, entry) do %>
             <p class="alert alert-danger"><%= err %></p>
           <% end %>
         </article>
       <% end %>
 
-      <%= if @uploads[@upload_name].entries == [] do %>
+      <%= if @uploads.image.entries == [] do %>
         <article class="">
           <figure class="w-48 h-32 rounded-md overflow-hidden">
             <%= if @image do %>
@@ -320,7 +201,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
 
       <div>
         <label class="input-label">Ladda upp bild</label>
-        <.live_file_input upload={@uploads[@upload_name]} class="text-sm pt-2" />
+        <.live_file_input upload={@uploads.image} class="text-sm pt-2" />
       </div>
     </div>
     """
