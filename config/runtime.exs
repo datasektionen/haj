@@ -38,12 +38,10 @@ if config_env() == :prod do
 
   login_api_key = System.get_env("LOGIN_API_KEY") || raise "LOGIN_API_KEY is missing"
   login_host = System.get_env("LOGIN_HOST") || raise "LOGIN_HOST is missing"
-  haj_subdomain = System.get_env("HAJ_SUBDOMAIN") || raise "HAJ_SUBDOMAIN is missing"
 
   config :haj,
     login_api_key: login_api_key,
-    login_host: login_host,
-    haj_subdomain: haj_subdomain
+    login_host: login_host
 
   # Variables for imgproxy
   imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"
