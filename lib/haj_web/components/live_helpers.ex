@@ -173,4 +173,10 @@ defmodule HajWeb.LiveHelpers do
   # end
 
   def full_name(%Accounts.User{} = user), do: "#{user.first_name} #{user.last_name}"
+
+  def format_date(%struct{} = date) when struct in [NaiveDateTime, DateTime] do
+    Calendar.strftime(date, "%c")
+  end
+
+  def format_date(other), do: other
 end

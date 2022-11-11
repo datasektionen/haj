@@ -6,8 +6,12 @@ defmodule HajWeb.MerchAdminLive.Index do
   alias Haj.Merch.MerchItem
 
   @impl true
-  def mount(_params, _session, socket) do
-    show = Spex.current_spex()
+  def mount(params, _session, socket) do
+    show =
+      case params do
+        %{"show" => show_id} -> Spex.get_show!(show_id)
+        _ -> Spex.current_spex()
+      end
 
     show_options =
       Spex.list_shows()
@@ -15,7 +19,9 @@ defmodule HajWeb.MerchAdminLive.Index do
         [key: "#{year.year}: #{title}", value: id]
       end)
 
-    merch_items = Merch.list_merch_items_for_show(show.id) |> Enum.sort()
+    merch_items =
+      Merch.list_merch_items_for_show(show.id)
+      |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
 
     socket =
       socket
@@ -52,10 +58,13 @@ defmodule HajWeb.MerchAdminLive.Index do
   end
 
   def handle_event("select_show", %{"show" => %{"show" => show_id}}, socket) do
-    %{id: id} = Spex.get_show!(show_id)
-    merch_items = Merch.list_merch_items_for_show(id)
+    show = Spex.get_show!(show_id)
 
-    {:noreply, assign(socket, :merch_items, merch_items)}
+    merch_items =
+      Merch.list_merch_items_for_show(show.id)
+      |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
+
+    {:noreply, assign(socket, merch_items: merch_items, show: show)}
   end
 
   @impl true
@@ -63,14 +72,18 @@ defmodule HajWeb.MerchAdminLive.Index do
     merch_item = Merch.get_merch_item!(id)
     {:ok, _} = Merch.delete_merch_item(merch_item)
 
-    {:noreply, assign(socket, :merch_items, Merch.list_merch_items())}
+    merch_items =
+      Merch.list_merch_items_for_show(socket.assigns.show.id)
+      |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
+
+    {:noreply, assign(socket, :merch_items, merch_items)}
   end
 
   defp field(assigns) do
     ~H"""
     <div class="border-b pt-2 pb-2">
       <span class="text-sm text-gray-500 block pb-1"><%= @title %></span>
-      <span class="text-sm block"><%= @text %></span>
+      <span class="text-sm block whitespace-pre-line"><%= @text %></span>
     </div>
     """
   end
