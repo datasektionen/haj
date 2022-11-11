@@ -46,5 +46,5 @@ defmodule HajWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug HajWeb.Plugs.SubdomainRouter
+  plug HajWeb.Router
 end
