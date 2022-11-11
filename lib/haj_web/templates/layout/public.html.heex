@@ -1,9 +1,0 @@
-<main class="">
-  <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-  <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-  <%= render("_navbar.html", conn: @conn) %>
-  <div class="flex flex-col justify-between min-h-screen bg-gray-200">
-    <%= @inner_content %>
-    <%= render("_public_footer.html", conn: @conn) %>
-  </div>
-</main>

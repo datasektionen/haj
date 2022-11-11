@@ -10,8 +10,8 @@ defmodule HajWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {HajWeb.LayoutView, :root}
-    plug :put_layout, {HajWeb.LayoutView, :haj}
+    plug :put_root_layout, {HajWeb.Layouts, :root}
+    plug :put_layout, {HajWeb.Layouts, :haj}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
