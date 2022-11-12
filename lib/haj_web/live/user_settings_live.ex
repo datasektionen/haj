@@ -12,7 +12,12 @@ defmodule HajWeb.UserSettingsLive do
     changeset = Accounts.change_user(user)
 
     {:ok,
-     assign(socket, changeset: changeset, food_options: food_options, checked_foods: user.foods)}
+     assign(socket,
+       page_title: "Dina uppgifter",
+       changeset: changeset,
+       food_options: food_options,
+       checked_foods: user.foods
+     )}
   end
 
   def handle_event("validate", %{"user" => params}, socket) do
