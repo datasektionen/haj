@@ -1,6 +1,7 @@
 defmodule HajWeb.MembersLive do
   use HajWeb, :live_view
 
+  alias Haj.Colors
   alias Haj.Spex
   alias HajWeb.Endpoint
 
@@ -79,7 +80,7 @@ defmodule HajWeb.MembersLive do
               <div
                 class="px-2 py-0.5 rounded-full filter hover:brightness-90"
                 style={"background-color: #{get_color(:bg, group.show_group.group.id)};
-                      color: #{get_color(:text, group.show_group.group.id)};"}
+                      color: #{Colors.pick_text_color(get_color(:bg, group.show_group.group.id))};"}
               >
                 <%= group.show_group.group.name %>
               </div>
@@ -92,8 +93,7 @@ defmodule HajWeb.MembersLive do
   end
 
   @colors ~w"#8dd3c7 #ffffb3 #bebada #fb8072 #80b1d3 #fdb462 #b3de69 #fccde5 #d9d9d9 #bc80bd #ccebc5 #ffed6f"
-  @text_colors ~w"#000 #000 #fff #fff #000 #fff #000 #000 #000 #fff #000 #000"
 
   defp get_color(:bg, index), do: Enum.at(@colors, rem(index - 1, 12), "#4e79a7")
-  defp get_color(:text, index), do: Enum.at(@text_colors, rem(index - 1, 12), "#000")
+
 end
