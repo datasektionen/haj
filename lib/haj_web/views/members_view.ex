@@ -1,5 +1,5 @@
-defmodule HajWeb.MembersView do
+defmodule HajWeb.MembersHTML do
   use HajWeb, :view
 
-  def table(assigns), do: HajWeb.Components.Table.table(assigns)
+  embed_templates("../templates/members/*")
 end

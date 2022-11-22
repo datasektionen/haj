@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-4 md:flex-row">
   <div class="flex-grow-[1] md:min-w-[220px]">
-    <%= render("_side_bar.html", user: @current_user, conn: @conn) %>
+    <._side_bar user={@current_user} conn={@conn} />
   </div>
   <div class="flex-grow-[2]">
     <div>
@@ -108,7 +108,8 @@
       <%= error_tag(f, :city) %>
 
       <%= submit("Spara",
-        class: "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy-500 text-white self-end text-lg uppercase"
+        class:
+          "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy-500 text-white self-end text-lg uppercase"
       ) %>
     </.form>
   </div>

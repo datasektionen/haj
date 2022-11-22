@@ -12,7 +12,7 @@
     },
     "[phoenix-heex]": {
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "JakeBecker.elixir-ls",
+        "editor.defaultFormatter": "animus-coop.vscode-elixir-mix-formatter",
         "editor.tabSize": 2,
     },
     "[elixir]": {

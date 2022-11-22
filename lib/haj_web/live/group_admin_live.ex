@@ -2,8 +2,7 @@ defmodule HajWeb.GroupAdminLive do
   use HajWeb, :live_view
 
   alias Haj.Spex
-
-  import HajWeb.Components.Table
+  # Old stuff, should be redone
 
   def mount(_params, %{"user_token" => token, "show_group_id" => id}, socket) do
     show_group = Haj.Spex.get_show_group!(id)
@@ -165,7 +164,7 @@ defmodule HajWeb.GroupAdminLive do
 
     <div class="uppercase font-bold py-2">Nuvarande medlemmar</div>
 
-    <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
+    <.table id="chef-table" rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
       <:col :let={member} label="Chefer">
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>
@@ -180,7 +179,10 @@ defmodule HajWeb.GroupAdminLive do
       </:col>
     </.table>
 
-    <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :gruppis))}>
+    <.table
+      id="gruppis-table"
+      rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :gruppis))}
+    >
       <:col :let={member} label="Gruppisar">
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>

@@ -50,7 +50,7 @@ defmodule HajWeb.DashboardLive do
       class="flex flex-col gap-1 sm:gap-1.5 border rounded-lg px-4 py-4 hover:bg-gray-50"
     >
       <div class="text-lg font-bold text-burgandy-500 inline-flex items-center gap-2">
-        <.icon name={:user_group} />
+        <.icon name={:user_group} solid />
         <span class="">
           <%= @show_group.group.name %>
         </span>
