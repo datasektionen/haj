@@ -1,0 +1,44 @@
+<.header>
+  Listing Events
+  <:actions>
+    <.link patch={~p"/live/events/new"}>
+      <.button>New Event</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="events" rows={@events} row_click={&JS.navigate(~p"/live/events/#{&1}")}>
+  <:col :let={event} label="Name"><%= event.name %></:col>
+  <:col :let={event} label="Description"><%= event.description %></:col>
+  <:col :let={event} label="Image"><%= event.image %></:col>
+  <:col :let={event} label="Ticket limit"><%= event.ticket_limit %></:col>
+  <:col :let={event} label="Event date"><%= event.event_date %></:col>
+  <:col :let={event} label="Purchase deadline"><%= event.purchase_deadline %></:col>
+  <:action :let={event}>
+    <div class="sr-only">
+      <.link navigate={~p"/live/events/#{event}"}>Show</.link>
+    </div>
+    <.link patch={~p"/live/events/#{event}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={event}>
+    <.link phx-click={JS.push("delete", value: %{id: event.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="event-modal"
+  show
+  on_cancel={JS.navigate(~p"/live/events")}
+>
+  <.live_component
+    module={HajWeb.EventLive.FormComponent}
+    id={@event.id || :new}
+    title={@page_title}
+    action={@live_action}
+    event={@event}
+    navigate={~p"/live/events"}
+  />
+</.modal>
