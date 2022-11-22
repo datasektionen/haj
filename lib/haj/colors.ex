@@ -66,6 +66,7 @@ defmodule Haj.Colors do
   end
 
   def get_modified_rgb(c) do
+    c = c / 255.0
     if c <= 0.03928 do
       c / 12.92
     else
