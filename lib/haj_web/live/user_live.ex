@@ -26,7 +26,7 @@ defmodule HajWeb.UserLive do
         </div>
       </div>
       <div class="flex flex-col sm:flex-row sm:gap-8 justify-start w-full">
-        <div class="sm:flex-grow">
+        <div class="p-8 rounded-xl border-slate-200 border">
           <h3 class="text-lg py-3 font-bold px-2 border-b border-burgandy-500">Uppgifter</h3>
           <dl>
             <.datalist_item description="KTH-id" data={@user.username} />
@@ -37,7 +37,7 @@ defmodule HajWeb.UserLive do
             <.datalist_item description="Matpreferenser" data={display_foods(@user)} />
           </dl>
         </div>
-        <div class="sm:w-64">
+        <div class="sm:w-64 p-8 rounded-xl border-slate-200 border">
           <h3 class="text-lg py-3 font-bold px-2 border-b border-burgandy-500">Grupper</h3>
 
           <%= for {year, show_groups} <- @groups do %>
