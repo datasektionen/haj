@@ -1,10 +1,8 @@
 defmodule HajWeb.MembersLive do
   use HajWeb, :live_view
 
-  alias Haj.Colors
   alias Haj.Spex
   alias HajWeb.Endpoint
-
   def mount(_params, _session, socket) do
     %{id: show_id} = Spex.current_spex()
 
@@ -87,7 +85,7 @@ defmodule HajWeb.MembersLive do
               <div
                 class="px-2 py-0.5 rounded-full filter hover:brightness-90"
                 style={"background-color: #{get_color(:bg, group.show_group.group.id)};
-                      color: #{Colors.pick_text_color(get_color(:bg, group.show_group.group.id))};"}
+                      color: #{pick_text_color(get_color(:bg, group.show_group.group.id))};"}
               >
                 <%= group.show_group.group.name %>
               </div>
