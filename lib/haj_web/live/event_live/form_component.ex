@@ -17,15 +17,14 @@ defmodule HajWeb.EventLive.FormComponent do
         for={@changeset}
         id="event-form"
         phx-target={@myself}
-        phx-change="validate"
         phx-submit="save"
       >
         <.input field={{f, :name}} type="text" label="name" />
         <.input field={{f, :description}} type="text" label="description" />
         <.input field={{f, :image}} type="text" label="image" />
         <.input field={{f, :ticket_limit}} type="number" label="ticket_limit" />
-        <.input field={{f, :event_date}} type="datetime-local" label="event_date" />
         <.input field={{f, :purchase_deadline}} type="datetime-local" label="purchase_deadline" />
+        <.input field={{f, :event_date}} type="datetime-local" label="event_date" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Event</.button>
         </:actions>
