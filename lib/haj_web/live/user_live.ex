@@ -9,7 +9,7 @@ defmodule HajWeb.UserLive do
     groups = Haj.Spex.get_show_groups_for_user(user.id)
     groups_by_year = Enum.group_by(groups, fn %{show: show} -> show.year end)
 
-    {:ok, assign(socket, user: user, groups: groups_by_year)}
+    {:ok, assign(socket, page_title: full_name(user), user: user, groups: groups_by_year)}
   end
 
   def render(assigns) do
@@ -21,7 +21,7 @@ defmodule HajWeb.UserLive do
           class="h-20 w-20 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
         />
         <div class="flex flex-col">
-          <span class="text-2xl font-bold"><%= "#{@user.first_name} #{@user.last_name}" %></span>
+          <span class="text-2xl font-bold"><%= full_name(@user) %></span>
           <span class="text-sm text-gray-600"><%= "#{@user.username}@kth.se" %></span>
         </div>
       </div>

@@ -14,7 +14,14 @@ defmodule HajWeb.MembersLive do
       |> Enum.map(fn %{id: id, group: g} -> [key: g.name, value: id] end)
 
     {:ok,
-     assign(socket, show_id: show_id, query: nil, groups: groups, group: nil, members: members)}
+     assign(socket,
+       page_title: "Medlemmar",
+       show_id: show_id,
+       query: nil,
+       groups: groups,
+       group: nil,
+       members: members
+     )}
   end
 
   def handle_event("filter", %{"search_form" => %{"q" => query, "group" => group}}, socket) do
