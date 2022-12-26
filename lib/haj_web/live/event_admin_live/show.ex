@@ -1,4 +1,4 @@
-defmodule HajWeb.EventLive.Show do
+defmodule HajWeb.EventAdminLive.Show do
   use HajWeb, :live_view
 
   alias Haj.Events

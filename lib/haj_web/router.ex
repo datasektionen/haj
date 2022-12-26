@@ -52,11 +52,12 @@ defmodule HajWeb.Router do
       live "/merch-admin/:id/edit", MerchAdminLive.Index, :edit
 
       live "/events", EventLive.Index, :index
-      live "/events/new", EventLive.Index, :new
-      live "/events/:id/edit", EventLive.Index, :edit
+      live "/events-admin", EventAdminLive.Index, :index
+      live "/events-admin/new", EventAdminLive.Index, :new
+      live "/events-admin/:id/edit", EventAdminLive.Index, :edit
 
-      live "/events/:id", EventLive.Show, :show
-      live "/events/:id/show/edit", EventLive.Show, :edit
+      live "/events-admin/:id", EventAdminLive.Show, :show
+      live "/events-admin/:id/show/edit", EventAdminLive.Show, :edit
     end
   end
 

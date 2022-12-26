@@ -1,4 +1,4 @@
-defmodule HajWeb.EventLive.FormComponent do
+defmodule HajWeb.EventAdminLive.FormComponent do
   use HajWeb, :live_component
 
   alias Haj.Events
