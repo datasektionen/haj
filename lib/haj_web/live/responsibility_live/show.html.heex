@@ -1,0 +1,27 @@
+<.header>
+  Responsibility <%= @responsibility.id %>
+  <:subtitle>This is a responsibility record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/responsibilities/#{@responsibility}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit responsibility</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @responsibility.name %></:item>
+  <:item title="Description"><%= @responsibility.description %></:item>
+</.list>
+
+<.back navigate={~p"/responsibilities"}>Back to responsibilities</.back>
+
+<.modal :if={@live_action == :edit} id="responsibility-modal" show on_cancel={JS.patch(~p"/responsibilities/#{@responsibility}")}>
+  <.live_component
+    module={HajWeb.ResponsibilityLive.FormComponent}
+    id={@responsibility.id}
+    title={@page_title}
+    action={@live_action}
+    responsibility={@responsibility}
+    navigate={~p"/responsibilities/#{@responsibility}"}
+  />
+</.modal>

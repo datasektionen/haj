@@ -2,6 +2,7 @@ defmodule HajWeb.Router do
   @moduledoc """
   Router for Haj, the internal system.
   """
+  alias Haj.Responsibilities
   use HajWeb, :router
 
   import HajWeb.UserAuth
@@ -54,6 +55,15 @@ defmodule HajWeb.Router do
       live "/merch-admin", MerchAdminLive.Index, :index
       live "/merch-admin/new", MerchAdminLive.Index, :new
       live "/merch-admin/:id/edit", MerchAdminLive.Index, :edit
+
+      ## Responsibilities
+
+      live "/responsibilities", ResponsibilityLive.Index, :index
+      live "/responsibilities/new", ResponsibilityLive.Index, :new
+      live "/responsibilities/:id/edit", ResponsibilityLive.Index, :edit
+
+      live "/responsibilities/:id", ResponsibilityLive.Show, :show
+      live "/responsibilities/:id/show/edit", ResponsibilityLive.Show, :edit
     end
   end
 
