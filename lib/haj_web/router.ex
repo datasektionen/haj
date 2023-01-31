@@ -55,9 +55,6 @@ defmodule HajWeb.Router do
       live "/events-admin", EventAdminLive.Index, :index
       live "/events-admin/new", EventAdminLive.Index, :new
       live "/events-admin/:id/edit", EventAdminLive.Index, :edit
-
-      live "/events-admin/:id", EventAdminLive.Show, :show
-      live "/events-admin/:id/show/edit", EventAdminLive.Show, :edit
     end
   end
 

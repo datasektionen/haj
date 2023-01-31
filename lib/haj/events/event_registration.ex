@@ -12,7 +12,7 @@ defmodule Haj.Events.EventRegistration do
   @doc false
   def changeset(event_registration, attrs) do
     event_registration
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:ticket_type_id, :user_id])
+    |> validate_required([:ticket_type_id, :user_id])
   end
 end

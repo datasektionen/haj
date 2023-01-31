@@ -10,6 +10,8 @@ defmodule Haj.Events.Event do
     field :purchase_deadline, :utc_datetime
     field :ticket_limit, :integer
 
+    has_many :ticket_types, Haj.Events.TicketType
+
     timestamps()
   end
 
@@ -17,6 +19,13 @@ defmodule Haj.Events.Event do
   def changeset(event, attrs) do
     event
     |> cast(attrs, [:name, :description, :image, :ticket_limit, :event_date, :purchase_deadline])
-    |> validate_required([:name, :description, :image, :ticket_limit, :event_date, :purchase_deadline])
+    |> validate_required([
+      :name,
+      :description,
+      :image,
+      :ticket_limit,
+      :event_date,
+      :purchase_deadline
+    ])
   end
 end

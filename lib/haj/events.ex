@@ -10,6 +10,8 @@ defmodule Haj.Events do
   alias Haj.Events.TicketType
   alias Haj.Events.EventRegistration
 
+  @topic inspect(__MODULE__)
+
   @doc """
   Returns the list of events.
 
@@ -20,7 +22,11 @@ defmodule Haj.Events do
 
   """
   def list_events do
-    Repo.all(Event)
+    query =
+      from e in Event,
+        preload: [:ticket_types]
+
+    Repo.all(query)
   end
 
   @doc """
@@ -243,6 +249,7 @@ defmodule Haj.Events do
     %EventRegistration{}
     |> EventRegistration.changeset(attrs)
     |> Repo.insert()
+    |> notify_subscribers([:registration, :created])
   end
 
   @doc """
@@ -277,6 +284,7 @@ defmodule Haj.Events do
   """
   def delete_event_registration(%EventRegistration{} = event_registration) do
     Repo.delete(event_registration)
+    |> notify_subscribers([:registration, :deleted])
   end
 
   @doc """
@@ -290,5 +298,25 @@ defmodule Haj.Events do
   """
   def change_event_registration(%EventRegistration{} = event_registration, attrs \\ %{}) do
     EventRegistration.changeset(event_registration, attrs)
+  end
+
+  @doc """
+  Retuns the number of tickets sold for an event.
+  """
+  def tickets_sold(event_id) do
+    Repo.aggregate(EventRegistration, :count, :id, event_id: event_id)
+  end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Haj.PubSub, @topic)
+  end
+
+  defp notify_subscribers({:ok, result}, event) do
+    Phoenix.PubSub.broadcast(Haj.PubSub, @topic, {__MODULE__, event, result})
+    {:ok, result}
+  end
+
+  defp notify_subscribers({:error, reason}, _) do
+    {:error, reason}
   end
 end
