@@ -1,7 +1,6 @@
 defmodule HajWeb.MembersLive do
   use HajWeb, :live_view
 
-  alias Haj.Colors
   alias Haj.Spex
   alias HajWeb.Endpoint
 
