@@ -15,7 +15,14 @@ defmodule HajWeb.MembersLive do
       |> Enum.map(fn %{id: id, group: g} -> [key: g.name, value: id] end)
 
     {:ok,
-     assign(socket, show_id: show_id, query: nil, groups: groups, group: nil, members: members)}
+     assign(socket,
+       page_title: "Medlemmar",
+       show_id: show_id,
+       query: nil,
+       groups: groups,
+       group: nil,
+       members: members
+     )}
   end
 
   def handle_event("filter", %{"search_form" => %{"q" => query, "group" => group}}, socket) do
@@ -80,7 +87,7 @@ defmodule HajWeb.MembersLive do
               <div
                 class="px-2 py-0.5 rounded-full filter hover:brightness-90"
                 style={"background-color: #{get_color(:bg, group.show_group.group.id)};
-                      color: #{Colors.pick_text_color(get_color(:bg, group.show_group.group.id))};"}
+                      color: #{pick_text_color(get_color(:bg, group.show_group.group.id))};"}
               >
                 <%= group.show_group.group.name %>
               </div>
@@ -95,5 +102,4 @@ defmodule HajWeb.MembersLive do
   @colors ~w"#8dd3c7 #ffffb3 #bebada #fb8072 #80b1d3 #fdb462 #b3de69 #fccde5 #d9d9d9 #bc80bd #ccebc5 #ffed6f"
 
   defp get_color(:bg, index), do: Enum.at(@colors, rem(index - 1, 12), "#4e79a7")
-
 end

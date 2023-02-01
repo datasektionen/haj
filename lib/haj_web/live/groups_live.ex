@@ -8,7 +8,7 @@ defmodule HajWeb.GroupsLive do
     %{id: show_id} = Spex.current_spex()
     groups = Spex.get_show_groups_for_show(show_id)
 
-    {:ok, assign(socket, groups: groups)}
+    {:ok, assign(socket, page_title: "Grupper", groups: groups)}
   end
 
   def render(assigns) do
@@ -50,9 +50,7 @@ defmodule HajWeb.GroupsLive do
   defp chefer(group) do
     chefer =
       Enum.filter(group.group_memberships, fn %{role: role} -> role == :chef end)
-      |> Enum.map(fn %{user: user} ->
-        "#{user.first_name} #{user.last_name}"
-      end)
+      |> Enum.map(fn %{user: user} -> full_name(user) end)
 
     case length(chefer) do
       0 -> "Inga chefer"

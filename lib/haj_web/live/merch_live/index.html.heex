@@ -1,0 +1,71 @@
+<div>
+  <div class="flex flex-col gap-4 pt-4">
+    <h3 class="text-2xl font-bold">Tillgänglig merch</h3>
+    <div class="grid sm:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      <%= for merch_item <- @available_merch do %>
+        <.merch_item_card item={merch_item} />
+      <% end %>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-4 pt-4">
+    <h3 class="text-2xl font-bold">Beställt</h3>
+    <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+      <%= for merch_order_item <- @ordered_items do %>
+        <.merch_order_item_card order_item={merch_order_item} />
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="merch-modal"
+  show
+  on_cancel={JS.navigate(~p"/live/merch")}
+>
+  <:title><%= @merch_item.name %></:title>
+  <:subtitle>
+    <div class="grid grid-cols-1 xs:grid-cols-3 gap-6">
+      <%= if @merch_item.image do %>
+        <img
+          src={
+            Imgproxy.new(@merch_item.image)
+            |> Imgproxy.resize(1000, 1000, type: "fill-down")
+            |> to_string()
+          }
+          alt={@merch_item.name}
+          class="rounded-lg"
+        />
+      <% end %>
+      <div class="col-span-2 flex flex-col gap-2 text-sm text-zinc-700">
+        <%= if @merch_item.purchase_deadline do %>
+          <div class="inline-flex items-center gap-2">
+            <Heroicons.calendar_days mini class="h-5 w-5" />
+            <span>
+              Beställningsdeadline <%= Calendar.strftime(
+                @merch_item.purchase_deadline,
+                "%d/%m %Y"
+              ) %>
+            </span>
+          </div>
+        <% end %>
+        <div class="inline-flex items-center gap-2">
+          <Heroicons.banknotes mini class="h-5 w-5" />
+          <span><%= @merch_item.price %> kr</span>
+        </div>
+        <p class="whitespace-pre-line"><%= @merch_item.description %></p>
+      </div>
+    </div>
+  </:subtitle>
+  <.live_component
+    module={HajWeb.MerchLive.FormComponent}
+    id={@merch_order_item.id || :new}
+    action={@live_action}
+    merch_order_item={@merch_order_item}
+    merch_item={@merch_item}
+    show={@show}
+    current_user={@current_user}
+    navigate={~p"/live/merch"}
+  />
+</.modal>

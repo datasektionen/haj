@@ -74,7 +74,7 @@
               class="h-10 w-10 rounded-full object-cover object-top border-2 border-gray-300"
             />
           </button>
-          <div id="user-dropdown" class="absolute top-12 right-0 w-48" style="display: none;">
+          <div id="user-dropdown" class="absolute top-12 right-0 w-48 z-10" style="display: none;">
             <div class="fixed inset-0" phx-click={JS.hide(to: "#user-dropdown")} />
             <.user_dropdown user={@current_user} />
           </div>
