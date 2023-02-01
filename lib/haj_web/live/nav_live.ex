@@ -31,7 +31,7 @@ defmodule HajWeb.Nav do
           :groups
 
         {GroupLive, _} ->
-          String.to_integer(params["show_group_id"])
+          {:group, String.to_integer(params["show_group_id"])}
 
         {_, _} ->
           nil

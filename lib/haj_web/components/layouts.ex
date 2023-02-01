@@ -10,12 +10,31 @@ defmodule HajWeb.Layouts do
     ~H"""
     <div class="space-y-1">
       <%= if @current_user && Enum.member?([:admin, :chef, :spexare], @current_user.role) do %>
-        <.nav_link navigate={~p"/live"} icon_name={:home} title="Min sida" active={@active_tab == :dashboard} />
-        <.nav_link navigate={~p"/live/members"} icon_name={:user} title="Medlemmar" active={@active_tab == :members}/>
+        <.nav_link
+          navigate={~p"/live"}
+          icon_name={:home}
+          title="Min sida"
+          active={@active_tab == :dashboard}
+        />
+        <.nav_link
+          navigate={~p"/live/members"}
+          icon_name={:user}
+          title="Medlemmar"
+          active={@active_tab == :members}
+        />
         <div class={"rounded-md #{if @active_tab == :groups, do: "bg-burgandy-600"}" }>
-          <.nav_link navigate={~p"/live/groups"} icon_name={:user_group} title="Grupper" active={@active_tab == :groups}/>
+          <.nav_link
+            navigate={~p"/live/groups"}
+            icon_name={:user_group}
+            title="Grupper"
+            active={@active_tab == :groups}
+          />
           <%= for g <- @current_user.group_memberships do %>
-            <.nav_group_link navigate={~p"/live/group/#{g.show_group}"} title={g.show_group.group.name} active={@active_tab == g.show_group_id}/>
+            <.nav_group_link
+              navigate={~p"/live/group/#{g.show_group}"}
+              title={g.show_group.group.name}
+              active={@active_tab == {:group, g.show_group_id}}
+            />
           <% end %>
         </div>
       <% end %>
