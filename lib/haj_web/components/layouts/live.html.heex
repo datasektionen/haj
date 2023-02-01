@@ -21,7 +21,7 @@
     </div>
     <nav class="px-4 pt-6">
       <%= if @current_user do %>
-        <.sidebar_nav_links current_user={@current_user} />
+        <.sidebar_nav_links current_user={@current_user} active_tab={@active_tab}/>
       <% end %>
     </nav>
   </div>
@@ -45,7 +45,7 @@
     <div class="h-0 flex-1 flex flex-col overflow-y-auto">
       <nav class="px-4">
         <%= if @current_user do %>
-          <.sidebar_nav_links current_user={@current_user} />
+          <.sidebar_nav_links current_user={@current_user} active_tab={@active_tab}/>
         <% end %>
       </nav>
     </div>

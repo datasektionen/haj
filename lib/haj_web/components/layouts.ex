@@ -1,5 +1,6 @@
 defmodule HajWeb.Layouts do
   use HajWeb, :html
+  require Logger
 
   embed_templates "layouts/*"
 
@@ -9,12 +10,33 @@ defmodule HajWeb.Layouts do
     ~H"""
     <div class="space-y-1">
       <%= if @current_user && Enum.member?([:admin, :chef, :spexare], @current_user.role) do %>
-        <.nav_link navigate={~p"/live"} icon_name={:home} title="Min sida" } />
-        <.nav_link navigate={~p"/live/members"} icon_name={:user} title="Medlemmar" } />
-        <.nav_link navigate={~p"/live/groups"} icon_name={:user_group} title="Grupper" } />
-        <%= for g <- @current_user.group_memberships do %>
-          <.nav_group_link navigate={~p"/live/group/#{g.show_group}"} title={g.show_group.group.name} />
-        <% end %>
+        <.nav_link
+          navigate={~p"/live"}
+          icon_name={:home}
+          title="Min sida"
+          active={@active_tab == :dashboard}
+        />
+        <.nav_link
+          navigate={~p"/live/members"}
+          icon_name={:user}
+          title="Medlemmar"
+          active={@active_tab == :members}
+        />
+        <div class={"rounded-md #{if @active_tab == :groups, do: "bg-burgandy-600"}" }>
+          <.nav_link
+            navigate={~p"/live/groups"}
+            icon_name={:user_group}
+            title="Grupper"
+            active={@active_tab == :groups}
+          />
+          <%= for g <- @current_user.group_memberships do %>
+            <.nav_group_link
+              navigate={~p"/live/group/#{g.show_group}"}
+              title={g.show_group.group.name}
+              active={@active_tab == {:group, g.show_group_id}}
+            />
+          <% end %>
+        </div>
       <% end %>
     </div>
     """
@@ -24,9 +46,9 @@ defmodule HajWeb.Layouts do
     ~H"""
     <.link
       navigate={@navigate}
-      class="text-white hover:text-gray-700 hover:bg-white group flex items-center px-2 py-2 rounded-md"
+      class={"text-white group flex items-center px-2 py-2 rounded-md #{if @active, do: "bg-burgandy-600"}"}
     >
-      <.icon name={@icon_name} solid class="group-hover:text-gray-900 mr-3 flex-shrink-0 h-6 w-6" />
+      <.icon name={@icon_name} solid class=" mr-3 flex-shrink-0 h-6 w-6" />
       <%= @title %>
     </.link>
     """
@@ -37,7 +59,7 @@ defmodule HajWeb.Layouts do
     ~H"""
     <.link
       navigate={@navigate}
-      class="text-white hover:text-gray-700 hover:bg-white flex items-center pl-8 px-2 py-2 rounded-md"
+      class={"text-burgandy-100 flex items-center pl-11 px-2 py-2 rounded-md #{if @active, do: "bg-burgandy-600"}"}
     >
       <%= @title %>
     </.link>
