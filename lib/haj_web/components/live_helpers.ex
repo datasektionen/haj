@@ -180,18 +180,6 @@ defmodule HajWeb.LiveHelpers do
 
   def format_date(other), do: other
 
-  def hex_to_rgb(<<"#", hex::binary>>) do
-    hex_to_rgb(hex)
-  end
-
-  def hex_to_rgb(<<hex_red::binary-size(2), hex_green::binary-size(2), hex_blue::binary-size(2)>>) do
-    %{
-      red: Integer.parse(hex_red, 16) |> elem(0),
-      blue: Integer.parse(hex_blue, 16) |> elem(0),
-      green: Integer.parse(hex_green, 16) |> elem(0)
-    }
-  end
-
   def pick_text_color(hex_color) do
     colors = hex_to_rgb(hex_color)
 
@@ -205,6 +193,20 @@ defmodule HajWeb.LiveHelpers do
     else
       "#ffffff"
     end
+  end
+
+  defp hex_to_rgb(<<"#", hex::binary>>) do
+    hex_to_rgb(hex)
+  end
+
+  defp hex_to_rgb(
+         <<hex_red::binary-size(2), hex_green::binary-size(2), hex_blue::binary-size(2)>>
+       ) do
+    %{
+      red: Integer.parse(hex_red, 16) |> elem(0),
+      blue: Integer.parse(hex_blue, 16) |> elem(0),
+      green: Integer.parse(hex_green, 16) |> elem(0)
+    }
   end
 
   defp get_modified_rgb(c) do
