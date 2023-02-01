@@ -39,7 +39,7 @@ defmodule HajWeb.Router do
   scope "/live", HajWeb do
     pipe_through :browser
 
-    live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}] do
+    live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}, HajWeb.Nav] do
       live "/", DashboardLive.Index, :index
       live "/user-settings", UserSettingsLive, :index
       live "/members", MembersLive, :index
