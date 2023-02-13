@@ -32,4 +32,18 @@ defmodule Haj.ResponsibilitiesFixtures do
 
     comment
   end
+
+  @doc """
+  Generate a responsible_user.
+  """
+  def responsible_user_fixture(attrs \\ %{}) do
+    {:ok, responsible_user} =
+      attrs
+      |> Enum.into(%{
+
+      })
+      |> Haj.Responsibilities.create_responsible_user()
+
+    responsible_user
+  end
 end

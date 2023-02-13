@@ -21,7 +21,7 @@ defmodule HajWeb.ResponsibilityLive.FormComponent do
         phx-submit="save"
       >
         <.input field={{f, :name}} type="text" label="name" />
-        <.input field={{f, :description}} type="text" label="description" />
+        <.input field={{f, :description}} type="textarea" label="description" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Responsibility</.button>
         </:actions>
@@ -55,7 +55,10 @@ defmodule HajWeb.ResponsibilityLive.FormComponent do
   end
 
   defp save_responsibility(socket, :edit, responsibility_params) do
-    case Responsibilities.update_responsibility(socket.assigns.responsibility, responsibility_params) do
+    case Responsibilities.update_responsibility(
+           socket.assigns.responsibility,
+           responsibility_params
+         ) do
       {:ok, _responsibility} ->
         {:noreply,
          socket

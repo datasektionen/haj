@@ -25,7 +25,10 @@
   </div>
 
   <div class="flex flex-col gap-4 pt-2">
-    <h3 class="text-2xl font-bold">Merchbeställningar</h3>
+    <.link navigate={~p"/live/merch"} class="inline-flex items-center gap-1 group mr-auto">
+      <h3 class="text-2xl font-bold group-hover:text-burgandy-600">Merchbeställningar</h3>
+      <.icon name={:arrow_right} mini class="inline-block h-6 group-hover:fill-burgandy-600" />
+    </.link>
     <div class="grid sm:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
       <%= for merch_order_item <- @merch_order_items do %>
         <.merch_card order_item={merch_order_item} />

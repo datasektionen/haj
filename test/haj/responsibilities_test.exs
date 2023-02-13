@@ -112,4 +112,56 @@ defmodule Haj.ResponsibilitiesTest do
       assert %Ecto.Changeset{} = Responsibilities.change_comment(comment)
     end
   end
+
+  describe "responsibility_users" do
+    alias Haj.Responsibilities.ResponsibleUser
+
+    import Haj.ResponsibilitiesFixtures
+
+    @invalid_attrs %{}
+
+    test "list_responsibility_users/0 returns all responsibility_users" do
+      responsible_user = responsible_user_fixture()
+      assert Responsibilities.list_responsibility_users() == [responsible_user]
+    end
+
+    test "get_responsible_user!/1 returns the responsible_user with given id" do
+      responsible_user = responsible_user_fixture()
+      assert Responsibilities.get_responsible_user!(responsible_user.id) == responsible_user
+    end
+
+    test "create_responsible_user/1 with valid data creates a responsible_user" do
+      valid_attrs = %{}
+
+      assert {:ok, %ResponsibleUser{} = responsible_user} = Responsibilities.create_responsible_user(valid_attrs)
+    end
+
+    test "create_responsible_user/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Responsibilities.create_responsible_user(@invalid_attrs)
+    end
+
+    test "update_responsible_user/2 with valid data updates the responsible_user" do
+      responsible_user = responsible_user_fixture()
+      update_attrs = %{}
+
+      assert {:ok, %ResponsibleUser{} = responsible_user} = Responsibilities.update_responsible_user(responsible_user, update_attrs)
+    end
+
+    test "update_responsible_user/2 with invalid data returns error changeset" do
+      responsible_user = responsible_user_fixture()
+      assert {:error, %Ecto.Changeset{}} = Responsibilities.update_responsible_user(responsible_user, @invalid_attrs)
+      assert responsible_user == Responsibilities.get_responsible_user!(responsible_user.id)
+    end
+
+    test "delete_responsible_user/1 deletes the responsible_user" do
+      responsible_user = responsible_user_fixture()
+      assert {:ok, %ResponsibleUser{}} = Responsibilities.delete_responsible_user(responsible_user)
+      assert_raise Ecto.NoResultsError, fn -> Responsibilities.get_responsible_user!(responsible_user.id) end
+    end
+
+    test "change_responsible_user/1 returns a responsible_user changeset" do
+      responsible_user = responsible_user_fixture()
+      assert %Ecto.Changeset{} = Responsibilities.change_responsible_user(responsible_user)
+    end
+  end
 end

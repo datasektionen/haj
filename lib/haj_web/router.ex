@@ -2,7 +2,6 @@ defmodule HajWeb.Router do
   @moduledoc """
   Router for Haj, the internal system.
   """
-  alias Haj.Responsibilities
   use HajWeb, :router
 
   import HajWeb.UserAuth

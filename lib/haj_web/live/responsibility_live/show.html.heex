@@ -1,27 +1,81 @@
-<.header>
-  Responsibility <%= @responsibility.id %>
-  <:subtitle>This is a responsibility record from your database.</:subtitle>
-  <:actions>
-    <.link patch={~p"/responsibilities/#{@responsibility}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit responsibility</.button>
-    </.link>
-  </:actions>
-</.header>
+<div class="flex justify-between items-center pt-4">
+  <div class="flex flex-row items-baseline justify-between w-full mr-auto">
+    <span class="text-2xl font-bold md:text-3xl "><%= @responsibility.name %></span>
+  </div>
+  <.link
+    patch={~p"/live/responsibilities/#{@responsibility}/show/edit"}
+    phx-click={JS.push_focus()}
+  >
+    <.icon name={:pencil_square} mini class="h-5" />
+  </.link>
+</div>
 
-<.list>
-  <:item title="Name"><%= @responsibility.name %></:item>
-  <:item title="Description"><%= @responsibility.description %></:item>
-</.list>
+<div class="flex flex-col pt-2 md:pt-4">
+  <div class="border-b pb-2">
+    <h2 class="text-burgandy-500 text-xl font-bold">Beskrivning</h2>
+    <p class="text-gray-500">
+      Uppdatedades <%= Calendar.strftime(@responsibility.updated_at, "%Y-%m-%d") %>
+    </p>
+  </div>
 
-<.back navigate={~p"/responsibilities"}>Back to responsibilities</.back>
+  <article class="prose xl:prose-lg pt-4">
+    <%= raw(@responsibility.description_html) %>
+  </article>
+</div>
 
-<.modal :if={@live_action == :edit} id="responsibility-modal" show on_cancel={JS.patch(~p"/responsibilities/#{@responsibility}")}>
+<div>
+  <div class="flex flex-row items-center justify-between w-full mr-auto mt-6 pt-4 border-t pb-4">
+    <h2 class="text-burgandy-500 text-xl font-bold">Kommentarer</h2>
+
+    <.form
+      :let={f}
+      for={:comments_form}
+      phx-change="select_show"
+      phx-no-submit
+      autocomplete={:off}
+      onkeydown="return event.key != 'Enter';"
+    >
+      <%= select(f, :show, @shows, class: "rounded-full text-sm h-10") %>
+    </.form>
+  </div>
+
+  <%= if @comments == [] do %>
+    Inga kommentarer har lämmnats från <%= @show.year.year %>.
+  <% else %>
+    <%= for comment <- @comments do %>
+      <div class="bg-gray-100 p-4 rounded-xl border shadow-sm flex flex-col gap-4">
+        <div class="flex items-center">
+          <img
+            src={"https://zfinger.datasektionen.se/user/#{comment.user.username}/image/100"}
+            class="h-10 w-10 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
+          />
+          <div class="px-2 flex flex-col">
+            <span class="text-gray-700 text-md"><%= full_name(comment.user) %></span>
+            <span class="text-sm text-gray-500"><%= format_date(comment.inserted_at) %></span>
+          </div>
+        </div>
+        <div>
+          <%= comment.text %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<.back navigate={~p"/live/responsibilities"}>Back to responsibilities</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="responsibility-modal"
+  show
+  on_cancel={JS.patch(~p"/live/responsibilities/#{@responsibility}")}
+>
   <.live_component
     module={HajWeb.ResponsibilityLive.FormComponent}
     id={@responsibility.id}
     title={@page_title}
     action={@live_action}
     responsibility={@responsibility}
-    navigate={~p"/responsibilities/#{@responsibility}"}
+    navigate={~p"/live/responsibilities/#{@responsibility}"}
   />
 </.modal>

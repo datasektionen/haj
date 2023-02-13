@@ -1,23 +1,30 @@
 <.header>
   Listing Responsibilities
   <:actions>
-    <.link patch={~p"/responsibilities/new"}>
+    <.link patch={~p"/live/responsibilities/new"}>
       <.button>New Responsibility</.button>
     </.link>
   </:actions>
 </.header>
 
-<.table id="responsibilities" rows={@responsibilities} row_click={&JS.navigate(~p"/responsibilities/#{&1}")}>
+<.table
+  id="responsibilities"
+  rows={@responsibilities}
+  row_click={&JS.navigate(~p"/live/responsibilities/#{&1}")}
+>
   <:col :let={responsibility} label="Name"><%= responsibility.name %></:col>
   <:col :let={responsibility} label="Description"><%= responsibility.description %></:col>
   <:action :let={responsibility}>
     <div class="sr-only">
-      <.link navigate={~p"/responsibilities/#{responsibility}"}>Show</.link>
+      <.link navigate={~p"/live/responsibilities/#{responsibility}"}>Show</.link>
     </div>
-    <.link patch={~p"/responsibilities/#{responsibility}/edit"}>Edit</.link>
+    <.link patch={~p"/live/responsibilities/#{responsibility}/edit"}>Edit</.link>
   </:action>
   <:action :let={responsibility}>
-    <.link phx-click={JS.push("delete", value: %{id: responsibility.id})} data-confirm="Are you sure?">
+    <.link
+      phx-click={JS.push("delete", value: %{id: responsibility.id})}
+      data-confirm="Are you sure?"
+    >
       Delete
     </.link>
   </:action>
@@ -27,7 +34,7 @@
   :if={@live_action in [:new, :edit]}
   id="responsibility-modal"
   show
-  on_cancel={JS.navigate(~p"/responsibilities")}
+  on_cancel={JS.navigate(~p"/live/responsibilities")}
 >
   <.live_component
     module={HajWeb.ResponsibilityLive.FormComponent}
@@ -35,6 +42,6 @@
     title={@page_title}
     action={@live_action}
     responsibility={@responsibility}
-    navigate={~p"/responsibilities"}
+    navigate={~p"/live/responsibilities"}
   />
 </.modal>

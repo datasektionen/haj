@@ -55,7 +55,9 @@ defmodule Haj.MixProject do
       {:csv, "~> 2.4"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:imgproxy, "~> 3.0"}
+      {:imgproxy, "~> 3.0"},
+      {:earmark, "~> 1.4"},
+      {:html_sanitize_ex, "~> 1.4"}
     ]
   end
 

@@ -197,4 +197,110 @@ defmodule Haj.Responsibilities do
   def change_comment(%Comment{} = comment, attrs \\ %{}) do
     Comment.changeset(comment, attrs)
   end
+
+  def get_comments_for_show(responsibility, show_id) do
+    query =
+      from c in Comment,
+        where: c.responsibility_id == ^responsibility.id and c.show_id == ^show_id,
+        order_by: [desc: c.inserted_at],
+        preload: [:user]
+
+    Repo.all(query)
+  end
+
+  alias Haj.Responsibilities.ResponsibleUser
+
+  @doc """
+  Returns the list of responsibility_users.
+
+  ## Examples
+
+      iex> list_responsibility_users()
+      [%ResponsibleUser{}, ...]
+
+  """
+  def list_responsibility_users do
+    Repo.all(ResponsibleUser)
+  end
+
+  @doc """
+  Gets a single responsible_user.
+
+  Raises `Ecto.NoResultsError` if the Responsible user does not exist.
+
+  ## Examples
+
+      iex> get_responsible_user!(123)
+      %ResponsibleUser{}
+
+      iex> get_responsible_user!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_responsible_user!(id), do: Repo.get!(ResponsibleUser, id)
+
+  @doc """
+  Creates a responsible_user.
+
+  ## Examples
+
+      iex> create_responsible_user(%{field: value})
+      {:ok, %ResponsibleUser{}}
+
+      iex> create_responsible_user(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_responsible_user(attrs \\ %{}) do
+    %ResponsibleUser{}
+    |> ResponsibleUser.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a responsible_user.
+
+  ## Examples
+
+      iex> update_responsible_user(responsible_user, %{field: new_value})
+      {:ok, %ResponsibleUser{}}
+
+      iex> update_responsible_user(responsible_user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_responsible_user(%ResponsibleUser{} = responsible_user, attrs) do
+    responsible_user
+    |> ResponsibleUser.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a responsible_user.
+
+  ## Examples
+
+      iex> delete_responsible_user(responsible_user)
+      {:ok, %ResponsibleUser{}}
+
+      iex> delete_responsible_user(responsible_user)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_responsible_user(%ResponsibleUser{} = responsible_user) do
+    Repo.delete(responsible_user)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking responsible_user changes.
+
+  ## Examples
+
+      iex> change_responsible_user(responsible_user)
+      %Ecto.Changeset{data: %ResponsibleUser{}}
+
+  """
+  def change_responsible_user(%ResponsibleUser{} = responsible_user, attrs \\ %{}) do
+    ResponsibleUser.changeset(responsible_user, attrs)
+  end
 end

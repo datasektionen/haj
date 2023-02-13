@@ -4,9 +4,11 @@ defmodule Haj.Responsibilities.Comment do
 
   schema "responsibility_comments" do
     field :text, :string
-    field :show_id, :id
-    field :user_id, :id
-    field :responsibility_id, :id
+    field :text_html, :string
+
+    belongs_to :show, Haj.Spex.Show
+    belongs_to :user, Haj.Accounts.User
+    belongs_to :responsibility, Haj.Responsibilities.Responsibility
 
     timestamps()
   end
@@ -14,7 +16,14 @@ defmodule Haj.Responsibilities.Comment do
   @doc false
   def changeset(comment, attrs) do
     comment
-    |> cast(attrs, [:text])
+    |> cast(attrs, [:text, :text_html, :show_id, :user_id, :responsibility_id])
     |> validate_required([:text])
+    |> gen_html_text()
   end
+
+  defp gen_html_text(%{valid?: true, changes: %{text: text}} = changeset) do
+    put_change(changeset, :text_html, Haj.Markdown.to_html!(text))
+  end
+
+  defp gen_html_text(changeset), do: changeset
 end
