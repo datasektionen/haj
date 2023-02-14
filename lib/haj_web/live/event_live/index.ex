@@ -3,16 +3,34 @@ defmodule HajWeb.EventLive.Index do
 
   alias Haj.Events
   alias Haj.Events.Event
+  alias Haj.Presence
 
   @impl true
   def mount(_params, _session, socket) do
     Events.subscribe()
-    {:ok, assign(socket, events: list_events(), counter: 0)}
+    initial_count = Presence.list("custom_channel") |> map_size
+    HajWeb.Endpoint.subscribe("custom_channel")
+
+    Presence.track(
+      self(),
+      "custom_channel",
+      socket.id,
+      %{}
+    )
+    {:ok, assign(socket, events: list_events(), online_count: initial_count)}
   end
 
   @impl true
   def handle_info({Events, [:registration, _], _}, socket) do
     {:noreply, assign(socket, events: list_events())}
+  end
+
+  def handle_info(
+    %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
+    %{assigns: %{online_count: count}} = socket
+  ) do
+    online_count = count + map_size(joins) - map_size(leaves)
+    {:noreply, assign(socket, :online_count, online_count)}
   end
 
   defp list_events do
@@ -43,6 +61,17 @@ defmodule HajWeb.EventLive.Index do
   end
   defp ticket_format_time(event_date) do
     Calendar.strftime(event_date, "%H:%M")
+  end
+
+  defp online_count(assigns) do
+    ~H"""
+      <div class="flex items-center justify my-10">
+        <div class="mr-3 px-5 py-1 text-center bg-burgandy-400 text-white rounded">
+          <p><%= max(@online_count - 1, 0) %></p>
+        </div>
+        <p class="h-min">andra dataloger som väntar på biljetter</p>
+      </div>
+    """
   end
 
   defp event_card(assigns) do

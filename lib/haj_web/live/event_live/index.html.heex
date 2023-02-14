@@ -1,5 +1,7 @@
 <h3 class="text-5xl">Events</h3>
 
+<.online_count online_count={@online_count} />
+
 <%= for event <- @events do %>
   <.event_card event={event} title="hej" />
 <% end %>
