@@ -69,7 +69,7 @@ defmodule HajWeb.EventLive.Index do
         <div class="mr-3 px-5 py-1 text-center bg-burgandy-400 text-white rounded">
           <p><%= max(@online_count - 1, 0) %></p>
         </div>
-        <p class="h-min">andra dataloger som väntar på biljetter</p>
+        <p class="h-min">andra metaloger som väntar på biljetter</p>
       </div>
     """
   end
