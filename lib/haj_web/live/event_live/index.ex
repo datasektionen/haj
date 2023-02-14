@@ -38,6 +38,13 @@ defmodule HajWeb.EventLive.Index do
     end
   end
 
+  defp ticket_format_date(event_date) do
+    Calendar.strftime(event_date, "%d %B %Y")
+  end
+  defp ticket_format_time(event_date) do
+    Calendar.strftime(event_date, "%H:%M")
+  end
+
   defp event_card(assigns) do
     ~H"""
     <section class="flex mt-10 max-w-3xl">
@@ -55,7 +62,10 @@ defmodule HajWeb.EventLive.Index do
         <div>
           <div class="flex place-content-between mb-5">
             <h3 class="text-3xl"><%= @event.name %></h3>
-            <div><%= @event.event_date %></div>
+            <div>
+              <div><%= ticket_format_date(@event.event_date) %></div>
+              <div><%= ticket_format_time(@event.event_date) %></div>
+            </div>
           </div>
           <div><%= @event.description %></div>
         </div>
