@@ -179,4 +179,43 @@ defmodule HajWeb.LiveHelpers do
   end
 
   def format_date(other), do: other
+
+  def pick_text_color(hex_color) do
+    colors = hex_to_rgb(hex_color)
+
+    colors = for {k, v} <- colors, into: %{}, do: {k, get_modified_rgb(v)}
+
+    # Calculate luminance
+    luminance = 0.2126 * colors.red + 0.7152 * colors.green + 0.0722 * colors.blue
+
+    if luminance > 0.179 do
+      "#000000"
+    else
+      "#ffffff"
+    end
+  end
+
+  defp hex_to_rgb(<<"#", hex::binary>>) do
+    hex_to_rgb(hex)
+  end
+
+  defp hex_to_rgb(
+         <<hex_red::binary-size(2), hex_green::binary-size(2), hex_blue::binary-size(2)>>
+       ) do
+    %{
+      red: Integer.parse(hex_red, 16) |> elem(0),
+      blue: Integer.parse(hex_blue, 16) |> elem(0),
+      green: Integer.parse(hex_green, 16) |> elem(0)
+    }
+  end
+
+  defp get_modified_rgb(c) do
+    c = c / 255.0
+
+    if c <= 0.04045 do
+      c / 12.92
+    else
+      :math.pow((c + 0.055) / 1.055, 2.4)
+    end
+  end
 end
