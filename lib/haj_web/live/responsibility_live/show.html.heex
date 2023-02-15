@@ -4,7 +4,8 @@
     x-init="titles = [...document.querySelectorAll('[id^=heading]')]"
     @scroll.window="atElement = titles.reduce((highest, elem) => {
                 elemBounds = elem.getBoundingClientRect(); highestBounds = highest.getBoundingClientRect();
-                return ((highestBounds.bottom < 0) || (elemBounds.top < highestBounds.top)) ? elem : highest}, titles[0]);"
+                return ((highestBounds.bottom < 0) || (elemBounds.top < highestBounds.top)) ? elem : highest}, titles[0]);
+                document.getElementById('sticky-container').scrollTop = document.getElementById('sticky-' + atElement.id).offsetTop - 100;"
     class="flex flex-row gap-4 justify-center relative w-full"
   >
     <div class="mr-auto ml-auto max-w-full">
@@ -24,12 +25,12 @@
         </p>
       </div>
       <article
-        class="prose max-w-2xl prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg pt-4"
+        class="prose max-w-3xl prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg pt-4"
         id="description_content"
       >
         <%= raw(@responsibility.description_html) %>
       </article>
-      <div>
+      <div class="max-w-3xl">
         <div class="flex flex-row items-center justify-between w-full mr-auto mt-6 pt-4 border-t pb-4">
           <h1 class="text-burgandy-500 text-xl font-bold" id="heading-comments">Kommentarer</h1>
 
@@ -81,10 +82,14 @@
         </div>
       </div>
     </div>
-    <div class="hidden xl:flex flex-col sticky top-8 right-0 self-start gap-2 w-64 px-6">
+    <div
+      id="sticky-container"
+      class="hidden xl:flex flex-col sticky top-8 right-0 self-start gap-2 w-64 px-6 max-h-screen overflow-scroll h-[90vh] scroll-smooth"
+    >
       <h2 class="text-gray-500">På sidan</h2>
       <template x-for="title in titles">
         <a
+          x-bind:id="'sticky-' + title.id"
           x-bind:href="'#' + title.id"
           x-bind:class="{'font-bold' : atElement==title, 'text-burgandy-500' : atElement==title, 'ml-4' : title.tagName.toLowerCase() === 'h2', 'ml-8' : !(title.tagName.toLowerCase() === 'h2' || title.tagName.toLowerCase() === 'h1')}"
         >

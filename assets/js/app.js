@@ -60,21 +60,22 @@ Hooks.Flash = {
 
 Hooks.RichText = {
     mounted() {
-        let textArea = initEasyMDE(this.el.querySelector("#richtext_form_content"))
-    
+        // The textarea should be (the first) child of the form with the hook
+        let textArea = initEasyMDE(this.el.querySelector("textarea"))
+
         this.handleEvent(
-            "richtext_event",
+            "set_richtext_data",
             (richtext_data) => {
                 if (richtext_data.richtext_data !== textArea.value()) {
                     textArea.value(richtext_data.richtext_data)
                 }
             }
         )
-
+        
         textArea.codemirror.on("change", () => {
             this.pushEventTo(
                 this.el,
-                "handle_clientside_richtext",
+                "richtext_updated",
                 { richtext_data: textArea.value() }
             );
         })

@@ -19,7 +19,6 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
   def handle_event("save", %{"comment" => params}, socket) do
     params =
       params
-      |> Map.put("text", params["content"])
       |> Map.put("user_id", socket.assigns.user.id)
       |> Map.put("responsibility_id", socket.assigns.responsibility.id)
       |> Map.put("show_id", socket.assigns.show.id)
@@ -28,7 +27,7 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
       {:ok, _comment} ->
         send(self(), :comments_updated)
 
-        {:noreply, socket |> push_event("richtext_event", %{richtext_data: ""})}
+        {:noreply, socket |> push_event("set_richtext_data", %{richtext_data: ""})}
 
       {:error, changeset} ->
         push_flash(:error, "Error saving comment")
@@ -37,11 +36,7 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
     end
   end
 
-  def handle_event(
-        "handle_clientside_richtext",
-        %{"richtext_data" => richtext_data},
-        socket
-      ) do
+  def handle_event("richtext_updated", %{"richtext_data" => richtext_data}, socket) do
     {:noreply,
      socket
      |> assign(:clientside_rich_text, richtext_data)
@@ -60,8 +55,8 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
         id="richtext_form"
         class="flex flex-col gap-4"
       >
-        <div phx-hook="RichText" phx-update="ignore" phx-target={@myself} id="richtext_container">
-          <%= textarea(f, :content, value: @clientside_rich_text) %>
+        <div phx-hook="RichText" phx-update="ignore" phx-target={@myself} id="comment_richtext">
+          <%= textarea(f, :text, value: @clientside_rich_text) %>
         </div>
         <%= error_tag(f, :text) %>
         <div class="flex justify-end">
