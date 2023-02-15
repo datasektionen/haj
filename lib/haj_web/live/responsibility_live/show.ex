@@ -28,6 +28,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
     {:noreply, socket}
   end
 
+  @impl true
   def handle_event("select_show", %{"comments_form" => %{"show" => show_id}}, socket) do
     show = Haj.Spex.get_show!(show_id)
 
@@ -37,6 +38,19 @@ defmodule HajWeb.ResponsibilityLive.Show do
      |> assign(
        :comments,
        Responsibilities.get_comments_for_show(socket.assigns.responsibility, show.id)
+     )}
+  end
+
+  @impl true
+  def handle_info(:comments_updated, socket) do
+    {:noreply,
+     assign(
+       socket,
+       :comments,
+       Responsibilities.get_comments_for_show(
+         socket.assigns.responsibility,
+         socket.assigns.show.id
+       )
      )}
   end
 

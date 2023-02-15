@@ -1,65 +1,98 @@
-<div class="flex justify-between items-center pt-4">
-  <div class="flex flex-row items-baseline justify-between w-full mr-auto">
-    <span class="text-2xl font-bold md:text-3xl "><%= @responsibility.name %></span>
-  </div>
-  <.link
-    patch={~p"/live/responsibilities/#{@responsibility}/show/edit"}
-    phx-click={JS.push_focus()}
-  >
-    <.icon name={:pencil_square} mini class="h-5" />
-  </.link>
-</div>
-
 <div class="flex flex-col pt-2 md:pt-4">
-  <div class="border-b pb-2">
-    <h2 class="text-burgandy-500 text-xl font-bold">Beskrivning</h2>
-    <p class="text-gray-500">
-      Uppdatedades <%= Calendar.strftime(@responsibility.updated_at, "%Y-%m-%d") %>
-    </p>
-  </div>
+  <section
+    x-data="{atElement: '', titles: []}"
+    x-init="titles = [...document.querySelectorAll('[id^=heading]')]"
+    @scroll.window="atElement = titles.reduce((highest, elem) => {
+                elemBounds = elem.getBoundingClientRect(); highestBounds = highest.getBoundingClientRect();
+                return ((highestBounds.bottom < 0) || (elemBounds.top < highestBounds.top)) ? elem : highest}, titles[0]);"
+    class="flex flex-row gap-4 justify-center relative w-full"
+  >
+    <div class="mr-auto ml-auto max-w-full">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold lg:text-3xl"><%= @responsibility.name %></h1>
+        <.link
+          patch={~p"/live/responsibilities/#{@responsibility}/show/edit"}
+          phx-click={JS.push_focus()}
+        >
+          <.icon name={:pencil_square} mini class="h-5" />
+        </.link>
+      </div>
+      <div class="border-b pb-4 pt-4">
+        <h2 class="text-burgandy-500 text-xl font-bold mb-1">Beskrivning</h2>
+        <p class="text-gray-500">
+          Uppdatedades <%= Calendar.strftime(@responsibility.updated_at, "%Y-%m-%d") %>
+        </p>
+      </div>
+      <article
+        class="prose max-w-2xl prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg pt-4"
+        id="description_content"
+      >
+        <%= raw(@responsibility.description_html) %>
+      </article>
+      <div>
+        <div class="flex flex-row items-center justify-between w-full mr-auto mt-6 pt-4 border-t pb-4">
+          <h1 class="text-burgandy-500 text-xl font-bold" id="heading-comments">Kommentarer</h1>
 
-  <article class="prose xl:prose-lg pt-4">
-    <%= raw(@responsibility.description_html) %>
-  </article>
-</div>
-
-<div>
-  <div class="flex flex-row items-center justify-between w-full mr-auto mt-6 pt-4 border-t pb-4">
-    <h2 class="text-burgandy-500 text-xl font-bold">Kommentarer</h2>
-
-    <.form
-      :let={f}
-      for={:comments_form}
-      phx-change="select_show"
-      phx-no-submit
-      autocomplete={:off}
-      onkeydown="return event.key != 'Enter';"
-    >
-      <%= select(f, :show, @shows, class: "rounded-full text-sm h-10") %>
-    </.form>
-  </div>
-
-  <%= if @comments == [] do %>
-    Inga kommentarer har lämmnats från <%= @show.year.year %>.
-  <% else %>
-    <%= for comment <- @comments do %>
-      <div class="bg-gray-100 p-4 rounded-xl border shadow-sm flex flex-col gap-4">
-        <div class="flex items-center">
-          <img
-            src={"https://zfinger.datasektionen.se/user/#{comment.user.username}/image/100"}
-            class="h-10 w-10 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
-          />
-          <div class="px-2 flex flex-col">
-            <span class="text-gray-700 text-md"><%= full_name(comment.user) %></span>
-            <span class="text-sm text-gray-500"><%= format_date(comment.inserted_at) %></span>
-          </div>
+          <.form
+            :let={f}
+            for={:comments_form}
+            phx-change="select_show"
+            phx-no-submit
+            autocomplete={:off}
+            onkeydown="return event.key != 'Enter';"
+          >
+            <%= select(f, :show, @shows, class: "rounded-full text-sm h-10") %>
+          </.form>
         </div>
-        <div>
-          <%= comment.text %>
+
+        <%= if @comments == [] do %>
+          Inga kommentarer har lämmnats från <%= @show.year.year %>.
+        <% else %>
+          <div class="flex flex-col gap-4">
+            <%= for comment <- @comments do %>
+              <div class="bg-gray-100 p-4 rounded-xl border shadow-sm flex flex-col gap-4 ">
+                <div class="flex items-center">
+                  <img
+                    src={"https://zfinger.datasektionen.se/user/#{comment.user.username}/image/100"}
+                    class="h-10 w-10 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
+                  />
+                  <div class="px-2 flex flex-col">
+                    <span class="text-gray-700 text-md"><%= full_name(comment.user) %></span>
+                    <span class="text-sm text-gray-500">
+                      <%= format_date(comment.inserted_at) %>
+                    </span>
+                  </div>
+                </div>
+                <div class="prose max-w-full prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg">
+                  <%= raw(comment.text_html) %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+        <div class="pt-4">
+          <.live_component
+            module={HajWeb.ResponsibilityLive.CommentEditor}
+            id="comment-editor"
+            user={@current_user}
+            responsibility={@responsibility}
+            show={@show}
+          />
         </div>
       </div>
-    <% end %>
-  <% end %>
+    </div>
+    <div class="hidden xl:flex flex-col sticky top-8 right-0 self-start gap-2 w-64 px-6">
+      <h2 class="text-gray-500">På sidan</h2>
+      <template x-for="title in titles">
+        <a
+          x-bind:href="'#' + title.id"
+          x-bind:class="{'font-bold' : atElement==title, 'text-burgandy-500' : atElement==title, 'ml-4' : title.tagName.toLowerCase() === 'h2', 'ml-8' : !(title.tagName.toLowerCase() === 'h2' || title.tagName.toLowerCase() === 'h1')}"
+        >
+          <span x-text="title.innerText" />
+        </a>
+      </template>
+    </div>
+  </section>
 </div>
 
 <.back navigate={~p"/live/responsibilities"}>Back to responsibilities</.back>

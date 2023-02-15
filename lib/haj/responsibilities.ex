@@ -202,7 +202,7 @@ defmodule Haj.Responsibilities do
     query =
       from c in Comment,
         where: c.responsibility_id == ^responsibility.id and c.show_id == ^show_id,
-        order_by: [desc: c.inserted_at],
+        order_by: [asc: c.inserted_at],
         preload: [:user]
 
     Repo.all(query)

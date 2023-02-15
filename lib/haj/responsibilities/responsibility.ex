@@ -22,7 +22,7 @@ defmodule Haj.Responsibilities.Responsibility do
   end
 
   defp gen_html_description(%{valid?: true, changes: %{description: text}} = changeset) do
-    put_change(changeset, :description_html, Haj.Markdown.to_html!(text))
+    put_change(changeset, :description_html, Haj.Markdown.to_html!(text, with_ids: true))
   end
 
   defp gen_html_description(changeset), do: changeset

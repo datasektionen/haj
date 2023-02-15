@@ -1,14 +1,27 @@
 defmodule Haj.Markdown do
-  def to_html!(markdown) do
-    markdown
-    |> Earmark.as_html!(smartypants: true)
-    |> HtmlSanitizeEx.html5()
-    |> h3_is_max()
-    |> dbg()
+  def to_html!(markdown, options \\ []) do
+    {:ok, ast, _} = EarmarkParser.as_ast(markdown, smartypants: true)
+
+    with_ids = Keyword.get(options, :with_ids, false)
+
+    case with_ids do
+      true ->
+        Earmark.Transform.map_ast_with(ast, 1, &transformer/2, true)
+
+      false ->
+        ast
+    end
+    |> Earmark.Transform.transform()
+    |> Earmark.as_html!()
   end
 
-  def h3_is_max(text) do
-    text = Regex.replace(~r{<h1[^<]*>(.*?)<\/h1>}s, text, "<h3>\\1</h3>")
-    Regex.replace(~r{<h2[^<]*>(.*?)<\/h2>}s, text, "<h3>\\1</h3>")
+  defp transformer({tag, attrs, _, m}, count) do
+    case Regex.match?(~r{h[1-6]}, tag) do
+      true ->
+        {{tag, Earmark.AstTools.merge_atts(attrs, id: "heading-#{count}"), nil, m}, count + 1}
+
+      false ->
+        {{tag, attrs, nil, m}, count}
+    end
   end
 end
