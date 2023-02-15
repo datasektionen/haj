@@ -6,6 +6,8 @@ defmodule Haj.Responsibilities do
   import Ecto.Query, warn: false
   alias Haj.Repo
 
+  alias Haj.Spex.Show
+  alias Haj.Accounts.User
   alias Haj.Responsibilities.Responsibility
 
   @doc """
@@ -302,5 +304,37 @@ defmodule Haj.Responsibilities do
   """
   def change_responsible_user(%ResponsibleUser{} = responsible_user, attrs \\ %{}) do
     ResponsibleUser.changeset(responsible_user, attrs)
+  end
+
+  @doc """
+  Returns the list of responsible_users for a responsibility, grouped by show.
+
+  ## Examples
+
+      iex> get_all_responsible_users_for_responsibility(1)
+      [%{show: %Show{}, users: [%User{}, ...]}, ...]
+  """
+  def get_all_responsible_users_for_responsibility(responsibility_id) do
+    query =
+      from show in Show,
+        left_join: ru in ResponsibleUser,
+        on: ru.show_id == show.id and ru.responsibility_id == ^responsibility_id,
+        left_join: u in User,
+        on: u.id == ru.user_id,
+        group_by: [show.id, u.id],
+        select: %{show: show, user: u}
+
+    Repo.all(query)
+    |> Enum.group_by(& &1.show)
+    |> Enum.map(fn {show, users} ->
+      %{show: show, users: Enum.map(users, & &1.user)}
+    end)
+    |> Enum.map(fn %{users: users} = map ->
+      case users do
+        [nil] -> %{map | users: []}
+        _ -> map
+      end
+    end)
+    |> Enum.sort_by(& &1.show.year)
   end
 end

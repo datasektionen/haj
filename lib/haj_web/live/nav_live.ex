@@ -4,6 +4,7 @@ defmodule HajWeb.Nav do
   alias HajWeb.GroupsLive
   alias HajWeb.MembersLive
   alias HajWeb.DashboardLive
+  alias HajWeb.ResponsibilityLive
   import Phoenix.LiveView
   use Phoenix.Component
 
@@ -32,6 +33,9 @@ defmodule HajWeb.Nav do
 
         {GroupLive, _} ->
           {:group, String.to_integer(params["show_group_id"])}
+
+        {ResponsibilityLive.Index, _} ->
+          :responsibilities
 
         {_, _} ->
           nil

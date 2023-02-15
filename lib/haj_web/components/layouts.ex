@@ -37,6 +37,13 @@ defmodule HajWeb.Layouts do
             />
           <% end %>
         </div>
+
+        <.nav_link
+          navigate={~p"/live/responsibilities"}
+          icon_name={:briefcase}
+          title="Ansvar"
+          active={@active_tab == :responsibilities}
+        />
       <% end %>
     </div>
     """

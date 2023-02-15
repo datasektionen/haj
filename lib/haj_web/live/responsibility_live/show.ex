@@ -22,6 +22,10 @@ defmodule HajWeb.ResponsibilityLive.Show do
       |> assign(:page_title, page_title(socket.assigns.live_action))
       |> assign(:responsibility, responsibility)
       |> assign(:comments, Responsibilities.get_comments_for_show(responsibility, show.id))
+      |> assign(
+        :responsible_users,
+        Responsibilities.get_all_responsible_users_for_responsibility(responsibility.id)
+      )
       |> assign(:shows, shows)
       |> assign(:show, show)
 
