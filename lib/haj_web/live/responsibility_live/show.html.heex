@@ -1,119 +1,177 @@
-<div class="flex flex-col pt-2 md:pt-4">
-  <section
+<div class="py-4 border-b">
+  <h1 class="text-2xl font-bold lg:text-3xl mb-1"><%= @responsibility.name %></h1>
+  <p class="text-gray-500">Ansvar</p>
+</div>
+
+<.center_layout class="border-b">
+  <:left>
+    <.form :let={f} for={:tab_form} phx-change="select_tab" phx-no-submit class="my-4 xs:hidden">
+      <%= select(
+        f,
+        :tab,
+        [
+          {"Beskrivning", ""},
+          {"Kommentarer", "comments"},
+          {"Historia", "history"}
+        ],
+        selected: @live_action,
+        class:
+          "w-full border-gray-400 focus:border-burgandy-500 focus:outline-none focus:ring-0 rounded-lg py-2 px-3"
+      ) %>
+    </.form>
+
+    <div class="hidden text-lg text-gray-500 xs:flex flex-row gap-4 overflow-x-auto">
+      <.tab_link
+        highligted?={@live_action == :show || @live_action == :edit}
+        navigate={~p"/live/responsibilities/#{@responsibility}"}
+        text="Beskrivning"
+      />
+      <.tab_link
+        highligted?={@live_action == :comments}
+        navigate={~p"/live/responsibilities/#{@responsibility}/comments"}
+        text="Kommentarer"
+      />
+      <.tab_link
+        highligted?={@live_action == :history}
+        navigate={~p"/live/responsibilities/#{@responsibility}/history"}
+        text="Historia"
+      />
+    </div>
+  </:left>
+  <:right></:right>
+</.center_layout>
+
+<%= if @live_action == :show || @live_action == :edit do %>
+  <div
     x-data="{atElement: '', titles: []}"
     x-init="titles = [...document.querySelectorAll('[id^=heading]')]"
     @scroll.window="atElement = titles.reduce((highest, elem) => {
                 elemBounds = elem.getBoundingClientRect(); highestBounds = highest.getBoundingClientRect();
                 return ((highestBounds.bottom < 0) || (elemBounds.top < highestBounds.top)) ? elem : highest}, titles[0]);
                 document.getElementById('sticky-container').scrollTop = document.getElementById('sticky-' + atElement.id).offsetTop - 100;"
-    class="flex flex-row gap-4 justify-center relative w-full"
   >
-    <div class="mr-auto ml-auto max-w-full">
-      <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold lg:text-3xl"><%= @responsibility.name %></h1>
-        <.link
-          patch={~p"/live/responsibilities/#{@responsibility}/show/edit"}
-          phx-click={JS.push_focus()}
-        >
-          <.icon name={:pencil_square} mini class="h-5" />
-        </.link>
-      </div>
-      <div class="border-b pb-4 pt-4">
-        <h2 class="text-burgandy-500 text-xl font-bold mb-1">Beskrivning</h2>
-        <p class="text-gray-500">
-          Uppdatedades <%= Calendar.strftime(@responsibility.updated_at, "%Y-%m-%d") %>
-        </p>
-      </div>
-      <article
-        class="prose max-w-3xl prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg pt-4"
-        id="description_content"
-      >
-        <%= raw(@responsibility.description_html) %>
-      </article>
-      <div class="max-w-3xl">
-        <div class="flex flex-row items-center justify-between w-full mr-auto mt-6 pt-4 border-t pb-4">
-          <h1 class="text-burgandy-500 text-xl font-bold" id="heading-comments">Kommentarer</h1>
-
-          <.form
-            :let={f}
-            for={:comments_form}
-            phx-change="select_show"
-            phx-no-submit
-            autocomplete={:off}
-            onkeydown="return event.key != 'Enter';"
-          >
-            <%= select(f, :show, @shows, class: "rounded-full text-sm h-10") %>
-          </.form>
-        </div>
-
-        <%= if @comments == [] do %>
-          Inga kommentarer har lämmnats från <%= @show.year.year %>.
-        <% else %>
-          <div class="flex flex-col gap-4">
-            <%= for comment <- @comments do %>
-              <div class="bg-gray-100 p-4 rounded-xl border shadow-sm flex flex-col gap-4 ">
-                <div class="flex items-center">
-                  <img
-                    src={"https://zfinger.datasektionen.se/user/#{comment.user.username}/image/100"}
-                    class="h-10 w-10 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
-                  />
-                  <div class="px-2 flex flex-col">
-                    <span class="text-gray-700 text-md"><%= full_name(comment.user) %></span>
-                    <span class="text-sm text-gray-500">
-                      <%= format_date(comment.inserted_at) %>
-                    </span>
-                  </div>
-                </div>
-                <div class="prose max-w-full prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg">
-                  <%= raw(comment.text_html) %>
-                </div>
-              </div>
+    <.center_layout>
+      <:left>
+        <div class="border-b pb-4 pt-4">
+          <div class="flex flex-row justify-between items-center">
+            <h2 class="text-burgandy-500 text-xl font-bold mb-1">Beskrivning</h2>
+            <%= if @live_action == :edit do %>
+              <.link patch={~p"/live/responsibilities/#{@responsibility}"}>
+                <.icon name={:x_mark} mini class="h-5" />
+              </.link>
+            <% else %>
+              <.link patch={~p"/live/responsibilities/#{@responsibility}/show/edit"}>
+                <.icon name={:pencil_square} mini class="h-5" />
+              </.link>
             <% end %>
           </div>
-        <% end %>
-        <div class="pt-4">
-          <.live_component
-            module={HajWeb.ResponsibilityLive.CommentEditor}
-            id="comment-editor"
-            user={@current_user}
-            responsibility={@responsibility}
-            show={@show}
-          />
+          <p class="text-gray-500">Årsöverskridande beskrivning av ansvaret.</p>
+          <p class="text-gray-500">
+            Uppdaterades <%= Calendar.strftime(@responsibility.updated_at, "%Y-%m-%d") %>
+          </p>
         </div>
-      </div>
-    </div>
-    <div
-      id="sticky-container"
-      class="hidden xl:flex flex-col sticky top-8 right-0 self-start gap-2 w-64 px-6 max-h-screen overflow-scroll h-[90vh] scroll-smooth"
-    >
-      <h2 class="text-gray-500">På sidan</h2>
-      <template x-for="title in titles">
-        <a
-          x-bind:id="'sticky-' + title.id"
-          x-bind:href="'#' + title.id"
-          x-bind:class="{'font-bold' : atElement==title, 'text-burgandy-500' : atElement==title, 'ml-4' : title.tagName.toLowerCase() === 'h2', 'ml-8' : !(title.tagName.toLowerCase() === 'h2' || title.tagName.toLowerCase() === 'h1')}"
+        <%= if @live_action == :edit do %>
+          <div class="max-w-3xl">
+            <.live_component
+              module={HajWeb.ResponsibilityLive.Editor}
+              id="responsibility-editor"
+              responsibility={@responsibility}
+              navigate={~p"/live/responsibilities/#{@responsibility}"}
+            />
+          </div>
+        <% else %>
+          <article
+            class="prose max-w-3xl prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg"
+            id="description_content"
+          >
+            <%= raw(@responsibility.description_html) %>
+          </article>
+        <% end %>
+      </:left>
+      <:right>
+        <div
+          id="sticky-container"
+          class="flex flex-col overflow-scroll h-[90vh] scroll-smooth no-scrollbar py-4"
         >
-          <span x-text="title.innerText" />
-        </a>
-      </template>
-    </div>
-  </section>
-</div>
+          <h2 class="text-gray-500">På sidan</h2>
+          <template x-for="title in titles">
+            <a
+              x-bind:id="'sticky-' + title.id"
+              x-bind:href="'#' + title.id"
+              x-bind:class="{'font-bold' : atElement==title, 'text-burgandy-500' : atElement==title, 'ml-4' : title.tagName.toLowerCase() === 'h2', 'ml-8' : !(title.tagName.toLowerCase() === 'h2' || title.tagName.toLowerCase() === 'h1')}"
+            >
+              <span x-text="title.innerText" />
+            </a>
+          </template>
+        </div>
+      </:right>
+    </.center_layout>
+  </div>
+  <div class="flex flex-col pt-2 md:pt-4"></div>
+<% end %>
 
-<.back navigate={~p"/live/responsibilities"}>Back to responsibilities</.back>
+<%= if @live_action == :comments do %>
+  <.center_layout>
+    <:left>
+      <div class="flex flex-row items-center justify-between w-full mr-auto mt-6 border-b pb-4 gap-4">
+        <h1 class="text-burgandy-500 text-xl font-bold" id="heading-comments">
+          Kommentarer
+        </h1>
 
-<.modal
-  :if={@live_action == :edit}
-  id="responsibility-modal"
-  show
-  on_cancel={JS.patch(~p"/live/responsibilities/#{@responsibility}")}
->
-  <.live_component
-    module={HajWeb.ResponsibilityLive.FormComponent}
-    id={@responsibility.id}
-    title={@page_title}
-    action={@live_action}
-    responsibility={@responsibility}
-    navigate={~p"/live/responsibilities/#{@responsibility}"}
-  />
-</.modal>
+        <p class="ml-auto">Välj år</p>
+        <.form :let={f} for={:comments_form} phx-change="select_show" phx-no-submit>
+          <%= select(f, :show, @shows, class: "rounded-lg text-sm h-10") %>
+        </.form>
+      </div>
+
+      <%= if @comments == [] do %>
+        Inga kommentarer har lämmnats från <%= @show.year.year %>.
+      <% else %>
+        <div class="flex flex-col gap-4">
+          <%= for comment <- @comments do %>
+            <div class="bg-gray-50 p-4 rounded-xl border shadow-sm flex flex-col gap-4 ">
+              <div class="flex items-center">
+                <img
+                  src={"https://zfinger.datasektionen.se/user/#{comment.user.username}/image/100"}
+                  class="h-10 w-10 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
+                />
+                <div class="px-2 flex flex-col">
+                  <span class="text-gray-700 text-md">
+                    <%= full_name(comment.user) %>
+                  </span>
+                  <span class="text-sm text-gray-500">
+                    <%= format_date(comment.inserted_at) %>
+                  </span>
+                </div>
+              </div>
+              <div class="prose max-w-full prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg">
+                <%= raw(comment.text_html) %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+      <div class="pt-4">
+        <.live_component
+          module={HajWeb.ResponsibilityLive.CommentEditor}
+          id="comment-editor"
+          user={@current_user}
+          responsibility={@responsibility}
+          show={@show}
+        />
+      </div>
+    </:left>
+  </.center_layout>
+<% end %>
+
+<%= if @live_action == :history do %>
+  <.center_layout>
+    <:left>
+      <div class="flex flex-row items-center justify-between w-full mr-auto mt-6 border-b pb-4 gap-4">
+        <h1 class="text-burgandy-500 text-xl font-bold" id="heading-comments">
+          Historia
+        </h1>
+      </div>
+    </:left>
+  </.center_layout>
+<% end %>

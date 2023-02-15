@@ -62,6 +62,8 @@ defmodule HajWeb.Router do
       live "/responsibilities/:id/edit", ResponsibilityLive.Index, :edit
 
       live "/responsibilities/:id", ResponsibilityLive.Show, :show
+      live "/responsibilities/:id/comments", ResponsibilityLive.Show, :comments
+      live "/responsibilities/:id/history", ResponsibilityLive.Show, :history
       live "/responsibilities/:id/show/edit", ResponsibilityLive.Show, :edit
     end
   end

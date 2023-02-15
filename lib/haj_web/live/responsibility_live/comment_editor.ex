@@ -55,7 +55,7 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
         id="richtext_form"
         class="flex flex-col gap-4"
       >
-        <div phx-hook="RichText" phx-update="ignore" phx-target={@myself} id="comment_richtext">
+        <div phx-hook="RichText" phx-update="ignore" phx-target={@myself} id="responsibility_richtext">
           <%= textarea(f, :text, value: @clientside_rich_text) %>
         </div>
         <%= error_tag(f, :text) %>
