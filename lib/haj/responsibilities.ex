@@ -9,6 +9,8 @@ defmodule Haj.Responsibilities do
   alias Haj.Spex.Show
   alias Haj.Accounts.User
   alias Haj.Responsibilities.Responsibility
+  alias Haj.Responsibilities.ResponsibleUser
+  alias Haj.Responsibilities.Comment
 
   @doc """
   Returns the list of responsibilities.
@@ -16,11 +18,22 @@ defmodule Haj.Responsibilities do
   ## Examples
 
       iex> list_responsibilities()
-      [%Responsibility{}, ...]
+      [%Responsibility{responsible_users: [%User{}, ...]}, ...]
 
   """
   def list_responsibilities do
-    Repo.all(Responsibility)
+    current_spex = Haj.Spex.current_spex()
+
+    query =
+      from r in Responsibility,
+        left_join: ru in ResponsibleUser,
+        on: r.id == ru.responsibility_id and ru.show_id == ^current_spex.id,
+        left_join: u in assoc(ru, :user),
+        preload: [responsible_users: u]
+
+    # select: %{responsibility: r, user: u}
+
+    Repo.all(query)
   end
 
   @doc """
@@ -103,8 +116,6 @@ defmodule Haj.Responsibilities do
   def change_responsibility(%Responsibility{} = responsibility, attrs \\ %{}) do
     Responsibility.changeset(responsibility, attrs)
   end
-
-  alias Haj.Responsibilities.Comment
 
   @doc """
   Returns the list of responsibility_comments.
@@ -209,8 +220,6 @@ defmodule Haj.Responsibilities do
 
     Repo.all(query)
   end
-
-  alias Haj.Responsibilities.ResponsibleUser
 
   @doc """
   Returns the list of responsibility_users.
