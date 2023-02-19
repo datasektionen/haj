@@ -12,6 +12,10 @@ defmodule HajWeb.SearchComponent do
     {:noreply, assign(socket, query: q, results: results)}
   end
 
+  def handle_event("clear", _params, socket) do
+    {:noreply, assign(socket, query: "", results: [])}
+  end
+
   def render(assigns) do
     ~H"""
     <div class="flex flex-grow md:flex-grow-0 md:w-80 lg:w-96 flex-row justify-end">
@@ -25,7 +29,15 @@ defmodule HajWeb.SearchComponent do
 
       <div id="search-form" class="w-full flex flex-row items-center gap-2" style="display: none;">
         <div class="w-full relative">
-          <.form :let={f} for={:search_form} phx-change="search" phx-target={@myself} class="w-full">
+          <.form
+            :let={f}
+            for={:search_form}
+            phx-change="search"
+            phx-target={@myself}
+            class="w-full"
+            onkeydown="return event.key != 'Enter';"
+            autocomplete={:off}
+          >
             <%= text_input(f, :q,
               value: @query,
               phx_debounce: 500,
@@ -37,7 +49,7 @@ defmodule HajWeb.SearchComponent do
               name={:x_mark}
               outline
               class="absolute right-2 top-2 h-6 w-6 text-gray-600"
-              phx-click={close_search()}
+              phx-click={close_search(@myself)}
             />
           </.form>
           <%= if @results != [] do %>
@@ -75,9 +87,10 @@ defmodule HajWeb.SearchComponent do
     |> JS.add_class("hidden xs:flex", to: "#tobar-right")
   end
 
-  defp close_search() do
+  defp close_search(target) do
     JS.hide(to: "#search-form")
     |> JS.show(to: "#search-icon")
     |> JS.remove_class("hidden xs:flex", to: "#tobar-right")
+    |> JS.push("clear", target: target)
   end
 end
