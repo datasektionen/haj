@@ -21,7 +21,7 @@
     </div>
     <nav class="px-4 pt-6">
       <%= if @current_user do %>
-        <.sidebar_nav_links current_user={@current_user} active_tab={@active_tab}/>
+        <.sidebar_nav_links current_user={@current_user} active_tab={@active_tab} />
       <% end %>
     </nav>
   </div>
@@ -45,7 +45,7 @@
     <div class="h-0 flex-1 flex flex-col overflow-y-auto">
       <nav class="px-4">
         <%= if @current_user do %>
-          <.sidebar_nav_links current_user={@current_user} active_tab={@active_tab}/>
+          <.sidebar_nav_links current_user={@current_user} active_tab={@active_tab} />
         <% end %>
       </nav>
     </div>
@@ -60,23 +60,30 @@
         </button>
       </div>
 
-      <div class="ml-auto flex flex-row items-center space-x-4">
-        <.icon name={:magnifying_glass} outline class="h-8 w-8 text-gray-700" />
-        <div class="relative h-8 w-8">
-          <span class="absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-full bg-burgandy-500">
-          </span>
-          <.icon name={:bell} outline class="h-8 w-8 text-gray-700" />
-        </div>
-        <div class="relative flex flex-row items-center">
-          <button role="button" phx-click={show("#user-dropdown")}>
-            <img
-              src={"https://zfinger.datasektionen.se/user/#{@current_user.username}/image/100"}
-              class="h-10 w-10 rounded-full object-cover object-top border-2 border-gray-300"
-            />
-          </button>
-          <div id="user-dropdown" class="absolute top-12 right-0 w-48 z-10" style="display: none;">
-            <div class="fixed inset-0" phx-click={JS.hide(to: "#user-dropdown")} />
-            <.user_dropdown user={@current_user} />
+      <div class="ml-4 w-full flex flex-row items-center justify-end space-x-4">
+      
+        <.live_component module={HajWeb.SearchComponent} id="search" />
+        <div id="tobar-right" class="flex flex-row items-center space-x-4">
+          <div class="relative h-8 w-8">
+            <span class="absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-full bg-burgandy-500">
+            </span>
+            <.icon name={:bell} outline class="h-8 w-8 text-gray-700" />
+          </div>
+          <div class="relative flex flex-row items-center">
+            <button role="button" phx-click={show("#user-dropdown")}>
+              <img
+                src={"https://zfinger.datasektionen.se/user/#{@current_user.username}/image/100"}
+                class="h-10 w-10 rounded-full object-cover object-top border-2 border-gray-300"
+              />
+            </button>
+            <div
+              id="user-dropdown"
+              class="absolute top-12 right-0 w-48 z-10"
+              style="display: none;"
+            >
+              <div class="fixed inset-0" phx-click={JS.hide(to: "#user-dropdown")} />
+              <.user_dropdown user={@current_user} />
+            </div>
           </div>
         </div>
       </div>

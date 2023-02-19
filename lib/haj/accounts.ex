@@ -153,15 +153,25 @@ defmodule Haj.Accounts do
   end
 
   @doc """
-  Searches for users based on a search phrase
+  Searches for users based on a search phrase.
   """
   def search_users(search_phrase) do
     query =
       from u in User,
-        where:
-          fragment("SIMILARITY(?,?) > 0.3", u.first_name, ^search_phrase) or
-            fragment("SIMILARITY(?,?) > 0.3", u.last_name, ^search_phrase),
-        order_by: fragment("LEVENSHTEIN(? || ?,?)", u.first_name, u.last_name, ^search_phrase)
+        where: fragment("? <% ?", ^search_phrase, u.full_name),
+        order_by: {:desc, fragment("? <% ?", ^search_phrase, u.full_name)}
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Searches for spex users based on a search phrase, only returns users that have been part of a spex.
+  """
+  def search_spex_users(search_phrase) do
+    query =
+      from u in User,
+        where: fragment("? <% ?", ^search_phrase, u.full_name) and u.role != :none,
+        order_by: {:desc, fragment("? <% ?", ^search_phrase, u.full_name)}
 
     Repo.all(query)
   end

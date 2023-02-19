@@ -84,7 +84,7 @@ defmodule HajWeb.Layouts do
       >
         Mina uppgifter
       </.link>
-      <.link class="px-4 py-2 border-b hover:bg-burgandy-500 hover:text-white rounded-b-md">
+      <.link class="px-4 py-2 border-b hover:bg-burgandy-500 hover:text-white">
         Inställningar
       </.link>
       <.link
