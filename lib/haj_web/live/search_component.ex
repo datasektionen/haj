@@ -18,14 +18,19 @@ defmodule HajWeb.SearchComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-grow md:flex-grow-0 md:w-80 lg:w-96 flex-row justify-end">
-      <.icon
-        name={:magnifying_glass}
-        outline
-        class="h-8 w-8 text-gray-700"
-        phx-click={open_search()}
-        id="search-icon"
-      />
+    <div class="flex flex-grow md:flex-grow-0 md:w-80 lg:w-96 flex-row items-center justify-end gap-4">
+      <button phx-click={open_search()} id="search-icon" class="text-gray-700 hover:text-gray-500">
+        <.icon name={:magnifying_glass} outline class="h-8 w-8" />
+      </button>
+
+      <button
+        phx-click={close_search(@myself)}
+        id="close-search-icon"
+        class="text-gray-700 hover:text-gray-500"
+        style="display: none;"
+      >
+        <.icon name={:x_mark} outline class="h-8 w-8" />
+      </button>
 
       <div id="search-form" class="w-full flex flex-row items-center gap-2" style="display: none;">
         <div class="w-full relative">
@@ -45,12 +50,6 @@ defmodule HajWeb.SearchComponent do
               class:
                 "rounded-lg text-sm h-10 w-full focus:outline-none focus:ring-2 focus:ring-burgandy-700/80 focus:border-none"
             ) %>
-            <.icon
-              name={:x_mark}
-              outline
-              class="absolute right-2 top-2 h-6 w-6 text-gray-600"
-              phx-click={close_search(@myself)}
-            />
           </.form>
           <%= if @results != [] do %>
             <div
@@ -78,18 +77,19 @@ defmodule HajWeb.SearchComponent do
     JS.hide(to: "#search-icon")
     |> JS.show(
       to: "#search-form",
-      transition:
-        {"transition-all transform ease-out duration-300", "opacity-50 translate-x-4",
-         "opacity-100 translate-x-0"},
       display: "flex"
     )
+    |> JS.add_class("hidden md:block", to: "#show-mobile-sidebar")
+    |> JS.show(to: "#close-search-icon")
     |> JS.focus(to: "#search-form input")
     |> JS.add_class("hidden xs:flex", to: "#tobar-right")
   end
 
   defp close_search(target) do
     JS.hide(to: "#search-form")
+    |> JS.hide(to: "#close-search-icon")
     |> JS.show(to: "#search-icon")
+    |> JS.remove_class("hidden md:block", to: "#show-mobile-sidebar")
     |> JS.remove_class("hidden xs:flex", to: "#tobar-right")
     |> JS.push("clear", target: target)
   end

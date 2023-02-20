@@ -60,8 +60,7 @@
         </button>
       </div>
 
-      <div class="ml-4 w-full flex flex-row items-center justify-end space-x-4">
-      
+      <div class="w-full flex flex-row items-center justify-end space-x-4">
         <.live_component module={HajWeb.SearchComponent} id="search" />
         <div id="tobar-right" class="flex flex-row items-center space-x-4">
           <div class="relative h-8 w-8">
@@ -70,10 +69,10 @@
             <.icon name={:bell} outline class="h-8 w-8 text-gray-700" />
           </div>
           <div class="relative flex flex-row items-center">
-            <button role="button" phx-click={show("#user-dropdown")}>
+            <button role="button" phx-click={show("#user-dropdown")} class="group">
               <img
                 src={"https://zfinger.datasektionen.se/user/#{@current_user.username}/image/100"}
-                class="h-10 w-10 rounded-full object-cover object-top border-2 border-gray-300"
+                class="h-10 w-10 rounded-full object-cover object-top border-2 border-gray-300 group-hover:brightness-95"
               />
             </button>
             <div
