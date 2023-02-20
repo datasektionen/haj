@@ -86,7 +86,11 @@ defmodule HajWeb.LiveHelpers do
 
   def show_mobile_sidebar(js \\ %JS{}) do
     js
-    |> JS.show(to: "#mobile-sidebar-container", transition: "fade-in", time: 100)
+    |> JS.show(
+      to: "#mobile-sidebar-container",
+      transition: {"transition fade-in duration-300", "opacity-0", "opacity-100"},
+      time: 300
+    )
     |> JS.show(
       to: "#mobile-sidebar",
       display: "flex",
