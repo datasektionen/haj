@@ -280,6 +280,51 @@ defmodule HajWeb.SettingsController do
     |> redirect(to: Routes.settings_path(conn, :foods))
   end
 
+  def csv(conn, %{"id" => show_id}) do
+    users = Haj.Spex.list_members_for_show(show_id)
+
+    csv_data = to_csv(users)
+
+    conn
+    |> put_resp_content_type("text/csv")
+    |> put_resp_header("content-disposition", "attachment; filename=\"medlemmar.csv\"")
+    |> put_root_layout(false)
+    |> send_resp(200, csv_data)
+  end
+
+  defp to_csv(users) do
+    titles = [
+      "Namn",
+      "Email",
+      "KTH-id",
+      "Telefonnr",
+      "Klass",
+      "Google-konto",
+      "Personnr",
+      "Adress",
+      "Postkod",
+      "Postort"
+    ]
+
+    users =
+      Enum.map(users, fn u ->
+        [
+          "#{u.first_name} #{u.last_name}",
+          u.email,
+          u.username,
+          u.phone,
+          u.class,
+          u.google_account,
+          u.personal_number,
+          u.street,
+          u.zip,
+          u.city
+        ]
+      end)
+
+    CSV.encode([titles | users]) |> Enum.to_list()
+  end
+
   defp authorize(conn, _) do
     if conn.assigns.current_user.role == :admin do
       current_spex = Haj.Spex.current_spex()

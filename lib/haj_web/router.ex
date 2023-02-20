@@ -98,6 +98,7 @@ defmodule HajWeb.Router do
     post "/show", SettingsController, :create_show
     get "/show/:id", SettingsController, :edit_show
     put "/show/:id", SettingsController, :update_show
+    get "/show/:id/csv", SettingsController, :csv
 
     get "/users", SettingsController, :users
     get "/user/new", SettingsController, :new_user
