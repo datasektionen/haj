@@ -46,9 +46,9 @@ defmodule HajWeb.Layouts do
     ~H"""
     <.link
       navigate={@navigate}
-      class={"text-white group flex items-center px-2 py-2 rounded-md #{if @active, do: "bg-burgandy-600"}"}
+      class={"text-white hover:text-burgandy-700 hover:bg-burgandy-50 flex items-center px-2 py-2 rounded-md #{if @active, do: "bg-burgandy-600"}"}
     >
-      <.icon name={@icon_name} solid class=" mr-3 flex-shrink-0 h-6 w-6" />
+      <.icon name={@icon_name} solid class="mr-3 flex-shrink-0 h-6 w-6" />
       <%= @title %>
     </.link>
     """
@@ -59,7 +59,7 @@ defmodule HajWeb.Layouts do
     ~H"""
     <.link
       navigate={@navigate}
-      class={"text-burgandy-100 flex items-center pl-11 px-2 py-2 rounded-md #{if @active, do: "bg-burgandy-600"}"}
+      class={"text-burgandy-100 hover:text-burgandy-700 hover:bg-burgandy-50 flex items-center pl-11 px-2 py-2 rounded-md #{if @active, do: "bg-burgandy-600"}"}
     >
       <%= @title %>
     </.link>
