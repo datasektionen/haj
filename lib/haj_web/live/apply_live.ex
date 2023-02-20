@@ -208,7 +208,7 @@ defmodule HajWeb.ApplyLive do
 
       <.form
         :let={f}
-        for={:application}
+        as={:application}
         phx-submit="apply"
         class="flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0"
       >

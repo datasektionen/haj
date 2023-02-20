@@ -122,13 +122,14 @@ defmodule HajWeb.GroupAdminLive do
       Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
     </p>
     <div class="flex flex-row items-stretch gap-2">
-      <.form :let={f} for={:role_form} phx-change="update_role">
+      <.form :let={f} as={:role_form} phx-change="update_role">
         <%= select(f, :role, @roles, class: "h-full", value: @role) %>
       </.form>
 
       <.form
         :let={f}
-        for={:search_form}
+        for={%{}}
+        as={:search_form}
         phx-change="suggest"
         phx-submit="add"
         autocomplete={:off}
