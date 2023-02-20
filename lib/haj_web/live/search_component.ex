@@ -1,13 +1,18 @@
 defmodule HajWeb.SearchComponent do
   use HajWeb, :live_component
   alias Haj.Accounts
+  alias Haj.Spex
 
   def mount(socket) do
     {:ok, assign(socket, query: "", results: [])}
   end
 
   def handle_event("search", %{"search_form" => %{"q" => q}}, socket) do
-    results = Accounts.search_spex_users(q)
+    current_spex = Spex.current_spex()
+
+    results =
+      Accounts.search_spex_users(q) ++
+        Spex.search_show_groups(current_spex.id, q)
 
     {:noreply, assign(socket, query: q, results: results)}
   end
@@ -36,7 +41,7 @@ defmodule HajWeb.SearchComponent do
         <div class="w-full relative">
           <.form
             :let={f}
-            for={:search_form}
+            as={:search_form}
             phx-change="search"
             phx-target={@myself}
             class="w-full"
@@ -58,11 +63,11 @@ defmodule HajWeb.SearchComponent do
             >
               <%= for result <- @results do %>
                 <.link
-                  navigate={~p"/live/user/#{result.username}"}
+                  navigate={navigate(result)}
                   class="last:border-none border-b py-2 px-3 text-base hover:bg-gray-50"
                 >
-                  <div><%= full_name(result) %></div>
-                  <div class="text-gray-600 text-sm">Person</div>
+                  <div><%= title(result) %></div>
+                  <div class="text-gray-600 text-sm"><%= type(result) %></div>
                 </.link>
               <% end %>
             </div>
@@ -72,6 +77,15 @@ defmodule HajWeb.SearchComponent do
     </div>
     """
   end
+
+  defp navigate(%Accounts.User{} = user), do: ~p"/live/user/#{user.username}"
+  defp navigate(%Spex.ShowGroup{} = sg), do: ~p"/live/group/#{sg.id}"
+
+  defp title(%Accounts.User{} = user), do: full_name(user)
+  defp title(%Spex.ShowGroup{} = sg), do: sg.group.name
+
+  defp type(%Accounts.User{}), do: "Person"
+  defp type(%Spex.ShowGroup{}), do: "Grupp"
 
   defp open_search() do
     JS.hide(to: "#search-icon")
