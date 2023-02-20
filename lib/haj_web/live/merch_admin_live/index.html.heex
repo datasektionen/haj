@@ -1,6 +1,6 @@
 <div class="pb-4 border-b">
   <h3 class="font-bold text-2xl py-2">Administrera merch</h3>
-  <.form :let={f} id="show-form" for={:show} phx-change="select_show" class="">
+  <.form :let={f} id="show-form" as={:show} phx-change="select_show" class="">
     <div class="">
       <%= label(f, :show, "Välj spex",
         class: "block text-sm font-semibold leading-6 text-zinc-800"
