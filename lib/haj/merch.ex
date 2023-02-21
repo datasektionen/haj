@@ -142,6 +142,7 @@ defmodule Haj.Merch do
   def list_merch_orders_for_show(show_id) do
     Repo.all(
       from mo in MerchOrder,
+        distinct: mo.id,
         right_join: moi in assoc(mo, :merch_order_items),
         where: mo.show_id == ^show_id
     )

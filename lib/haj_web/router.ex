@@ -27,6 +27,7 @@ defmodule HajWeb.Router do
     get "/login", SessionController, :login
     get "/login/callback", SessionController, :callback
     get "/logout", SessionController, :logout
+    get "/login/via-api", SessionController, :login_api
 
     live_session :default, on_mount: [{HajWeb.UserAuth, :current_user}] do
       live "/signin", SignInLive, :index
@@ -133,6 +134,7 @@ defmodule HajWeb.Router do
     post "/show", SettingsController, :create_show
     get "/show/:id", SettingsController, :edit_show
     put "/show/:id", SettingsController, :update_show
+    get "/show/:id/csv", SettingsController, :csv
 
     get "/users", SettingsController, :users
     get "/user/new", SettingsController, :new_user
