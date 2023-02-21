@@ -516,8 +516,10 @@ defmodule Haj.Spex do
   @doc """
   Searches for a showgroup based on a search phrase for a given show
   """
-  def search_show_groups(show_id, search_phrase) do
-    query =
+  def search_show_groups(show_id, search_phrase, options \\ []) do
+    include_rank = Keyword.get(options, :rank, false)
+
+    base_query =
       from sg in ShowGroup,
         join: g in assoc(sg, :group),
         where:
@@ -525,6 +527,14 @@ defmodule Haj.Spex do
             fragment("? % ?", g.name, ^search_phrase),
         order_by: fragment("? % ?", g.name, ^search_phrase),
         preload: [:group]
+
+    query =
+      if include_rank do
+        from [sg, g] in base_query,
+          select: {sg, fragment("similarity(?, ?)", g.name, ^search_phrase)}
+      else
+        base_query
+      end
 
     Repo.all(query)
   end

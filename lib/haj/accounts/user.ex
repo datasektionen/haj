@@ -7,6 +7,7 @@ defmodule Haj.Accounts.User do
     field :first_name, :string
     field :last_name, :string
     field :username, :string
+    field :full_name, :string
 
     field :google_account, :string
     field :phone, :string

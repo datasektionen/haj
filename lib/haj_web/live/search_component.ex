@@ -10,9 +10,12 @@ defmodule HajWeb.SearchComponent do
   def handle_event("search", %{"search_form" => %{"q" => q}}, socket) do
     current_spex = Spex.current_spex()
 
+    # Sort results based on similarity
     results =
-      Accounts.search_spex_users(q) ++
-        Spex.search_show_groups(current_spex.id, q)
+      (Accounts.search_spex_users(q, rank: true) ++
+         Spex.search_show_groups(current_spex.id, q, rank: true))
+      |> Enum.sort_by(&elem(&1, 1), &>=/2)
+      |> Enum.map(&elem(&1, 0))
 
     {:noreply, assign(socket, query: q, results: results)}
   end

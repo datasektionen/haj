@@ -22,6 +22,7 @@ defmodule HajWeb.GroupAdminLive do
         roles: [:gruppis, :chef],
         role: :gruppis
       )
+      |> assign(:active_tab, nil)
 
     {:ok, socket}
   end
