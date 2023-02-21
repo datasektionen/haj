@@ -1,6 +1,6 @@
 # Haj
 
-Public website of [metaspexet.se](https://metaspexet.se) and internal site [haj.metaspexet.se](haj.metaspexet.se). Still very much work in progress!
+Public website of [metaspexet.se](https://metaspexet.se) and internal site [haj.metaspexet.se](https://haj.metaspexet.se). Still very much work in progress!
 ### How to run
 
 Prerequisites:
