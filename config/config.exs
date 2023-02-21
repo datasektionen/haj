@@ -13,7 +13,10 @@ config :haj,
 # Configures the endpoint
 config :haj, HajWeb.Endpoint,
   url: [host: "datasektionen.se"],
-  render_errors: [view: HajWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [
+    formats: [html: HajWeb.ErrorHTML],
+    layout: false
+  ],
   pubsub_server: Haj.PubSub,
   live_view: [signing_salt: "fyBG7qXk"]
 
@@ -57,6 +60,10 @@ config :tailwind,
   ),
     cd: Path.expand("../assets", __DIR__)
   ]
+
+config :imgproxy,
+  # Cloudfront URL
+  prefix: "https://d3874pm7xaa2tj.cloudfront.net"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

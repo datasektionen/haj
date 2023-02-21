@@ -2,8 +2,7 @@ defmodule HajWeb.GroupAdminLive do
   use HajWeb, :live_view
 
   alias Haj.Spex
-
-  import HajWeb.Components.Table
+  # Old stuff, should be redone
 
   def mount(_params, %{"user_token" => token, "show_group_id" => id}, socket) do
     show_group = Haj.Spex.get_show_group!(id)
@@ -11,7 +10,9 @@ defmodule HajWeb.GroupAdminLive do
 
     socket =
       socket
-      |> assign_new(:current_user, fn -> Haj.Accounts.get_user_by_session_token(token) end)
+      |> assign_new(:current_user, fn ->
+        Haj.Accounts.get_user_by_session_token(token) |> Haj.Spex.preload_user_groups()
+      end)
       |> assign(:show_group, show_group)
       |> assign(
         changeset: changeset,
@@ -21,6 +22,7 @@ defmodule HajWeb.GroupAdminLive do
         roles: [:gruppis, :chef],
         role: :gruppis
       )
+      |> assign(:active_tab, nil)
 
     {:ok, socket}
   end
@@ -113,7 +115,7 @@ defmodule HajWeb.GroupAdminLive do
         <%= label(f, :application_open, "Gruppen går att söka") %>
       </div>
 
-      <%= submit("Spara", class: "self-start bg-burgandy px-3 py-2 rounded-sm text-white") %>
+      <%= submit("Spara", class: "self-start bg-burgandy-500 px-3 py-2 rounded-sm text-white") %>
     </.form>
 
     <div class="uppercase font-bold">Lägg till medlemmar</div>
@@ -121,13 +123,14 @@ defmodule HajWeb.GroupAdminLive do
       Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
     </p>
     <div class="flex flex-row items-stretch gap-2">
-      <.form :let={f} for={:role_form} phx-change="update_role">
+      <.form :let={f} as={:role_form} phx-change="update_role">
         <%= select(f, :role, @roles, class: "h-full", value: @role) %>
       </.form>
 
       <.form
         :let={f}
-        for={:search_form}
+        for={%{}}
+        as={:search_form}
         phx-change="suggest"
         phx-submit="add"
         autocomplete={:off}
@@ -163,7 +166,7 @@ defmodule HajWeb.GroupAdminLive do
 
     <div class="uppercase font-bold py-2">Nuvarande medlemmar</div>
 
-    <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
+    <.table id="chef-table" rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
       <:col :let={member} label="Chefer">
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>
@@ -178,7 +181,10 @@ defmodule HajWeb.GroupAdminLive do
       </:col>
     </.table>
 
-    <.table rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :gruppis))}>
+    <.table
+      id="gruppis-table"
+      rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :gruppis))}
+    >
       <:col :let={member} label="Gruppisar">
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>

@@ -10,8 +10,8 @@ defmodule HajWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {HajWeb.LayoutView, :root}
-    plug :put_layout, {HajWeb.LayoutView, :haj}
+    plug :put_root_layout, {HajWeb.Layouts, :root}
+    plug :put_layout, {HajWeb.Layouts, :haj}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
@@ -28,8 +28,33 @@ defmodule HajWeb.Router do
     get "/login/callback", SessionController, :callback
     get "/logout", SessionController, :logout
 
+    live_session :default, on_mount: [{HajWeb.UserAuth, :current_user}] do
+      live "/signin", SignInLive, :index
+    end
+
     get "/", LoginController, :login
     get "/unauthorized", LoginController, :unauthorized
+  end
+
+  scope "/live", HajWeb do
+    pipe_through :browser
+
+    live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}, HajWeb.Nav] do
+      live "/", DashboardLive.Index, :index
+      live "/user-settings", UserSettingsLive, :index
+      live "/members", MembersLive, :index
+      live "/user/:username", UserLive, :index
+      live "/groups", GroupsLive, :index
+      live "/group/:show_group_id", GroupLive, :index
+
+      live "/merch", MerchLive.Index, :index
+      live "/merch/new", MerchLive.Index, :new
+      live "/merch/:merch_order_item_id/edit", MerchLive.Index, :edit
+
+      live "/merch-admin", MerchAdminLive.Index, :index
+      live "/merch-admin/new", MerchAdminLive.Index, :new
+      live "/merch-admin/:id/edit", MerchAdminLive.Index, :edit
+    end
   end
 
   scope "/", HajWeb do
@@ -37,9 +62,12 @@ defmodule HajWeb.Router do
 
     scope "/dashboard" do
       get "/", DashboardController, :index
+
+      # Obsolete
       get "/my-data", DashboardController, :edit_user
       put "/my-data", DashboardController, :update_user
 
+      # Merch stuff, also obsolete
       get "/order-merch", DashboardController, :order_merch
       get "/order-item/new", DashboardController, :new_order_item
       get "/order-item/new/:item_id", DashboardController, :new_order_item
@@ -49,15 +77,22 @@ defmodule HajWeb.Router do
       delete "/order-item/:id", DashboardController, :delete_order_item
     end
 
+    # Obsolete
     get "/user/:username", UserController, :index
     get "/user/:username/groups", UserController, :groups
 
+    # Obsolete
     get "/members", MembersController, :index
 
     scope "/show-groups" do
+      # Obsolete
       get "/", GroupController, :index
+
       get "/edit/:show_group_id", GroupController, :edit
+
+      # Obsolete
       get "/:show_group_id", GroupController, :group
+
       get "/:show_group_id/vcard", GroupController, :vcard
       get "/:show_group_id/csv", GroupController, :csv
       get "/:show_group_id/applications", GroupController, :applications

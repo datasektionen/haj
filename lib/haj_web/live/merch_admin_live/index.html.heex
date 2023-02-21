@@ -1,0 +1,81 @@
+<div class="pb-4 border-b">
+  <h3 class="font-bold text-2xl py-2">Administrera merch</h3>
+  <.form :let={f} id="show-form" as={:show} phx-change="select_show" class="">
+    <div class="">
+      <%= label(f, :show, "Välj spex",
+        class: "block text-sm font-semibold leading-6 text-zinc-800"
+      ) %>
+      <div class="flex flex-row gap-4">
+        <%= select(f, :show, @show_options,
+          value: @show.id,
+          class:
+            "mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
+        ) %>
+        <div class="flex justify-end mt-1 flex-shrink-0">
+          <.link patch={~p"/live/merch-admin/new"}>
+            <button
+              type="button"
+              class="h-full rounded-md border border-transparent py-2 px-4 bg-burgandy-500 text-sm font-medium text-white shadow-sm
+                hover:bg-burgandy-600 focus:outline-none focus:ring-2 focus:ring-burgandy-500 focus:ring-offset-2"
+            >
+              Ny merch
+            </button>
+          </.link>
+        </div>
+      </div>
+    </div>
+  </.form>
+</div>
+
+<div class="grid gap-6 pt-4 xl:grid-cols-2">
+  <%= for merch_item <- @merch_items do %>
+    <div class="flex flex-col rounded-md border px-6 py-6">
+      <article class="">
+        <figure class="w-48 h-32 rounded-md overflow-hidden">
+          <%= if merch_item.image do %>
+            <img src={Imgproxy.new(merch_item.image) |> Imgproxy.resize(400, 400) |> to_string()} />
+          <% else %>
+            <div class="h-full w-full bg-white border rounded-md" />
+          <% end %>
+        </figure>
+      </article>
+
+      <.field title="Namn" text={merch_item.name} />
+      <.field title="Beskrivning" text={merch_item.description} />
+      <.field title="Pris" text={"#{merch_item.price} kr"} />
+      <.field title="Storlekar" text={Enum.intersperse(merch_item.sizes, ", ")} />
+      <.field title="Beställningsdeadline" text={format_date(merch_item.purchase_deadline)} />
+
+      <div class="flex items-center justify-end gap-2 pt-4 mt-auto">
+        <.link patch={~p"/live/merch-admin/#{merch_item}/edit"}>
+          <.button>
+            Redigera
+          </.button>
+        </.link>
+        <.button
+          danger
+          phx-click={JS.push("delete", value: %{id: merch_item.id})}
+          data-confirm="Are you sure?"
+        >
+          Ta bort
+        </.button>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="merch-modal"
+  show
+  on_cancel={JS.navigate(~p"/live/merch-admin?show=#{@show.id}")}
+>
+  <.live_component
+    module={HajWeb.MerchAdminLive.FormComponent}
+    id={@merch_item.id || :new}
+    action={@live_action}
+    merch_item={@merch_item}
+    show={@show}
+    navigate={~p"/live/merch-admin?show=#{@show.id}"}
+  />
+</.modal>

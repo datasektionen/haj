@@ -1,9 +1,9 @@
 <div class="flex flex-col gap-4 md:flex-row">
   <div class="flex-grow-[1]">
-    <%= render("_side_bar.html", conn: @conn, show: @show) %>
+    <._side_bar conn={@conn} show={@show} />
   </div>
   <div class="flex-grow-[3]">
-    <.table rows={@merch}>
+    <.table id="merch-items" rows={@merch}>
       <:col :let={merch} label="Merch">
         <div class="flex flex-row justify-between">
           <%= merch.name %>
@@ -11,7 +11,7 @@
             <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
               <%= link("Redigera", to: Routes.merch_admin_path(@conn, :edit, merch)) %>
             </button>
-            <button class="bg-burgandy text-white px-2 py-0.5 rounded-sm">
+            <button class="bg-burgandy-500 text-white px-2 py-0.5 rounded-sm">
               <%= link("Radera",
                 to: Routes.merch_admin_path(@conn, :delete, @show, merch),
                 method: :delete,
@@ -23,7 +23,7 @@
       </:col>
     </.table>
 
-    <button class="px-3 py-2 bg-burgandy text-white mt-4">
+    <button class="px-3 py-2 bg-burgandy-500 text-white mt-4">
       <%= link("Ny merch", to: Routes.merch_admin_path(@conn, :new, @show)) %>
     </button>
   </div>

@@ -1,5 +1,5 @@
-defmodule HajWeb.DashboardView do
+defmodule HajWeb.DashboardHTML do
   use HajWeb, :view
 
-  import HajWeb.Components.Table
+  embed_templates("../templates/dashboard/*")
 end

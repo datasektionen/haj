@@ -1,4 +1,4 @@
-<.table rows={@members}>
+<.table id="members-table" rows={@members}>
   <:col :let={member} label="Namn">
     <%= link("#{member.first_name} #{member.last_name}",
       to: Routes.user_path(HajWeb.Endpoint, :index, member.username),

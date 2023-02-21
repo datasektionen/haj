@@ -62,10 +62,11 @@ defmodule Haj.Merch do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_merch_item(attrs \\ %{}) do
+  def create_merch_item(attrs \\ %{}, after_save \\ &{:ok, &1}) do
     %MerchItem{}
     |> MerchItem.changeset(attrs)
     |> Repo.insert()
+    |> after_save(after_save)
   end
 
   @doc """
@@ -80,10 +81,11 @@ defmodule Haj.Merch do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_merch_item(%MerchItem{} = merch_item, attrs) do
+  def update_merch_item(%MerchItem{} = merch_item, attrs, after_save \\ &{:ok, &1}) do
     merch_item
     |> MerchItem.changeset(attrs)
     |> Repo.update()
+    |> after_save(after_save)
   end
 
   @doc """
@@ -99,7 +101,10 @@ defmodule Haj.Merch do
 
   """
   def delete_merch_item(%MerchItem{} = merch_item) do
-    Repo.delete(merch_item)
+    merch_item
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.no_assoc_constraint(:merch_order_items)
+    |> Repo.delete()
   end
 
   @doc """
@@ -273,6 +278,79 @@ defmodule Haj.Merch do
     |> Repo.insert()
   end
 
+  def add_merch_order_item_to_order(show_id, user_id, merch_item_id, attrs \\ %{}) do
+    Repo.transaction(fn ->
+      merch_item = Repo.get(MerchItem, merch_item_id)
+
+      if merch_item.purchase_deadline &&
+           DateTime.compare(merch_item.purchase_deadline, DateTime.utc_now()) == :lt do
+        Repo.rollback("Beställningsdeadline passerad.")
+      end
+
+      order_query =
+        from mo in MerchOrder,
+          where: mo.user_id == ^user_id and mo.show_id == ^show_id
+
+      order =
+        case Repo.one(order_query) do
+          nil ->
+            %MerchOrder{show_id: show_id, user_id: user_id}
+            |> Repo.insert!(on_conflict: :nothing)
+
+          result ->
+            result
+        end
+        |> Repo.preload(merch_order_items: [merch_item: []])
+
+      case {merch_item_id, attrs["size"]} in Enum.map(
+             order.merch_order_items,
+             &{&1.merch_item_id, &1.size}
+           ) do
+        true ->
+          Repo.rollback("Denna merch är redan beställd i den här storleken.")
+
+        false ->
+          %MerchOrderItem{merch_item_id: merch_item_id, merch_order_id: order.id}
+          |> MerchOrderItem.changeset(attrs)
+          |> Repo.insert()
+      end
+    end)
+  end
+
+  def change_order_item_in_order(merch_order_item, show_id, user_id, attrs \\ %{}) do
+    Repo.transaction(fn ->
+      merch_item =
+        Repo.one!(from mi in MerchItem, where: mi.id == ^merch_order_item.merch_item_id)
+
+      if merch_item.purchase_deadline &&
+           DateTime.compare(merch_item.purchase_deadline, DateTime.utc_now()) == :lt do
+        Repo.rollback("Beställningsdeadline passerad.")
+      end
+
+      order_query =
+        from mo in MerchOrder,
+          where: mo.user_id == ^user_id and mo.show_id == ^show_id,
+          preload: [merch_order_items: [merch_item: []]]
+
+      order = Repo.one(order_query)
+
+      changeset = MerchOrderItem.changeset(merch_order_item, attrs)
+      size = Ecto.Changeset.get_field(changeset, :size)
+      merch_item_id = Ecto.Changeset.get_field(changeset, :merch_item_id)
+
+      case {merch_item_id, size} in Enum.map(
+             order.merch_order_items,
+             &{&1.merch_item_id, &1.size}
+           ) do
+        true ->
+          Repo.rollback("Storleken redan beställd.")
+
+        false ->
+          Repo.update(changeset)
+      end
+    end)
+  end
+
   @doc """
   Updates a merch_order_item.
 
@@ -304,7 +382,17 @@ defmodule Haj.Merch do
 
   """
   def delete_merch_order_item(%MerchOrderItem{} = merch_order_item) do
-    Repo.delete(merch_order_item)
+    Repo.transaction(fn ->
+      merch_item =
+        Repo.one!(from mi in MerchItem, where: mi.id == ^merch_order_item.merch_item_id)
+
+      if merch_item.purchase_deadline &&
+           DateTime.compare(merch_item.purchase_deadline, DateTime.utc_now()) == :lt do
+        Repo.rollback("Beställningsdeadline passerad.")
+      end
+
+      Repo.delete(merch_order_item)
+    end)
   end
 
   @doc """
@@ -382,4 +470,25 @@ defmodule Haj.Merch do
         {:ok, order |> Repo.preload(merch_order_items: [merch_item: []])}
     end
   end
+
+  @doc """
+  Gets the Merch Order Items for the user for the current show
+  """
+  def get_current_merch_order_items(user_id) do
+    show = Haj.Spex.current_spex()
+
+    query =
+      from moi in MerchOrderItem,
+        join: mo in assoc(moi, :merch_order),
+        where: mo.user_id == ^user_id and mo.show_id == ^show.id,
+        preload: [:merch_order, :merch_item]
+
+    Repo.all(query)
+  end
+
+  defp after_save({:ok, result}, func) do
+    {:ok, _result} = func.(result)
+  end
+
+  defp after_save(error, _func), do: error
 end

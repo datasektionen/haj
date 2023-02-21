@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-4 md:flex-row">
   <div class="flex-grow-[1]">
-    <%= render("_side_bar.html", user: @current_user, conn: @conn) %>
+    <._side_bar user={@current_user} conn={@conn} />
   </div>
   <div class="flex-grow-[3]">
     <div class="grid md:grid-cols-3">
@@ -8,8 +8,8 @@
         <%= link to: Routes.group_path(@conn, :group, show_group.id) do %>
           <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
                         md:flex-col">
-            <Heroicons.Solid.user_group class="h-10 md:h-14" />
-            <div class="text-lg text-center md:border-t-2 border-burgandy md:w-full">
+            <Heroicons.user_group solid class="h-10 md:h-14" />
+            <div class="text-lg text-center md:border-t-2 border-burgandy-500 md:w-full">
               <%= show_group.group.name %>
             </div>
           </div>
@@ -18,8 +18,8 @@
       <%= link to: Routes.dashboard_path(@conn, :order_merch) do %>
         <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
                             md:flex-col">
-          <Heroicons.Solid.shopping_cart class="h-10 md:h-14" />
-          <div class="text-lg text-center md:border-t-2 border-burgandy md:w-full">
+          <Heroicons.shopping_cart solid class="h-10 md:h-14" />
+          <div class="text-lg text-center md:border-t-2 border-burgandy-500 md:w-full">
             Beställ merch
           </div>
         </div>
@@ -28,8 +28,8 @@
         <%= link to: Routes.merch_admin_path(@conn, :orders, @current_show.id) do %>
           <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
                                 md:flex-col">
-            <Heroicons.Solid.shopping_cart class="h-10 md:h-14" />
-            <div class="text-lg text-center md:border-t-2 border-burgandy md:w-full">
+            <Heroicons.shopping_cart solid class="h-10 md:h-14" />
+            <div class="text-lg text-center md:border-t-2 border-burgandy-500 md:w-full">
               Administrera merch
             </div>
           </div>
@@ -38,8 +38,8 @@
       <%= link to: Routes.dashboard_path(@conn, :edit_user) do %>
         <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
                         md:flex-col">
-          <Heroicons.Solid.circle_stack class="h-10 md:h-14" />
-          <div class="text-lg text-center md:border-t-2 border-burgandy md:w-full">
+          <Heroicons.circle_stack solid class="h-10 md:h-14" />
+          <div class="text-lg text-center md:border-t-2 border-burgandy-500 md:w-full">
             Dina uppgifter
           </div>
         </div>

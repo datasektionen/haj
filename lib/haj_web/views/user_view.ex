@@ -1,5 +1,7 @@
-defmodule HajWeb.UserView do
+defmodule HajWeb.UserHTML do
   use HajWeb, :view
+
+  embed_templates("../templates/user/*")
 
   def name(user) do
     "#{user.first_name} #{user.last_name}"
