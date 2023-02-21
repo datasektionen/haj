@@ -27,6 +27,7 @@ defmodule HajWeb.Router do
     get "/login", SessionController, :login
     get "/login/callback", SessionController, :callback
     get "/logout", SessionController, :logout
+    get "/login/via-api", SessionController, :login_api
 
     live_session :default, on_mount: [{HajWeb.UserAuth, :current_user}] do
       live "/signin", SignInLive, :index

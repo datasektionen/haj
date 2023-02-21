@@ -14,7 +14,8 @@ config :haj,
   login_api_key: System.get_env("LOGIN_API_KEY"),
   login_host: System.get_env("LOGIN_HOST"),
   hostname: "localhost.datasektionen.se",
-  port: 4001
+  port: 4001,
+  api_login_secret: System.get_env("API_LOGIN_SECRET")
 
 config :imgproxy,
   key: System.get_env("IMGPROXY_KEY"),
