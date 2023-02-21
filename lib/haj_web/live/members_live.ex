@@ -48,7 +48,7 @@ defmodule HajWeb.MembersLive do
     ~H"""
     <.form
       :let={f}
-      for={:search_form}
+      as={:search_form}
       phx-change="filter"
       phx-no-submit
       autocomplete={:off}
