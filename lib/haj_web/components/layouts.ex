@@ -22,22 +22,84 @@ defmodule HajWeb.Layouts do
           title="Medlemmar"
           active={@active_tab == :members}
         />
-        <div class={"rounded-md #{if @active_tab == :groups, do: "bg-burgandy-600"}" }>
-          <.nav_link
-            navigate={~p"/live/groups"}
-            icon_name={:user_group}
-            title="Grupper"
-            active={@active_tab == :groups}
+
+        <.nav_link_group
+          navigate={~p"/live/groups"}
+          icon_name={:user_group}
+          title="Grupper"
+          active={@active_tab == :groups}
+          expanded={any_group_active(@current_user.group_memberships, @active_tab)}
+        >
+          <:sub_link
+            :for={g <- @current_user.group_memberships}
+            navigate={~p"/live/group/#{g.show_group}"}
+            title={g.show_group.group.name}
+            active={@active_tab == {:group, g.show_group_id}}
           />
-          <%= for g <- @current_user.group_memberships do %>
-            <.nav_group_link
-              navigate={~p"/live/group/#{g.show_group}"}
-              title={g.show_group.group.name}
-              active={@active_tab == {:group, g.show_group_id}}
-            />
-          <% end %>
-        </div>
+        </.nav_link_group>
+
+        <.nav_link_group
+          :if={@current_user.role == :admin}
+          navigate={~p"/live/settings"}
+          icon_name={:cog_6_tooth}
+          title="Inställningar"
+          active={@active_tab == :settings}
+          expanded={@expanded_tab == :settings}
+        >
+          <:sub_link
+            navigate={~p"/live/settings/shows"}
+            title="Spex"
+            active={@active_tab == {:setting, :shows}}
+          />
+        </.nav_link_group>
       <% end %>
+    </div>
+    """
+  end
+
+  defp any_group_active(group_memberships, active_tab) do
+    active_tab == :groups ||
+      Enum.any?(group_memberships, fn g ->
+        active_tab == {:group, g.show_group_id}
+      end)
+  end
+
+  attr :active, :boolean, default: false
+  attr :expanded, :boolean, default: false
+  attr :navigate, :any, required: true
+  attr :icon_name, :atom, required: true
+  attr :title, :string, required: true
+
+  slot :sub_link do
+    attr :navigate, :any, required: true
+    attr :title, :string, required: true
+    attr :active, :boolean
+  end
+
+  def nav_link_group(assigns) do
+    ~H"""
+    <div class={"rounded-md #{if @expanded, do: "bg-burgandy-600/50"}"}>
+      <.link
+        navigate={@navigate}
+        class={[
+          "text-white hover:text-burgandy-700 hover:bg-burgandy-50 flex items-center px-2 py-2 rounded-md",
+          @active && "bg-burgandy-600"
+        ]}
+      >
+        <.icon name={@icon_name} solid class="mr-3 flex-shrink-0 h-6 w-6" />
+        <%= @title %>
+      </.link>
+      <div :for={sub_link <- @sub_link} :if={@expanded}>
+        <.link
+          navigate={sub_link.navigate}
+          class={[
+            "text-burgandy-100 hover:text-burgandy-700 hover:bg-burgandy-50 flex items-center pl-11 px-2 py-2 rounded-md",
+            Map.get(sub_link, :active, false) && "bg-burgandy-600"
+          ]}
+        >
+          <%= sub_link.title %>
+        </.link>
+      </div>
     </div>
     """
   end
