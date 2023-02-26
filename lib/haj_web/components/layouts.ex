@@ -51,6 +51,12 @@ defmodule HajWeb.Layouts do
             title="Spex"
             active={@active_tab == {:setting, :shows}}
           />
+
+          <:sub_link
+            navigate={~p"/live/settings/groups"}
+            title="Grupper"
+            active={@active_tab == {:setting, :groups}}
+          />
         </.nav_link_group>
       <% end %>
     </div>

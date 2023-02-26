@@ -21,6 +21,9 @@ defmodule HajWeb.SettingsLive.Index do
         <.setting_card name="Spex" navigate={~p"/live/settings/shows"}>
           Redigera alla spex
         </.setting_card>
+        <.setting_card name="Grupper" navigate={~p"/live/settings/groups"}>
+          Redigera årsöverskridande spexgrupper
+        </.setting_card>
       </div>
     </div>
     """

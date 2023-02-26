@@ -61,13 +61,19 @@ defmodule HajWeb.Router do
 
     # Admin only!
     live_session :admin, on_mount: [{HajWeb.UserAuth, :ensure_admin}, {HajWeb.Nav, :settings}] do
-      live "/settings", SettingsLive.Index, :index
-      live "/settings/shows", SettingsLive.Show.Index, :index
-      live "/settings/shows/new", SettingsLive.Show.Index, :new
-      live "/settings/shows/:id/edit", SettingsLive.Show.Index, :edit
+      scope "/settings" do
+        live "/", SettingsLive.Index, :index
+        live "/shows", SettingsLive.Show.Index, :index
+        live "/shows/new", SettingsLive.Show.Index, :new
+        live "/shows/:id/edit", SettingsLive.Show.Index, :edit
 
-      live "/settings/shows/:id", SettingsLive.Show.Show, :show
-      live "/settings/shows/:id/show/edit", SettingsLive.Show.Show, :edit
+        live "/shows/:id", SettingsLive.Show.Show, :show
+        live "/shows/:id/show/edit", SettingsLive.Show.Show, :edit
+
+        live "/groups", SettingsLive.Group.Index, :index
+        live "/groups/new", SettingsLive.Group.Index, :new
+        live "/groups/:id/edit", SettingsLive.Group.Index, :edit
+      end
     end
   end
 

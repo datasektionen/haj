@@ -4,7 +4,7 @@
     <%= if assigns[:title] do %>
       <._title conn={@conn} title={@title} />
     <% end %>
-    <div class="px-8 md:px-14 md:max-w-7xl md:self-center md:w-full flex flex-1">
+    <div class="px-8 md:px-14 md:max-w-7xl md:self-center md:w-full">
       <.flash kind={:info} title="Success!" flash={@flash} />
       <.flash kind={:error} title="Error!" flash={@flash} />
       <%= @inner_content %>

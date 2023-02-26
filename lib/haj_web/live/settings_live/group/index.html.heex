@@ -1,0 +1,43 @@
+<.header>
+  Alla grupper
+  <:actions>
+    <.link patch={~p"/live/settings/groups/new"}>
+      <.button>Ny grupp</.button>
+    </.link>
+  </:actions>
+  <:subtitle>
+    Dessa är alla årsöverskridande grupper som sedan kan läggas till för enskilda spex. Det går inte att radera en grupp
+    som tillhör något spex, om du vill göra det så måste du först ta bort den från alla spex.
+  </:subtitle>
+</.header>
+
+<.table id="groups" rows={@streams.groups}>
+  <:col :let={{_id, group}} label="Namn"><%= group.name %></:col>
+  <:action :let={{_id, group}}>
+    <.link patch={~p"/live/settings/groups/#{group}/edit"}>Redigera</.link>
+  </:action>
+  <:action :let={{id, group}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: group.id}) |> hide("##{id}")}
+      data-confirm="Är du säker?"
+    >
+      Radera
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="group-modal"
+  show
+  on_cancel={JS.navigate(~p"/live/settings/groups")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.Group.FormComponent}
+    id={@group.id || :new}
+    title={@page_title}
+    action={@live_action}
+    group={@group}
+    patch={~p"/live/settings/groups"}
+  />
+</.modal>
