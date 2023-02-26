@@ -26,7 +26,7 @@ defmodule HajWeb.SearchComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-grow md:flex-grow-0 md:w-80 lg:w-96 flex-row items-center justify-end gap-4">
+    <div class="flex flex-grow flex-row items-center justify-end gap-4 md:w-80 md:flex-grow-0 lg:w-96">
       <button phx-click={open_search()} id="search-icon" class="text-gray-700 hover:text-gray-500">
         <.icon name={:magnifying_glass} outline class="h-8 w-8" />
       </button>
@@ -40,8 +40,8 @@ defmodule HajWeb.SearchComponent do
         <.icon name={:x_mark} outline class="h-8 w-8" />
       </button>
 
-      <div id="search-form" class="w-full flex flex-row items-center gap-2" style="display: none;">
-        <div class="w-full relative">
+      <div id="search-form" class="flex w-full flex-row items-center gap-2" style="display: none;">
+        <div class="relative w-full">
           <.form
             :let={f}
             as={:search_form}
@@ -55,22 +55,21 @@ defmodule HajWeb.SearchComponent do
               value: @query,
               phx_debounce: 500,
               placeholder: "Sök",
-              class:
-                "rounded-lg text-sm h-10 w-full focus:outline-none focus:ring-2 focus:ring-burgandy-700/80 focus:border-none"
+              class: "h-10 w-full rounded-lg text-sm focus:ring-burgandy-700/80 focus:border-none focus:outline-none focus:ring-2"
             ) %>
           </.form>
           <%= if @results != [] do %>
             <div
               id="search-results"
-              class="absolute top-12 left-0 right-0 flex flex-col bg-white rounded-lg border shadow-sm z-10"
+              class="absolute top-12 right-0 left-0 z-10 flex flex-col rounded-lg border bg-white shadow-sm"
             >
               <%= for result <- @results do %>
                 <.link
                   navigate={navigate(result)}
-                  class="last:border-none border-b py-2 px-3 text-base hover:bg-gray-50"
+                  class="border-b px-3 py-2 text-base last:border-none hover:bg-gray-50"
                 >
                   <div><%= title(result) %></div>
-                  <div class="text-gray-600 text-sm"><%= type(result) %></div>
+                  <div class="text-sm text-gray-600"><%= type(result) %></div>
                 </.link>
               <% end %>
             </div>

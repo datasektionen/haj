@@ -11,12 +11,12 @@
           </div>
 
           <div>
-            <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
+            <button class="bg-orange rounded-sm px-2 py-0.5 text-white">
               <%= link("Redigera",
                 to: Routes.settings_path(@conn, :edit_show_group, show_group.id)
               ) %>
             </button>
-            <button class="bg-burgandy-500 text-white px-2 py-0.5 rounded-sm">
+            <button class="bg-burgandy-500 rounded-sm px-2 py-0.5 text-white">
               <%= link("Radera",
                 to: Routes.settings_path(@conn, :delete_show_group, show_group),
                 method: :delete,
@@ -30,7 +30,7 @@
       </:col>
     </.table>
 
-    <h1 class="uppercase font-bold px-3 py-2">Lägg till grupper</h1>
+    <h1 class="px-3 py-2 font-bold uppercase">Lägg till grupper</h1>
     <.form :let={f} for={@conn} action={Routes.settings_path(@conn, :add_show_group, @show.id)}>
       <%= select(f, :group, Enum.map(@groups, &{&1.name, &1.id}), prompt: "Välj grupp") %>
       <%= submit("Lägg till") %>

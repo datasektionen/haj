@@ -1,51 +1,51 @@
-<div class="flex flex-col items-center gap-4 pb-8 lg:flex-row-reverse lg:justify-between lg:items-start">
+<div class="flex flex-col items-center gap-4 pb-8 lg:flex-row-reverse lg:items-start lg:justify-between">
   <img
     src={"https://zfinger.datasektionen.se/user/#{@user.username}/image"}
-    class="w-52 h-52 rounded-full object-cover object-top"
+    class="h-52 w-52 rounded-full object-cover object-top"
   />
 
-  <table class="text-left text-md w-full lg:w-auto lg:flex-grow">
+  <table class="text-md w-full text-left lg:w-auto lg:flex-grow">
     <thead class="uppercase">
-      <th colspan="2" class="py-2 px-3 bg-gray-100 border-b border-gray-600">Uppgifter</th>
+      <th colspan="2" class="border-b border-gray-600 bg-gray-100 px-3 py-2">Uppgifter</th>
     </thead>
     <tbody>
       <tr class="bg-white">
-        <th class="py-2 px-3">Namn:</th>
-        <td class="py-2 px-3"><%= name(@user) %></td>
+        <th class="px-3 py-2">Namn:</th>
+        <td class="px-3 py-2"><%= name(@user) %></td>
       </tr>
       <tr class="bg-gray-100">
-        <th class="py-2 px-3">KTH-id:</th>
-        <td class="py-2 px-3"><%= @user.username %></td>
+        <th class="px-3 py-2">KTH-id:</th>
+        <td class="px-3 py-2"><%= @user.username %></td>
       </tr>
       <tr class="bg-white">
-        <th class="py-2 px-3">Klass:</th>
-        <td class="py-2 px-3"><%= @user.class %></td>
+        <th class="px-3 py-2">Klass:</th>
+        <td class="px-3 py-2"><%= @user.class %></td>
       </tr>
       <tr class="bg-gray-100">
-        <th class="py-2 px-3">Email:</th>
-        <td class="py-2 px-3"><%= @user.email %></td>
+        <th class="px-3 py-2">Email:</th>
+        <td class="px-3 py-2"><%= @user.email %></td>
       </tr>
       <tr class="bg-white">
-        <th class="py-2 px-3">Google-konto:</th>
-        <td class="py-2 px-3"><%= @user.google_account %></td>
+        <th class="px-3 py-2">Google-konto:</th>
+        <td class="px-3 py-2"><%= @user.google_account %></td>
       </tr>
       <tr class="bg-gray-100">
-        <th class="py-2 px-3">Telefonnr:</th>
-        <td class="py-2 px-3"><%= @user.phone %></td>
+        <th class="px-3 py-2">Telefonnr:</th>
+        <td class="px-3 py-2"><%= @user.phone %></td>
       </tr>
       <tr class="bg-white">
-        <th class="py-2 px-3">Matpreferenser:</th>
-        <td class="py-2 px-3"><%= display_foods(@user) %></td>
+        <th class="px-3 py-2">Matpreferenser:</th>
+        <td class="px-3 py-2"><%= display_foods(@user) %></td>
       </tr>
       <%= if Enum.member?([:admin], @conn.assigns.current_user.role) do %>
         <tr class="bg-gray-100">
-          <th class="py-2 px-3">Personnr:</th>
-          <td class="py-2 px-3"><%= @user.personal_number %></td>
+          <th class="px-3 py-2">Personnr:</th>
+          <td class="px-3 py-2"><%= @user.personal_number %></td>
         </tr>
 
         <tr class="bg-white">
-          <th class="py-2 px-3">Adress:</th>
-          <td class="py-2 px-3">
+          <th class="px-3 py-2">Adress:</th>
+          <td class="px-3 py-2">
             <%= if @user.zip, do: "#{@user.street}, #{@user.zip} #{@user.city}" %>
           </td>
         </tr>

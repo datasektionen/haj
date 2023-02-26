@@ -1,7 +1,7 @@
 <div>
   <div class="flex flex-col gap-4 pt-4">
     <h3 class="text-2xl font-bold">Tillgänglig merch</h3>
-    <div class="grid sm:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+    <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
       <%= for merch_item <- @available_merch do %>
         <.merch_item_card item={merch_item} />
       <% end %>
@@ -10,7 +10,7 @@
 
   <div class="flex flex-col gap-4 pt-4">
     <h3 class="text-2xl font-bold">Beställt</h3>
-    <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+    <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
       <%= for merch_order_item <- @ordered_items do %>
         <.merch_order_item_card order_item={merch_order_item} />
       <% end %>
@@ -26,7 +26,7 @@
 >
   <:title><%= @merch_item.name %></:title>
   <:subtitle>
-    <div class="grid grid-cols-1 xs:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 gap-6 xs:grid-cols-3">
       <%= if @merch_item.image do %>
         <img
           src={
