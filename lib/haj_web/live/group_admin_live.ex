@@ -133,7 +133,9 @@ defmodule HajWeb.GroupAdminLive do
         <%= label(f, :application_open, "Gruppen går att söka") %>
       </div>
 
-      <%= submit("Spara", class: "self-start bg-burgandy-500 px-8 py-2 rounded-md text-white") %>
+      <%= submit("Spara",
+        class: "self-start bg-burgandy-500 hover:bg-burgandy-400 px-16 py-2 rounded-md text-white"
+      ) %>
     </.form>
     <h2 class="uppercase mt-6 font-bold text-burgandy-500">Lägg till medlemmar</h2>
     <p class="py-2 text-zinc-600 font-regular">
@@ -179,8 +181,6 @@ defmodule HajWeb.GroupAdminLive do
         <% end %>
       <% end %>
     </div>
-
-    <div class="uppercase font-bold py-2">Nuvarande medlemmar</div>
 
     <.table id="chef-table" rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
       <:col :let={member} label="Chefer">

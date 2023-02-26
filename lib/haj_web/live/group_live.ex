@@ -12,30 +12,38 @@ defmodule HajWeb.GroupLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mt-4 flex flex-col gap-4 justify-start xl:flex-row lg:px-6 lg:py-6 xl:items-center xl:gap-12 lg:border lg:rounded-lg">
-      <div class="flex-shrink-0 flex flex-col gap-2 sm:flex-row sm:gap-12 xl:items-center">
-        <div class="">
-          <h3 class="font-bold text-2xl">
-            <%= @group.group.name %>
-          </h3>
-          <span class="text-sm text-gray-600">Del av METAspexet <%= @group.show.year.year %></span>
-        </div>
-        <div class="">
-          <h4 class="font-bold text-l">Ansvariga chefer</h4>
-          <div class="flex flex-col gap-2 pt-2">
-            <%= for chef <- chefer(@group) do %>
-              <.link navigate={Routes.user_path(Endpoint, :index, chef.username)} class="group">
-                <img
-                  src={"https://zfinger.datasektionen.se/user/#{chef.username}/image/100"}
-                  class="h-6 w-6 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
-                />
-                <span class="text-gray-700 text-sm px-2 group-hover:text-gray-900">
-                  <%= full_name(chef) %>
-                </span>
-              </.link>
-            <% end %>
+    <div class="mt-4 flex flex-col gap-4 justify-start lg:px-6 lg:py-6   lg:border lg:rounded-lg">
+      <div class="flex justify-between items-start">
+        <div class="flex flex-col gap-2 sm:flex-row sm:gap-12 xl:items-center">
+          <div class="">
+            <h3 class="font-bold text-2xl">
+              <%= @group.group.name %>
+            </h3>
+            <span class="text-sm text-gray-600">Del av METAspexet <%= @group.show.year.year %></span>
+          </div>
+          <div class="">
+            <h4 class="font-bold text-l">Ansvariga chefer</h4>
+            <div class="flex flex-col gap-2 pt-2">
+              <%= for chef <- chefer(@group) do %>
+                <.link navigate={Routes.user_path(Endpoint, :index, chef.username)} class="group">
+                  <img
+                    src={"https://zfinger.datasektionen.se/user/#{chef.username}/image/100"}
+                    class="h-6 w-6 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
+                  />
+                  <span class="text-gray-700 text-sm px-2 group-hover:text-gray-900">
+                    <%= full_name(chef) %>
+                  </span>
+                </.link>
+              <% end %>
+            </div>
           </div>
         </div>
+        <.link
+          navigate={Routes.group_admin_path(Endpoint, :index, @group.show)}
+          class="block text-md bg-burgandy-500 rounded-md text-white px-3 py-1 hover:bg-burgandy-400 text-sm"
+        >
+          Administrera
+        </.link>
       </div>
       <div class="">
         <%= if @group.application_description do %>
