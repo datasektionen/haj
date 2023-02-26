@@ -2,29 +2,39 @@ defmodule HajWeb.GroupAdminLive do
   use HajWeb, :live_view
 
   alias Haj.Spex
-  # Old stuff, should be redone
 
-  def mount(_params, %{"user_token" => token, "show_group_id" => id}, socket) do
-    show_group = Haj.Spex.get_show_group!(id)
+  def mount(%{"show_group_id" => show_group_id}, _session, socket) do
+    show_group = Spex.get_show_group!(show_group_id)
     changeset = Spex.change_show_group(show_group)
+    user = socket.assigns[:current_user]
+    IO.inspect(show_group)
 
-    socket =
-      socket
-      |> assign_new(:current_user, fn ->
-        Haj.Accounts.get_user_by_session_token(token) |> Haj.Spex.preload_user_groups()
-      end)
-      |> assign(:show_group, show_group)
-      |> assign(
-        changeset: changeset,
-        query: nil,
-        loading: false,
-        matches: [],
-        roles: [:gruppis, :chef],
-        role: :gruppis
-      )
-      |> assign(:active_tab, nil)
+    case is_admin?(socket, show_group) do
+      true ->
+        socket =
+          socket
+          |> assign(
+            :show_group,
+            show_group
+          )
+          |> assign(
+            current_user: user,
+            changeset: changeset,
+            group: show_group,
+            page_title: show_group.group.name,
+            query: nil,
+            loading: false,
+            matches: [],
+            roles: [:gruppis, :chef],
+            role: :gruppis
+          )
 
-    {:ok, socket}
+        {:ok, socket}
+
+      false ->
+        # Redirect to normal group page
+        {:ok, redirect(socket, to: Routes.group_path(socket, :group, show_group.id))}
+    end
   end
 
   def handle_event("suggest", %{"search_form" => %{"q" => query}}, socket) do
@@ -97,46 +107,52 @@ defmodule HajWeb.GroupAdminLive do
 
   def render(assigns) do
     ~H"""
+    <h1 class="mt-4 text-2xl font-regular">
+      Redigera <span class="font-bold"><%= @page_title %></span>
+    </h1>
     <.form :let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
-      <%= label(f, :application_description, "Beskrivning av gruppen på ansökningssidan.",
-        class: "uppercase font-bold py-2"
+      <%= label(f, :application_description, "Beskrivning av gruppen",
+        class: "text-zinc-600 mt-4 font-medium"
       ) %>
-      <%= textarea(f, :application_description, class: "mb-2") %>
+      <%= textarea(f, :application_description,
+        class: "mb-2 rounded-lg border-1 border-zinc-300 bg-zinc-50"
+      ) %>
 
       <%= label(
         f,
         :application_extra_question,
-        "Extra fråga i ansökan. Om du lämnar detta blankt kommer ingen extra fråga visas."
+        "Extra fråga i ansökan. Om du lämnar detta blankt kommer ingen extra fråga visas.",
+        class: "text-zinc-600 mt-2 font-medium"
       ) %>
-      <%= textarea(f, :application_extra_question, class: "mb-2") %>
+      <%= textarea(f, :application_extra_question,
+        class: "mb-2 rounded-lg border-1 border-zinc-300 bg-zinc-50"
+      ) %>
 
       <div class="mb-2 flex items-center gap-2">
         <%= checkbox(f, :application_open) %>
         <%= label(f, :application_open, "Gruppen går att söka") %>
       </div>
 
-      <%= submit("Spara", class: "self-start bg-burgandy-500 px-3 py-2 rounded-sm text-white") %>
+      <%= submit("Spara", class: "self-start bg-burgandy-500 px-8 py-2 rounded-md text-white") %>
     </.form>
-
-    <div class="uppercase font-bold">Lägg till medlemmar</div>
-    <p class="py-2">
+    <h2 class="uppercase mt-6 font-bold text-burgandy-500">Lägg till medlemmar</h2>
+    <p class="py-2 text-zinc-600 font-regular">
       Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
     </p>
     <div class="flex flex-row items-stretch gap-2">
-      <.form :let={f} as={:role_form} phx-change="update_role">
-        <%= select(f, :role, @roles, class: "h-full", value: @role) %>
+      <.form :let={f} for={:role_form} phx-change="update_role">
+        <%= select(f, :role, @roles, class: "h-full rounded-md border-zinc-400", value: @role) %>
       </.form>
 
       <.form
         :let={f}
-        for={%{}}
-        as={:search_form}
+        for={:search_form}
         phx-change="suggest"
         phx-submit="add"
         autocomplete={:off}
         class="flex-grow"
       >
-        <%= text_input(f, :q, value: @query, class: "w-full") %>
+        <%= text_input(f, :q, value: @query, class: "w-full rounded-md border-zinc-400") %>
       </.form>
     </div>
 
@@ -199,5 +215,13 @@ defmodule HajWeb.GroupAdminLive do
       </:col>
     </.table>
     """
+  end
+
+  defp is_admin?(socket, show_group) do
+    socket.assigns.current_user.role == :admin ||
+      show_group.group_memberships
+      |> Enum.any?(fn %{user_id: id, role: role} ->
+        role == :chef && id == socket.assigns.current_user.id
+      end)
   end
 end
