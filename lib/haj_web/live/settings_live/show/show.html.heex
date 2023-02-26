@@ -1,0 +1,37 @@
+<.header>
+  Spex: <%= @show.title %>
+  <:subtitle>Detta är ett spex.</:subtitle>
+  <:actions>
+    <.link patch={~p"/live/settings/shows/#{@show}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Redigera spex</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Titel"><%= @show.title %></:item>
+  <:item title="Eller-titel"><%= @show.or_title %></:item>
+  <:item title="Beskrivning"><%= @show.description %></:item>
+  <:item title="Datum/år"><%= @show.year %></:item>
+  <:item title="Ansökan öppnar"><%= @show.application_opens %></:item>
+  <:item title="Ansökan stänger"><%= @show.application_closes %></:item>
+  <:item title="Slack webhook url"><%= @show.slack_webhook_url %></:item>
+</.list>
+
+<.back navigate={~p"/live/settings/shows"}>Tillbaka till alla spex</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="show-modal"
+  show
+  on_cancel={JS.patch(~p"/live/settings/shows/#{@show}")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.Show.FormComponent}
+    id={@show.id}
+    title={@page_title}
+    action={@live_action}
+    show={@show}
+    patch={~p"/live/settings/shows/#{@show}"}
+  />
+</.modal>

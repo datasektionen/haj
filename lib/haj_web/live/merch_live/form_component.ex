@@ -7,15 +7,14 @@ defmodule HajWeb.MerchLive.FormComponent do
     ~H"""
     <div>
       <.simple_form
-        :let={f}
-        for={@changeset}
+        for={@form}
         id="merch-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={{f, :size}} label="Storlek" type="select" options={@merch_item.sizes} />
-        <.input field={{f, :count}} label="Antal" type="number" />
+        <.input field={@form[:size]} label="Storlek" type="select" options={@merch_item.sizes} />
+        <.input field={@form[:count]} label="Antal" type="number" />
 
         <:actions>
           <.button phx-disable-with="Sparar...">Spara</.button>
@@ -31,7 +30,7 @@ defmodule HajWeb.MerchLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:changeset, changeset)}
+     |> assign_form(changeset)}
   end
 
   def handle_event("validate", %{"merch_order_item" => params}, socket) do
@@ -40,7 +39,7 @@ defmodule HajWeb.MerchLive.FormComponent do
       |> Merch.change_merch_order_item(params)
       |> Map.put(:action, :validate)
 
-    {:noreply, assign(socket, changeset: changeset)}
+    {:noreply, assign_form(socket, changeset)}
   end
 
   def handle_event("save", %{"merch_order_item" => params}, socket) do
@@ -59,7 +58,7 @@ defmodule HajWeb.MerchLive.FormComponent do
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
+        {:noreply, assign_form(socket, changeset)}
 
       {:error, message} ->
         push_flash(:error, message)
@@ -77,11 +76,15 @@ defmodule HajWeb.MerchLive.FormComponent do
         {:noreply, socket |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
+        {:noreply, assign_form(socket, changeset)}
 
       {:error, message} ->
         push_flash(:error, message)
         {:noreply, socket}
     end
+  end
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
   end
 end

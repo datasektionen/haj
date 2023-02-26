@@ -42,6 +42,8 @@ defmodule HajWeb.Router do
 
     live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}, HajWeb.Nav] do
       live "/", DashboardLive.Index, :index
+      live "/unauthorized", DashboardLive.Unauthorized, :index
+
       live "/user-settings", UserSettingsLive, :index
       live "/members", MembersLive, :index
       live "/user/:username", UserLive, :index
@@ -55,6 +57,17 @@ defmodule HajWeb.Router do
       live "/merch-admin", MerchAdminLive.Index, :index
       live "/merch-admin/new", MerchAdminLive.Index, :new
       live "/merch-admin/:id/edit", MerchAdminLive.Index, :edit
+    end
+
+    # Admin only!
+    live_session :admin, on_mount: [{HajWeb.UserAuth, :ensure_admin}, {HajWeb.Nav, :settings}] do
+      live "/settings", SettingsLive.Index, :index
+      live "/settings/shows", SettingsLive.Show.Index, :index
+      live "/settings/shows/new", SettingsLive.Show.Index, :new
+      live "/settings/shows/:id/edit", SettingsLive.Show.Index, :edit
+
+      live "/settings/shows/:id", SettingsLive.Show.Show, :show
+      live "/settings/shows/:id/show/edit", SettingsLive.Show.Show, :edit
     end
   end
 
