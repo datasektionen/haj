@@ -3,17 +3,17 @@
     <._side_bar user={@current_user} conn={@conn} />
   </div>
   <div class="flex-grow-[3] mb-8">
-    <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy-500">Beskrivning</h1>
+    <h1 class="border-burgandy-500 border-b-2 px-3 py-2 font-bold uppercase">Beskrivning</h1>
 
     <div class="mt-4 flex flex-col md:flex-row md:gap-4">
       <img
         src={@item.image}
         alt={"Bild på #{@item.name}"}
-        class="w-full aspect-square object-cover md:w-72"
+        class="aspect-square w-full object-cover md:w-72"
       />
-      <div class="flex flex-col gap-1 py-2 flex-shrink">
+      <div class="flex flex-shrink flex-col gap-1 py-2">
         <%= link to: Routes.dashboard_path(@conn, :new_order_item, @item.id) do %>
-          <div class="font-bold text-lg uppercase"><%= @item.name %></div>
+          <div class="text-lg font-bold uppercase"><%= @item.name %></div>
         <% end %>
         <div class="text-burgandy-500"><%= @item.price %> kr</div>
         <%= if  @item.purchase_deadline do %>
@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <h1 class="uppercase font-bold px-3 py-2 border-b-2 border-burgandy-500">Beställ</h1>
+    <h1 class="border-burgandy-500 border-b-2 px-3 py-2 font-bold uppercase">Beställ</h1>
     <.form
       :let={f}
       for={@changeset}
@@ -35,7 +35,7 @@
       class="flex flex-col"
     >
       <%= if @changeset.action do %>
-        <div class="mt-4 alert alert-danger">
+        <div class="alert alert-danger mt-4">
           <p>Oops, något gick fel, kolla på felen nedan.</p>
         </div>
       <% end %>
@@ -55,8 +55,7 @@
 
       <div>
         <%= submit("Spara",
-          class:
-            "mt-4 py-2 px-4 my-2 rounded-sm bg-burgandy-500 text-white self-end text-lg uppercase"
+          class: "bg-burgandy-500 my-2 mt-4 self-end rounded-sm px-4 py-2 text-lg uppercase text-white"
         ) %>
       </div>
     </.form>

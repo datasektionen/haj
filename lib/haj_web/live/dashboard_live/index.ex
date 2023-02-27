@@ -26,9 +26,9 @@ defmodule HajWeb.DashboardLive.Index do
     ~H"""
     <.link
       navigate={~p"/live/group/#{@show_group.id}"}
-      class="flex flex-col gap-1 sm:gap-1.5 border rounded-lg shadow-sm px-4 py-4 hover:bg-gray-50"
+      class="flex flex-col gap-1 rounded-lg border px-4 py-4 shadow-sm hover:bg-gray-50 sm:gap-1.5"
     >
-      <div class="text-lg font-bold text-burgandy-500 inline-flex items-center gap-2">
+      <div class="text-burgandy-500 inline-flex items-center gap-2 text-lg font-bold">
         <.icon name={:user_group} solid />
         <span class="">
           <%= @show_group.group.name %>
@@ -48,23 +48,21 @@ defmodule HajWeb.DashboardLive.Index do
     ~H"""
     <.link
       patch={~p"/live/merch/#{@order_item.id}/edit"}
-      class="border rounded-lg shadow-sm group overflow-hidden relative"
+      class="group relative overflow-hidden rounded-lg border shadow-sm"
     >
       <%= if @order_item.merch_item.image do %>
         <img
           src={Imgproxy.new(@order_item.merch_item.image) |> Imgproxy.resize(800, 800) |> to_string()}
           alt={@order_item.merch_item.name}
-          class="object-cover w-full h-full brightness-50 absolute inset-0
-               ease-in-out duration-300 group-hover:scale-105"
+          class="absolute inset-0 h-full w-full object-cover brightness-50 duration-300 ease-in-out group-hover:scale-105"
         />
       <% else %>
-        <div class="w-full h-full absolute inset-0 ease-in-out duration-300 bg-size-125 bg-pos-0 group-hover:bg-pos-100
-                    bg-gradient-to-br from-burgandy-400 to-burgandy-700" />
+        <div class="bg-size-125 bg-pos-0 from-burgandy-400 to-burgandy-700 absolute inset-0 h-full w-full bg-gradient-to-br duration-300 ease-in-out group-hover:bg-pos-100" />
       <% end %>
 
-      <div class="relative px-4 py-4 flex flex-col gap-1 sm:gap-1.5">
-        <p class="font-bold text-lg text-gray-50"><%= @order_item.merch_item.name %></p>
-        <p class="text-gray-200 text-sm">
+      <div class="relative flex flex-col gap-1 px-4 py-4 sm:gap-1.5">
+        <p class="text-lg font-bold text-gray-50"><%= @order_item.merch_item.name %></p>
+        <p class="text-sm text-gray-200">
           Storlek <%= @order_item.size %>, <%= @order_item.count %> st
         </p>
       </div>

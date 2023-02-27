@@ -9,7 +9,7 @@
           <%= "#{user.first_name} #{user.last_name}" %>
 
           <div>
-            <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
+            <button class="bg-orange rounded-sm px-2 py-0.5 text-white">
               <%= link("Redigera", to: Routes.settings_path(@conn, :edit_user, user.id)) %>
             </button>
           </div>
@@ -23,7 +23,7 @@
           <%= "#{user.first_name} #{user.last_name}" %>
 
           <div>
-            <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
+            <button class="bg-orange rounded-sm px-2 py-0.5 text-white">
               <%= link("Redigera", to: Routes.settings_path(@conn, :edit_user, user.id)) %>
             </button>
           </div>
@@ -37,7 +37,7 @@
           <%= "#{user.first_name} #{user.last_name}" %>
 
           <div>
-            <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
+            <button class="bg-orange rounded-sm px-2 py-0.5 text-white">
               <%= link("Redigera", to: Routes.settings_path(@conn, :edit_user, user.id)) %>
             </button>
           </div>
@@ -51,7 +51,7 @@
           <%= "#{user.first_name} #{user.last_name}" %>
 
           <div>
-            <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
+            <button class="bg-orange rounded-sm px-2 py-0.5 text-white">
               <%= link("Redigera", to: Routes.settings_path(@conn, :edit_user, user.id)) %>
             </button>
           </div>
@@ -59,7 +59,7 @@
       </:col>
     </.table>
 
-    <button class="px-3 py-2 bg-burgandy-500 text-white mt-4">
+    <button class="bg-burgandy-500 mt-4 px-3 py-2 text-white">
       <%= link("Ny användare", to: Routes.settings_path(@conn, :new_user)) %>
     </button>
   </div>

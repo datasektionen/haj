@@ -1,6 +1,6 @@
 <table class="w-full divide-y divide-gray-200">
   <thead>
-    <tr class="text-md font-semibold text-left bg-gray-100 uppercase">
+    <tr class="text-md bg-gray-100 text-left font-semibold uppercase">
       <%= for col <- ["Namn", "Email", "Telefon", "Klass", "Grupper"] do %>
         <th class="px-4 py-3">
           <%= col %>
@@ -10,7 +10,7 @@
   </thead>
   <tbody class="bg-white">
     <%= if @applications == [] do %>
-      <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium">Här var det tomt.</td>
+      <td class="whitespace-nowrap py-4 pl-6 text-sm font-medium">Här var det tomt.</td>
     <% else %>
       <%= for {application, i} <- Enum.with_index(@applications) do %>
         <tbody x-data="{show: false}">
@@ -19,7 +19,7 @@
               do: "bg-white hover:bg-gray-100",
               else: "bg-gray-50 hover:bg-gray-100"
           }>
-            <td class="px-4 py-3 border">
+            <td class="border px-4 py-3">
               <div class="flex">
                 <button class="px-2" x-on:click="show = !show">
                   <Heroicons.chevron_down solid class="h-6 text-gray-800" />
@@ -27,30 +27,30 @@
                 <%= "#{application.user.first_name} #{application.user.last_name}" %>
               </div>
             </td>
-            <td class="px-4 py-3 border">
+            <td class="border px-4 py-3">
               <%= application.user.email %>
             </td>
-            <td class="px-4 py-3 border">
+            <td class="border px-4 py-3">
               <%= application.user.phone %>
             </td>
-            <td class="px-4 py-3 border">
+            <td class="border px-4 py-3">
               <%= application.user.class %>
             </td>
-            <td class="px-4 py-3 border">
+            <td class="border px-4 py-3">
               <%= all_groups(application) %>
             </td>
             <td>
               <%= if member_of_show_group?(application.user.id, @show_group) do %>
                 <button
                   disabled
-                  class="bg-gray-200 text-black px-2 py-0.5 rounded-sm cursor-not-allowed"
+                  class="cursor-not-allowed rounded-sm bg-gray-200 px-2 py-0.5 text-black"
                 >
                   Antag
                 </button>
               <% else %>
                 <%= button("Antag",
                   to: Routes.group_path(@conn, :accept_user, @show_group.id, application.user.id),
-                  class: "bg-orange text-white px-2 py-0.5 rounded-sm",
+                  class: "bg-orange rounded-sm px-2 py-0.5 text-white",
                   data: [
                     confirm:
                       "Är du helt säker på att du vill anta #{application.user.first_name} #{application.user.last_name} till #{@show_group.group.name}?"
@@ -60,7 +60,7 @@
             </td>
           </tr>
           <tr x-show="show" class={if rem(i, 2) == 0, do: "bg-white", else: "bg-gray-50"}>
-            <td colspan="6" class="px-4 py-3 gap-2 w-full">
+            <td colspan="6" class="w-full gap-2 px-4 py-3">
               <div>Tid för ansökan: <%= application.inserted_at %></div>
               <div>Övrigt: <%= application.other %></div>
               <div>Eventuell rangordning: <%= application.ranking %></div>
