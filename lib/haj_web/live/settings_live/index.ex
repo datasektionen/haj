@@ -13,7 +13,7 @@ defmodule HajWeb.SettingsLive.Index do
       <.header>
         Inställningar
         <:subtitle>
-          Välj sak att administrera.
+          Välj sak att administrera. Användargränssnittet fungerar bäst på en dator.
         </:subtitle>
       </.header>
 
@@ -23,6 +23,9 @@ defmodule HajWeb.SettingsLive.Index do
         </.setting_card>
         <.setting_card name="Grupper" navigate={~p"/live/settings/groups"}>
           Redigera årsöverskridande spexgrupper
+        </.setting_card>
+        <.setting_card name="Mat" navigate={~p"/live/settings/foods"}>
+          Redigera matpreferenser
         </.setting_card>
       </div>
     </div>

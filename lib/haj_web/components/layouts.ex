@@ -57,6 +57,12 @@ defmodule HajWeb.Layouts do
             title="Grupper"
             active={@active_tab == {:setting, :groups}}
           />
+
+          <:sub_link
+            navigate={~p"/live/settings/foods"}
+            title="Mat"
+            active={@active_tab == {:setting, :foods}}
+          />
         </.nav_link_group>
       <% end %>
     </div>

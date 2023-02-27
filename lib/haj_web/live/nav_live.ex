@@ -49,6 +49,9 @@ defmodule HajWeb.Nav do
         {SettingsLive.Group.Index, _} ->
           {:setting, :groups}
 
+        {SettingsLive.Food.Index, _} ->
+          {:setting, :foods}
+
         {_, _} ->
           nil
       end

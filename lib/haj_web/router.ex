@@ -73,6 +73,13 @@ defmodule HajWeb.Router do
         live "/groups", SettingsLive.Group.Index, :index
         live "/groups/new", SettingsLive.Group.Index, :new
         live "/groups/:id/edit", SettingsLive.Group.Index, :edit
+
+        live "/foods", SettingsLive.Food.Index, :index
+        live "/foods/new", SettingsLive.Food.Index, :new
+        live "/foods/:id/edit", SettingsLive.Food.Index, :edit
+
+        live "/foods/:id", SettingsLive.Food.Show, :show
+        live "/foods/:id/show/edit", SettingsLive.Food.Show, :edit
       end
     end
   end

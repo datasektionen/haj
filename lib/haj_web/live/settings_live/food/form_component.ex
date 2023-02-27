@@ -1,7 +1,7 @@
-defmodule HajWeb.SettingsLive.Group.FormComponent do
+defmodule HajWeb.SettingsLive.Food.FormComponent do
   use HajWeb, :live_component
 
-  alias Haj.Spex
+  alias Haj.Foods
 
   @impl true
   def render(assigns) do
@@ -9,21 +9,19 @@ defmodule HajWeb.SettingsLive.Group.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>
-          Notera att detta är en årsöverskridande grupp, dessa grupper kan sedan läggas till till ett spex.
-        </:subtitle>
+        <:subtitle>Visas som alternativ för matpreferens för användare.</:subtitle>
       </.header>
 
       <.simple_form
         for={@form}
-        id="group-form"
+        id="food-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Namn" />
         <:actions>
-          <.button phx-disable-with="Sparar...">Spara grupp</.button>
+          <.button phx-disable-with="Sparar...">Spara mat</.button>
         </:actions>
       </.simple_form>
     </div>
@@ -31,8 +29,8 @@ defmodule HajWeb.SettingsLive.Group.FormComponent do
   end
 
   @impl true
-  def update(%{group: group} = assigns, socket) do
-    changeset = Spex.change_group(group)
+  def update(%{food: food} = assigns, socket) do
+    changeset = Foods.change_food(food)
 
     {:ok,
      socket
@@ -41,27 +39,27 @@ defmodule HajWeb.SettingsLive.Group.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"group" => group_params}, socket) do
+  def handle_event("validate", %{"food" => food_params}, socket) do
     changeset =
-      socket.assigns.group
-      |> Spex.change_group(group_params)
+      socket.assigns.food
+      |> Foods.change_food(food_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}
   end
 
-  def handle_event("save", %{"group" => group_params}, socket) do
-    save_group(socket, socket.assigns.action, group_params)
+  def handle_event("save", %{"food" => food_params}, socket) do
+    save_food(socket, socket.assigns.action, food_params)
   end
 
-  defp save_group(socket, :edit, group_params) do
-    case Spex.update_group(socket.assigns.group, group_params) do
-      {:ok, group} ->
-        notify_parent({:saved, group})
+  defp save_food(socket, :edit, food_params) do
+    case Foods.update_food(socket.assigns.food, food_params) do
+      {:ok, food} ->
+        notify_parent({:saved, food})
 
         {:noreply,
          socket
-         |> put_flash(:info, "Grupp uppdaterades")
+         |> put_flash(:info, "Mat uppdaterades")
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -69,14 +67,14 @@ defmodule HajWeb.SettingsLive.Group.FormComponent do
     end
   end
 
-  defp save_group(socket, :new, group_params) do
-    case Spex.create_group(group_params) do
-      {:ok, group} ->
-        notify_parent({:saved, group})
+  defp save_food(socket, :new, food_params) do
+    case Foods.create_food(food_params) do
+      {:ok, food} ->
+        notify_parent({:saved, food})
 
         {:noreply,
          socket
-         |> put_flash(:info, "Grupp skapades")
+         |> put_flash(:info, "Mat skapades")
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

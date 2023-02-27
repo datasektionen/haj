@@ -1,0 +1,31 @@
+<.header>
+  Matpreferens
+  <:subtitle></:subtitle>
+  <:actions>
+    <.link patch={~p"/live/settings/foods/#{@food}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Redigera mat</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Namn"><%= @food.name %></:item>
+</.list>
+
+<.back navigate={~p"/live/settings/foods"}>Tillbaka till matpreferenser</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="food-modal"
+  show
+  on_cancel={JS.patch(~p"/live/settings/foods/#{@food}")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.Food.FormComponent}
+    id={@food.id}
+    title={@page_title}
+    action={@live_action}
+    food={@food}
+    patch={~p"/live/settings/foods/#{@food}"}
+  />
+</.modal>
