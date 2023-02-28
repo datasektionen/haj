@@ -18,11 +18,10 @@ defmodule HajWeb.SettingsLive.Food.Show do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    {:ok, _} = Foods.remove_food_preference_from_user(id, socket.assigns.food.id)
+    {1, _} = Foods.remove_food_preference_from_user(id, socket.assigns.food.id)
 
-    {:noreply, stream_delete(socket, :user, id)}
+    {:noreply, stream_delete(socket, :users, %{id: id})}
   end
-
 
   defp page_title(:show), do: "Mat"
   defp page_title(:edit), do: "Redigera mat"
