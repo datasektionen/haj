@@ -3,6 +3,7 @@ defmodule HajWeb.EventAdminLive.Index do
 
   alias Haj.Events
   alias Haj.Events.Event
+  alias Haj.Repo
 
   @impl true
   def mount(_params, _session, socket) do
@@ -17,7 +18,7 @@ defmodule HajWeb.EventAdminLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Event")
-    |> assign(:event, Events.get_event!(id))
+    |> assign(:event, Events.get_event!(id) |> Repo.preload(:ticket_types))
   end
 
   defp apply_action(socket, :new, _params) do

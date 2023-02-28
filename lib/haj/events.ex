@@ -75,10 +75,18 @@ defmodule Haj.Events do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_event(%Event{} = event, attrs) do
-    event
-    |> Event.changeset(attrs)
-    |> Repo.update()
+  def update_event(%Event{} = event, attrs, opts \\ []) do
+    with_ticets = Keyword.get(opts, :with_tickets, false)
+
+    if with_ticets do
+      event
+      |> Event.changeset_ticket_types(attrs)
+      |> Repo.update()
+    else
+      event
+      |> Event.changeset(attrs)
+      |> Repo.update()
+    end
   end
 
   @doc """

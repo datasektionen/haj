@@ -28,4 +28,11 @@ defmodule Haj.Events.Event do
       :purchase_deadline
     ])
   end
+
+  @doc false
+  def changeset_ticket_types(event, attrs) do
+    event
+    |> changeset(attrs)
+    |> cast_assoc(:ticket_types)
+  end
 end
