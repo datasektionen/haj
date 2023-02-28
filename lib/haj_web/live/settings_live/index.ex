@@ -22,13 +22,13 @@ defmodule HajWeb.SettingsLive.Index do
           Redigera alla spex
         </.setting_card>
         <.setting_card name="Grupper" navigate={~p"/live/settings/groups"}>
-          Redigera årsöverskridande spexgrupper
+          Redigera grupper och spexgrupper
         </.setting_card>
         <.setting_card name="Mat" navigate={~p"/live/settings/foods"}>
           Redigera matpreferenser
         </.setting_card>
         <.setting_card name="Användare" navigate={~p"/live/settings/users"}>
-          Redigera användare
+          Redigera användare och användaruppgifter
         </.setting_card>
       </div>
     </div>
