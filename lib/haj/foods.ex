@@ -122,4 +122,12 @@ defmodule Haj.Foods do
 
     Repo.all(query)
   end
+
+  def remove_food_preference_from_user(user_id, food_id) do
+    query =
+      from fp in "food_preferences",
+        where: fp.food_id == ^food_id and fp.user_id == ^user_id
+
+    Repo.delete_all(query)
+  end
 end

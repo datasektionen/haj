@@ -12,6 +12,14 @@
   <:col :let={{_id, user}} label="Namn">
     <%= user.full_name %>
   </:col>
+  <:action :let={{id, user}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: user.id}) |> hide("##{id}")}
+      data-confirm="Är du säker?"
+    >
+      Radera
+    </.link>
+  </:action>
 </.table>
 
 <.back navigate={~p"/live/settings/foods"}>Tillbaka till matpreferenser</.back>
