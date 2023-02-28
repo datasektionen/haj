@@ -7,25 +7,24 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
     ~H"""
     <div>
       <.simple_form
-        :let={f}
-        for={@changeset}
+        for={@form}
         id="merch-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
       >
         <.image_upload_component {assigns} />
-        <.input field={{f, :name}} label="Namn" type="text" />
-        <.input field={{f, :description}} label="Beskrivning" type="textarea" />
-        <.input field={{f, :price}} label="Pris (kr)" type="number" />
+        <.input field={@form[:name]} label="Namn" type="text" />
+        <.input field={@form[:description]} label="Beskrivning" type="textarea" />
+        <.input field={@form[:price]} label="Pris (kr)" type="number" />
         <.input
-          field={{f, :sizes}}
+          field={@form[:sizes]}
           label="Storlekar, fyll i som kommaseparerat"
           type="text"
-          value={(Ecto.Changeset.get_field(@changeset, :sizes, []) || []) |> Enum.join(",")}
+          value={(input_value(@form, :sizes) || []) |> Enum.join(",")}
         />
         <%!-- For the input with datetime-local does not work properly. See issue: https://github.com/phoenixframework/phoenix/issues/5098 --%>
-        <.input field={{f, :purchase_deadline}} type="datetime-local" label="Beställningsdeadline" />
+        <.input field={@form[:purchase_deadline]} type="datetime-local" label="Beställningsdeadline" />
 
         <:actions>
           <.button phx-disable-with="Sparar...">Spara</.button>
@@ -47,7 +46,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
      )
      |> assign(assigns)
      |> assign(:image, merch_item.image)
-     |> assign(:changeset, changeset)}
+     |> assign_form(changeset)}
   end
 
   def handle_event("validate", %{"merch_item" => merch_params}, socket) do
@@ -58,7 +57,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
       |> Merch.change_merch_item(merch_params)
       |> Map.put(:action, :validate)
 
-    {:noreply, assign(socket, :changeset, changeset)}
+    {:noreply, assign_form(socket, changeset)}
   end
 
   def handle_event("save", %{"merch_item" => merch_params}, socket) do
@@ -87,7 +86,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign_form(socket, changeset)}
     end
   end
 
@@ -104,7 +103,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign_form(socket, changeset)}
     end
   end
 
@@ -205,5 +204,9 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
       </div>
     </div>
     """
+  end
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
   end
 end

@@ -47,10 +47,40 @@ defmodule HajWeb.UserAuth do
     Ecto.NoResultsError -> {:halt, redirect_require_login(socket)}
   end
 
+  def on_mount(:ensure_admin, _params, session, socket) do
+    case session do
+      %{"user_token" => user_token} ->
+        new_socket =
+          Component.assign_new(socket, :current_user, fn ->
+            Accounts.get_user_by_session_token(user_token)
+            |> Haj.Spex.preload_user_groups()
+          end)
+
+        user = %Accounts.User{} = new_socket.assigns.current_user
+
+        if user.role == :admin do
+          {:cont, new_socket}
+        else
+          {:halt, redirect_require_admin(socket)}
+        end
+
+      %{} ->
+        {:halt, redirect_require_admin(socket)}
+    end
+  rescue
+    Ecto.NoResultsError -> {:halt, redirect_require_admin(socket)}
+  end
+
   defp redirect_require_login(socket) do
     socket
     |> LiveView.put_flash(:error, "Please sign in")
     |> LiveView.redirect(to: Routes.session_path(socket, :login))
+  end
+
+  defp redirect_require_admin(socket) do
+    socket
+    |> LiveView.put_flash(:error, "Du har inte admin-access")
+    |> LiveView.redirect(to: Routes.dashboard_unauthorized_path(socket, :index))
   end
 
   @doc """

@@ -6,10 +6,19 @@ defmodule HajWeb.Nav do
   alias HajWeb.GroupsLive
   alias HajWeb.MembersLive
   alias HajWeb.DashboardLive
+  alias HajWeb.SettingsLive
 
   def on_mount(:default, _params, _session, socket) do
     {:cont,
      socket
+     |> assign(expanded_tab: nil)
+     |> Phoenix.LiveView.attach_hook(:active_tab, :handle_params, &set_active_tab/3)}
+  end
+
+  def on_mount(:settings, _params, _session, socket) do
+    {:cont,
+     socket
+     |> assign(expanded_tab: :settings)
      |> Phoenix.LiveView.attach_hook(:active_tab, :handle_params, &set_active_tab/3)}
   end
 
@@ -22,14 +31,26 @@ defmodule HajWeb.Nav do
         {MembersLive, _} ->
           :members
 
-        {UserLive, _} ->
-          :members
-
         {GroupsLive, _} ->
           :groups
 
         {GroupLive, _} ->
           {:group, String.to_integer(params["show_group_id"])}
+
+        {SettingsLive.Index, _} ->
+          :settings
+
+        {SettingsLive.Show.Index, _} ->
+          {:setting, :shows}
+
+        {SettingsLive.Group.Index, _} ->
+          {:setting, :groups}
+
+        {SettingsLive.Food.Index, _} ->
+          {:setting, :foods}
+
+        {SettingsLive.User.Index, _} ->
+          {:setting, :users}
 
         {_, _} ->
           nil
