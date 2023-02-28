@@ -8,69 +8,89 @@ defmodule HajWeb.Layouts do
 
   def sidebar_nav_links(assigns) do
     ~H"""
-    <div class="space-y-1">
-      <%= if @current_user && Enum.member?([:admin, :chef, :spexare], @current_user.role) do %>
-        <.nav_link
-          navigate={~p"/live"}
-          icon_name={:home}
-          title="Min sida"
-          active={@active_tab == :dashboard}
+    <div :if={@current_user && @current_user.role in [:admin, :chef, :spexare]} class="space-y-1">
+      <.nav_link
+        navigate={~p"/live"}
+        icon_name={:home}
+        title="Min sida"
+        active={@active_tab == :dashboard}
+      />
+      <.nav_link
+        navigate={~p"/live/members"}
+        icon_name={:user}
+        title="Medlemmar"
+        active={@active_tab == :members}
+      />
+
+      <.nav_link_group
+        navigate={~p"/live/groups"}
+        icon_name={:user_group}
+        title="Grupper"
+        active={@active_tab == :groups}
+        expanded={any_group_active(@current_user.group_memberships, @active_tab)}
+      >
+        <:sub_link
+          :for={g <- @current_user.group_memberships}
+          navigate={~p"/live/group/#{g.show_group}"}
+          title={g.show_group.group.name}
+          active={@active_tab == {:group, g.show_group_id}}
         />
-        <.nav_link
-          navigate={~p"/live/members"}
-          icon_name={:user}
-          title="Medlemmar"
-          active={@active_tab == :members}
+      </.nav_link_group>
+
+      <.nav_link_group
+        navigate={~p"/live/merch"}
+        icon_name={:shopping_cart}
+        title="Merch"
+        active={@active_tab == :merch}
+        expanded={@active_tab in [:merch, :merch_admin, :merch_orders]}
+      >
+        <:sub_link
+          :if={@current_user.role in [:admin, :chef]}
+          navigate={~p"/live/merch-admin/"}
+          title="Administrera"
+          active={@active_tab == :merch_admin}
         />
 
-        <.nav_link_group
-          navigate={~p"/live/groups"}
-          icon_name={:user_group}
+        <:sub_link
+          :if={@current_user.role in [:admin, :chef]}
+          navigate={~p"/live/merch-admin/orders"}
+          title="Beställningar"
+          active={@active_tab == :merch_orders}
+        />
+      </.nav_link_group>
+
+      <.nav_link_group
+        :if={@current_user.role == :admin}
+        navigate={~p"/live/settings"}
+        icon_name={:cog_6_tooth}
+        title="Inställningar"
+        active={@active_tab == :settings}
+        expanded={@expanded_tab == :settings}
+      >
+        <:sub_link
+          navigate={~p"/live/settings/shows"}
+          title="Spex"
+          active={@active_tab == {:setting, :shows}}
+        />
+
+        <:sub_link
+          navigate={~p"/live/settings/groups"}
           title="Grupper"
-          active={@active_tab == :groups}
-          expanded={any_group_active(@current_user.group_memberships, @active_tab)}
-        >
-          <:sub_link
-            :for={g <- @current_user.group_memberships}
-            navigate={~p"/live/group/#{g.show_group}"}
-            title={g.show_group.group.name}
-            active={@active_tab == {:group, g.show_group_id}}
-          />
-        </.nav_link_group>
+          active={@active_tab == {:setting, :groups}}
+        />
 
-        <.nav_link_group
-          :if={@current_user.role == :admin}
-          navigate={~p"/live/settings"}
-          icon_name={:cog_6_tooth}
-          title="Inställningar"
-          active={@active_tab == :settings}
-          expanded={@expanded_tab == :settings}
-        >
-          <:sub_link
-            navigate={~p"/live/settings/shows"}
-            title="Spex"
-            active={@active_tab == {:setting, :shows}}
-          />
+        <:sub_link
+          navigate={~p"/live/settings/foods"}
+          title="Mat"
+          active={@active_tab == {:setting, :foods}}
+        />
 
-          <:sub_link
-            navigate={~p"/live/settings/groups"}
-            title="Grupper"
-            active={@active_tab == {:setting, :groups}}
-          />
-
-          <:sub_link
-            navigate={~p"/live/settings/foods"}
-            title="Mat"
-            active={@active_tab == {:setting, :foods}}
-          />
-
-          <:sub_link
-            navigate={~p"/live/settings/users"}
-            title="Användare"
-            active={@active_tab == {:setting, :users}}
-          />
-        </.nav_link_group>
-      <% end %>
+        <:sub_link
+          navigate={~p"/live/settings/users"}
+          title="Användare"
+          active={@active_tab == {:setting, :users}}
+        />
+      </.nav_link_group>
     </div>
     """
   end

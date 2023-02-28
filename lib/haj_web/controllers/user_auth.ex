@@ -71,6 +71,20 @@ defmodule HajWeb.UserAuth do
     Ecto.NoResultsError -> {:halt, redirect_require_admin(socket)}
   end
 
+  def on_mount(:merch_admin, _params, _session, socket) do
+    case socket.assigns.current_user do
+      nil ->
+        {:halt, redirect_require_admin(socket)}
+
+      user ->
+        if user.role in [:admin, :chef] do
+          {:cont, socket}
+        else
+          {:halt, redirect_require_admin(socket)}
+        end
+    end
+  end
+
   defp redirect_require_login(socket) do
     socket
     |> LiveView.put_flash(:error, "Please sign in")

@@ -1,7 +1,8 @@
 defmodule HajWeb.Nav do
   use HajWeb, :component
 
-  alias HajWeb.UserLive
+  alias HajWeb.MerchAdminLive
+  alias HajWeb.MerchLive
   alias HajWeb.GroupLive
   alias HajWeb.GroupsLive
   alias HajWeb.MembersLive
@@ -36,6 +37,15 @@ defmodule HajWeb.Nav do
 
         {GroupLive, _} ->
           {:group, String.to_integer(params["show_group_id"])}
+
+        {MerchLive.Index, _} ->
+          :merch
+
+        {MerchAdminLive.Index, _} ->
+          :merch_admin
+
+        {MerchAdminLive.Orders, _} ->
+          :merch_orders
 
         {SettingsLive.Index, _} ->
           :settings
