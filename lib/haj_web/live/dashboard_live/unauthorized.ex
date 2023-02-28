@@ -13,7 +13,7 @@ defmodule HajWeb.DashboardLive.Unauthorized do
       </.header>
       <div class="mt-2">
         Du har inte access till denna sida. Om du tror att det är fel, kontakta webbansvarig på
-        <a href="mailto:webb@metaspexet.se" class="font-bold text-burgandy-600">
+        <a href="mailto:webb@metaspexet.se" class="text-burgandy-600 font-bold">
           webb@metaspexet.se
         </a>
       </div>

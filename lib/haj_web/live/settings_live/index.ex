@@ -17,7 +17,7 @@ defmodule HajWeb.SettingsLive.Index do
         </:subtitle>
       </.header>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4">
+      <div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <.setting_card name="Spex" navigate={~p"/live/settings/shows"}>
           Redigera alla spex
         </.setting_card>
@@ -43,9 +43,9 @@ defmodule HajWeb.SettingsLive.Index do
     ~H"""
     <.link
       navigate={@navigate}
-      class="flex flex-col gap-1 sm:gap-1.5 border rounded-lg px-4 py-4 hover:bg-gray-50"
+      class="flex flex-col gap-1 rounded-lg border px-4 py-4 hover:bg-gray-50 sm:gap-1.5"
     >
-      <div class="text-lg font-bold text-burgandy-500">
+      <div class="text-burgandy-500 text-lg font-bold">
         <%= @name %>
       </div>
       <div class="text-sm">

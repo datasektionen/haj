@@ -96,7 +96,7 @@ defmodule HajWeb.Layouts do
 
   def nav_link_group(assigns) do
     ~H"""
-    <div class={"rounded-md #{if @expanded, do: "bg-burgandy-600/50"}"}>
+    <div class={"#{if @expanded, do: "bg-burgandy-600/50"} rounded-md"}>
       <.link
         navigate={@navigate}
         class={[
@@ -104,7 +104,7 @@ defmodule HajWeb.Layouts do
           @active && "bg-burgandy-600"
         ]}
       >
-        <.icon name={@icon_name} solid class="mr-3 flex-shrink-0 h-6 w-6" />
+        <.icon name={@icon_name} solid class="mr-3 h-6 w-6 flex-shrink-0" />
         <%= @title %>
       </.link>
       <div :for={sub_link <- @sub_link} :if={@expanded}>
@@ -126,9 +126,9 @@ defmodule HajWeb.Layouts do
     ~H"""
     <.link
       navigate={@navigate}
-      class={"text-white hover:text-burgandy-700 hover:bg-burgandy-50 flex items-center px-2 py-2 rounded-md #{if @active, do: "bg-burgandy-600"}"}
+      class={"#{if @active, do: "bg-burgandy-600"} flex items-center rounded-md px-2 py-2 text-white hover:text-burgandy-700 hover:bg-burgandy-50"}
     >
-      <.icon name={@icon_name} solid class="mr-3 flex-shrink-0 h-6 w-6" />
+      <.icon name={@icon_name} solid class="mr-3 h-6 w-6 flex-shrink-0" />
       <%= @title %>
     </.link>
     """
@@ -139,7 +139,7 @@ defmodule HajWeb.Layouts do
     ~H"""
     <.link
       navigate={@navigate}
-      class={"text-burgandy-100 hover:text-burgandy-700 hover:bg-burgandy-50 flex items-center pl-11 px-2 py-2 rounded-md #{if @active, do: "bg-burgandy-600"}"}
+      class={"#{if @active, do: "bg-burgandy-600"} text-burgandy-100 flex items-center rounded-md px-2 py-2 pl-11 hover:text-burgandy-700 hover:bg-burgandy-50"}
     >
       <%= @title %>
     </.link>
@@ -148,28 +148,26 @@ defmodule HajWeb.Layouts do
 
   def user_dropdown(assigns) do
     ~H"""
-    <div class="bg-white relative flex flex-col border rounded-md">
+    <div class="relative flex flex-col rounded-md border bg-white">
       <%!-- CSS magic taken from github website --%>
       <.link
         navigate={Routes.user_path(Endpoint, :index, @user.username)}
-        class="px-4 py-2 border-b hover:bg-burgandy-500 hover:text-white rounded-t-md hover:after:border-b-burgandy-500
-                      before:border-8 before:border-transparent before:absolute before:-top-[16px] before:right-[10px] before:border-b-gray-200
-                      after:border-[7px] after:border-transparent after:absolute after:-top-[14px] after:right-[11px] after:border-b-white"
+        class="rounded-t-md border-b px-4 py-2 before:-top-[16px] before:right-[10px] before:absolute before:border-8 before:border-transparent before:border-b-gray-200 after:border-[7px] after:-top-[14px] after:right-[11px] after:absolute after:border-transparent after:border-b-white hover:bg-burgandy-500 hover:text-white hover:after:border-b-burgandy-500"
       >
         Min profil
       </.link>
       <.link
         navigate={Routes.user_settings_path(Endpoint, :index)}
-        class="px-4 py-2 border-b hover:bg-burgandy-500 hover:text-white"
+        class="border-b px-4 py-2 hover:bg-burgandy-500 hover:text-white"
       >
         Mina uppgifter
       </.link>
-      <.link class="px-4 py-2 border-b hover:bg-burgandy-500 hover:text-white">
+      <.link class="border-b px-4 py-2 hover:bg-burgandy-500 hover:text-white">
         Inställningar
       </.link>
       <.link
         navigate={~p"/logout"}
-        class="px-4 py-2 hover:bg-burgandy-500 hover:text-white rounded-b-md"
+        class="rounded-b-md px-4 py-2 hover:bg-burgandy-500 hover:text-white"
       >
         Logga ut
       </.link>

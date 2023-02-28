@@ -163,10 +163,10 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
 
   defp image_upload_component(assigns) do
     ~H"""
-    <div class="flex flex-col md:flex-row gap-6">
+    <div class="flex flex-col gap-6 md:flex-row">
       <%= for entry <- @uploads.image.entries do %>
         <article class="">
-          <figure class="w-48 h-32 rounded-md overflow-hidden">
+          <figure class="h-32 w-48 overflow-hidden rounded-md">
             <.live_img_preview entry={entry} />
           </figure>
 
@@ -188,11 +188,11 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
 
       <%= if @uploads.image.entries == [] do %>
         <article class="">
-          <figure class="w-48 h-32 rounded-md overflow-hidden">
+          <figure class="h-32 w-48 overflow-hidden rounded-md">
             <%= if @image do %>
               <img src={Imgproxy.new(@image) |> Imgproxy.resize(400, 400) |> to_string()} />
             <% else %>
-              <div class="h-full w-full bg-white border rounded-md" />
+              <div class="h-full w-full rounded-md border bg-white" />
             <% end %>
           </figure>
         </article>
@@ -200,7 +200,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
 
       <div>
         <label class="input-label">Ladda upp bild</label>
-        <.live_file_input upload={@uploads.image} class="text-sm pt-2" />
+        <.live_file_input upload={@uploads.image} class="pt-2 text-sm" />
       </div>
     </div>
     """
