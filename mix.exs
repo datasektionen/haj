@@ -32,7 +32,7 @@ defmodule Haj.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.7.0-rc.0", override: true},
+      {:phoenix, "~> 1.7.0-rc.3", override: true},
       {:phoenix_view, "~> 2.0"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.6"},
@@ -50,6 +50,7 @@ defmodule Haj.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
+      {:tailwind_formatter, "~> 0.3.2", only: :dev, runtime: false},
       {:heroicons, "~> 0.5.1"},
       {:httpoison, "~> 1.8"},
       {:csv, "~> 2.4"},

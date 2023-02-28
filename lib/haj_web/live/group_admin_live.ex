@@ -22,6 +22,7 @@ defmodule HajWeb.GroupAdminLive do
         roles: [:gruppis, :chef],
         role: :gruppis
       )
+      |> assign(:active_tab, nil)
 
     {:ok, socket}
   end
@@ -98,7 +99,7 @@ defmodule HajWeb.GroupAdminLive do
     ~H"""
     <.form :let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
       <%= label(f, :application_description, "Beskrivning av gruppen på ansökningssidan.",
-        class: "uppercase font-bold py-2"
+        class: "py-2 font-bold uppercase"
       ) %>
       <%= textarea(f, :application_description, class: "mb-2") %>
 
@@ -114,21 +115,22 @@ defmodule HajWeb.GroupAdminLive do
         <%= label(f, :application_open, "Gruppen går att söka") %>
       </div>
 
-      <%= submit("Spara", class: "self-start bg-burgandy-500 px-3 py-2 rounded-sm text-white") %>
+      <%= submit("Spara", class: "bg-burgandy-500 self-start rounded-sm px-3 py-2 text-white") %>
     </.form>
 
-    <div class="uppercase font-bold">Lägg till medlemmar</div>
+    <div class="font-bold uppercase">Lägg till medlemmar</div>
     <p class="py-2">
       Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
     </p>
     <div class="flex flex-row items-stretch gap-2">
-      <.form :let={f} for={:role_form} phx-change="update_role">
+      <.form :let={f} as={:role_form} phx-change="update_role">
         <%= select(f, :role, @roles, class: "h-full", value: @role) %>
       </.form>
 
       <.form
         :let={f}
-        for={:search_form}
+        for={%{}}
+        as={:search_form}
         phx-change="suggest"
         phx-submit="add"
         autocomplete={:off}
@@ -138,12 +140,12 @@ defmodule HajWeb.GroupAdminLive do
       </.form>
     </div>
 
-    <div id="matches" class="flex flex-col bg-white mt-2">
+    <div id="matches" class="mt-2 flex flex-col bg-white">
       <%= for {user, i} <- Enum.with_index(@matches) do %>
         <%= if i == 0 do %>
           <div
             value={user.id}
-            class="px-3 py-2 bg-orange text-gray-100 hover:bg-orange/80"
+            class="bg-orange px-3 py-2 text-gray-100 hover:bg-orange/80"
             phx-click="add_user"
             phx-value-user={user.id}
           >
@@ -162,14 +164,14 @@ defmodule HajWeb.GroupAdminLive do
       <% end %>
     </div>
 
-    <div class="uppercase font-bold py-2">Nuvarande medlemmar</div>
+    <div class="py-2 font-bold uppercase">Nuvarande medlemmar</div>
 
     <.table id="chef-table" rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
       <:col :let={member} label="Chefer">
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>
           <button
-            class="bg-orange text-white px-2 py-0.5 rounded-sm"
+            class="bg-orange rounded-sm px-2 py-0.5 text-white"
             phx-click="remove_user"
             phx-value-id={member.id}
           >
@@ -187,7 +189,7 @@ defmodule HajWeb.GroupAdminLive do
         <div class="flex flex-row justify-between">
           <%= "#{member.user.first_name} #{member.user.last_name}" %>
           <button
-            class="bg-orange text-white px-2 py-0.5 rounded-sm"
+            class="bg-orange rounded-sm px-2 py-0.5 text-white"
             phx-click="remove_user"
             phx-value-id={member.id}
           >

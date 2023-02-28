@@ -8,18 +8,18 @@ defmodule HajWeb.GroupsLive do
     %{id: show_id} = Spex.current_spex()
     groups = Spex.get_show_groups_for_show(show_id)
 
-    {:ok, assign(socket, groups: groups)}
+    {:ok, assign(socket, page_title: "Grupper", groups: groups)}
   end
 
   def render(assigns) do
     ~H"""
     <div>
-      <div class="flex flex-row items-baseline justify-between w-full pt-4 sm:flex-col mr-auto">
-        <span class="text-2xl font-bold ">Grupper</span>
+      <div class="mr-auto flex w-full flex-row items-baseline justify-between pt-4 sm:flex-col">
+        <span class="text-2xl font-bold">Grupper</span>
         <span class="text-sm text-gray-600">Visar <%= length(@groups) %></span>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4">
+      <div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <%= for group <- @groups do %>
           <.group_card show_group={group} members={Enum.count(group.group_memberships)} />
         <% end %>
@@ -32,9 +32,9 @@ defmodule HajWeb.GroupsLive do
     ~H"""
     <.link
       navigate={Routes.group_path(Endpoint, :index, @show_group.id)}
-      class="flex flex-col gap-1 sm:gap-1.5 border rounded-lg px-4 py-4 hover:bg-gray-50"
+      class="flex flex-col gap-1 rounded-lg border px-4 py-4 hover:bg-gray-50 sm:gap-1.5"
     >
-      <div class="text-lg font-bold text-burgandy-500">
+      <div class="text-burgandy-500 text-lg font-bold">
         <%= @show_group.group.name %>
       </div>
       <div class="text-gray-500">
@@ -50,9 +50,7 @@ defmodule HajWeb.GroupsLive do
   defp chefer(group) do
     chefer =
       Enum.filter(group.group_memberships, fn %{role: role} -> role == :chef end)
-      |> Enum.map(fn %{user: user} ->
-        "#{user.first_name} #{user.last_name}"
-      end)
+      |> Enum.map(fn %{user: user} -> full_name(user) end)
 
     case length(chefer) do
       0 -> "Inga chefer"

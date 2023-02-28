@@ -6,40 +6,36 @@
     <div class="grid md:grid-cols-3">
       <%= for show_group <- @user_groups do %>
         <%= link to: Routes.group_path(@conn, :group, show_group.id) do %>
-          <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
-                        md:flex-col">
+          <div class="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 md:flex-col">
             <Heroicons.user_group solid class="h-10 md:h-14" />
-            <div class="text-lg text-center md:border-t-2 border-burgandy-500 md:w-full">
+            <div class="border-burgandy-500 text-center text-lg md:w-full md:border-t-2">
               <%= show_group.group.name %>
             </div>
           </div>
         <% end %>
       <% end %>
       <%= link to: Routes.dashboard_path(@conn, :order_merch) do %>
-        <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
-                            md:flex-col">
+        <div class="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 md:flex-col">
           <Heroicons.shopping_cart solid class="h-10 md:h-14" />
-          <div class="text-lg text-center md:border-t-2 border-burgandy-500 md:w-full">
+          <div class="border-burgandy-500 text-center text-lg md:w-full md:border-t-2">
             Beställ merch
           </div>
         </div>
       <% end %>
       <%= if Enum.member?([:chef,:admin], @current_user.role) do %>
         <%= link to: Routes.merch_admin_path(@conn, :orders, @current_show.id) do %>
-          <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
-                                md:flex-col">
+          <div class="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 md:flex-col">
             <Heroicons.shopping_cart solid class="h-10 md:h-14" />
-            <div class="text-lg text-center md:border-t-2 border-burgandy-500 md:w-full">
+            <div class="border-burgandy-500 text-center text-lg md:w-full md:border-t-2">
               Administrera merch
             </div>
           </div>
         <% end %>
       <% end %>
       <%= link to: Routes.dashboard_path(@conn, :edit_user) do %>
-        <div class="flex items-center px-4 py-2 gap-2 hover:bg-gray-200
-                        md:flex-col">
+        <div class="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 md:flex-col">
           <Heroicons.circle_stack solid class="h-10 md:h-14" />
-          <div class="text-lg text-center md:border-t-2 border-burgandy-500 md:w-full">
+          <div class="border-burgandy-500 text-center text-lg md:w-full md:border-t-2">
             Dina uppgifter
           </div>
         </div>

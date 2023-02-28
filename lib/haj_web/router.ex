@@ -27,6 +27,7 @@ defmodule HajWeb.Router do
     get "/login", SessionController, :login
     get "/login/callback", SessionController, :callback
     get "/logout", SessionController, :logout
+    get "/login/via-api", SessionController, :login_api
 
     live_session :default, on_mount: [{HajWeb.UserAuth, :current_user}] do
       live "/signin", SignInLive, :index
@@ -39,13 +40,17 @@ defmodule HajWeb.Router do
   scope "/live", HajWeb do
     pipe_through :browser
 
-    live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}] do
-      live "/", DashboardLive, :index
+    live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}, HajWeb.Nav] do
+      live "/", DashboardLive.Index, :index
       live "/user-settings", UserSettingsLive, :index
       live "/members", MembersLive, :index
       live "/user/:username", UserLive, :index
       live "/groups", GroupsLive, :index
       live "/group/:show_group_id", GroupLive, :index
+
+      live "/merch", MerchLive.Index, :index
+      live "/merch/new", MerchLive.Index, :new
+      live "/merch/:merch_order_item_id/edit", MerchLive.Index, :edit
 
       live "/merch-admin", MerchAdminLive.Index, :index
       live "/merch-admin/new", MerchAdminLive.Index, :new
@@ -68,7 +73,7 @@ defmodule HajWeb.Router do
       get "/my-data", DashboardController, :edit_user
       put "/my-data", DashboardController, :update_user
 
-      # Merch stuff
+      # Merch stuff, also obsolete
       get "/order-merch", DashboardController, :order_merch
       get "/order-item/new", DashboardController, :new_order_item
       get "/order-item/new/:item_id", DashboardController, :new_order_item
@@ -134,6 +139,7 @@ defmodule HajWeb.Router do
     post "/show", SettingsController, :create_show
     get "/show/:id", SettingsController, :edit_show
     put "/show/:id", SettingsController, :update_show
+    get "/show/:id/csv", SettingsController, :csv
 
     get "/users", SettingsController, :users
     get "/user/new", SettingsController, :new_user

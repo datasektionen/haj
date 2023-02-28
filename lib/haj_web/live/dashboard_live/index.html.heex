@@ -1,0 +1,44 @@
+<div class="pt-4 text-3xl font-bold">
+  <h3 class="inline-block">Hej,</h3>
+  <h3 class="text-burgandy-600 inline-block"><%= @current_user.first_name %>!</h3>
+</div>
+<p class="pt-2 text-sm text-gray-500">
+  Välkommen till Haj, METAspexets interna system! Detta system är fortfarade under utveckling. Idéer eller tankar? Hör av dig till Webbchef Adrian på
+  <a href="mailto:webb@metaspexet.se" class="text-burgandy-600 font-bold">mail</a>
+  eller Slack!
+</p>
+<div class="flex flex-col gap-4 py-4">
+  <div>
+    <h3 class="pt-2 pb-4 text-2xl font-bold">Dina grupper</h3>
+    <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
+      <%= for show_group <- @user_groups do %>
+        <.group_card
+          show_group={show_group}
+          role={
+            Enum.find(show_group.group_memberships, fn %{user_id: user_id} ->
+              user_id == @current_user.id
+            end).role
+          }
+        />
+      <% end %>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-4 pt-2">
+    <h3 class="text-2xl font-bold">Merchbeställningar</h3>
+    <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
+      <%= for merch_order_item <- @merch_order_items do %>
+        <.merch_card order_item={merch_order_item} />
+      <% end %>
+    </div>
+    <.link navigate={~p"/live/merch"} class="group inline-flex items-center gap-1">
+      <span class="text-burgandy-500 font-bold group-hover:text-burgandy-700">
+        Ändra bäställning
+      </span>
+      <Heroicons.arrow_right
+        mini
+        class="fill-burgandy-500 mr-auto inline-block h-5 group-hover:fill-burgandy-700"
+      />
+    </.link>
+  </div>
+</div>

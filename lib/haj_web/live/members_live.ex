@@ -14,7 +14,14 @@ defmodule HajWeb.MembersLive do
       |> Enum.map(fn %{id: id, group: g} -> [key: g.name, value: id] end)
 
     {:ok,
-     assign(socket, show_id: show_id, query: nil, groups: groups, group: nil, members: members)}
+     assign(socket,
+       page_title: "Medlemmar",
+       show_id: show_id,
+       query: nil,
+       groups: groups,
+       group: nil,
+       members: members
+     )}
   end
 
   def handle_event("filter", %{"search_form" => %{"q" => query, "group" => group}}, socket) do
@@ -41,25 +48,25 @@ defmodule HajWeb.MembersLive do
     ~H"""
     <.form
       :let={f}
-      for={:search_form}
+      as={:search_form}
       phx-change="filter"
       phx-no-submit
       autocomplete={:off}
       onkeydown="return event.key != 'Enter';"
-      class="flex flex-col sm:flex-row sm:items-center gap-4 pt-4"
+      class="flex flex-col gap-4 pt-4 sm:flex-row sm:items-center"
     >
-      <div class="flex flex-row items-baseline justify-between w-full sm:flex-col mr-auto">
-        <span class="text-2xl font-bold ">Medlemmar</span>
+      <div class="mr-auto flex w-full flex-row items-baseline justify-between sm:flex-col">
+        <span class="text-2xl font-bold">Medlemmar</span>
         <span class="text-sm text-gray-600">Visar <%= length(@members) %> personer</span>
       </div>
       <%= text_input(f, :q,
         value: @query,
         phx_debounce: 500,
         placeholder: "Sök",
-        class: "rounded-full text-sm h-10"
+        class: "h-10 rounded-full text-sm"
       ) %>
       <%= select(f, :group, @groups,
-        class: "rounded-full text-sm h-10",
+        class: "h-10 rounded-full text-sm",
         value: @group,
         prompt: "Alla grupper"
       ) %>
@@ -77,9 +84,9 @@ defmodule HajWeb.MembersLive do
           <%= for group <- member.group_memberships do %>
             <.link navigate={Routes.group_path(Endpoint, :index, group.show_group.id)}>
               <div
-                class="px-2 py-0.5 rounded-full filter hover:brightness-90"
+                class="rounded-full px-2 py-0.5 filter hover:brightness-90"
                 style={"background-color: #{get_color(:bg, group.show_group.group.id)};
-                      color: #{get_color(:text, group.show_group.group.id)};"}
+                      color: #{pick_text_color(get_color(:bg, group.show_group.group.id))};"}
               >
                 <%= group.show_group.group.name %>
               </div>
@@ -92,8 +99,6 @@ defmodule HajWeb.MembersLive do
   end
 
   @colors ~w"#8dd3c7 #ffffb3 #bebada #fb8072 #80b1d3 #fdb462 #b3de69 #fccde5 #d9d9d9 #bc80bd #ccebc5 #ffed6f"
-  @text_colors ~w"#000 #000 #fff #fff #000 #fff #000 #000 #000 #fff #000 #000"
 
   defp get_color(:bg, index), do: Enum.at(@colors, rem(index - 1, 12), "#4e79a7")
-  defp get_color(:text, index), do: Enum.at(@text_colors, rem(index - 1, 12), "#000")
 end

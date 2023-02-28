@@ -32,10 +32,10 @@ defmodule HajWeb.ApplicationsLive do
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col py-2 mb-2 gap-2 md:flex-row md:items-center border-burgandy-500 border-b-2">
-      <div class="uppercase font-bold">Filtrera</div>
+    <div class="border-burgandy-500 mb-2 flex flex-col gap-2 border-b-2 py-2 md:flex-row md:items-center">
+      <div class="font-bold uppercase">Filtrera</div>
 
-      <.form :let={f} for={:filter} phx-change="filter" class="w-full md:w-auto">
+      <.form :let={f} as={:filter} phx-change="filter" class="w-full md:w-auto">
         <%= select(f, :show_group, group_options(@show.show_groups),
           class: "h-full w-full",
           prompt: "Alla grupper"
@@ -46,7 +46,7 @@ defmodule HajWeb.ApplicationsLive do
     <div class="overflow-x-auto pb-6">
       <table class="w-full divide-y divide-gray-200">
         <thead>
-          <tr class="text-md font-semibold text-left bg-gray-100 uppercase">
+          <tr class="text-md bg-gray-100 text-left font-semibold uppercase">
             <%= for col <- ["Namn", "Email", "Telefon", "Klass", "Grupper"] do %>
               <th class="px-4 py-3">
                 <%= col %>
@@ -56,7 +56,7 @@ defmodule HajWeb.ApplicationsLive do
         </thead>
         <tbody class="bg-white">
           <%= if @applications == [] do %>
-            <td class="pl-6 py-4 whitespace-nowrap text-sm font-medium">Här var det tomt.</td>
+            <td class="whitespace-nowrap py-4 pl-6 text-sm font-medium">Här var det tomt.</td>
           <% else %>
             <%= for {application, i} <- Enum.with_index(@applications) do %>
               <tbody x-data="{show: false}">
@@ -65,7 +65,7 @@ defmodule HajWeb.ApplicationsLive do
                     do: "bg-white hover:bg-gray-100",
                     else: "bg-gray-50 hover:bg-gray-100"
                 }>
-                  <td class="px-4 py-3 border">
+                  <td class="border px-4 py-3">
                     <div class="flex">
                       <button class="px-2" x-on:click="show = !show">
                         <Heroicons.chevron_down solid class="h-6 text-gray-800" />
@@ -73,21 +73,21 @@ defmodule HajWeb.ApplicationsLive do
                       <%= "#{application.user.first_name} #{application.user.last_name}" %>
                     </div>
                   </td>
-                  <td class="px-4 py-3 border">
+                  <td class="border px-4 py-3">
                     <%= application.user.email %>
                   </td>
-                  <td class="px-4 py-3 border">
+                  <td class="border px-4 py-3">
                     <%= application.user.phone %>
                   </td>
-                  <td class="px-4 py-3 border">
+                  <td class="border px-4 py-3">
                     <%= application.user.class %>
                   </td>
-                  <td class="px-4 py-3 border">
+                  <td class="border px-4 py-3">
                     <%= all_groups(application) %>
                   </td>
                 </tr>
                 <tr x-show="show" class={if rem(i, 2) == 0, do: "bg-white", else: "bg-gray-50"}>
-                  <td colspan="5" class="px-4 py-3 gap-2 w-full">
+                  <td colspan="5" class="w-full gap-2 px-4 py-3">
                     <div>Tid för ansökan: <%= application.inserted_at %></div>
                     <div>Övrigt: <%= application.other %></div>
                     <div>Eventuell rangordning: <%= application.ranking %></div>
