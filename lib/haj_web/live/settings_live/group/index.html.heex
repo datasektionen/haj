@@ -12,6 +12,7 @@
 </.header>
 
 <.table
+  small
   id="groups"
   rows={@streams.groups}
   row_click={fn {_id, group} -> JS.navigate(~p"/live/settings/groups/#{group}") end}

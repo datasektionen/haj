@@ -470,6 +470,10 @@ defmodule HajWeb.CoreComponents do
   attr :row_id, :any, default: nil, doc: "the function for generating the row id"
   attr :row_click, :any, default: nil, doc: "the function for handling phx-click on each row"
 
+  attr :small, :boolean,
+    default: false,
+    doc: "Whether to use the small table variant (use this with few cols)"
+
   attr :row_item, :any,
     default: &Function.identity/1,
     doc: "the function for mapping each row before calling the :col and :action slots"
@@ -488,7 +492,7 @@ defmodule HajWeb.CoreComponents do
 
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class="mt-11 w-[40rem] sm:w-full">
+      <table class={["mt-11", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
         <thead class="text-left text-[0.8125rem] leading-6 text-zinc-500">
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>

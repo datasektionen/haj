@@ -2,16 +2,22 @@
   Grupp: <%= @group.name %>
   <:subtitle>Visar alla årgångar av gruppen. Klicka för att redigera gruppen det året.</:subtitle>
   <:actions>
-    <.link patch={~p"/live/settings/groups/#{@group}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Redigera grupp</.button>
-    </.link>
-    <.link patch={~p"/live/settings/groups/#{@group}/show-groups/new"} phx-click={JS.push_focus()}>
-      <.button>Lägg till grupp till spex</.button>
-    </.link>
+    <div class="flex flex-col items-end gap-2 md:flex-row">
+      <.link patch={~p"/live/settings/groups/#{@group}/show/edit"} phx-click={JS.push_focus()}>
+        <.button>Redigera grupp</.button>
+      </.link>
+      <.link
+        patch={~p"/live/settings/groups/#{@group}/show-groups/new"}
+        phx-click={JS.push_focus()}
+      >
+        <.button>Lägg till till spex</.button>
+      </.link>
+    </div>
   </:actions>
 </.header>
 
 <.table
+  small
   id="groups"
   rows={@streams.show_groups}
   row_click={fn {_id, show_group} -> JS.navigate(~p"/live/group/#{show_group}") end}
