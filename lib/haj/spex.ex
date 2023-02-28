@@ -478,6 +478,19 @@ defmodule Haj.Spex do
   end
 
   @doc """
+  Returns all showgroups for a given group
+  """
+
+  def get_show_groups_for_group(group_id) do
+    query =
+      from sg in ShowGroup,
+        where: sg.group_id == ^group_id,
+        preload: [:show]
+
+    Repo.all(query)
+  end
+
+  @doc """
   Searches for members based on a search phrase for a given show
   """
   def search_show_members(show_id, search_phrase) do

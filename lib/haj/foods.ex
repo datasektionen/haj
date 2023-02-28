@@ -7,6 +7,7 @@ defmodule Haj.Foods do
   alias Haj.Repo
 
   alias Haj.Foods.Food
+  alias Haj.Accounts.User
 
   @doc """
   Returns the list of foods.
@@ -111,5 +112,22 @@ defmodule Haj.Foods do
   """
   def change_food(%Food{} = food, attrs \\ %{}) do
     Food.changeset(food, attrs)
+  end
+
+  def list_users_with_food_preference(food_id) do
+    query =
+      from u in User,
+        join: f in assoc(u, :foods),
+        where: f.id == ^food_id
+
+    Repo.all(query)
+  end
+
+  def remove_food_preference_from_user(user_id, food_id) do
+    query =
+      from fp in "food_preferences",
+        where: fp.food_id == ^food_id and fp.user_id == ^user_id
+
+    Repo.delete_all(query)
   end
 end
