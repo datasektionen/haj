@@ -4,8 +4,8 @@ defmodule HajWeb.SettingsLive.Food.Show do
   alias Haj.Foods
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, socket}
+  def mount(%{"id" => id}, _session, socket) do
+    {:ok, stream(socket, :users, Foods.list_users_with_food_preference(id))}
   end
 
   @impl true

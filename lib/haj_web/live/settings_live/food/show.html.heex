@@ -1,6 +1,6 @@
 <.header>
   Matpreferens
-  <:subtitle></:subtitle>
+  <:subtitle>Listar alla användare med matpreferens: <%= @food.name %></:subtitle>
   <:actions>
     <.link patch={~p"/live/settings/foods/#{@food}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Redigera mat</.button>
@@ -8,9 +8,11 @@
   </:actions>
 </.header>
 
-<.list>
-  <:item title="Namn"><%= @food.name %></:item>
-</.list>
+<.table small id="food-users" rows={@streams.users}>
+  <:col :let={{_id, user}} label="Namn">
+    <%= user.full_name %>
+  </:col>
+</.table>
 
 <.back navigate={~p"/live/settings/foods"}>Tillbaka till matpreferenser</.back>
 
