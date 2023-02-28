@@ -1,6 +1,6 @@
 <.header>
   Spex: <%= @show.title %>
-  <:subtitle>Detta är ett spex.</:subtitle>
+  <:subtitle>Detta är ett spex. Nedan visas alla spexgrupper i detta spex.</:subtitle>
   <:actions>
     <.link patch={~p"/live/settings/shows/#{@show}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Redigera spex</.button>
@@ -8,7 +8,20 @@
   </:actions>
 </.header>
 
-<.list>
+<.form
+  for={@form}
+  phx-submit="add_show_group"
+  autocomplete={:off}
+  class="flex flex-row items-center justify-end gap-4 pt-6"
+>
+  <div class="flex-grow">
+    <.input field={@form[:group_id]} type="select" options={@groups} />
+  </div>
+
+  <.button type="submit" class="">Lägg till</.button>
+</.form>
+
+<%!-- <.list>
   <:item title="Titel"><%= @show.title %></:item>
   <:item title="Eller-titel"><%= @show.or_title %></:item>
   <:item title="Beskrivning"><%= @show.description %></:item>
@@ -16,7 +29,32 @@
   <:item title="Ansökan öppnar"><%= @show.application_opens %></:item>
   <:item title="Ansökan stänger"><%= @show.application_closes %></:item>
   <:item title="Slack webhook url"><%= @show.slack_webhook_url %></:item>
-</.list>
+</.list> --%>
+
+<.table
+  small
+  id="show-groups"
+  rows={@streams.show_groups}
+  row_click={fn {_id, show_group} -> JS.navigate(~p"/live/group/#{show_group}") end}
+>
+  <:col :let={{_id, show_group}} label="Namn">
+    <%= show_group.group.name %> <%= @show.year.year %>
+  </:col>
+
+  <:action :let={{_id, show_group}}>
+    <.link patch={~p"/live/settings/shows/#{@show}/show-groups/#{show_group}/edit"}>
+      Redigera
+    </.link>
+  </:action>
+  <:action :let={{id, show_group}}>
+    <.link
+      phx-click={JS.push("delete_show_group", value: %{id: show_group.id}) |> hide("##{id}")}
+      data-confirm="Är du säker?"
+    >
+      Radera
+    </.link>
+  </:action>
+</.table>
 
 <.back navigate={~p"/live/settings/shows"}>Tillbaka till alla spex</.back>
 
@@ -32,6 +70,23 @@
     title={@page_title}
     action={@live_action}
     show={@show}
+    patch={~p"/live/settings/shows/#{@show}"}
+  />
+</.modal>
+
+<.modal
+  :if={@live_action in [:edit_show_group]}
+  id="show-group-modal"
+  show
+  on_cancel={JS.patch(~p"/live/settings/shows/#{@show}")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.Group.ShowGroupFormComponent}
+    id={@show_group.id || :new}
+    title={@page_title}
+    action={:edit}
+    name={"#{@show_group.group.name} #{@show.year.year}"}
+    show_group={@show_group}
     patch={~p"/live/settings/shows/#{@show}"}
   />
 </.modal>
