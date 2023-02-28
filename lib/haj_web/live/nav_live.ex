@@ -49,6 +49,9 @@ defmodule HajWeb.Nav do
         {SettingsLive.Food.Index, _} ->
           {:setting, :foods}
 
+        {SettingsLive.User.Index, _} ->
+          {:setting, :users}
+
         {_, _} ->
           nil
       end

@@ -1,0 +1,71 @@
+<.header>
+  Alla användare
+  <:subtitle>Visar alla användare som finns i Haj.</:subtitle>
+</.header>
+
+<.form
+  :let={_f}
+  as={:filter_form}
+  phx-change="filter"
+  phx-no-submit
+  autocomplete={:off}
+  onkeydown="return event.key != 'Enter';"
+  class="flex flex-col gap-2 md:grid md:grid-cols-3 mt-2"
+>
+  <input
+    type="text"
+    name="search"
+    placeholder="Sök"
+    value={@query}
+    phx-debounce="300"
+    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm 
+           focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 text-sm md:col-span-2"
+  />
+  <select
+    type="select"
+    name="filter"
+    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm 
+           focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 text-sm"
+  >
+    <option value="">Alla roller</option>
+    <%= Phoenix.HTML.Form.options_for_select(@roles, @role) %>
+  </select>
+</.form>
+
+<.table
+  id="shows"
+  rows={@users}
+  row_click={fn user -> JS.navigate(~p"/live/user/#{user.username}") end}
+>
+  <:col :let={user} label="Namn"><%= user.full_name %></:col>
+  <:col :let={user} label="Klass"><%= user.class %></:col>
+  <:col :let={user} label="Roll"><%= user.role %></:col>
+  <:action :let={user}>
+    <.link patch={~p"/live/settings/users/#{user}/edit"}>Redigera</.link>
+  </:action>
+  <:action :let={user}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: user.id})}
+      data-confirm="Är du verkligen säker på att du vill ta bort den här användaren? Detta går inte att ångra."
+    >
+      Radera
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:edit]}
+  id="user-modal"
+  show
+  on_cancel={JS.navigate(~p"/live/settings/users")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.User.FormComponent}
+    id={@user.id}
+    title={@page_title}
+    user={@user}
+    roles={@roles}
+    action={@live_action}
+    patch={~p"/live/settings/users"}
+  />
+</.modal>

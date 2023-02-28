@@ -63,6 +63,12 @@ defmodule HajWeb.Layouts do
             title="Mat"
             active={@active_tab == {:setting, :foods}}
           />
+
+          <:sub_link
+            navigate={~p"/live/settings/users"}
+            title="Användare"
+            active={@active_tab == {:setting, :users}}
+          />
         </.nav_link_group>
       <% end %>
     </div>

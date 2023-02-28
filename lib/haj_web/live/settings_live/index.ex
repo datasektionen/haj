@@ -27,6 +27,9 @@ defmodule HajWeb.SettingsLive.Index do
         <.setting_card name="Mat" navigate={~p"/live/settings/foods"}>
           Redigera matpreferenser
         </.setting_card>
+        <.setting_card name="Användare" navigate={~p"/live/settings/users"}>
+          Redigera användare
+        </.setting_card>
       </div>
     </div>
     """
