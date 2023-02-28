@@ -31,9 +31,6 @@ defmodule HajWeb.Nav do
         {MembersLive, _} ->
           :members
 
-        {UserLive, _} ->
-          :members
-
         {GroupsLive, _} ->
           :groups
 

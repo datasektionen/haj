@@ -11,7 +11,11 @@
   </:subtitle>
 </.header>
 
-<.table id="groups" rows={@streams.groups}>
+<.table
+  id="groups"
+  rows={@streams.groups}
+  row_click={fn {_id, group} -> JS.navigate(~p"/live/settings/groups/#{group}") end}
+>
   <:col :let={{_id, group}} label="Namn"><%= group.name %></:col>
   <:action :let={{_id, group}}>
     <.link patch={~p"/live/settings/groups/#{group}/edit"}>Redigera</.link>
