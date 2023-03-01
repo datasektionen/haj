@@ -105,7 +105,10 @@ defmodule HajWeb.MerchAdminController do
 
     conn
     |> put_resp_content_type("text/csv")
-    |> put_resp_header("content-disposition", "attachment; filename=\"merch_orders.csv\"")
+    |> put_resp_header(
+      "content-disposition",
+      "attachment; filename=\"merch_orders_spex_#{show_id}.csv\""
+    )
     |> put_root_layout(false)
     |> send_resp(200, csv_data)
   end

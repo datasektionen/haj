@@ -52,6 +52,7 @@ defmodule HajWeb.GroupLive do
         </div>
         <.link
           href={Routes.group_path(Endpoint, :vcard, @group.id)}
+          method="post"
           class="ml-auto flex flex-row items-center gap-2 rounded-lg border px-3 py-2 hover:bg-gray-50"
         >
           <.icon name={:arrow_down_on_square_stack} mini class="h-5 w-5" />
