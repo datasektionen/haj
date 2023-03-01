@@ -63,7 +63,7 @@ defmodule HajWeb.Layouts do
         :if={@current_user.role == :admin}
         navigate={~p"/live/settings"}
         icon_name={:cog_6_tooth}
-        title="Inställningar"
+        title="Administrera"
         active={@active_tab == :settings}
         expanded={@expanded_tab == :settings}
       >
