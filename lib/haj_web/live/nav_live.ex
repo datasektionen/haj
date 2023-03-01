@@ -17,17 +17,12 @@ defmodule HajWeb.Nav.ActiveTab do
   defmacro __before_compile__(_env) do
     quote do
       def active_tab(view) do
-        Enum.reduce(
-          @tabs,
-          nil,
-          fn {mod, tab}, found ->
-            if view == mod do
-              tab
-            else
-              found
-            end
+        Enum.reduce_while(@tabs, nil, fn {mod, tab}, found ->
+          case view == mod do
+            true -> {:halt, tab}
+            false -> {:cont, found}
           end
-        )
+        end)
       end
     end
   end
