@@ -62,7 +62,7 @@ defmodule HajWeb.UserSettingsLive do
       for={@changeset}
       phx-change="validate"
       phx-submit="save"
-      class="grid grid-cols-6 gap-4 md:gap-6 pt-2"
+      class="grid grid-cols-6 gap-4 pt-2 md:gap-6"
     >
       <div class="col-span-6">
         <h2 class="text-2xl font-bold">Dina uppgifter</h2>
@@ -73,7 +73,7 @@ defmodule HajWeb.UserSettingsLive do
         </p>
       </div>
 
-      <div class="text-lg font-bold col-span-6 pt-4 border-t">
+      <div class="col-span-6 border-t pt-4 text-lg font-bold">
         Personuppgifter
       </div>
 
@@ -97,20 +97,19 @@ defmodule HajWeb.UserSettingsLive do
         </p>
       </div>
 
-      <div class="text-lg font-bold col-span-6 pt-4 border-t">
+      <div class="col-span-6 border-t pt-4 text-lg font-bold">
         Konton och kontakt
       </div>
 
       <div class="col-span-6 sm:col-span-2">
         <%= label(f, :username, "KTH-id", class: "block text-sm font-medium text-gray-700") %>
         <%= text_input(f, :username,
-          class:
-            "mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+          class: "mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
           disabled: true
         ) %>
 
         <%= hidden_input(f, :username) %>
-        <%= error_tag(f, :username, class: "text-sm pt-1") %>
+        <%= error_tag(f, :username, class: "pt-1 text-sm") %>
       </div>
 
       <div class="col-span-6 sm:col-span-4">
@@ -125,7 +124,7 @@ defmodule HajWeb.UserSettingsLive do
         <.form_text_input for={f} input={:google_account} text="Google-konto" />
       </div>
 
-      <div class="text-lg font-bold col-span-6 pt-4 border-t">
+      <div class="col-span-6 border-t pt-4 text-lg font-bold">
         Matpreferenser
       </div>
 
@@ -133,7 +132,7 @@ defmodule HajWeb.UserSettingsLive do
         <%= label(f, :foods, "Matpreferenser, klicka i alla som stämmer.",
           class: "block text-sm font-medium text-gray-700"
         ) %>
-        <div class="flex flex-col gap-1 mt-2 sm:flex-row sm:gap-6">
+        <div class="mt-2 flex flex-col gap-1 sm:flex-row sm:gap-6">
           <%= for food <- @food_options do %>
             <label class="flex flex-row items-center gap-2">
               <input
@@ -141,7 +140,7 @@ defmodule HajWeb.UserSettingsLive do
                 type="checkbox"
                 value={food.id}
                 checked={Enum.member?(@checked_foods, food)}
-                class="h-4 w-4 rounded border-gray-300 text-burgandy-600 focus:ring-burgandy-500"
+                class="text-burgandy-600 h-4 w-4 rounded border-gray-300 focus:ring-burgandy-500"
               />
               <%= food.name %>
             </label>
@@ -157,7 +156,7 @@ defmodule HajWeb.UserSettingsLive do
         />
       </div>
 
-      <div class="col-span-6 pt-4 border-t">
+      <div class="col-span-6 border-t pt-4">
         <h3 class="text-lg font-bold">
           Adressuppgifter
         </h3>
@@ -179,11 +178,9 @@ defmodule HajWeb.UserSettingsLive do
         <.form_text_input for={f} input={:city} text="Ort" />
       </div>
 
-      <div class="col-span-6 text-right pt-4 border-t">
+      <div class="col-span-6 border-t pt-4 text-right">
         <%= submit("Spara",
-          class:
-            "inline-flex justify-center rounded-md border border-transparent py-2 px-4 bg-burgandy-500 text-sm font-medium text-white shadow-sm
-                hover:bg-burgandy-600 focus:outline-none focus:ring-2 focus:ring-burgandy-500 focus:ring-offset-2"
+          class: "bg-burgandy-500 inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-burgandy-600 focus:ring-burgandy-500 focus:outline-none focus:ring-2 focus:ring-offset-2"
         ) %>
       </div>
     </.form>
@@ -201,10 +198,9 @@ defmodule HajWeb.UserSettingsLive do
     <%= text_input(
       @for,
       @input,
-      class:
-        "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+      class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
     ) %>
-    <%= error_tag(@for, @input, class: "text-sm pt-1") %>
+    <%= error_tag(@for, @input, class: "pt-1 text-sm") %>
     """
   end
 end

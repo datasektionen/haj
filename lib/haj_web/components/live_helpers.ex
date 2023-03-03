@@ -33,11 +33,11 @@ defmodule HajWeb.LiveHelpers do
   def live_table(assigns) do
     ~H"""
     <div class="overflow-x-auto">
-      <table class="w-full text-sm text-left">
-        <thead class="text-xs text-gray-700 uppercase">
+      <table class="w-full text-left text-sm">
+        <thead class="text-xs uppercase text-gray-700">
           <tr class="border-b-2">
             <%= for col <- @col do %>
-              <th scope="col" class={"py-3 pl-2 pr-6 #{col[:class]}"}>
+              <th scope="col" class={"#{col[:class]} py-3 pr-6 pl-2"}>
                 <%= col.label %>
               </th>
             <% end %>
@@ -46,7 +46,7 @@ defmodule HajWeb.LiveHelpers do
 
         <tbody>
           <%= for {row, i} <- Enum.with_index(@rows) do %>
-            <tr id={"row_#{i}"} class="hover:bg-gray-50 rounded-full border-b">
+            <tr id={"row_#{i}"} class="rounded-full border-b hover:bg-gray-50">
               <%= for col <- @col do %>
                 <td
                   scope="row"
@@ -74,9 +74,9 @@ defmodule HajWeb.LiveHelpers do
       >
         <img
           src={"https://zfinger.datasektionen.se/user/#{@user.username}/image/100"}
-          class="h-8 w-8 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
+          class="inline-block h-8 w-8 rounded-full object-cover object-top filter group-hover:brightness-90"
         />
-        <span class="text-gray-700 text-md px-2 group-hover:text-gray-900">
+        <span class="text-md px-2 text-gray-700 group-hover:text-gray-900">
           <%= full_name(@user) %>
         </span>
       </.link>
@@ -86,7 +86,11 @@ defmodule HajWeb.LiveHelpers do
 
   def show_mobile_sidebar(js \\ %JS{}) do
     js
-    |> JS.show(to: "#mobile-sidebar-container", transition: "fade-in", time: 100)
+    |> JS.show(
+      to: "#mobile-sidebar-container",
+      transition: {"transition fade-in duration-300", "opacity-0", "opacity-100"},
+      time: 300
+    )
     |> JS.show(
       to: "#mobile-sidebar",
       display: "flex",

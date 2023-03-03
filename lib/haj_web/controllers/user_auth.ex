@@ -47,10 +47,36 @@ defmodule HajWeb.UserAuth do
     Ecto.NoResultsError -> {:halt, redirect_require_login(socket)}
   end
 
+  def on_mount(:ensure_spex_access, _params, _session, socket) do
+    case socket.assigns.current_user do
+      %Accounts.User{role: role} when role in [:admin, :chef, :spexare] -> {:cont, socket}
+      _ -> {:halt, redirect_require_access(socket)}
+    end
+  end
+
+  def on_mount(:ensure_admin, _params, _session, socket) do
+    case socket.assigns.current_user do
+      %Accounts.User{role: role} when role in [:admin] -> {:cont, socket}
+      _ -> {:halt, redirect_require_admin(socket)}
+    end
+  end
+
   defp redirect_require_login(socket) do
     socket
     |> LiveView.put_flash(:error, "Please sign in")
     |> LiveView.redirect(to: Routes.session_path(socket, :login))
+  end
+
+  defp redirect_require_admin(socket) do
+    socket
+    |> LiveView.put_flash(:error, "Du har inte admin-access")
+    |> LiveView.redirect(to: Routes.dashboard_unauthorized_path(socket, :index))
+  end
+
+  defp redirect_require_access(socket) do
+    socket
+    |> LiveView.put_flash(:error, "Du har inte access")
+    |> LiveView.redirect(to: Routes.login_path(socket, :unauthorized))
   end
 
   @doc """

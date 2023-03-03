@@ -1,6 +1,6 @@
 [
   import_deps: [:ecto, :phoenix],
-  plugins: [Phoenix.LiveView.HTMLFormatter],
+  plugins: [TailwindFormatter.MultiFormatter],
   inputs: ["*.{ex,exs}", "priv/*/seeds.exs", "{config,lib,test}/**/*.{ex,exs,heex}"],
   subdirectories: ["priv/*/migrations"]
 ]

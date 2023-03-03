@@ -185,9 +185,9 @@ defmodule HajWeb.ApplyLive do
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col mb-8 md:flex-row md:gap-8 ">
+    <div class="mb-8 flex flex-col md:flex-row md:gap-8">
       <div class="md:flex-[1.5]" x-data="{expanded: false}">
-        <h1 class="uppercase font-bold border-b-2 border-burgandy-500 text-xl mb-2">
+        <h1 class="border-burgandy-500 mb-2 border-b-2 text-xl font-bold uppercase">
           Beskrivning av grupperna
         </h1>
         <div
@@ -196,7 +196,7 @@ defmodule HajWeb.ApplyLive do
         >
           <%= for group <- @show_groups do %>
             <div>
-              <h2 class="uppercase font-bold"><%= group.group.name %></h2>
+              <h2 class="font-bold uppercase"><%= group.group.name %></h2>
               <h3 class="">
                 Chefer: <%= chefer(group) %>
               </h3>
@@ -208,11 +208,11 @@ defmodule HajWeb.ApplyLive do
 
       <.form
         :let={f}
-        for={:application}
+        as={:application}
         phx-submit="apply"
-        class="flex flex-col gap-1 mt-4 md:flex-[1] md:mt-0"
+        class="mt-4 flex flex-col gap-1 md:flex-[1] md:mt-0"
       >
-        <h1 class="uppercase font-bold border-b-2 border-burgandy-500 text-xl mb-2">
+        <h1 class="border-burgandy-500 mb-2 border-b-2 text-xl font-bold uppercase">
           Användaruppgifter
         </h1>
         <label>KTH-id:</label>
@@ -234,7 +234,7 @@ defmodule HajWeb.ApplyLive do
           phx_debounce: "1000"
         ) %>
         <%= error_tag(f, :class) %>
-        <h1 class="uppercase font-bold border-b-2 border-burgandy-500 text-xl mt-2 mb-2">
+        <h1 class="border-burgandy-500 mt-2 mb-2 border-b-2 text-xl font-bold uppercase">
           Vilka grupper vill du söka?
         </h1>
 
@@ -245,12 +245,12 @@ defmodule HajWeb.ApplyLive do
                 value: applied?(@application, sg),
                 phx_change: "toggle_check"
               ) %>
-              <%= label(gf, "#{sg.id}", "#{sg.group.name}", class: "uppercase font-bold px-2") %>
+              <%= label(gf, "#{sg.id}", "#{sg.group.name}", class: "px-2 font-bold uppercase") %>
             </div>
           <% end %>
         <% end %>
 
-        <div class="uppercase font-bold border-b-2 border-burgandy-500 text-xl mt-2 mb-2">Övrigt</div>
+        <div class="border-burgandy-500 mt-2 mb-2 border-b-2 text-xl font-bold uppercase">Övrigt</div>
 
         <%= if @show_groups |> Enum.filter(fn x -> applied?(@application, x) end) |> length() > 1 do %>
           <%= label(
@@ -296,15 +296,15 @@ defmodule HajWeb.ApplyLive do
         <div>
           Informationen hanteras i enlighet med Datasektionens <a
             href="https://styrdokument.datasektionen.se/informationshanteringspolicy"
-            class="font-bold text-burgandy-500"
+            class="text-burgandy-500 font-bold"
           >informationshanteringspolicy</a>.
           Om du vill att uppgifterna ska tas bort kan du maila <a
             href="mailto:direqtionen@metaspexet.se"
-            class="font-bold text-burgandy-500"
+            class="text-burgandy-500 font-bold"
           >Direqtionen</a>.
         </div>
         <%= submit("Sök",
-          class: "uppercase font-bold mt-1 text-white bg-burgandy-500 text-lg px-3 py-2 self-start"
+          class: "bg-burgandy-500 mt-1 self-start px-3 py-2 text-lg font-bold uppercase text-white"
         ) %>
       </.form>
     </div>

@@ -27,6 +27,7 @@ defmodule HajWeb.Router do
     get "/login", SessionController, :login
     get "/login/callback", SessionController, :callback
     get "/logout", SessionController, :logout
+    get "/login/via-api", SessionController, :login_api
 
     live_session :default, on_mount: [{HajWeb.UserAuth, :current_user}] do
       live "/signin", SignInLive, :index
@@ -39,8 +40,15 @@ defmodule HajWeb.Router do
   scope "/live", HajWeb do
     pipe_through :browser
 
-    live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}, HajWeb.Nav] do
+    live_session :authenticated,
+      on_mount: [
+        {HajWeb.UserAuth, :ensure_authenticated},
+        {HajWeb.UserAuth, :ensure_spex_access},
+        HajWeb.Nav
+      ] do
       live "/", DashboardLive.Index, :index
+      live "/unauthorized", DashboardLive.Unauthorized, :index
+
       live "/user-settings", UserSettingsLive, :index
       live "/members", MembersLive, :index
       live "/user/:username", UserLive, :index
@@ -65,6 +73,50 @@ defmodule HajWeb.Router do
       live "/responsibilities/:id/comments", ResponsibilityLive.Show, :comments
       live "/responsibilities/:id/history", ResponsibilityLive.Show, :history
       live "/responsibilities/:id/show/edit", ResponsibilityLive.Show, :edit
+    end
+
+    # Admin only!
+    live_session :admin,
+      on_mount: [
+        {HajWeb.UserAuth, :ensure_authenticated},
+        {HajWeb.UserAuth, :ensure_admin},
+        {HajWeb.Nav, :settings}
+      ] do
+      scope "/settings" do
+        live "/", SettingsLive.Index, :index
+        live "/shows", SettingsLive.Show.Index, :index
+        live "/shows/new", SettingsLive.Show.Index, :new
+        live "/shows/:id/edit", SettingsLive.Show.Index, :edit
+
+        live "/shows/:id", SettingsLive.Show.Show, :show
+        live "/shows/:id/show/edit", SettingsLive.Show.Show, :edit
+
+        live "/shows/:id/show-groups/:show_group_id/edit",
+             SettingsLive.Show.Show,
+             :edit_show_group
+
+        live "/groups", SettingsLive.Group.Index, :index
+        live "/groups/new", SettingsLive.Group.Index, :new
+        live "/groups/:id/edit", SettingsLive.Group.Index, :edit
+        live "/groups/:id", SettingsLive.Group.Show, :show
+        live "/groups/:id/show/edit", SettingsLive.Group.Show, :edit
+
+        live "/groups/:id/show-groups/new", SettingsLive.Group.Show, :new_show_group
+
+        live "/groups/:id/show-groups/:show_group_id/edit",
+             SettingsLive.Group.Show,
+             :edit_show_group
+
+        live "/foods", SettingsLive.Food.Index, :index
+        live "/foods/new", SettingsLive.Food.Index, :new
+        live "/foods/:id/edit", SettingsLive.Food.Index, :edit
+
+        live "/foods/:id", SettingsLive.Food.Show, :show
+        live "/foods/:id/show/edit", SettingsLive.Food.Show, :edit
+
+        live "/users", SettingsLive.User.Index, :index
+        live "/users/:id/edit", SettingsLive.User.Index, :edit
+      end
     end
   end
 
@@ -144,6 +196,7 @@ defmodule HajWeb.Router do
     post "/show", SettingsController, :create_show
     get "/show/:id", SettingsController, :edit_show
     put "/show/:id", SettingsController, :update_show
+    get "/show/:id/csv", SettingsController, :csv
 
     get "/users", SettingsController, :users
     get "/user/new", SettingsController, :new_user

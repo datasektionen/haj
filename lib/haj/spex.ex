@@ -478,6 +478,19 @@ defmodule Haj.Spex do
   end
 
   @doc """
+  Returns all showgroups for a given group
+  """
+
+  def get_show_groups_for_group(group_id) do
+    query =
+      from sg in ShowGroup,
+        where: sg.group_id == ^group_id,
+        preload: [:show]
+
+    Repo.all(query)
+  end
+
+  @doc """
   Searches for members based on a search phrase for a given show
   """
   def search_show_members(show_id, search_phrase) do
@@ -486,11 +499,9 @@ defmodule Haj.Spex do
         join: gm in assoc(sg, :group_memberships),
         join: u in assoc(gm, :user),
         where:
-          sg.show_id == ^show_id and
-            (fragment("SIMILARITY(?, ?) > 0.3", u.first_name, ^search_phrase) or
-               fragment("SIMILARITY(?, ?) > 0.3", u.last_name, ^search_phrase) or
-               fragment("SIMILARITY(?, ?) > 0.3", u.username, ^search_phrase)),
-        order_by: fragment("LEVENSHTEIN(? || ?,?)", u.first_name, u.last_name, ^search_phrase),
+          fragment("? <% ?", ^search_phrase, u.full_name) and
+            sg.show_id == ^show_id,
+        order_by: {:desc, fragment("? <% ?", ^search_phrase, u.full_name)},
         select: u,
         distinct: u
 
@@ -506,13 +517,37 @@ defmodule Haj.Spex do
         join: gm in assoc(sg, :group_memberships),
         join: u in assoc(gm, :user),
         where:
-          sg.id == ^show_group_id and
-            (fragment("SIMILARITY(?, ?) > 0.3", u.first_name, ^search_phrase) or
-               fragment("SIMILARITY(?, ?) > 0.3", u.last_name, ^search_phrase) or
-               fragment("SIMILARITY(?, ?) > 0.3", u.username, ^search_phrase)),
-        order_by: fragment("LEVENSHTEIN(? || ?,?)", u.first_name, u.last_name, ^search_phrase),
+          fragment("? <% ?", ^search_phrase, u.full_name) and
+            sg.id == ^show_group_id,
+        order_by: {:desc, fragment("? <% ?", ^search_phrase, u.full_name)},
         select: u,
         distinct: u
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Searches for a showgroup based on a search phrase for a given show
+  """
+  def search_show_groups(show_id, search_phrase, options \\ []) do
+    include_rank = Keyword.get(options, :rank, false)
+
+    base_query =
+      from sg in ShowGroup,
+        join: g in assoc(sg, :group),
+        where:
+          sg.show_id == ^show_id and
+            fragment("? % ?", g.name, ^search_phrase),
+        order_by: fragment("? % ?", g.name, ^search_phrase),
+        preload: [:group]
+
+    query =
+      if include_rank do
+        from [sg, g] in base_query,
+          select: {sg, fragment("similarity(?, ?)", g.name, ^search_phrase)}
+      else
+        base_query
+      end
 
     Repo.all(query)
   end

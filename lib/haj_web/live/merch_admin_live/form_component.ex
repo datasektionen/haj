@@ -7,25 +7,24 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
     ~H"""
     <div>
       <.simple_form
-        :let={f}
-        for={@changeset}
+        for={@form}
         id="merch-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
       >
         <.image_upload_component {assigns} />
-        <.input field={{f, :name}} label="Namn" type="text" />
-        <.input field={{f, :description}} label="Beskrivning" type="textarea" />
-        <.input field={{f, :price}} label="Pris (kr)" type="number" />
+        <.input field={@form[:name]} label="Namn" type="text" />
+        <.input field={@form[:description]} label="Beskrivning" type="textarea" />
+        <.input field={@form[:price]} label="Pris (kr)" type="number" />
         <.input
-          field={{f, :sizes}}
+          field={@form[:sizes]}
           label="Storlekar, fyll i som kommaseparerat"
           type="text"
-          value={(Ecto.Changeset.get_field(@changeset, :sizes, []) || []) |> Enum.join(",")}
+          value={(input_value(@form, :sizes) || []) |> Enum.join(",")}
         />
         <%!-- For the input with datetime-local does not work properly. See issue: https://github.com/phoenixframework/phoenix/issues/5098 --%>
-        <.input field={{f, :purchase_deadline}} type="datetime-local" label="Beställningsdeadline" />
+        <.input field={@form[:purchase_deadline]} type="datetime-local" label="Beställningsdeadline" />
 
         <:actions>
           <.button phx-disable-with="Sparar...">Spara</.button>
@@ -47,7 +46,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
      )
      |> assign(assigns)
      |> assign(:image, merch_item.image)
-     |> assign(:changeset, changeset)}
+     |> assign_form(changeset)}
   end
 
   def handle_event("validate", %{"merch_item" => merch_params}, socket) do
@@ -58,7 +57,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
       |> Merch.change_merch_item(merch_params)
       |> Map.put(:action, :validate)
 
-    {:noreply, assign(socket, :changeset, changeset)}
+    {:noreply, assign_form(socket, changeset)}
   end
 
   def handle_event("save", %{"merch_item" => merch_params}, socket) do
@@ -87,7 +86,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign_form(socket, changeset)}
     end
   end
 
@@ -104,7 +103,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign_form(socket, changeset)}
     end
   end
 
@@ -164,10 +163,10 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
 
   defp image_upload_component(assigns) do
     ~H"""
-    <div class="flex flex-col md:flex-row gap-6">
+    <div class="flex flex-col gap-6 md:flex-row">
       <%= for entry <- @uploads.image.entries do %>
         <article class="">
-          <figure class="w-48 h-32 rounded-md overflow-hidden">
+          <figure class="h-32 w-48 overflow-hidden rounded-md">
             <.live_img_preview entry={entry} />
           </figure>
 
@@ -189,11 +188,11 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
 
       <%= if @uploads.image.entries == [] do %>
         <article class="">
-          <figure class="w-48 h-32 rounded-md overflow-hidden">
+          <figure class="h-32 w-48 overflow-hidden rounded-md">
             <%= if @image do %>
               <img src={Imgproxy.new(@image) |> Imgproxy.resize(400, 400) |> to_string()} />
             <% else %>
-              <div class="h-full w-full bg-white border rounded-md" />
+              <div class="h-full w-full rounded-md border bg-white" />
             <% end %>
           </figure>
         </article>
@@ -201,9 +200,13 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
 
       <div>
         <label class="input-label">Ladda upp bild</label>
-        <.live_file_input upload={@uploads.image} class="text-sm pt-2" />
+        <.live_file_input upload={@uploads.image} class="pt-2 text-sm" />
       </div>
     </div>
     """
+  end
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
   end
 end

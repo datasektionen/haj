@@ -48,25 +48,25 @@ defmodule HajWeb.MembersLive do
     ~H"""
     <.form
       :let={f}
-      for={:search_form}
+      as={:search_form}
       phx-change="filter"
       phx-no-submit
       autocomplete={:off}
       onkeydown="return event.key != 'Enter';"
-      class="flex flex-col sm:flex-row sm:items-center gap-4 pt-4"
+      class="flex flex-col gap-4 pt-4 sm:flex-row sm:items-center"
     >
-      <div class="flex flex-row items-baseline justify-between w-full sm:flex-col mr-auto">
-        <span class="text-2xl font-bold ">Medlemmar</span>
+      <div class="mr-auto flex w-full flex-row items-baseline justify-between sm:flex-col">
+        <span class="text-2xl font-bold">Medlemmar</span>
         <span class="text-sm text-gray-600">Visar <%= length(@members) %> personer</span>
       </div>
       <%= text_input(f, :q,
         value: @query,
         phx_debounce: 500,
         placeholder: "Sök",
-        class: "rounded-full text-sm h-10"
+        class: "h-10 rounded-full text-sm"
       ) %>
       <%= select(f, :group, @groups,
-        class: "rounded-full text-sm h-10",
+        class: "h-10 rounded-full text-sm",
         value: @group,
         prompt: "Alla grupper"
       ) %>
@@ -84,7 +84,7 @@ defmodule HajWeb.MembersLive do
           <%= for group <- member.group_memberships do %>
             <.link navigate={Routes.group_path(Endpoint, :index, group.show_group.id)}>
               <div
-                class="px-2 py-0.5 rounded-full filter hover:brightness-90"
+                class="rounded-full px-2 py-0.5 filter hover:brightness-90"
                 style={"background-color: #{get_color(:bg, group.show_group.group.id)};
                       color: #{pick_text_color(get_color(:bg, group.show_group.group.id))};"}
               >
