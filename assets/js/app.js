@@ -66,12 +66,12 @@ Hooks.RichText = {
         this.handleEvent(
             "set_richtext_data",
             (richtext_data) => {
-                if (richtext_data.richtext_data !== textArea.value()) {
+                if (richtext_data.id === this.el.id && richtext_data.richtext_data !== textArea.value()) {
                     textArea.value(richtext_data.richtext_data)
                 }
             }
         )
-        
+
         textArea.codemirror.on("change", () => {
             this.pushEventTo(
                 this.el,

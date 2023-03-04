@@ -1,206 +1,235 @@
-<div class="py-4 border-b">
-  <h1 class="text-2xl font-bold lg:text-3xl mb-1"><%= @responsibility.name %></h1>
+<div class="border-b py-4">
+  <h1 class="mb-1 text-2xl font-bold lg:text-3xl"><%= @responsibility.name %></h1>
   <p class="text-gray-500">Ansvar</p>
 </div>
 
-<.center_layout class="border-b">
-  <:left>
-    <.form :let={f} for={:tab_form} phx-change="select_tab" phx-no-submit class="my-4 xs:hidden">
-      <%= select(
-        f,
-        :tab,
-        [
-          {"Beskrivning", ""},
-          {"Kommentarer", "comments"},
-          {"Historia", "history"}
-        ],
-        selected: @live_action,
-        class:
-          "w-full border-gray-400 focus:border-burgandy-500 focus:outline-none focus:ring-0 rounded-lg py-2 px-3"
-      ) %>
-    </.form>
+<div class="relative mx-auto flex flex-row justify-start gap-4 border-b md:max-w-3xl xl:max-w-5xl">
+  <.form :let={f} as={:tab_form} phx-change="select_tab" phx-no-submit class="my-4 xs:hidden">
+    <%= select(
+      f,
+      :tab,
+      [
+        {"Beskrivning", ""},
+        {"Testamenten", "comments"},
+        {"Historia", "history"}
+      ],
+      selected: @live_action,
+      class: "w-full rounded-lg border-gray-400 px-3 py-2 focus:border-burgandy-500 focus:outline-none focus:ring-0"
+    ) %>
+  </.form>
 
-    <div class="hidden text-lg text-gray-500 xs:flex flex-row gap-4 overflow-x-auto">
-      <.tab_link
-        highligted?={@live_action == :show || @live_action == :edit}
-        navigate={~p"/live/responsibilities/#{@responsibility}"}
-        text="Beskrivning"
-      />
-      <.tab_link
-        highligted?={@live_action == :comments}
-        navigate={~p"/live/responsibilities/#{@responsibility}/comments"}
-        text="Kommentarer"
-      />
-      <.tab_link
-        highligted?={@live_action == :history}
-        navigate={~p"/live/responsibilities/#{@responsibility}/history"}
-        text="Historia"
-      />
-    </div>
-  </:left>
-  <:right></:right>
-</.center_layout>
+  <div class="hidden flex-row gap-4 overflow-x-auto text-lg text-gray-500 xs:flex">
+    <.tab_link
+      highligted?={@live_action == :show || @live_action == :edit}
+      navigate={~p"/live/responsibilities/#{@responsibility}"}
+      text="Beskrivning"
+    />
+    <.tab_link
+      highligted?={@live_action == :comments}
+      navigate={~p"/live/responsibilities/#{@responsibility}/comments"}
+      text="Testamenten"
+    />
+    <.tab_link
+      highligted?={@live_action == :history}
+      navigate={~p"/live/responsibilities/#{@responsibility}/history"}
+      text="Historia"
+    />
+  </div>
+</div>
 
-<%= if @live_action == :show || @live_action == :edit do %>
-  <div
-    x-data="{atElement: '', titles: []}"
-    x-init="titles = [...document.querySelectorAll('[id^=heading]')]"
-    @scroll.window="atElement = titles.reduce((highest, elem) => {
+<div
+  :if={@live_action == :show || @live_action == :edit}
+  x-data="{atElement: '', titles: []}"
+  x-init="titles = [...document.querySelectorAll('[id^=heading]')]"
+  @scroll.window="atElement = titles.reduce((highest, elem) => {
                 elemBounds = elem.getBoundingClientRect(); highestBounds = highest.getBoundingClientRect();
                 return ((highestBounds.bottom < 0) || (elemBounds.top < highestBounds.top)) ? elem : highest}, titles[0]);
                 document.getElementById('sticky-container').scrollTop = document.getElementById('sticky-' + atElement.id).offsetTop - 100;"
-  >
-    <.center_layout>
-      <:left>
-        <div class="border-b pb-4 pt-4">
-          <div class="flex flex-row justify-between items-center">
-            <h2 class="text-burgandy-500 text-xl font-bold mb-1">Beskrivning</h2>
-            <%= if @live_action == :edit do %>
-              <.link patch={~p"/live/responsibilities/#{@responsibility}"}>
-                <.icon name={:x_mark} mini class="h-5" />
-              </.link>
-            <% else %>
-              <.link patch={~p"/live/responsibilities/#{@responsibility}/show/edit"}>
-                <.icon name={:pencil_square} mini class="h-5" />
-              </.link>
-            <% end %>
-          </div>
-          <p class="text-gray-500">Årsöverskridande beskrivning av ansvaret.</p>
-          <p class="text-gray-500">
-            Uppdaterades <%= Calendar.strftime(@responsibility.updated_at, "%Y-%m-%d") %>
-          </p>
-        </div>
-        <%= if @live_action == :edit do %>
-          <div class="max-w-3xl">
-            <.live_component
-              module={HajWeb.ResponsibilityLive.Editor}
-              id="responsibility-editor"
-              responsibility={@responsibility}
-              navigate={~p"/live/responsibilities/#{@responsibility}"}
-            />
-          </div>
-        <% else %>
-          <article
-            class="prose max-w-3xl prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg"
-            id="description_content"
+>
+  <.center_layout>
+    <:left>
+      <div class="mb-4 border-b pt-4 pb-4">
+        <div class="flex flex-row items-center justify-between">
+          <h2 class="text-burgandy-500 mb-1 text-xl font-bold">Beskrivning</h2>
+          <.link :if={@live_action == :edit} patch={~p"/live/responsibilities/#{@responsibility}"}>
+            <.icon name={:x_mark} mini class="h-5" />
+          </.link>
+          <.link
+            :if={@live_action == :show}
+            patch={~p"/live/responsibilities/#{@responsibility}/show/edit"}
           >
-            <%= raw(@responsibility.description_html) %>
-          </article>
-        <% end %>
-      </:left>
-      <:right>
-        <div
-          id="sticky-container"
-          class="flex flex-col overflow-scroll h-[90vh] scroll-smooth no-scrollbar py-4"
-        >
-          <h2 class="text-gray-500">På sidan</h2>
-          <template x-for="title in titles">
-            <a
-              x-bind:id="'sticky-' + title.id"
-              x-bind:href="'#' + title.id"
-              x-bind:class="{'font-bold' : atElement==title, 'text-burgandy-500' : atElement==title, 'ml-4' : title.tagName.toLowerCase() === 'h2', 'ml-8' : !(title.tagName.toLowerCase() === 'h2' || title.tagName.toLowerCase() === 'h1')}"
-            >
-              <span x-text="title.innerText" />
-            </a>
-          </template>
+            <.icon name={:pencil_square} mini class="h-5" />
+          </.link>
         </div>
-      </:right>
-    </.center_layout>
-  </div>
-  <div class="flex flex-col pt-2 md:pt-4"></div>
-<% end %>
-
-<%= if @live_action == :comments do %>
-  <.center_layout>
-    <:left>
-      <div class="flex flex-row items-center justify-between w-full mr-auto mt-6 border-b pb-4 gap-4">
-        <h1 class="text-burgandy-500 text-xl font-bold" id="heading-comments">
-          Kommentarer
-        </h1>
-
-        <p class="ml-auto">Välj år</p>
-        <.form :let={f} for={:comments_form} phx-change="select_show" phx-no-submit>
-          <%= select(f, :show, @shows, class: "rounded-lg text-sm h-10") %>
-        </.form>
-      </div>
-
-      <%= if @comments == [] do %>
-        Inga kommentarer har lämmnats från <%= @show.year.year %>.
-      <% else %>
-        <div class="flex flex-col gap-4">
-          <%= for comment <- @comments do %>
-            <div class="bg-gray-50 p-4 rounded-xl border shadow-sm flex flex-col gap-4 ">
-              <div class="flex items-center">
-                <img
-                  src={"https://zfinger.datasektionen.se/user/#{comment.user.username}/image/100"}
-                  class="h-10 w-10 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
-                />
-                <div class="px-2 flex flex-col">
-                  <span class="text-gray-700 text-md">
-                    <%= full_name(comment.user) %>
-                  </span>
-                  <span class="text-sm text-gray-500">
-                    <%= format_date(comment.inserted_at) %>
-                  </span>
-                </div>
-              </div>
-              <div class="prose max-w-full prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg">
-                <%= raw(comment.text_html) %>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-      <div class="pt-4">
-        <.live_component
-          module={HajWeb.ResponsibilityLive.CommentEditor}
-          id="comment-editor"
-          user={@current_user}
-          responsibility={@responsibility}
-          show={@show}
-        />
-      </div>
-    </:left>
-  </.center_layout>
-<% end %>
-
-<%= if @live_action == :history do %>
-  <.center_layout>
-    <:left>
-      <div class="w-full mr-auto mt-6 border-b pb-4 gap-4">
-        <h1 class="text-burgandy-500 text-xl font-bold mb-1" id="heading-comments">
-          Historia
-        </h1>
+        <p class="text-gray-500">Årsöverskridande beskrivning av ansvaret.</p>
         <p class="text-gray-500">
-          Här är alla personer som har haft detta ansvar tidigare år. Klicka på ett år för att läsa kommentarer från det året.
+          Uppdaterades <%= Calendar.strftime(@responsibility.updated_at, "%Y-%m-%d") %>
         </p>
       </div>
-
-      <div class="grid md:grid-cols-2 gap-4">
-        <%= for %{show: show, users: users} <- @responsible_users do %>
-          <.link class="flex flex-col gap-1 sm:gap-1.5 border rounded-lg px-4 py-4 hover:bg-gray-50">
-            <div class="text-lg font-bold text-burgandy-500 mb-1">
-              <%= "#{show.year.year}: #{show.title}" %>
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <%= if users == [] do %>
-                Ingen hade detta ansvar.
-              <% else %>
-                <%= for user <- users do %>
-                  <div class="inline-flex flex-row items-center gap-2">
-                    <img
-                      src={"https://zfinger.datasektionen.se/user/#{user.username}/image/100"}
-                      class="h-6 w-6 rounded-full object-cover object-top inline-block filter"
-                    />
-                    <%= full_name(user) %>
-                  </div>
-                <% end %>
-              <% end %>
-            </div>
-          </.link>
-        <% end %>
+      <div :if={@live_action == :edit} class="max-w-full">
+        <.live_component
+          module={HajWeb.ResponsibilityLive.Editor}
+          id="responsibility-editor"
+          responsibility={@responsibility}
+          navigate={~p"/live/responsibilities/#{@responsibility}"}
+        />
       </div>
+      <article
+        :if={@live_action == :show}
+        class="prose max-w-full prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg"
+        id="description_content"
+      >
+        <%= raw(@responsibility.description_html) %>
+      </article>
     </:left>
+    <:right>
+      <div
+        id="sticky-container"
+        class="h-[90vh] no-scrollbar flex flex-col overflow-scroll scroll-smooth py-4"
+      >
+        <h2 class="text-gray-500">På sidan</h2>
+        <template x-for="title in titles">
+          <a
+            x-bind:id="'sticky-' + title.id"
+            x-bind:href="'#' + title.id"
+            x-bind:class="{'font-bold' : atElement==title, 'text-burgandy-500' : atElement==title, 'ml-4' : title.tagName.toLowerCase() === 'h2', 'ml-8' : !(title.tagName.toLowerCase() === 'h2' || title.tagName.toLowerCase() === 'h1')}"
+          >
+            <span x-text="title.innerText" />
+          </a>
+        </template>
+      </div>
+    </:right>
   </.center_layout>
-<% end %>
+</div>
+
+<.center_layout :if={@live_action in [:comments, :edit_comment]}>
+  <:left>
+    <div class="mt-6 mr-auto mb-4 flex w-full flex-row items-center justify-between gap-4 border-b pb-4">
+      <h1 class="text-burgandy-500 text-xl font-bold" id="heading-comments">
+        Testamenten
+      </h1>
+
+      <p class="ml-auto">Välj år</p>
+      <.form :let={f} as={:comments_form} phx-change="select_show" phx-no-submit>
+        <%= select(f, :show, @shows, class: "h-10 rounded-lg text-sm", value: @show.id) %>
+      </.form>
+    </div>
+    <div :if={@comments == []}>
+      Inget testamente har skrivits från <%= @show.year.year %>, men du får färna skriva ett!
+    </div>
+    <div :if={@comments != []} class="flex flex-col gap-4">
+      <div
+        :for={comment <- @comments}
+        class="flex flex-col gap-4 rounded-xl border bg-gray-50 p-4 shadow-sm"
+      >
+        <div class="flex flex-row items-start justify-between">
+          <div class="flex items-center">
+            <img
+              src={"https://zfinger.datasektionen.se/user/#{comment.user.username}/image/100"}
+              class="inline-block h-10 w-10 rounded-full object-cover object-top filter group-hover:brightness-90"
+            />
+            <div class="flex flex-col px-2">
+              <span class="text-md text-gray-700">
+                <%= full_name(comment.user) %>
+              </span>
+              <span class="text-sm text-gray-500">
+                <%= format_date(comment.inserted_at) %>
+              </span>
+            </div>
+          </div>
+          <div class="inline-flex gap-1 text-gray-700">
+            <.link navigate={
+              ~p"/live/responsibilities/#{@responsibility}/comments/#{comment}/edit"
+            }>
+              <.icon name={:pencil_square} mini class="h-5" />
+            </.link>
+
+            <.link
+              phx-click={JS.push("delete_comment", value: %{id: comment.id})}
+              data-confirm="Är du säker?"
+            >
+              <.icon name={:x_mark} mini class="h-5" />
+            </.link>
+          </div>
+        </div>
+        <div class="prose max-w-full prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg">
+          <%= raw(comment.text_html) %>
+        </div>
+      </div>
+    </div>
+    <div class="pt-4">
+      <.live_component
+        module={HajWeb.ResponsibilityLive.CommentEditor}
+        id="new-comment-editor"
+        user={@current_user}
+        comment={%Haj.Responsibilities.Comment{}}
+        responsibility={@responsibility}
+        show={@show}
+        action={:new}
+      />
+    </div>
+  </:left>
+</.center_layout>
+
+<.modal
+  :if={@live_action in [:edit_comment]}
+  id="comment-modal"
+  show
+  on_cancel={JS.navigate(~p"/live/responsibilities/#{@responsibility}/comments?show=#{@show}")}
+>
+  <:title>
+    Redigera testamente
+  </:title>
+
+  <:subtitle>
+    Här kan du redigera ett testamente. Du kan alltid komma tillbaka hit och lägga till eller ta bort det du har skrivit!
+  </:subtitle>
+
+  <.live_component
+    class="mt-8"
+    module={HajWeb.ResponsibilityLive.CommentEditor}
+    id="comment-editor"
+    user={@current_user}
+    comment={@comment}
+    responsibility={@responsibility}
+    show={@show}
+    action={:edit}
+    navigate={~p"/live/responsibilities/#{@responsibility}/comments?show=#{@show}"}
+  />
+</.modal>
+
+<.center_layout :if={@live_action == :history}>
+  <:left>
+    <div class="mt-6 mr-auto mb-4 w-full gap-4 border-b pb-4">
+      <h1 class="text-burgandy-500 mb-1 text-xl font-bold" id="heading-comments">
+        Historia
+      </h1>
+      <p class="text-gray-500">
+        Här är alla personer som har haft detta ansvar tidigare år. Klicka på ett år för att läsa kommentarer från det året.
+      </p>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <.link
+        :for={%{show: show, users: users} <- @responsible_users}
+        navigate={~p"/live/responsibilities/#{@responsibility}/comments?show=#{show}"}
+        class="flex flex-col gap-1 rounded-lg border px-4 py-4 hover:bg-gray-50 sm:gap-1.5"
+      >
+        <div class="text-burgandy-500 mb-1 text-lg font-bold">
+          <%= "#{show.year.year}: #{show.title}" %>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <div :if={users == []}>Ingen hade detta ansvar.</div>
+          <div :for={user <- users} class="inline-flex flex-row items-center gap-2">
+            <img
+              src={"https://zfinger.datasektionen.se/user/#{user.username}/image/100"}
+              class="inline-block h-6 w-6 rounded-full object-cover object-top filter"
+            />
+            <%= full_name(user) %>
+          </div>
+        </div>
+      </.link>
+    </div>
+  </:left>
+</.center_layout>

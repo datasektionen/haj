@@ -344,6 +344,6 @@ defmodule Haj.Responsibilities do
         _ -> map
       end
     end)
-    |> Enum.sort_by(& &1.show.year)
+    |> Enum.sort_by(fn %{show: show} -> show.year end, {:desc, Date})
   end
 end

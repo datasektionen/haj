@@ -2,6 +2,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
   use HajWeb, :live_view
 
   alias Haj.Responsibilities
+  alias Haj.Spex
 
   @impl true
   def mount(_params, _session, socket) do
@@ -9,27 +10,73 @@ defmodule HajWeb.ResponsibilityLive.Show do
   end
 
   @impl true
-  def handle_params(%{"id" => id}, _, socket) do
+  def handle_params(%{"id" => id} = params, _, socket) do
     responsibility = Responsibilities.get_responsibility!(id)
-    show = Haj.Spex.current_spex()
-
-    shows =
-      Haj.Spex.list_shows()
-      |> Enum.map(fn %{id: id, year: year} -> [key: year.year, value: id] end)
 
     socket =
       socket
-      |> assign(:page_title, page_title(socket.assigns.live_action))
       |> assign(:responsibility, responsibility)
-      |> assign(:comments, Responsibilities.get_comments_for_show(responsibility, show.id))
-      |> assign(
-        :responsible_users,
-        Responsibilities.get_all_responsible_users_for_responsibility(responsibility.id)
-      )
-      |> assign(:shows, shows)
-      |> assign(:show, show)
 
-    {:noreply, socket}
+    {:noreply, socket |> apply_action(socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :show, %{"id" => id}) do
+    socket
+    |> assign(page_title: "Ansvar")
+  end
+
+  defp apply_action(socket, :edit, %{"id" => id}) do
+    socket
+    |> assign(page_title: "Redigera ansvar")
+  end
+
+  defp apply_action(socket, :edit_comment, %{"comment_id" => comment_id}) do
+    comment = Responsibilities.get_comment!(comment_id)
+    show = Spex.get_show!(comment.show_id)
+
+    shows =
+      Spex.list_shows()
+      |> Enum.map(fn %{id: id, year: year} -> [key: year.year, value: id] end)
+
+    socket
+    |> assign(page_title: "Redigera kommentar")
+    |> assign(show: show)
+    |> assign(
+      comments: Responsibilities.get_comments_for_show(socket.assigns.responsibility, show.id)
+    )
+    |> assign(comment: comment)
+    |> assign(shows: shows)
+  end
+
+  defp apply_action(socket, :comments, %{"show" => show_id}) do
+    shows =
+      Spex.list_shows()
+      |> Enum.map(fn %{id: id, year: year} -> [key: year.year, value: id] end)
+
+    show = Spex.get_show!(show_id)
+
+    socket
+    |> assign(page_title: "Kommentarer")
+    |> assign(show: show)
+    |> assign(
+      comments: Responsibilities.get_comments_for_show(socket.assigns.responsibility, show.id)
+    )
+    |> assign(shows: shows)
+  end
+
+  defp apply_action(socket, :comments, %{"id" => _id}) do
+    apply_action(socket, :comments, %{"show" => Spex.current_spex().id})
+  end
+
+  defp apply_action(socket, :history, _params) do
+    socket
+    |> assign(page_title: "Historik")
+    |> assign(
+      :responsible_users,
+      Responsibilities.get_all_responsible_users_for_responsibility(
+        socket.assigns.responsibility.id
+      )
+    )
   end
 
   @impl true
@@ -52,6 +99,21 @@ defmodule HajWeb.ResponsibilityLive.Show do
   end
 
   @impl true
+  def handle_event("delete_comment", %{"id" => id}, socket) do
+    comment = Responsibilities.get_comment!(id)
+
+    {:ok, _} = Responsibilities.delete_comment(comment)
+
+    comments =
+      Responsibilities.get_comments_for_show(
+        socket.assigns.responsibility,
+        socket.assigns.show.id
+      )
+
+    {:noreply, assign(socket, comments: comments)}
+  end
+
+  @impl true
   def handle_info(:comments_updated, socket) do
     {:noreply,
      assign(
@@ -67,7 +129,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
   defp tab_link(assigns) do
     ~H"""
     <.link
-      class={"py-3 px-4 #{if @highligted?, do: "text-burgandy-500 border-b-2 border-burgandy-500", else: "text-gray-500"}"}
+      class={"#{if @highligted?, do: "text-burgandy-500 border-b-2 border-burgandy-500", else: "text-gray-500"} px-4 py-3"}
       navigate={@navigate}
     >
       <%= @text %>
@@ -77,23 +139,24 @@ defmodule HajWeb.ResponsibilityLive.Show do
 
   attr :class, :string, default: nil
   slot :left
-  slot :right
+  slot :right, default: nil
 
   defp center_layout(assigns) do
     ~H"""
-    <section class={["flex flex-row gap-4 justify-center relative w-full", @class]}>
-      <div class="flex flex-col gap-4 mx-auto w-[48rem] max-w-full">
+    <section class={[
+      "flex flex-row md:max-w-3xl xl:max-w-5xl gap-4 justify-center relative mx-auto",
+      @class
+    ]}>
+      <div class="min-w-0 flex-grow">
         <%= render_slot(@left) %>
       </div>
-      <div class="hidden xl:flex flex-col sticky top-8 right-0 self-start w-64 px-6">
+      <div
+        :if={@right != []}
+        class="sticky top-8 right-0 ml-4 hidden w-full shrink-0 grow-0 basis-64 flex-col self-start px-6 xl:flex"
+      >
         <%= render_slot(@right) %>
       </div>
     </section>
     """
   end
-
-  defp page_title(:show), do: "Ansvar"
-  defp page_title(:comments), do: "Kommentarer"
-  defp page_title(:history), do: "Historik"
-  defp page_title(:edit), do: "Redigera ansvar"
 end
