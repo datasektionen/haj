@@ -41,6 +41,9 @@ defmodule HajWeb.Nav do
         {ResponsibilityLive.Index, _} ->
           :responsibilities
 
+        {ResponsibilityLive.History, _} ->
+          :responsibility_history
+
         {SettingsLive.Index, _} ->
           :settings
 

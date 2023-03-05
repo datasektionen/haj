@@ -38,12 +38,20 @@ defmodule HajWeb.Layouts do
           />
         </.nav_link_group>
 
-        <.nav_link
+        <.nav_link_group
+          :if={@current_user.role in [:admin, :chef]}
           navigate={~p"/live/responsibilities"}
           icon_name={:briefcase}
           title="Ansvar"
           active={@active_tab == :responsibilities}
-        />
+          expanded={@active_tab in [:responsibilities, :responsibility_history]}
+        >
+          <:sub_link
+            navigate={~p"/live/responsibilities/history"}
+            title="Dina ansvar"
+            active={@active_tab == :responsibility_history}
+          />
+        </.nav_link_group>
 
         <.nav_link_group
           :if={@current_user.role == :admin}

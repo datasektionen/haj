@@ -4,6 +4,8 @@ defmodule Haj.Responsibilities do
   """
 
   import Ecto.Query, warn: false
+  import Haj.Utils.Preloader
+  alias Haj.Spex
   alias Haj.Repo
 
   alias Haj.Spex.Show
@@ -321,10 +323,12 @@ defmodule Haj.Responsibilities do
   def get_users_for_responsibility(responsibility_id) do
     query =
       from ru in ResponsibleUser,
-        where: ru.responsibility_id == ^responsibility_id,
-        preload: [:show, :user]
+        where: ru.responsibility_id == ^responsibility_id
 
-    Repo.all(query)
+    query
+    |> preload_join(:show)
+    |> preload_join(:user)
+    |> Repo.all()
   end
 
   @doc """
@@ -357,5 +361,39 @@ defmodule Haj.Responsibilities do
       end
     end)
     |> Enum.sort_by(fn %{show: show} -> show.year end, {:desc, Date})
+  end
+
+  @doc """
+  Returns the list of user responsibilities, ordered by show year in descending order.
+  """
+  def get_user_responsibilities(user_id) do
+    query =
+      from ru in ResponsibleUser,
+        where: ru.user_id == ^user_id,
+        join: show in assoc(ru, :show),
+        join: res in assoc(ru, :responsibility),
+        preload: [responsibility: res, show: show],
+        order_by: [desc: show.year]
+
+    query
+    |> Repo.all()
+  end
+
+  @doc """
+  Returns the list of current user responsibilities.
+  """
+  def get_current_responsibilities(user_id) do
+    show = Spex.current_spex()
+
+    query =
+      from ru in ResponsibleUser,
+        where: ru.user_id == ^user_id and ru.show_id == ^show.id,
+        join: show in assoc(ru, :show),
+        join: res in assoc(ru, :responsibility),
+        preload: [responsibility: res, show: show],
+        order_by: [desc: show.year]
+
+    query
+    |> Repo.all()
   end
 end

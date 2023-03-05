@@ -4,6 +4,8 @@ defmodule HajWeb.ResponsibilityLive.Index do
   alias Haj.Responsibilities
   alias Haj.Responsibilities.Responsibility
 
+  on_mount {HajWeb.UserAuth, :ensure_chef}
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok, assign(socket, :responsibilities, list_responsibilities())}

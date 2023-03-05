@@ -4,6 +4,8 @@ defmodule HajWeb.ResponsibilityLive.Show do
   alias Haj.Responsibilities
   alias Haj.Spex
 
+  on_mount {HajWeb.UserAuth, :ensure_chef}
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok, socket}
