@@ -21,11 +21,6 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
      |> push_event("set_richtext_data", %{richtext_data: comment.text || "", id: rich_text_id})}
   end
 
-  def handle_event("validate_form", %{"comment" => params}, socket) do
-    changeset = Haj.Responsibilities.change_comment(socket.assigns.comment, params)
-    {:noreply, socket |> assign(:changeset, changeset)}
-  end
-
   def handle_event("richtext_updated", %{"richtext_data" => richtext_data}, socket) do
     {:noreply,
      socket
@@ -48,7 +43,9 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
       {:ok, _comment} ->
         send(self(), :comments_updated)
 
-        {:noreply, socket |> push_event("set_richtext_data", %{richtext_data: ""})}
+        {:noreply,
+         socket
+         |> push_event("set_richtext_data", %{richtext_data: "", id: socket.assigns.rich_text_id})}
 
       {:error, changeset} ->
         push_flash(:error, "Error saving comment")
@@ -81,7 +78,6 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
         :let={f}
         for={@changeset}
         phx-target={@myself}
-        phx-change="validate_form"
         phx-submit="save"
         id="richtext_form"
         class="flex flex-col gap-4"

@@ -17,11 +17,6 @@ defmodule HajWeb.ResponsibilityLive.Editor do
     {:ok, socket}
   end
 
-  def handle_event("validate_responsibility_form", %{"responsibility" => params}, socket) do
-    changeset = Responsibilities.change_responsibility(socket.assigns.responsibility, params)
-    {:noreply, socket |> assign(:changeset, changeset)}
-  end
-
   def handle_event("save", %{"responsibility" => params}, socket) do
     case Haj.Responsibilities.update_responsibility(socket.assigns.responsibility, params) do
       {:ok, _comment} ->
@@ -51,7 +46,6 @@ defmodule HajWeb.ResponsibilityLive.Editor do
         :let={f}
         for={@changeset}
         phx-target={@myself}
-        phx-change="validate_responsibility_form"
         phx-submit="save"
         id="richtext_form"
         class="flex flex-col gap-4"

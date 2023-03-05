@@ -316,14 +316,26 @@ defmodule Haj.Responsibilities do
   end
 
   @doc """
+  Returns the list of responsible_users for a responsibility.
+  """
+  def get_users_for_responsibility(responsibility_id) do
+    query =
+      from ru in ResponsibleUser,
+        where: ru.responsibility_id == ^responsibility_id,
+        preload: [:show, :user]
+
+    Repo.all(query)
+  end
+
+  @doc """
   Returns the list of responsible_users for a responsibility, grouped by show.
 
   ## Examples
 
-      iex> get_all_responsible_users_for_responsibility(1)
+      iex> get_users_for_responsibility_grouped(1)
       [%{show: %Show{}, users: [%User{}, ...]}, ...]
   """
-  def get_all_responsible_users_for_responsibility(responsibility_id) do
+  def get_users_for_responsibility_grouped(responsibility_id) do
     query =
       from show in Show,
         left_join: ru in ResponsibleUser,

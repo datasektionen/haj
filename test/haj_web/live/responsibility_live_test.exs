@@ -35,12 +35,13 @@ defmodule HajWeb.ResponsibilityLiveTest do
              |> form("#responsibility-form", responsibility: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
-        index_live
-        |> form("#responsibility-form", responsibility: @create_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/responsibilities")
+      assert index_live
+             |> form("#responsibility-form", responsibility: @create_attrs)
+             |> render_submit()
 
+      assert_patch(index_live, ~p"/responsibilities")
+
+      html = render(index_live)
       assert html =~ "Responsibility created successfully"
       assert html =~ "some description"
     end
@@ -57,12 +58,13 @@ defmodule HajWeb.ResponsibilityLiveTest do
              |> form("#responsibility-form", responsibility: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
-        index_live
-        |> form("#responsibility-form", responsibility: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/responsibilities")
+      assert index_live
+             |> form("#responsibility-form", responsibility: @update_attrs)
+             |> render_submit()
 
+      assert_patch(index_live, ~p"/responsibilities")
+
+      html = render(index_live)
       assert html =~ "Responsibility updated successfully"
       assert html =~ "some updated description"
     end
@@ -71,7 +73,7 @@ defmodule HajWeb.ResponsibilityLiveTest do
       {:ok, index_live, _html} = live(conn, ~p"/responsibilities")
 
       assert index_live |> element("#responsibilities-#{responsibility.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#responsibility-#{responsibility.id}")
+      refute has_element?(index_live, "#responsibilities-#{responsibility.id}")
     end
   end
 
@@ -97,12 +99,13 @@ defmodule HajWeb.ResponsibilityLiveTest do
              |> form("#responsibility-form", responsibility: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
-        show_live
-        |> form("#responsibility-form", responsibility: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/responsibilities/#{responsibility}")
+      assert show_live
+             |> form("#responsibility-form", responsibility: @update_attrs)
+             |> render_submit()
 
+      assert_patch(show_live, ~p"/responsibilities/#{responsibility}")
+
+      html = render(show_live)
       assert html =~ "Responsibility updated successfully"
       assert html =~ "some updated description"
     end

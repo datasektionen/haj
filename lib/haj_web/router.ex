@@ -121,6 +121,18 @@ defmodule HajWeb.Router do
 
         live "/users", SettingsLive.User.Index, :index
         live "/users/:id/edit", SettingsLive.User.Index, :edit
+
+        live "/responsibilities", SettingsLive.Responsibility.Index, :index
+        live "/responsibilities/new", SettingsLive.Responsibility.Index, :new
+        live "/responsibilities/:id/edit", SettingsLive.Responsibility.Index, :edit
+
+        live "/responsibilities/:id", SettingsLive.Responsibility.Show, :show
+
+        live "/responsibilities/:id/new-responsible",
+             SettingsLive.Responsibility.Show,
+             :new_responsible
+
+        live "/responsibilities/:id/show/edit", SettingsLive.Responsibility.Show, :edit
       end
     end
   end

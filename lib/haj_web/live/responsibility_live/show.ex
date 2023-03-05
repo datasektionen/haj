@@ -56,7 +56,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
     show = Spex.get_show!(show_id)
 
     socket
-    |> assign(page_title: "Kommentarer")
+    |> assign(page_title: "Testamenten")
     |> assign(show: show)
     |> assign(
       comments: Responsibilities.get_comments_for_show(socket.assigns.responsibility, show.id)
@@ -73,9 +73,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
     |> assign(page_title: "Historik")
     |> assign(
       :responsible_users,
-      Responsibilities.get_all_responsible_users_for_responsibility(
-        socket.assigns.responsibility.id
-      )
+      Responsibilities.get_users_for_responsibility_grouped(socket.assigns.responsibility.id)
     )
   end
 

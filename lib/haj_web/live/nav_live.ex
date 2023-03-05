@@ -56,6 +56,9 @@ defmodule HajWeb.Nav do
         {SettingsLive.User.Index, _} ->
           {:setting, :users}
 
+        {SettingsLive.Responsibility.Index, _} ->
+          {:setting, :responsibilities}
+
         {_, _} ->
           nil
       end
