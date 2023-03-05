@@ -159,6 +159,7 @@
     </div>
     <div class="pt-4">
       <.live_component
+        :if={@authorized}
         module={HajWeb.ResponsibilityLive.CommentEditor}
         id="new-comment-editor"
         user={@current_user}

@@ -28,26 +28,49 @@ defmodule HajWeb.ResponsibilityLive.Show do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    socket
-    |> assign(page_title: "Redigera ansvar")
+    case Responsibilities.authorized?(
+           socket.assigns.responsibility,
+           socket.assigns.current_user.id
+         ) do
+      true ->
+        socket
+        |> assign(page_title: "Redigera ansvar")
+
+      false ->
+        socket
+        |> redirect_unathorized(~p"/live/responsibilities/#{socket.assigns.responsibility}")
+    end
   end
 
   defp apply_action(socket, :edit_comment, %{"comment_id" => comment_id}) do
-    comment = Responsibilities.get_comment!(comment_id)
-    show = Spex.get_show!(comment.show_id)
+    case Responsibilities.authorized?(
+           socket.assigns.responsibility,
+           socket.assigns.current_user.id
+         ) do
+      true ->
+        comment = Responsibilities.get_comment!(comment_id)
+        show = Spex.get_show!(comment.show_id)
 
-    shows =
-      Spex.list_shows()
-      |> Enum.map(fn %{id: id, year: year} -> [key: year.year, value: id] end)
+        shows =
+          Spex.list_shows()
+          |> Enum.map(fn %{id: id, year: year} -> [key: year.year, value: id] end)
 
-    socket
-    |> assign(page_title: "Redigera kommentar")
-    |> assign(show: show)
-    |> assign(
-      comments: Responsibilities.get_comments_for_show(socket.assigns.responsibility, show.id)
-    )
-    |> assign(comment: comment)
-    |> assign(shows: shows)
+        socket
+        |> assign(page_title: "Redigera kommentar")
+        |> assign(show: show)
+        |> assign(
+          comments: Responsibilities.get_comments_for_show(socket.assigns.responsibility, show.id)
+        )
+        |> assign(authorized: true)
+        |> assign(comment: comment)
+        |> assign(shows: shows)
+
+      false ->
+        socket
+        |> redirect_unathorized(
+          ~p"/live/responsibilities/#{socket.assigns.responsibility}/comments"
+        )
+    end
   end
 
   defp apply_action(socket, :comments, %{"show" => show_id}) do
@@ -57,12 +80,19 @@ defmodule HajWeb.ResponsibilityLive.Show do
 
     show = Spex.get_show!(show_id)
 
+    authorized =
+      Responsibilities.authorized?(
+        socket.assigns.responsibility,
+        socket.assigns.current_user.id
+      )
+
     socket
     |> assign(page_title: "Testamenten")
     |> assign(show: show)
     |> assign(
       comments: Responsibilities.get_comments_for_show(socket.assigns.responsibility, show.id)
     )
+    |> assign(authorized: authorized)
     |> assign(shows: shows)
   end
 
@@ -102,15 +132,21 @@ defmodule HajWeb.ResponsibilityLive.Show do
   def handle_event("delete_comment", %{"id" => id}, socket) do
     comment = Responsibilities.get_comment!(id)
 
-    {:ok, _} = Responsibilities.delete_comment(comment)
+    case comment.user_id == socket.assigns.current_user.id do
+      true ->
+        {:ok, _} = Responsibilities.delete_comment(comment)
 
-    comments =
-      Responsibilities.get_comments_for_show(
-        socket.assigns.responsibility,
-        socket.assigns.show.id
-      )
+        comments =
+          Responsibilities.get_comments_for_show(
+            socket.assigns.responsibility,
+            socket.assigns.show.id
+          )
 
-    {:noreply, assign(socket, comments: comments)}
+        {:noreply, assign(socket, comments: comments)}
+
+      false ->
+        {:noreply, put_flash(socket, :error, "Du kan inte ta bort någon annans testamente!")}
+    end
   end
 
   @impl true
@@ -124,6 +160,12 @@ defmodule HajWeb.ResponsibilityLive.Show do
          socket.assigns.show.id
        )
      )}
+  end
+
+  defp redirect_unathorized(socket, navigate) do
+    socket
+    |> put_flash(:error, "Du är inte ansvarig för detta ansvar och kan inte ändra på det.")
+    |> push_patch(to: navigate)
   end
 
   defp tab_link(assigns) do

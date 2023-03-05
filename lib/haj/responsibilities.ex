@@ -5,6 +5,7 @@ defmodule Haj.Responsibilities do
 
   import Ecto.Query, warn: false
   import Haj.Utils.Preloader
+  alias Haj.Accounts
   alias Haj.Spex
   alias Haj.Repo
 
@@ -395,5 +396,21 @@ defmodule Haj.Responsibilities do
 
     query
     |> Repo.all()
+  end
+
+  @doc """
+  Returns true or false if the user is authorized to change this responsibility.
+  """
+  def authorized?(responsibility, user_id) do
+    user = Accounts.get_user!(user_id)
+
+    case user.role do
+      :admin ->
+        true
+
+      _ ->
+        %{responsible_users: ru} = Repo.preload(responsibility, :responsible_users)
+        Enum.any?(ru, fn %{user_id: id} -> id == user_id end)
+    end
   end
 end
