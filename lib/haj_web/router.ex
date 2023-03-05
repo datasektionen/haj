@@ -40,7 +40,12 @@ defmodule HajWeb.Router do
   scope "/live", HajWeb do
     pipe_through :browser
 
-    live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}, HajWeb.Nav] do
+    live_session :authenticated,
+      on_mount: [
+        {HajWeb.UserAuth, :ensure_authenticated},
+        {HajWeb.UserAuth, :ensure_spex_access},
+        HajWeb.Nav
+      ] do
       live "/", DashboardLive.Index, :index
       live "/unauthorized", DashboardLive.Unauthorized, :index
 
@@ -61,7 +66,12 @@ defmodule HajWeb.Router do
     end
 
     # Admin only!
-    live_session :admin, on_mount: [{HajWeb.UserAuth, :ensure_admin}, {HajWeb.Nav, :settings}] do
+    live_session :admin,
+      on_mount: [
+        {HajWeb.UserAuth, :ensure_authenticated},
+        {HajWeb.UserAuth, :ensure_admin},
+        {HajWeb.Nav, :settings}
+      ] do
       scope "/settings" do
         live "/", SettingsLive.Index, :index
         live "/shows", SettingsLive.Show.Index, :index
