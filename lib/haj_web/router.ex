@@ -49,6 +49,8 @@ defmodule HajWeb.Router do
       live "/", DashboardLive.Index, :index
       live "/unauthorized", DashboardLive.Unauthorized, :index
 
+      live "/google", GoogleTestLive, :index
+
       live "/user-settings", UserSettingsLive, :index
       live "/members", MembersLive, :index
       live "/user/:username", UserLive, :index
@@ -209,9 +211,11 @@ defmodule HajWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", HajWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", HajWeb do
+    pipe_through :api
+
+    get "/consent", GoogleApiController, :consent
+  end
 
   # Enables LiveDashboard only for development
   #

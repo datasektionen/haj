@@ -27,6 +27,7 @@ import topbar from "../vendor/topbar"
 import Alpine from "alpinejs";
 import intersect from '@alpinejs/intersect'
 import collapse from '@alpinejs/collapse'
+import { AuthorizeGoogle } from "./google"
 
 window.Alpine = Alpine
 Alpine.plugin(intersect)
@@ -47,6 +48,8 @@ Hooks.Flash = {
     },
     destroyed() { clearTimeout(this.timer) }
 }
+
+Hooks.AuthorizeGoogle = AuthorizeGoogle
 
 let Uploaders = {}
 
