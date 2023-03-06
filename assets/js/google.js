@@ -22,31 +22,31 @@ function handleSignoutClick() {
 
 let AuthorizeGoogle = {
     mounted() {
-        /**
-         *  Sign in the user upon button click.
-         */
-        this.el.addEventListener("click", e => {
-            tokenClient.callback = async (response) => {
-                if (response.error !== undefined) {
-                    throw (response);
-                }
-                accessToken = response.access_token;
-                await createPicker();
-            };
 
-            if (accessToken === null) {
-                // Prompt the user to select a Google Account and ask for consent to share their data
-                // when establishing a new session.
-                tokenClient.requestAccessToken({ prompt: 'consent' });
-            } else {
-                // Skip display of account chooser and consent dialog for an existing session.
-                tokenClient.requestAccessToken({ prompt: '' });
+        let hook = this;
+
+        async function pickerCallback(data) {
+            if (data.action === google.picker.Action.PICKED) {
+                const document = data[google.picker.Response.DOCUMENTS][0];
+                const fileId = document[google.picker.Document.ID];
+                hook.pushEventTo(
+                    hook.el,
+                    "folder_selected",
+                    { file_id: fileId }
+                );
             }
-        })
+        }
+
+        this.handleEvent(
+            "create_clientside_picker",
+            (data) => {
+                createPicker(data.token, pickerCallback)
+            }
+        )
     }
 }
 
-async function createPicker() {
+async function createPicker(token, callback) {
     const view = new google.picker.DocsView()
         .setEnableDrives(true)
         .setMimeTypes('application/vnd.google-apps.folder')
@@ -58,26 +58,14 @@ async function createPicker() {
         .enableFeature(google.picker.Feature.NAV_HIDDEN)
         .setDeveloperKey(API_KEY)
         .setAppId(APP_ID)
-        .setOAuthToken(accessToken)
+        .setOAuthToken(token)
         .addView(view)
         .addView(new google.picker.DocsUploadView())
-        .setCallback(pickerCallback)
+        .setCallback(callback)
         .build();
 
     picker.setVisible(true);
 }
 
-
-/**
- * Displays the file details of the user's selection.
- * @param {object} data - Containers the user selection from the picker
- */
-async function pickerCallback(data) {
-    if (data.action === google.picker.Action.PICKED) {
-        const document = data[google.picker.Response.DOCUMENTS][0];
-        const fileId = document[google.picker.Document.ID];
-        console.log(document, fileId);
-    }
-}
 
 export { AuthorizeGoogle }

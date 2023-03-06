@@ -46,7 +46,7 @@ defmodule Haj.GoogleApi do
         if token.expire_time < DateTime.utc_now() do
           refresh_token(token)
         else
-          {:ok, "Bearer #{token.access_token}"}
+          {:ok, token.access_token}
         end
     end
   end
@@ -59,9 +59,9 @@ defmodule Haj.GoogleApi do
          {:ok, decoded} <- Jason.decode(body),
          {:ok, token} <-
            update_token(token, Map.put(decoded, "expire_time", abs_time(decoded["expires_in"]))) do
-      {:ok, token}
+      {:ok, token.access_token}
     else
-      _ -> {:error, :request_error}
+      error -> {:error, error}
     end
   end
 
@@ -196,25 +196,24 @@ defmodule Haj.GoogleApi do
     Token.changeset(token, attrs)
   end
 
-  def upload_file() do
+  def create_sheet_file(folder, name, access_token) do
     data = %{
       mimeType: "application/vnd.google-apps.spreadsheet",
-      name: "sheet",
-      parents: ["11sG5Zv8iJoINd1DngvZ0_utRuFSBvDbW"]
+      name: name,
+      parents: [folder]
     }
 
-    with {:ok, access_token} <- get_acess_token(1),
-         {:ok, %Response{status_code: 200, body: body}} <-
+    with {:ok, %Response{status_code: 200, body: body}} <-
            HTTPoison.post(
              "https://www.googleapis.com/drive/v3/files?supportsAllDrives=true",
              Jason.encode!(data),
              [
                {"Content-Type", "application/json"},
-               {"Authorization", "#{access_token}"}
+               {"Authorization", "Bearer #{access_token}"}
              ]
            ),
          {:ok, decoded} <- Jason.decode(body) do
-      decoded
+      {:ok, decoded["driveId"]}
     end
   end
 end
