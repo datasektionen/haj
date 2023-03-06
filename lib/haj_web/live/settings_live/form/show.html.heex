@@ -1,0 +1,32 @@
+<.header>
+  Form <%= @form.id %>
+  <:subtitle>This is a form record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/live/settings/forms/#{@form}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit form</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @form.name %></:item>
+  <:item title="Description"><%= @form.description %></:item>
+</.list>
+
+<.back navigate={~p"/live/settings/forms"}>Back to forms</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="form-modal"
+  show
+  on_cancel={JS.patch(~p"/live/settings/forms/#{@form}")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.Form.FormComponent}
+    id={@form.id}
+    title={@page_title}
+    action={@live_action}
+    form={@form}
+    patch={~p"/live/settings/forms/#{@form}"}
+  />
+</.modal>

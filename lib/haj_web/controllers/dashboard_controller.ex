@@ -5,10 +5,10 @@ defmodule HajWeb.DashboardController do
   alias Haj.Spex
 
   def index(conn, _params) do
-    current_show = Haj.Spex.current_spex()
+    current_show = Spex.current_spex()
 
     user_groups =
-      Haj.Spex.get_show_groups_for_user(conn.assigns.current_user.id)
+      Spex.get_show_groups_for_user(conn.assigns.current_user.id)
       |> Enum.filter(fn %{show: show} -> show.id == current_show.id end)
 
     conn

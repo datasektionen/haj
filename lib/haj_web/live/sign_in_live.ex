@@ -1,7 +1,7 @@
 defmodule HajWeb.SignInLive do
   use HajWeb, :live_view
 
-  defp authorize_url(socket) do
+  defp authorize_url(_socket) do
     # scheme =
     #   case get_req_header(conn, "x-forwarded-proto") do
     #     [scheme] -> scheme

@@ -1,0 +1,47 @@
+<.header>
+  Listing Forms
+  <:actions>
+    <.link patch={~p"/live/settings/forms/new"}>
+      <.button>New Form</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="forms"
+  rows={@streams.forms}
+  row_click={fn {_id, form} -> JS.navigate(~p"/live/settings/forms/#{form}") end}
+>
+  <:col :let={{_id, form}} label="Name"><%= form.name %></:col>
+  <:col :let={{_id, form}} label="Description"><%= form.description %></:col>
+  <:action :let={{_id, form}}>
+    <div class="sr-only">
+      <.link navigate={~p"/live/settings/forms/#{form}"}>Show</.link>
+    </div>
+    <.link patch={~p"/live/settings/forms/#{form}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, form}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: form.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="form-modal"
+  show
+  on_cancel={JS.navigate(~p"/live/settings/forms")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.Form.FormComponent}
+    id={@form.id || :new}
+    title={@page_title}
+    action={@live_action}
+    form={@form}
+    patch={~p"/live/settings/forms"}
+  />
+</.modal>

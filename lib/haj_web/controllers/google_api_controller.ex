@@ -1,10 +1,9 @@
 defmodule HajWeb.GoogleApiController do
   use HajWeb, :controller
 
-  alias Haj.Accounts
   alias Haj.GoogleApi
 
-  def consent(conn, %{"code" => code, "state" => state} = params) do
+  def consent(conn, %{"code" => code, "state" => state} = _params) do
     with {:ok, _} <- GoogleApi.save_token(code, state) do
       conn
       |> put_status(200)

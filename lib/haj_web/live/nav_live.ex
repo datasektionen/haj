@@ -1,7 +1,6 @@
 defmodule HajWeb.Nav do
   use HajWeb, :component
 
-  alias HajWeb.UserLive
   alias HajWeb.GroupLive
   alias HajWeb.GroupsLive
   alias HajWeb.MembersLive

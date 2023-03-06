@@ -138,3 +138,36 @@ Enum.each(applicants, fn user ->
     end)
   end)
 end)
+
+# Creates a form and one response
+
+alias Haj.Forms.Form
+alias Haj.Forms.Question
+alias Haj.Forms.Response
+
+form = Repo.insert!(%Form{name: "Formulär för TB2", description: "Fyll i!"})
+
+answers = ["Adrian", "Hundar", "Ja"]
+
+questions =
+  [
+    %Question{form_id: form.id, name: "namn", required: true, type: :text},
+    %Question{form_id: form.id, name: "favoritdjur", required: false, type: :text},
+    %Question{
+      form_id: form.id,
+      name: "GDPR?",
+      description: "Jag godkänner att sälja min själ till Metaspexet",
+      required: false,
+      type: :select
+    }
+  ]
+  |> Enum.map(fn q -> Repo.insert!(q) end)
+  |> Enum.with_index()
+  |> Enum.each(fn {q, index} ->
+    Repo.insert!(%Response{
+      user_id: hd(users).id,
+      form_id: form.id,
+      question_id: q.id,
+      value: Enum.at(answers, index)
+    })
+  end)
