@@ -169,6 +169,13 @@ defmodule HajWeb.Router do
 
         live "/songs/:id", SettingsLive.Song.Show, :show
         live "/songs/:id/show/edit", SettingsLive.Song.Show, :edit
+
+        live "/forms", SettingsLive.Form.Index, :index
+        live "/forms/new", SettingsLive.Form.Index, :new
+        live "/forms/:id/edit", SettingsLive.Form.Index, :edit
+
+        live "/forms/:id", SettingsLive.Form.Show, :show
+        live "/forms/:id/show/edit", SettingsLive.Form.Show, :edit
       end
     end
   end
