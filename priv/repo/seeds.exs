@@ -158,7 +158,8 @@ questions =
       name: "GDPR?",
       description: "Jag godkänner att sälja min själ till Metaspexet",
       required: false,
-      type: :select
+      type: :select,
+      options: ["Ja", "Nej"]
     }
   ]
   |> Enum.map(fn q -> Repo.insert!(q) end)

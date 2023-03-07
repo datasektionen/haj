@@ -4,7 +4,9 @@ defmodule Haj.Forms do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Changeset
   alias Haj.Repo
+  alias Ecto.Multi
 
   alias Haj.Forms.Form
 
@@ -35,7 +37,14 @@ defmodule Haj.Forms do
       ** (Ecto.NoResultsError)
 
   """
-  def get_form!(id), do: Repo.get!(Form, id)
+  def get_form!(id) do
+    Repo.one!(
+      from f in Form,
+        where: f.id == ^id,
+        join: q in assoc(f, :questions),
+        preload: [questions: q]
+    )
+  end
 
   @doc """
   Creates a form.
@@ -292,5 +301,202 @@ defmodule Haj.Forms do
   """
   def change_response(%Response{} = response, attrs \\ %{}) do
     Response.changeset(response, attrs)
+  end
+
+  @doc """
+  Retruns a changeset for a form submission
+  """
+  def get_form_changeset!(form_id, attrs) do
+    query =
+      from f in Form,
+        where: f.id == ^form_id,
+        join: q in assoc(f, :questions),
+        preload: [questions: q]
+
+    form = Repo.one!(query)
+
+    data = %{}
+
+    types =
+      Enum.reduce(form.questions, %{}, fn q, acc ->
+        case q.type do
+          :multi_select ->
+            Map.put(acc, String.to_atom("#{q.id}"), {:array, :string})
+
+          _ ->
+            Map.put(acc, String.to_atom("#{q.id}"), :string)
+        end
+      end)
+
+    {data, types}
+    |> Ecto.Changeset.cast(attrs, Map.keys(types))
+    |> validate_required(form.questions)
+    |> validate_options(form.questions)
+  end
+
+  defp validate_required(changeset, questions) do
+    required =
+      Enum.filter(questions, fn %{required: req} -> req end)
+      |> Enum.map(fn %{id: id} -> String.to_atom("#{id}") end)
+
+    Ecto.Changeset.validate_required(changeset, required)
+  end
+
+  defp validate_options(changeset, questions) do
+    Enum.reduce(questions, changeset, fn q, acc ->
+      field = String.to_atom("#{q.id}")
+
+      case q.type do
+        :select ->
+          acc
+          |> Ecto.Changeset.validate_change(field, fn field, value ->
+            case value in q.options do
+              true -> []
+              false -> [{field, "Value must be an availible option"}]
+            end
+          end)
+
+        :multi_select ->
+          acc
+          |> Ecto.Changeset.validate_change(field, fn field, values ->
+            case Enum.all?(values, &Enum.member?(q.options, &1)) do
+              true -> []
+              false -> [{field, "All values must be availible options"}]
+            end
+          end)
+
+        _ ->
+          acc
+      end
+    end)
+  end
+
+  alias Haj.Forms.QuestionResponse
+
+  @doc """
+  Returns the list of form_question_responses.
+
+  ## Examples
+
+      iex> list_form_question_responses()
+      [%QuestionResponse{}, ...]
+
+  """
+  def list_form_question_responses do
+    Repo.all(QuestionResponse)
+  end
+
+  @doc """
+  Gets a single question_response.
+
+  Raises `Ecto.NoResultsError` if the Question response does not exist.
+
+  ## Examples
+
+      iex> get_question_response!(123)
+      %QuestionResponse{}
+
+      iex> get_question_response!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_question_response!(id), do: Repo.get!(QuestionResponse, id)
+
+  @doc """
+  Creates a question_response.
+
+  ## Examples
+
+      iex> create_question_response(%{field: value})
+      {:ok, %QuestionResponse{}}
+
+      iex> create_question_response(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_question_response(attrs \\ %{}) do
+    %QuestionResponse{}
+    |> QuestionResponse.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a question_response.
+
+  ## Examples
+
+      iex> update_question_response(question_response, %{field: new_value})
+      {:ok, %QuestionResponse{}}
+
+      iex> update_question_response(question_response, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_question_response(%QuestionResponse{} = question_response, attrs) do
+    question_response
+    |> QuestionResponse.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a question_response.
+
+  ## Examples
+
+      iex> delete_question_response(question_response)
+      {:ok, %QuestionResponse{}}
+
+      iex> delete_question_response(question_response)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_question_response(%QuestionResponse{} = question_response) do
+    Repo.delete(question_response)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking question_response changes.
+
+  ## Examples
+
+      iex> change_question_response(question_response)
+      %Ecto.Changeset{data: %QuestionResponse{}}
+
+  """
+  def change_question_response(%QuestionResponse{} = question_response, attrs \\ %{}) do
+    QuestionResponse.changeset(question_response, attrs)
+  end
+
+  def submit_form(form_id, user_id, attrs) do
+    changeset = get_form_changeset!(form_id, attrs)
+
+    case changeset |> Ecto.Changeset.apply_action(:create) do
+      {:ok, data} ->
+        question_responses =
+          Enum.map(data, fn {key, val} ->
+            id = Atom.to_string(key) |> String.to_integer()
+
+            case val do
+              ans when is_list(ans) -> %QuestionResponse{question_id: id, multi_answer: ans}
+              ans -> %QuestionResponse{question_id: id, answer: ans}
+            end
+          end)
+
+        multi =
+          Multi.new() |> Multi.insert(:response, %Response{user_id: user_id, form_id: form_id})
+
+        {_n, multi} =
+          Enum.reduce(question_responses, {0, multi}, fn qr, {n, m} ->
+            {n + 1,
+             Multi.insert(m, n, fn %{response: %{id: id}} ->
+               %QuestionResponse{qr | response_id: id}
+             end)}
+          end)
+
+        Repo.transaction(multi)
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 end
