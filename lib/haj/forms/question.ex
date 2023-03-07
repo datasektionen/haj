@@ -7,6 +7,7 @@ defmodule Haj.Forms.Question do
     field :name, :string
     field :required, :boolean, default: false
     field :type, Ecto.Enum, values: [:text, :select, :multi_select]
+    field :options, {:array, :string}
 
     belongs_to :form, Haj.Forms.Form
     has_many :responses, Haj.Forms.Response

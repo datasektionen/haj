@@ -8,6 +8,7 @@ defmodule Haj.Repo.Migrations.CreateQuestions do
       add(:description, :text)
       add(:required, :boolean, default: false, null: false)
       add(:form_id, references(:forms, on_delete: :nothing))
+      add(:options, {:array, :string})
 
       timestamps()
     end

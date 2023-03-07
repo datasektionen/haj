@@ -64,6 +64,8 @@ defmodule HajWeb.Router do
       live "/merch-admin", MerchAdminLive.Index, :index
       live "/merch-admin/new", MerchAdminLive.Index, :new
       live "/merch-admin/:id/edit", MerchAdminLive.Index, :edit
+
+      live "/forms/:id", FormLive.Index, :index
     end
 
     # Admin only!

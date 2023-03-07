@@ -49,4 +49,19 @@ defmodule Haj.FormsFixtures do
 
     response
   end
+
+  @doc """
+  Generate a question_response.
+  """
+  def question_response_fixture(attrs \\ %{}) do
+    {:ok, question_response} =
+      attrs
+      |> Enum.into(%{
+        answer: "some answer",
+        multi_answer: ["option1", "option2"]
+      })
+      |> Haj.Forms.create_question_response()
+
+    question_response
+  end
 end

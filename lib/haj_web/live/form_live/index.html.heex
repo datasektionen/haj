@@ -1,0 +1,9 @@
+<.form for={@response_form} phx-submit="save" phx-change="validate">
+  <.form_input
+    :for={question <- @form.questions}
+    question={question}
+    field={@response_form[String.to_atom("#{question.id}")]}
+  />
+
+  <.button phx-disable-with="Sparar...">Spara</.button>
+</.form>

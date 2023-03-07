@@ -188,4 +188,60 @@ defmodule Haj.FormsTest do
       assert %Ecto.Changeset{} = Forms.change_response(response)
     end
   end
+
+  describe "form_question_responses" do
+    alias Haj.Forms.QuestionResponse
+
+    import Haj.FormsFixtures
+
+    @invalid_attrs %{answer: nil, multi_answer: nil}
+
+    test "list_form_question_responses/0 returns all form_question_responses" do
+      question_response = question_response_fixture()
+      assert Forms.list_form_question_responses() == [question_response]
+    end
+
+    test "get_question_response!/1 returns the question_response with given id" do
+      question_response = question_response_fixture()
+      assert Forms.get_question_response!(question_response.id) == question_response
+    end
+
+    test "create_question_response/1 with valid data creates a question_response" do
+      valid_attrs = %{answer: "some answer", multi_answer: ["option1", "option2"]}
+
+      assert {:ok, %QuestionResponse{} = question_response} = Forms.create_question_response(valid_attrs)
+      assert question_response.answer == "some answer"
+      assert question_response.multi_answer == ["option1", "option2"]
+    end
+
+    test "create_question_response/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Forms.create_question_response(@invalid_attrs)
+    end
+
+    test "update_question_response/2 with valid data updates the question_response" do
+      question_response = question_response_fixture()
+      update_attrs = %{answer: "some updated answer", multi_answer: ["option1"]}
+
+      assert {:ok, %QuestionResponse{} = question_response} = Forms.update_question_response(question_response, update_attrs)
+      assert question_response.answer == "some updated answer"
+      assert question_response.multi_answer == ["option1"]
+    end
+
+    test "update_question_response/2 with invalid data returns error changeset" do
+      question_response = question_response_fixture()
+      assert {:error, %Ecto.Changeset{}} = Forms.update_question_response(question_response, @invalid_attrs)
+      assert question_response == Forms.get_question_response!(question_response.id)
+    end
+
+    test "delete_question_response/1 deletes the question_response" do
+      question_response = question_response_fixture()
+      assert {:ok, %QuestionResponse{}} = Forms.delete_question_response(question_response)
+      assert_raise Ecto.NoResultsError, fn -> Forms.get_question_response!(question_response.id) end
+    end
+
+    test "change_question_response/1 returns a question_response changeset" do
+      question_response = question_response_fixture()
+      assert %Ecto.Changeset{} = Forms.change_question_response(question_response)
+    end
+  end
 end
