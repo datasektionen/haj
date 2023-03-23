@@ -51,4 +51,12 @@ defmodule HajWeb.SettingsLive.Responsibility.Show do
     {:noreply,
      stream_insert(socket, :responsible_users, responsible_user |> Repo.preload([:show, :user]))}
   end
+
+  @impl true
+  def handle_info(
+        {HajWeb.SettingsLive.Responsibility.FormComponent, {:saved, responsibility}},
+        socket
+      ) do
+    {:noreply, socket |> assign(:responsibility, responsibility)}
+  end
 end

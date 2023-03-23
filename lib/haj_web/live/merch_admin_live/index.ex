@@ -5,7 +5,7 @@ defmodule HajWeb.MerchAdminLive.Index do
   alias Haj.Merch
   alias Haj.Merch.MerchItem
 
-  on_mount {HajWeb.UserAuth, :merch_admin}
+  on_mount {HajWeb.UserAuth, :ensure_chef}
 
   @impl true
   def mount(params, _session, socket) do

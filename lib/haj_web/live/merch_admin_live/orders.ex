@@ -3,7 +3,7 @@ defmodule HajWeb.MerchAdminLive.Orders do
 
   alias Haj.Spex
 
-  on_mount {HajWeb.UserAuth, :merch_admin}
+  on_mount {HajWeb.UserAuth, :ensure_chef}
 
   @impl true
   def mount(_params, _session, socket) do

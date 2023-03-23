@@ -1,7 +1,6 @@
 defmodule HajWeb.SettingsLive.Responsibility.ResponsibleUserFormComponent do
   use HajWeb, :live_component
 
-  alias Haj.Repo
   alias Haj.Responsibilities
   alias Haj.Spex
 
@@ -63,13 +62,12 @@ defmodule HajWeb.SettingsLive.Responsibility.ResponsibleUserFormComponent do
       Spex.list_shows()
       |> Enum.map(fn show -> {"#{show.year.year}: #{show.title}", show.id} end)
 
-    shows =
-      {:ok,
-       socket
-       |> assign(assigns)
-       |> assign(:shows, shows)
-       |> assign(query: "", user: nil, users: [])
-       |> assign_form(changeset)}
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign(:shows, shows)
+     |> assign(query: "", user: nil, users: [])
+     |> assign_form(changeset)}
   end
 
   @impl true
