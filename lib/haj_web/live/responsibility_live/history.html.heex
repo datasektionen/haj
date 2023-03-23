@@ -1,0 +1,50 @@
+<div class="mr-auto flex w-full flex-row items-baseline justify-between pt-4 sm:flex-col">
+  <span class="text-2xl font-bold">Dina ansvar</span>
+  <span class="text-sm text-gray-600">
+    Du har totalt haft <%= length(@current_responsibilities) + length(@prev_responsibilities) %> ansvar. Klicka på ett ansvar för att se mer information.
+  </span>
+</div>
+
+<div class="mt-2">
+  <h2 class="pt-2 pb-4 text-lg font-bold">Nuvarande ansvar:</h2>
+
+  <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
+    <.card
+      :for={res <- @current_responsibilities}
+      navigate={~p"/live/responsibilities/#{res.responsibility}"}
+    >
+      <div class="text-burgandy-500 inline-flex items-center gap-2 text-lg font-bold">
+        <.icon name={:briefcase} solid />
+        <span class="">
+          <%= res.responsibility.name %>
+        </span>
+      </div>
+
+      <div class="">
+        Ansvarig sedan <%= Calendar.strftime(res.inserted_at, "%Y-%m-%d") %>
+      </div>
+    </.card>
+  </div>
+</div>
+
+<div class="mt-2">
+  <h2 class="pt-2 pb-4 text-lg font-bold">Alla tidigare ansvar:</h2>
+
+  <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
+    <.card
+      :for={res <- @prev_responsibilities}
+      navigate={~p"/live/responsibilities/#{res.responsibility}"}
+    >
+      <div class="text-burgandy-500 inline-flex items-center gap-2 text-lg font-bold">
+        <.icon name={:briefcase} solid />
+        <span class="">
+          <%= res.responsibility.name %>
+        </span>
+      </div>
+
+      <div class="">
+        Du var ansvarig år <%= res.show.year.year %>
+      </div>
+    </.card>
+  </div>
+</div>

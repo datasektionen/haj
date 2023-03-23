@@ -61,6 +61,13 @@ defmodule HajWeb.UserAuth do
     end
   end
 
+  def on_mount(:ensure_chef, _params, _session, socket) do
+    case socket.assigns.current_user do
+      %Accounts.User{role: role} when role in [:admin, :chef] -> {:cont, socket}
+      _ -> {:halt, redirect_require_admin(socket)}
+    end
+  end
+
   defp redirect_require_login(socket) do
     socket
     |> LiveView.put_flash(:error, "Please sign in")
@@ -69,7 +76,7 @@ defmodule HajWeb.UserAuth do
 
   defp redirect_require_admin(socket) do
     socket
-    |> LiveView.put_flash(:error, "Du har inte admin-access")
+    |> LiveView.put_flash(:error, "Du har inte access")
     |> LiveView.redirect(to: Routes.dashboard_unauthorized_path(socket, :index))
   end
 

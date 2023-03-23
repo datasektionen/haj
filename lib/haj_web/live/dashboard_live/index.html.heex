@@ -9,31 +9,61 @@
 </p>
 <div class="flex flex-col gap-4 py-4">
   <div>
-    <h3 class="pt-2 pb-4 text-2xl font-bold">Dina grupper</h3>
+    <h3 class="pt-2 pb-4 text-xl font-bold">Dina grupper</h3>
     <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
-      <%= for show_group <- @user_groups do %>
-        <.group_card
-          show_group={show_group}
-          role={
-            Enum.find(show_group.group_memberships, fn %{user_id: user_id} ->
-              user_id == @current_user.id
-            end).role
-          }
-        />
-      <% end %>
+      <.card :for={show_group <- @user_groups} navigate={~p"/live/group/#{show_group}"}>
+        <div class="text-burgandy-500 inline-flex items-center gap-2 text-lg font-bold">
+          <.icon name={:user_group} solid />
+          <span class="">
+            <%= show_group.group.name %>
+          </span>
+        </div>
+        <div class="text-gray-500">
+          <%= length(show_group.group_memberships) %> medlemmar
+        </div>
+        <div>
+          Du är <%= Enum.find(show_group.group_memberships, fn %{user_id: user_id} ->
+            user_id == @current_user.id
+          end).role %>
+        </div>
+      </.card>
+    </div>
+  </div>
+
+  <div :if={@responsibilities != []} class="flex flex-col gap-4 pt-2">
+    <.link
+      navigate={~p"/live/responsibilities/history"}
+      class="group mr-auto inline-flex items-center gap-1"
+    >
+      <h3 class="text-xl font-bold group-hover:text-burgandy-600">Dina ansvar</h3>
+      <.icon name={:arrow_right} mini class="inline-block h-5 group-hover:fill-burgandy-600" />
+    </.link>
+    <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
+      <.card
+        :for={res <- @responsibilities}
+        navigate={~p"/live/responsibilities/#{res.responsibility}"}
+      >
+        <div class="text-burgandy-500 inline-flex items-center gap-2 text-lg font-bold">
+          <.icon name={:briefcase} solid />
+          <span class="">
+            <%= res.responsibility.name %>
+          </span>
+        </div>
+      </.card>
     </div>
   </div>
 
   <div class="flex flex-col gap-4 pt-2">
-    <h3 class="text-2xl font-bold">Merchbeställningar</h3>
+    <.link navigate={~p"/live/merch"} class="group mr-auto inline-flex items-center gap-1">
+      <h3 class="text-xl font-bold group-hover:text-burgandy-600">Merchbeställningar</h3>
+      <.icon name={:arrow_right} mini class="inline-block h-5 group-hover:fill-burgandy-600" />
+    </.link>
     <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
-      <%= for merch_order_item <- @merch_order_items do %>
-        <.merch_card order_item={merch_order_item} />
-      <% end %>
+      <.merch_card :for={merch_order_item <- @merch_order_items} order_item={merch_order_item} />
     </div>
     <.link navigate={~p"/live/merch"} class="group inline-flex items-center gap-1">
       <span class="text-burgandy-500 font-bold group-hover:text-burgandy-700">
-        Ändra bäställning
+        Ändra beställning
       </span>
       <Heroicons.arrow_right
         mini

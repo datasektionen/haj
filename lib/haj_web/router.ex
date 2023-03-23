@@ -62,6 +62,23 @@ defmodule HajWeb.Router do
       live "/merch-admin", MerchAdminLive.Index, :index
       live "/merch-admin/new", MerchAdminLive.Index, :new
       live "/merch-admin/:id/edit", MerchAdminLive.Index, :edit
+
+      ## Responsibilities
+
+      live "/responsibilities", ResponsibilityLive.Index, :index
+      live "/responsibilities/history", ResponsibilityLive.History, :index
+      live "/responsibilities/new", ResponsibilityLive.Index, :new
+      live "/responsibilities/:id/edit", ResponsibilityLive.Index, :edit
+
+      live "/responsibilities/:id", ResponsibilityLive.Show, :show
+      live "/responsibilities/:id/comments", ResponsibilityLive.Show, :comments
+
+      live "/responsibilities/:id/comments/:comment_id/edit",
+           ResponsibilityLive.Show,
+           :edit_comment
+
+      live "/responsibilities/:id/history", ResponsibilityLive.Show, :history
+      live "/responsibilities/:id/show/edit", ResponsibilityLive.Show, :edit
     end
 
     # Admin only!
@@ -105,6 +122,18 @@ defmodule HajWeb.Router do
 
         live "/users", SettingsLive.User.Index, :index
         live "/users/:id/edit", SettingsLive.User.Index, :edit
+
+        live "/responsibilities", SettingsLive.Responsibility.Index, :index
+        live "/responsibilities/new", SettingsLive.Responsibility.Index, :new
+        live "/responsibilities/:id/edit", SettingsLive.Responsibility.Index, :edit
+
+        live "/responsibilities/:id", SettingsLive.Responsibility.Show, :show
+
+        live "/responsibilities/:id/new-responsible",
+             SettingsLive.Responsibility.Show,
+             :new_responsible
+
+        live "/responsibilities/:id/show/edit", SettingsLive.Responsibility.Show, :edit
       end
     end
   end

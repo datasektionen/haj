@@ -6,6 +6,7 @@ defmodule HajWeb.Nav do
   alias HajWeb.GroupsLive
   alias HajWeb.MembersLive
   alias HajWeb.DashboardLive
+  alias HajWeb.ResponsibilityLive
   alias HajWeb.SettingsLive
 
   def on_mount(:default, _params, _session, socket) do
@@ -37,6 +38,12 @@ defmodule HajWeb.Nav do
         {GroupLive, _} ->
           {:group, String.to_integer(params["show_group_id"])}
 
+        {ResponsibilityLive.Index, _} ->
+          :responsibilities
+
+        {ResponsibilityLive.History, _} ->
+          :responsibility_history
+
         {SettingsLive.Index, _} ->
           :settings
 
@@ -51,6 +58,9 @@ defmodule HajWeb.Nav do
 
         {SettingsLive.User.Index, _} ->
           {:setting, :users}
+
+        {SettingsLive.Responsibility.Index, _} ->
+          {:setting, :responsibilities}
 
         {_, _} ->
           nil

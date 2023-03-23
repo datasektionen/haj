@@ -30,6 +30,9 @@ defmodule HajWeb.SettingsLive.Index do
         <.setting_card name="Användare" navigate={~p"/live/settings/users"}>
           Redigera användare och användaruppgifter
         </.setting_card>
+        <.setting_card name="Ansvar" navigate={~p"/live/settings/responsibilities"}>
+          Redigera ansvar
+        </.setting_card>
       </div>
     </div>
     """
