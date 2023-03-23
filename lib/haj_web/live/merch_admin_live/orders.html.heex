@@ -1,0 +1,65 @@
+<div class="pb-4">
+  <h3 class="py-2 text-2xl font-bold">Beställningar</h3>
+  <.form id="show-form" as={:show} phx-change="select_show">
+    <.input name="show" label="Välj spex" type="select" value={@show.id} options={@show_options} />
+  </.form>
+</div>
+
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+  <div class="rounded-lg border p-8 shadow-sm">
+    <h4 class="text-lg font-bold">Sammanfattning</h4>
+    <.table small id="merch-summary-table" rows={@order_summary}>
+      <:col :let={order} label="Namn">
+        <%= order.item.name %>
+      </:col>
+
+      <:col :let={order} label="Storlek">
+        <%= order.size %>
+      </:col>
+
+      <:col :let={order} label="Antal">
+        <%= order.count %>
+      </:col>
+    </.table>
+  </div>
+
+  <div class="rounded-lg border p-8 shadow-sm">
+    <div class="flex flex-row">
+      <h4 class="text-lg font-bold">Beställningar</h4>
+      <.link
+        href={~p"/merch-admin/#{@show}/csv"}
+        method="post"
+        class="ml-auto flex flex-row items-center gap-2 rounded-lg border px-3 py-2 hover:bg-gray-50"
+      >
+        <.icon name={:arrow_down_on_square_stack} mini class="h-5 w-5" />
+        <span class="text-sm">Ladda ner csv</span>
+      </.link>
+    </div>
+    <.expandable_table
+      small
+      id="merch-order-table"
+      rows={@orders}
+      row_id={fn order -> "order-#{order.id}" end}
+    >
+      <:col :let={order} label="Namn">
+        <%= order.user.full_name %>
+      </:col>
+
+      <:col :let={order} label="Beställt" expand>
+        <%= list_items(order) %>
+      </:col>
+
+      <:expanded :let={order}>
+        <div :for={item <- order.merch_order_items} class="flex gap-0.5 px-2 py-1">
+          <%= "#{item.count} x #{item.merch_item.name} i #{item.size}" %>
+        </div>
+      </:expanded>
+
+      <:action :let={order}>
+        <button class="px-2" x-on:click={"show = 'order-#{order.id}'"}>
+          <.icon name={:chevron_down} solid class="h-6 text-gray-800" />
+        </button>
+      </:action>
+    </.expandable_table>
+  </div>
+</div>

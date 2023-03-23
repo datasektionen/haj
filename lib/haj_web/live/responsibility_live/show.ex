@@ -22,12 +22,12 @@ defmodule HajWeb.ResponsibilityLive.Show do
     {:noreply, socket |> apply_action(socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :show, %{"id" => id}) do
+  defp apply_action(socket, :show, %{"id" => _id}) do
     socket
     |> assign(page_title: "Ansvar")
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
+  defp apply_action(socket, :edit, %{"id" => _id}) do
     case Responsibilities.authorized?(
            socket.assigns.responsibility,
            socket.assigns.current_user.id

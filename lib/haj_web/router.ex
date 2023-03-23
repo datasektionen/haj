@@ -79,6 +79,7 @@ defmodule HajWeb.Router do
 
       live "/responsibilities/:id/history", ResponsibilityLive.Show, :history
       live "/responsibilities/:id/show/edit", ResponsibilityLive.Show, :edit
+      live "/merch-admin/orders", MerchAdminLive.Orders, :index
     end
 
     # Admin only!
@@ -175,6 +176,7 @@ defmodule HajWeb.Router do
       get "/:show_group_id", GroupController, :group
 
       get "/:show_group_id/vcard", GroupController, :vcard
+      post "/:show_group_id/vcard", GroupController, :vcard
       get "/:show_group_id/csv", GroupController, :csv
       get "/:show_group_id/applications", GroupController, :applications
       post "/:show_group_id/accept/:user_id", GroupController, :accept_user
@@ -186,6 +188,7 @@ defmodule HajWeb.Router do
     get "/merch-admin/:show_id", MerchAdminController, :index
     get "/merch-admin/:show_id/orders", MerchAdminController, :orders
     get "/merch-admin/:show_id/csv", MerchAdminController, :csv
+    post "/merch-admin/:show_id/csv", MerchAdminController, :csv
     get "/merch-admin/:show_id/new", MerchAdminController, :new
     post "/merch-admin/:show_id/new", MerchAdminController, :create
     get "/merch-admin/:id/edit", MerchAdminController, :edit
