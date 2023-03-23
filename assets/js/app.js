@@ -27,7 +27,7 @@ import topbar from "../vendor/topbar"
 import Alpine from "alpinejs";
 import intersect from '@alpinejs/intersect'
 import collapse from '@alpinejs/collapse'
-import easyMDE from "easyMDE";
+import easyMDE from "easymde";
 
 window.Alpine = Alpine
 Alpine.plugin(intersect)
