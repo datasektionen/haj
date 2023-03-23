@@ -63,7 +63,7 @@ defmodule HajWeb.CoreComponents do
         tabindex="0"
       >
         <div class="flex min-h-full items-center justify-center">
-          <div class="w-full max-w-3xl p-4 sm:p-6 lg:py-8">
+          <div class="w-full max-w-4xl p-4 sm:p-6 lg:py-8">
             <.focus_wrap
               id={"#{@id}-container"}
               phx-mounted={@show && show_modal(@id)}
@@ -83,7 +83,7 @@ defmodule HajWeb.CoreComponents do
                 </button>
               </div>
               <div id={"#{@id}-content"}>
-                <header :if={@title != []}>
+                <header :if={@title != []} class="mb-2">
                   <h1 id={"#{@id}-title"} class="text-lg font-semibold leading-8 text-zinc-800">
                     <%= render_slot(@title) %>
                   </h1>
@@ -393,7 +393,8 @@ defmodule HajWeb.CoreComponents do
           "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
           "border-zinc-300 focus:border-zinc-400 focus:ring-zinc-800/5",
-          @errors != [] && "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
+          @errors != [] && "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10",
+          Map.get(@rest, :disabled, false) && "bg-gray-50"
         ]}
         {@rest}
       />

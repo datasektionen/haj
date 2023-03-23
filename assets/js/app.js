@@ -27,11 +27,21 @@ import topbar from "../vendor/topbar"
 import Alpine from "alpinejs";
 import intersect from '@alpinejs/intersect'
 import collapse from '@alpinejs/collapse'
+import easyMDE from "easyMDE";
 
 window.Alpine = Alpine
 Alpine.plugin(intersect)
 Alpine.plugin(collapse)
 Alpine.start()
+
+
+const initEasyMDE = (element) => new easyMDE({
+    element: element,
+    forceSync: true,
+    status: false,
+    spellChecker: false,
+    minHeight: "120px"
+})
 
 let Hooks = {};
 
@@ -46,6 +56,30 @@ Hooks.Flash = {
         })
     },
     destroyed() { clearTimeout(this.timer) }
+}
+
+Hooks.RichText = {
+    mounted() {
+        // The textarea should be (the first) child of the form with the hook
+        let textArea = initEasyMDE(this.el.querySelector("textarea"))
+
+        this.handleEvent(
+            "set_richtext_data",
+            (richtext_data) => {
+                if (richtext_data.id === this.el.id && richtext_data.richtext_data !== textArea.value()) {
+                    textArea.value(richtext_data.richtext_data)
+                }
+            }
+        )
+
+        textArea.codemirror.on("change", () => {
+            this.pushEventTo(
+                this.el,
+                "richtext_updated",
+                { richtext_data: textArea.value() }
+            );
+        })
+    }
 }
 
 let Uploaders = {}

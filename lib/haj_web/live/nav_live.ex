@@ -53,11 +53,14 @@ defmodule HajWeb.Nav do
   tab MerchLive.Index, :merch
   tab MerchAdminLive.Index, :merch_admin
   tab MerchAdminLive.Orders, :merch_orders
+  tab ResponsibilityLive.Index, :responsibilities
+  tab ResponsibilityLive.History, :responsibility_history
   tab SettingsLive.Index, :settings
   tab SettingsLive.Show.Index, {:setting, :shows}
   tab SettingsLive.Group.Index, {:setting, :groups}
   tab SettingsLive.Food.Index, {:setting, :foods}
   tab SettingsLive.User.Index, {:setting, :users}
+  tab SettingsLive.Merch.Index, {:setting, :merch}
 
   defp set_active_tab(params, _url, socket) do
     active_tab =
