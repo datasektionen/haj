@@ -33,7 +33,10 @@ defmodule HajWeb.SettingsLive.Responsibility.Index do
   end
 
   @impl true
-  def handle_info({HajWeb.ResponsibilityLive.FormComponent, {:saved, responsibility}}, socket) do
+  def handle_info(
+        {HajWeb.SettingsLive.Responsibility.FormComponent, {:saved, responsibility}},
+        socket
+      ) do
     {:noreply, stream_insert(socket, :responsibilities, responsibility)}
   end
 
