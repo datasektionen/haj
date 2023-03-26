@@ -312,7 +312,15 @@ defmodule Haj.Events do
   Retuns the number of tickets sold for an event.
   """
   def tickets_sold(event_id) do
-    Repo.aggregate(EventRegistration, :count, :id, event_id: event_id)
+    # Count number of registrations for a given event
+    q =
+      from e in Event,
+        join: t in assoc(e, :ticket_types),
+        join: r in assoc(t, :registrations),
+        where: e.id == ^event_id,
+        select: count(r.id)
+
+    Repo.one(q)
   end
 
   def subscribe do

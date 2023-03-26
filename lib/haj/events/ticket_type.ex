@@ -8,6 +8,7 @@ defmodule Haj.Events.TicketType do
     field :price, :integer
 
     belongs_to :event, Haj.Events.Event
+    has_many :registrations, Haj.Events.EventRegistration
 
     timestamps()
   end

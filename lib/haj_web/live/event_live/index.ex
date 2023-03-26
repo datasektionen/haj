@@ -17,6 +17,7 @@ defmodule HajWeb.EventLive.Index do
       socket.id,
       %{}
     )
+
     {:ok, assign(socket, events: list_events(), online_count: initial_count)}
   end
 
@@ -26,9 +27,9 @@ defmodule HajWeb.EventLive.Index do
   end
 
   def handle_info(
-    %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
-    %{assigns: %{online_count: count}} = socket
-  ) do
+        %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
+        %{assigns: %{online_count: count}} = socket
+      ) do
     online_count = count + map_size(joins) - map_size(leaves)
     {:noreply, assign(socket, :online_count, online_count)}
   end
@@ -59,37 +60,35 @@ defmodule HajWeb.EventLive.Index do
   defp ticket_format_date(event_date) do
     Calendar.strftime(event_date, "%d %B %Y")
   end
+
   defp ticket_format_time(event_date) do
     Calendar.strftime(event_date, "%H:%M")
   end
 
   defp online_count(assigns) do
     ~H"""
-      <div class="flex items-center justify my-10">
-        <div class="mr-3 px-5 py-1 text-center bg-burgandy-400 text-white rounded">
-          <p><%= max(@online_count - 1, 0) %></p>
-        </div>
-        <p class="h-min">andra metaloger som väntar på biljetter</p>
+    <div class="justify my-10 flex items-center">
+      <div class="bg-burgandy-400 mr-3 rounded px-5 py-1 text-center text-white">
+        <p><%= max(@online_count - 1, 0) %></p>
       </div>
+      <p class="h-min">andra metaloger som väntar på biljetter</p>
+    </div>
     """
   end
 
   defp event_card(assigns) do
     ~H"""
-    <section class="flex mt-10 max-w-3xl">
-      <div class="relative w-60 h-60">
-        <img
-          class="w-full h-full z-0"
-          src="https://scontent.fume1-1.fna.fbcdn.net/v/t1.6435-9/180978949_314228950059549_1005358403722529104_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=OV5A6IRvacEAX-IYTns&_nc_ht=scontent.fume1-1.fna&oh=00_AfCKCCvvZrn9SkGwJMxWgbZ7fs7Z67TTvCQshL7xSgdXpA&oe=63D1628E"
-        />
-        <div class="absolute flex flex-col justify-center align-center w-full h-1/3 bottom-0 bg-black opacity-75 z-10 p-5">
-          <p class="text-white text-2xl"><%= @event.availible %></p>
+    <section class="mt-10 flex max-w-3xl">
+      <div class="relative h-60 w-60">
+        <img class="z-0 h-full w-full" src={@event.image} />
+        <div class="align-center absolute bottom-0 z-10 flex h-1/3 w-full flex-col justify-center bg-black p-5 opacity-75">
+          <p class="text-2xl text-white"><%= @event.availible %></p>
           <p class="text-white">Available tickets</p>
         </div>
       </div>
-      <div class="flex-1 ml-5">
+      <div class="ml-5 flex-1">
         <div>
-          <div class="flex place-content-between mb-5">
+          <div class="mb-5 flex place-content-between">
             <h3 class="text-3xl"><%= @event.name %></h3>
             <div>
               <div><%= ticket_format_date(@event.event_date) %></div>
