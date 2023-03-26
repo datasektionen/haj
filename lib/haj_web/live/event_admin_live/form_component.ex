@@ -1,3 +1,5 @@
+require Logger
+
 defmodule HajWeb.EventAdminLive.FormComponent do
   use HajWeb, :live_component
 
@@ -25,12 +27,30 @@ defmodule HajWeb.EventAdminLive.FormComponent do
           <.input field={@form[:ticket_limit]} type="number" label="ticket_limit" />
           <.input field={@form[:purchase_deadline]} type="datetime-local" label="purchase_deadline" />
           <.input field={@form[:event_date]} type="datetime-local" label="event_date" />
-
-          <.inputs_for :let={f_nested} field={@form[:ticket_types]}>
-            <.input field={f_nested[:name]} type="text" label="name" />
-            <.input field={f_nested[:price]} type="number" label="price" />
-            <.input field={f_nested[:description]} type="text" label="description" />
-          </.inputs_for>
+          <!-- Spacer div since margin gets overwritten by external styles -->
+          <div class="h-3" />
+          <div>
+            <h3>Ticket Types</h3>
+            <.inputs_for :let={f_nested} field={@form[:ticket_types]}>
+              <div class="mb-5">
+                <div class="flex justify-between gap-2">
+                  <div class="w-1/4">
+                    <.input field={f_nested[:name]} type="text" label="name" />
+                  </div>
+                  <div class="w-1/4">
+                    <.input field={f_nested[:price]} type="number" label="price" />
+                  </div>
+                  <div class="w-1/2">
+                    <.input field={f_nested[:description]} type="text" label="description" />
+                  </div>
+                  <div>
+                    <div class="h-[32px]" />
+                    <.button phx-click="delete" phx-value-ticket={@myself}>Delete</.button>
+                  </div>
+                </div>
+              </div>
+            </.inputs_for>
+          </div>
 
           <:actions>
             <.button phx-disable-with="Saving...">Save Event</.button>
@@ -69,6 +89,10 @@ defmodule HajWeb.EventAdminLive.FormComponent do
     save_event(socket, socket.assigns.action, event_params)
   end
 
+  def handle_event("delete", %{"ticket" => ticket_type}, socket) do
+    delete_ticket_type(socket, ticket_type)
+  end
+
   defp save_event(socket, :edit, event_params) do
     case Events.update_event(socket.assigns.event, event_params, with_tickets: true) do
       {:ok, _event} ->
@@ -88,6 +112,19 @@ defmodule HajWeb.EventAdminLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Event created successfully")
+         |> push_navigate(to: socket.assigns.navigate)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign_form(socket, changeset)}
+    end
+  end
+
+  defp delete_ticket_type(socket, ticket_type) do
+    case Events.delete_ticket_type(ticket_type) do
+      {:ok, _ticket_type} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Ticket type deleted successfully")
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
