@@ -21,17 +21,17 @@
   <div class="hidden flex-row gap-4 overflow-x-auto text-lg text-gray-500 xs:flex">
     <.tab_link
       highligted?={@live_action == :show || @live_action == :edit}
-      navigate={~p"/live/responsibilities/#{@responsibility}"}
+      navigate={~p"/responsibilities/#{@responsibility}"}
       text="Beskrivning"
     />
     <.tab_link
       highligted?={@live_action == :comments}
-      navigate={~p"/live/responsibilities/#{@responsibility}/comments"}
+      navigate={~p"/responsibilities/#{@responsibility}/comments"}
       text="Testamenten"
     />
     <.tab_link
       highligted?={@live_action == :history}
-      navigate={~p"/live/responsibilities/#{@responsibility}/history"}
+      navigate={~p"/responsibilities/#{@responsibility}/history"}
       text="Historia"
     />
   </div>
@@ -51,12 +51,12 @@
       <div class="mb-4 border-b pt-4 pb-4">
         <div class="flex flex-row items-center justify-between">
           <h2 class="text-burgandy-500 mb-1 text-xl font-bold">Beskrivning</h2>
-          <.link :if={@live_action == :edit} patch={~p"/live/responsibilities/#{@responsibility}"}>
+          <.link :if={@live_action == :edit} patch={~p"/responsibilities/#{@responsibility}"}>
             <.icon name={:x_mark} mini class="h-5" />
           </.link>
           <.link
             :if={@live_action == :show}
-            patch={~p"/live/responsibilities/#{@responsibility}/show/edit"}
+            patch={~p"/responsibilities/#{@responsibility}/show/edit"}
           >
             <.icon name={:pencil_square} mini class="h-5" />
           </.link>
@@ -71,7 +71,7 @@
           module={HajWeb.ResponsibilityLive.Editor}
           id="responsibility-editor"
           responsibility={@responsibility}
-          navigate={~p"/live/responsibilities/#{@responsibility}"}
+          navigate={~p"/responsibilities/#{@responsibility}"}
         />
       </div>
       <article
@@ -139,7 +139,7 @@
           </div>
           <div class="inline-flex gap-1 text-gray-700">
             <.link navigate={
-              ~p"/live/responsibilities/#{@responsibility}/comments/#{comment}/edit"
+              ~p"/responsibilities/#{@responsibility}/comments/#{comment}/edit"
             }>
               <.icon name={:pencil_square} mini class="h-5" />
             </.link>
@@ -176,7 +176,7 @@
   :if={@live_action in [:edit_comment]}
   id="comment-modal"
   show
-  on_cancel={JS.navigate(~p"/live/responsibilities/#{@responsibility}/comments?show=#{@show}")}
+  on_cancel={JS.navigate(~p"/responsibilities/#{@responsibility}/comments?show=#{@show}")}
 >
   <:title>
     Redigera testamente
@@ -195,7 +195,7 @@
     responsibility={@responsibility}
     show={@show}
     action={:edit}
-    navigate={~p"/live/responsibilities/#{@responsibility}/comments?show=#{@show}"}
+    navigate={~p"/responsibilities/#{@responsibility}/comments?show=#{@show}"}
   />
 </.modal>
 
@@ -213,7 +213,7 @@
     <div class="grid gap-4 md:grid-cols-2">
       <.link
         :for={%{show: show, users: users} <- @responsible_users}
-        navigate={~p"/live/responsibilities/#{@responsibility}/comments?show=#{show}"}
+        navigate={~p"/responsibilities/#{@responsibility}/comments?show=#{show}"}
         class="flex flex-col gap-1 rounded-lg border px-4 py-4 hover:bg-gray-50 sm:gap-1.5"
       >
         <div class="text-burgandy-500 mb-1 text-lg font-bold">

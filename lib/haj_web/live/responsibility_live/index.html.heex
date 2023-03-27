@@ -6,7 +6,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4">
   <%= for responsibility <- @responsibilities do %>
     <.link
-      navigate={~p"/live/responsibilities/#{responsibility}"}
+      navigate={~p"/responsibilities/#{responsibility}"}
       class="flex flex-col gap-1 sm:gap-1.5 border rounded-lg px-4 py-4 hover:bg-gray-50"
     >
       <div class="text-lg font-bold text-burgandy-500 pb-1">
@@ -36,7 +36,7 @@
   :if={@live_action in [:new, :edit]}
   id="responsibility-modal"
   show
-  on_cancel={JS.navigate(~p"/live/responsibilities")}
+  on_cancel={JS.navigate(~p"/responsibilities")}
 >
   <.live_component
     module={HajWeb.ResponsibilityLive.FormComponent}
@@ -44,6 +44,6 @@
     title={@page_title}
     action={@live_action}
     responsibility={@responsibility}
-    navigate={~p"/live/responsibilities"}
+    navigate={~p"/responsibilities"}
   />
 </.modal>

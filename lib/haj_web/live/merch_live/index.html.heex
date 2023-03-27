@@ -22,7 +22,7 @@
   :if={@live_action in [:new, :edit]}
   id="merch-modal"
   show
-  on_cancel={JS.navigate(~p"/live/merch")}
+  on_cancel={JS.navigate(~p"/merch")}
 >
   <:title><%= @merch_item.name %></:title>
   <:subtitle>
@@ -66,6 +66,6 @@
     merch_item={@merch_item}
     show={@show}
     current_user={@current_user}
-    navigate={~p"/live/merch"}
+    navigate={~p"/merch"}
   />
 </.modal>

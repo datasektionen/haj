@@ -10,20 +10,20 @@ defmodule HajWeb.Layouts do
     ~H"""
     <div :if={@current_user && @current_user.role in [:admin, :chef, :spexare]} class="space-y-1">
       <.nav_link
-        navigate={~p"/live"}
+        navigate={~p"/dashboard"}
         icon_name={:home}
         title="Min sida"
         active={@active_tab == :dashboard}
       />
       <.nav_link
-        navigate={~p"/live/members"}
+        navigate={~p"/members"}
         icon_name={:user}
         title="Medlemmar"
         active={@active_tab == :members}
       />
 
       <.nav_link_group
-        navigate={~p"/live/groups"}
+        navigate={~p"/groups"}
         icon_name={:user_group}
         title="Grupper"
         active={@active_tab == :groups}
@@ -31,7 +31,7 @@ defmodule HajWeb.Layouts do
       >
         <:sub_link
           :for={g <- @current_user.group_memberships}
-          navigate={~p"/live/group/#{g.show_group}"}
+          navigate={~p"/group/#{g.show_group}"}
           title={g.show_group.group.name}
           active={@active_tab == {:group, g.show_group_id}}
         />
@@ -39,21 +39,21 @@ defmodule HajWeb.Layouts do
 
       <.nav_link_group
         :if={@current_user.role in [:admin, :chef]}
-        navigate={~p"/live/responsibilities"}
+        navigate={~p"/responsibilities"}
         icon_name={:briefcase}
         title="Ansvar"
         active={@active_tab == :responsibilities}
         expanded={@active_tab in [:responsibilities, :responsibility_history]}
       >
         <:sub_link
-          navigate={~p"/live/responsibilities/history"}
+          navigate={~p"/responsibilities/history"}
           title="Dina ansvar"
           active={@active_tab == :responsibility_history}
         />
       </.nav_link_group>
 
       <.nav_link_group
-        navigate={~p"/live/merch"}
+        navigate={~p"/merch"}
         icon_name={:shopping_cart}
         title="Merch"
         active={@active_tab == :merch}
@@ -61,14 +61,14 @@ defmodule HajWeb.Layouts do
       >
         <:sub_link
           :if={@current_user.role in [:admin, :chef]}
-          navigate={~p"/live/merch-admin/"}
+          navigate={~p"/merch-admin/"}
           title="Administrera"
           active={@active_tab == :merch_admin}
         />
 
         <:sub_link
           :if={@current_user.role in [:admin, :chef]}
-          navigate={~p"/live/merch-admin/orders"}
+          navigate={~p"/merch-admin/orders"}
           title="Beställningar"
           active={@active_tab == :merch_orders}
         />
@@ -76,38 +76,38 @@ defmodule HajWeb.Layouts do
 
       <.nav_link_group
         :if={@current_user.role == :admin}
-        navigate={~p"/live/settings"}
+        navigate={~p"/settings"}
         icon_name={:cog_6_tooth}
         title="Administrera"
         active={@active_tab == :settings}
         expanded={@expanded_tab == :settings}
       >
         <:sub_link
-          navigate={~p"/live/settings/shows"}
+          navigate={~p"/settings/shows"}
           title="Spex"
           active={@active_tab == {:setting, :shows}}
         />
 
         <:sub_link
-          navigate={~p"/live/settings/groups"}
+          navigate={~p"/settings/groups"}
           title="Grupper"
           active={@active_tab == {:setting, :groups}}
         />
 
         <:sub_link
-          navigate={~p"/live/settings/foods"}
+          navigate={~p"/settings/foods"}
           title="Mat"
           active={@active_tab == {:setting, :foods}}
         />
 
         <:sub_link
-          navigate={~p"/live/settings/users"}
+          navigate={~p"/settings/users"}
           title="Användare"
           active={@active_tab == {:setting, :users}}
         />
 
         <:sub_link
-          navigate={~p"/live/settings/responsibilities"}
+          navigate={~p"/settings/responsibilities"}
           title="Ansvar"
           active={@active_tab == {:setting, :responsibilities}}
         />

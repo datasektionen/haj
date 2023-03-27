@@ -38,7 +38,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
 
       false ->
         socket
-        |> redirect_unathorized(~p"/live/responsibilities/#{socket.assigns.responsibility}")
+        |> redirect_unathorized(~p"/responsibilities/#{socket.assigns.responsibility}")
     end
   end
 
@@ -67,9 +67,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
 
       false ->
         socket
-        |> redirect_unathorized(
-          ~p"/live/responsibilities/#{socket.assigns.responsibility}/comments"
-        )
+        |> redirect_unathorized(~p"/responsibilities/#{socket.assigns.responsibility}/comments")
     end
   end
 
@@ -125,7 +123,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
   @impl true
   def handle_event("select_tab", %{"tab_form" => %{"tab" => tab}}, socket) do
     {:noreply,
-     socket |> push_patch(to: ~p"/live/responsibilities/#{socket.assigns.responsibility}/#{tab}")}
+     socket |> push_patch(to: ~p"/responsibilities/#{socket.assigns.responsibility}/#{tab}")}
   end
 
   @impl true

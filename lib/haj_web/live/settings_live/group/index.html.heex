@@ -1,7 +1,7 @@
 <.header>
   Alla grupper
   <:actions>
-    <.link patch={~p"/live/settings/groups/new"}>
+    <.link patch={~p"/settings/groups/new"}>
       <.button>Ny grupp</.button>
     </.link>
   </:actions>
@@ -15,11 +15,11 @@
   small
   id="groups"
   rows={@streams.groups}
-  row_click={fn {_id, group} -> JS.navigate(~p"/live/settings/groups/#{group}") end}
+  row_click={fn {_id, group} -> JS.navigate(~p"/settings/groups/#{group}") end}
 >
   <:col :let={{_id, group}} label="Namn"><%= group.name %></:col>
   <:action :let={{_id, group}}>
-    <.link patch={~p"/live/settings/groups/#{group}/edit"}>Redigera</.link>
+    <.link patch={~p"/settings/groups/#{group}/edit"}>Redigera</.link>
   </:action>
   <:action :let={{id, group}}>
     <.link
@@ -35,7 +35,7 @@
   :if={@live_action in [:new, :edit]}
   id="group-modal"
   show
-  on_cancel={JS.navigate(~p"/live/settings/groups")}
+  on_cancel={JS.navigate(~p"/settings/groups")}
 >
   <.live_component
     module={HajWeb.SettingsLive.Group.FormComponent}
@@ -43,6 +43,6 @@
     title={@page_title}
     action={@live_action}
     group={@group}
-    patch={~p"/live/settings/groups"}
+    patch={~p"/settings/groups"}
   />
 </.modal>
