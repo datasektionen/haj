@@ -1,5 +1,5 @@
 defmodule HajWeb.ApplicationsLive do
-  use HajWeb, :live_view
+  use HajWeb, :embedded_live_view
 
   alias Haj.Spex
   alias Haj.Applications

@@ -1,5 +1,5 @@
 defmodule HajWeb.GroupAdminLive do
-  use HajWeb, :live_view
+  use HajWeb, :embedded_live_view
 
   alias Haj.Spex
   # Old stuff, should be redone
