@@ -98,6 +98,13 @@ defmodule HajWeb.Router do
         live "/foods/:id", SettingsLive.Food.Show, :show
         live "/foods/:id/show/edit", SettingsLive.Food.Show, :edit
 
+        live "/events", SettingsLive.Event.Index, :index
+        live "/events/new", SettingsLive.Event.Index, :new
+        live "/events/:id/edit", SettingsLive.Event.Index, :edit
+
+        live "/events/:id", SettingsLive.Event.Show, :show
+        live "/events/:id/show/edit", SettingsLive.Event.Show, :edit
+
         live "/users", SettingsLive.User.Index, :index
         live "/users/:id/edit", SettingsLive.User.Index, :edit
       end

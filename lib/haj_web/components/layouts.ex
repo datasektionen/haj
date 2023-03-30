@@ -65,6 +65,12 @@ defmodule HajWeb.Layouts do
           />
 
           <:sub_link
+            navigate={~p"/live/settings/events"}
+            title="Event"
+            active={@active_tab == {:setting, :event}}
+          />
+
+          <:sub_link
             navigate={~p"/live/settings/users"}
             title="Användare"
             active={@active_tab == {:setting, :users}}
