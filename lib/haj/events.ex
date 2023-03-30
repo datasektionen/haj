@@ -29,6 +29,14 @@ defmodule Haj.Events do
     Repo.all(query)
   end
 
+  def get_event do
+    query =
+      from e in Event,
+        preload: [:ticket_types]
+
+    Repo.one(query)
+  end
+
   @doc """
   Gets a single event.
 

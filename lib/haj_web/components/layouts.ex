@@ -2,7 +2,7 @@ defmodule HajWeb.Layouts do
   use HajWeb, :html
   require Logger
 
-  embed_templates "layouts/*"
+  embed_templates("layouts/*")
 
   alias HajWeb.Endpoint
 
@@ -38,6 +38,13 @@ defmodule HajWeb.Layouts do
           />
         </.nav_link_group>
 
+        <.nav_link
+          navigate={~p"/live/events"}
+          icon_name={:calendar_days}
+          title="Events"
+          active={@active_tab == :events}
+        />
+
         <.nav_link_group
           :if={@current_user.role == :admin}
           navigate={~p"/live/settings"}
@@ -65,7 +72,7 @@ defmodule HajWeb.Layouts do
           />
 
           <:sub_link
-            navigate={~p"/live/settings/events"}
+            navigate={~p"/live/settings/events-admin"}
             title="Event"
             active={@active_tab == {:setting, :event}}
           />
@@ -88,16 +95,16 @@ defmodule HajWeb.Layouts do
       end)
   end
 
-  attr :active, :boolean, default: false
-  attr :expanded, :boolean, default: false
-  attr :navigate, :any, required: true
-  attr :icon_name, :atom, required: true
-  attr :title, :string, required: true
+  attr(:active, :boolean, default: false)
+  attr(:expanded, :boolean, default: false)
+  attr(:navigate, :any, required: true)
+  attr(:icon_name, :atom, required: true)
+  attr(:title, :string, required: true)
 
   slot :sub_link do
-    attr :navigate, :any, required: true
-    attr :title, :string, required: true
-    attr :active, :boolean
+    attr(:navigate, :any, required: true)
+    attr(:title, :string, required: true)
+    attr(:active, :boolean)
   end
 
   def nav_link_group(assigns) do

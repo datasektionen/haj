@@ -30,6 +30,9 @@ defmodule HajWeb.SettingsLive.Index do
         <.setting_card name="Användare" navigate={~p"/live/settings/users"}>
           Redigera användare och användaruppgifter
         </.setting_card>
+        <.setting_card name="Events" navigate={~p"/live/settings/events-admin"}>
+          Redigera events
+        </.setting_card>
       </div>
     </div>
     """

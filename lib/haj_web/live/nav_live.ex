@@ -29,6 +29,7 @@ defmodule HajWeb.Nav.ActiveTab do
 end
 
 defmodule HajWeb.Nav do
+  alias HajWeb.EventAdminLive
   use HajWeb, :component
   use HajWeb.Nav.ActiveTab
 
@@ -61,7 +62,8 @@ defmodule HajWeb.Nav do
   tab(SettingsLive.Food.Index, {:setting, :foods})
   tab(SettingsLive.User.Index, {:setting, :users})
   tab(SettingsLive.Merch.Index, {:setting, :merch})
-  tab(SettingsLive.Event.Index, {:setting, :event})
+  tab(EventAdminLive.Index, {:setting, :event})
+  tab(EventLive.Index, :events)
 
   defp set_active_tab(params, _url, socket) do
     active_tab =
