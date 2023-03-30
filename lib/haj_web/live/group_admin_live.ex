@@ -2,25 +2,26 @@ defmodule HajWeb.GroupAdminLive do
   use HajWeb, :live_view
 
   alias Haj.Spex
+  alias Haj.Repo
 
   def mount(%{"show_group_id" => show_group_id}, _session, socket) do
     show_group = Spex.get_show_group!(show_group_id)
     changeset = Spex.change_show_group(show_group)
     user = socket.assigns[:current_user]
-    IO.inspect(show_group)
 
     case is_admin?(socket, show_group) do
       true ->
         socket =
           socket
-          |> assign(
-            :show_group,
-            show_group
+          |> stream(
+            :members,
+            show_group.group_memberships
+            |> Enum.sort_by(fn %{role: role} -> role end)
           )
           |> assign(
             current_user: user,
             changeset: changeset,
-            group: show_group,
+            show_group: show_group,
             page_title: show_group.group.name,
             query: nil,
             loading: false,
@@ -47,16 +48,23 @@ defmodule HajWeb.GroupAdminLive do
     {:noreply, assign(socket, role: role)}
   end
 
-  def handle_event("add", _, %{assigns: %{matches: []}} = socket) do
-    {:noreply, socket}
-  end
+  def handle_event("add_user", _, %{assigns: %{matches: [user | _]}} = socket) do
+    dbg(socket.assigns.role)
 
-  def handle_event("add", _, %{assigns: %{matches: [user | _]}} = socket) do
-    add_user(user.id, socket.assigns.show_group.id, socket.assigns.role)
+    {:ok, member} =
+      Haj.Spex.create_group_membership(%{
+        user_id: user.id,
+        show_group_id: socket.assigns.show_group.id,
+        role: socket.assigns.role
+      })
 
-    updated = Haj.Spex.get_show_group!(socket.assigns.show_group.id)
+    member = Repo.preload(member, :user)
 
-    {:noreply, socket |> assign(show_group: updated, matches: [], query: nil)}
+    if member.role == :chef do
+      {:noreply, stream_insert(socket, :members, member, at: 0) |> assign(matches: [])}
+    else
+      {:noreply, stream_insert(socket, :members, member, at: -1) |> assign(matches: [])}
+    end
   end
 
   def handle_event("save", %{"show_group" => show_group}, socket) do
@@ -75,40 +83,13 @@ defmodule HajWeb.GroupAdminLive do
   def handle_event("remove_user", %{"id" => id}, socket) do
     membership = Haj.Spex.get_group_membership!(id)
     {:ok, _} = Haj.Spex.delete_group_membership(membership)
-
-    updated = Haj.Spex.get_show_group!(socket.assigns.show_group.id)
-    {:noreply, assign(socket, show_group: updated)}
-  end
-
-  def handle_event("add_user", %{"user" => id}, socket) do
-    memberships = socket.assigns.show_group.group_memberships
-
-    if Enum.any?(memberships, fn %{user_id: user_id} -> user_id == id |> String.to_integer() end) do
-      {:noreply,
-       socket
-       |> assign(matches: [], query: nil)
-       |> put_flash(:error, "Personen är redan medlem i gruppen.")}
-    else
-      add_user(id, socket.assigns.show_group.id, socket.assigns.role)
-      updated = Haj.Spex.get_show_group!(socket.assigns.show_group.id)
-
-      {:noreply, socket |> assign(show_group: updated, matches: [], query: nil)}
-    end
-  end
-
-  defp add_user(user_id, show_group_id, role) do
-    {:ok, _} =
-      Haj.Spex.create_group_membership(%{
-        user_id: user_id,
-        show_group_id: show_group_id,
-        role: role
-      })
+    {:noreply, stream_delete(socket, :members, membership)}
   end
 
   def render(assigns) do
     ~H"""
-    <h1 class="mt-4 text-2xl font-regular">
-      Redigera <span class="font-bold"><%= @page_title %></span>
+    <h1 class="font-bold mt-4 text-3xl">
+      Redigera <span class="text-burgandy-600"><%= @page_title %></span>
     </h1>
     <.form :let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
       <%= label(f, :application_description, "Beskrivning av gruppen",
@@ -142,15 +123,16 @@ defmodule HajWeb.GroupAdminLive do
       Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
     </p>
     <div class="flex flex-row items-stretch gap-2">
-      <.form :let={f} for={:role_form} phx-change="update_role">
+      <.form :let={f} for={%{}} as={:role_form} phx-change="update_role">
         <%= select(f, :role, @roles, class: "h-full rounded-md border-zinc-400", value: @role) %>
       </.form>
 
       <.form
         :let={f}
-        for={:search_form}
+        for={%{}}
+        as={:search_form}
         phx-change="suggest"
-        phx-submit="add"
+        phx-submit="add_user"
         autocomplete={:off}
         class="flex-grow"
       >
@@ -158,12 +140,12 @@ defmodule HajWeb.GroupAdminLive do
       </.form>
     </div>
 
-    <div id="matches" class="flex flex-col bg-white mt-2">
-      <%= for {user, i} <- Enum.with_index(@matches) do %>
+    <div id="matches" class="flex flex-col bg-slate-100 rounded-md mt-2">
+      <%= for ({user, i} <- Enum.with_index(@matches)) do %>
         <%= if i == 0 do %>
           <div
             value={user.id}
-            class="px-3 py-2 bg-orange text-gray-100 hover:bg-orange/80"
+            class="px-3 py-2 text-black opacity-50 hover:opacity-100 cursor-pointer"
             phx-click="add_user"
             phx-value-user={user.id}
           >
@@ -172,7 +154,7 @@ defmodule HajWeb.GroupAdminLive do
         <% else %>
           <div
             value={user.id}
-            class="px-3 py-2 hover:bg-gray-200"
+            class="px-3 py-2 text-black opacity-50 hover:opacity-100 cursor-pointer border-t "
             phx-click="add_user"
             phx-value-user={user.id}
           >
@@ -181,38 +163,31 @@ defmodule HajWeb.GroupAdminLive do
         <% end %>
       <% end %>
     </div>
-
-    <.table id="chef-table" rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :chef))}>
-      <:col :let={member} label="Chefer">
-        <div class="flex flex-row justify-between">
-          <%= "#{member.user.first_name} #{member.user.last_name}" %>
-          <button
-            class="bg-orange text-white px-2 py-0.5 rounded-sm"
-            phx-click="remove_user"
-            phx-value-id={member.id}
-          >
-            Ta bort
-          </button>
-        </div>
+    <h3 class="uppercase font-semibold text-sm mb-[-8px] mt-4 ml-2">Gruppisar</h3>
+    <.table id="members-table" rows={@streams.members}>
+      <:col :let={{_id, member}} label="Namn">
+        <.user_card user={member.user} />
       </:col>
-    </.table>
-
-    <.table
-      id="gruppis-table"
-      rows={@show_group.group_memberships |> Enum.filter(&(&1.role == :gruppis))}
-    >
-      <:col :let={member} label="Gruppisar">
-        <div class="flex flex-row justify-between">
-          <%= "#{member.user.first_name} #{member.user.last_name}" %>
-          <button
-            class="bg-orange text-white px-2 py-0.5 rounded-sm"
-            phx-click="remove_user"
-            phx-value-id={member.id}
-          >
-            Ta bort
-          </button>
-        </div>
+      <:col :let={{_id, member}} label="Mail">
+        <%= member.user.email %>
       </:col>
+      <:col :let={{_id, member}} label="Roll">
+        <p>
+          <%= if member.role == :chef do %>
+            <span class="bg-burgandy-50 px-1 rounded-md text-burgandy-400">Chef</span>
+          <% else %>
+            Gruppis
+          <% end %>
+        </p>
+      </:col>
+      <:action :let={{id, member}}>
+        <button
+          class="bg-burgandy-500 text-white px-2 py-0.5 rounded-md hover:bg-burgandy-400"
+          phx-click={JS.push("remove_user", value: %{id: member.id}) |> hide("##{id}")}
+        >
+          Ta bort
+        </button>
+      </:action>
     </.table>
     """
   end

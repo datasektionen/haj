@@ -39,7 +39,7 @@ defmodule HajWeb.GroupLive do
           </div>
         </div>
         <.link
-          navigate={Routes.group_admin_path(Endpoint, :index, @group.show)}
+          navigate={Routes.group_admin_path(Endpoint, :index, @group.id)}
           class="block text-md bg-burgandy-500 rounded-md text-white px-3 py-1 hover:bg-burgandy-400 text-sm"
         >
           Administrera
