@@ -2,6 +2,6 @@
 
 <.online_count online_count={@online_count} />
 
-<%= for event <- @events do %>
-  <.event_card event={event} title="hej" />
-<% end %>
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  <.event_card :for={event <- @events} event={event} />
+</div>
