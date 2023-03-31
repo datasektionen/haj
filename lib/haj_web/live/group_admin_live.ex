@@ -57,7 +57,8 @@ defmodule HajWeb.GroupAdminLive do
            member.user_id == user.id
          end) do
       true ->
-        {:noreply, socket |> put_flash(:error, "Användaren är redan med i gruppen.") |> assign(matches: [])}
+        {:noreply,
+         socket |> put_flash(:error, "Användaren är redan med i gruppen.") |> assign(matches: [])}
 
       false ->
         {:ok, member} =
@@ -150,29 +151,29 @@ defmodule HajWeb.GroupAdminLive do
       </.form>
     </div>
 
-    <div id="matches" class="flex flex-col bg-slate-100 rounded-md mt-2">
-      <%= for ({user, i} <- Enum.with_index(@matches)) do %>
+    <ol id="matches" class="flex flex-col bg-slate-100 rounded-md mt-2">
+      <li :for={{user, i} <- Enum.with_index(@matches)}>
         <%= if i == 0 do %>
-          <div
+          <button
             value={user.id}
-            class="px-3 py-2 text-black opacity-50 hover:opacity-100 cursor-pointer"
+            class="px-3 py-2 text-black opacity-50 hover:opacity-100 cursor-pointer w-full text-left"
             phx-click="add_user"
             phx-value-user={user.id}
           >
             <%= "#{user.first_name} #{user.last_name}" %>
-          </div>
+          </button>
         <% else %>
-          <div
+          <button
             value={user.id}
             class="px-3 py-2 text-black opacity-50 hover:opacity-100 cursor-pointer border-t "
             phx-click="add_user"
             phx-value-user={user.id}
           >
             <%= "#{user.first_name} #{user.last_name}" %>
-          </div>
+          </button>
         <% end %>
-      <% end %>
-    </div>
+      </li>
+    </ol>
     <h3 class="uppercase font-semibold text-sm mb-[-8px] mt-4 ml-2">Gruppisar</h3>
     <.table id="members-table" rows={@streams.members}>
       <:col :let={{_id, member}} label="Namn">
