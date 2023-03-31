@@ -45,25 +45,35 @@ defmodule HajWeb.GroupAdminLive do
   end
 
   def handle_event("update_role", %{"role_form" => %{"role" => role}}, socket) do
-    {:noreply, assign(socket, role: role)}
+    {:noreply, assign(socket, role: role, matches: [])}
+  end
+
+  def handle_event("add_user", _, %{assigns: %{matches: []}} = socket) do
+    {:noreply, socket}
   end
 
   def handle_event("add_user", _, %{assigns: %{matches: [user | _]}} = socket) do
-    dbg(socket.assigns.role)
+    case Enum.any?(socket.assigns.show_group.group_memberships, fn member ->
+           member.user_id == user.id
+         end) do
+      true ->
+        {:noreply, socket |> put_flash(:error, "Användaren är redan med i gruppen.") |> assign(matches: [])}
 
-    {:ok, member} =
-      Haj.Spex.create_group_membership(%{
-        user_id: user.id,
-        show_group_id: socket.assigns.show_group.id,
-        role: socket.assigns.role
-      })
+      false ->
+        {:ok, member} =
+          Haj.Spex.create_group_membership(%{
+            user_id: user.id,
+            show_group_id: socket.assigns.show_group.id,
+            role: socket.assigns.role
+          })
 
-    member = Repo.preload(member, :user)
+        member = Repo.preload(member, :user)
 
-    if member.role == :chef do
-      {:noreply, stream_insert(socket, :members, member, at: 0) |> assign(matches: [])}
-    else
-      {:noreply, stream_insert(socket, :members, member, at: -1) |> assign(matches: [])}
+        if member.role == :chef do
+          {:noreply, stream_insert(socket, :members, member, at: 0) |> assign(matches: [])}
+        else
+          {:noreply, stream_insert(socket, :members, member, at: -1) |> assign(matches: [])}
+        end
     end
   end
 
