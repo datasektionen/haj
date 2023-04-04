@@ -413,4 +413,14 @@ defmodule Haj.Responsibilities do
         Enum.any?(ru, fn %{user_id: id} -> id == user_id end)
     end
   end
+
+  def has_had_responsibility?(responsibility, user_id) do
+    query =
+      from ru in ResponsibleUser,
+        where: ru.user_id == ^user_id and ru.responsibility_id == ^responsibility.id,
+        select: ru.id,
+        limit: 1
+
+    Repo.one(query) != nil
+  end
 end

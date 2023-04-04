@@ -200,6 +200,47 @@ defmodule Haj.Spex do
 
   alias Haj.Spex.GroupMembership
 
+  def member_of_spex?(show, user_id) do
+    query =
+      from gm in GroupMembership,
+        where: gm.show_id == ^show.id and gm.user_id == ^user_id,
+        limit: 1
+
+    case Repo.one(query) do
+      nil -> false
+      _ -> true
+    end
+  end
+
+  def curent_member_of_group_with_permission?(user_id, group_permission) do
+    spex = current_spex()
+
+    query =
+      from gm in GroupMembership,
+        join: g in assoc(gm, :group),
+        where:
+          gm.user_id == ^user_id and g.permission == ^group_permission and gm.show_id == ^spex.id,
+        limit: 1
+
+    case Repo.one(query) do
+      nil -> false
+      _ -> true
+    end
+  end
+
+  def member_of_group_with_permission?(user_id, group_permission) do
+    query =
+      from gm in GroupMembership,
+        join: g in assoc(gm, :group),
+        where: gm.user_id == ^user_id and g.permission == ^group_permission,
+        limit: 1
+
+    case Repo.one(query) do
+      nil -> false
+      _ -> true
+    end
+  end
+
   @doc """
   Returns the list of group_memberships.
 
