@@ -7,34 +7,27 @@ defmodule HajWeb.GroupAdminLive do
   def mount(%{"show_group_id" => show_group_id}, _session, socket) do
     show_group = Spex.get_show_group!(show_group_id)
     changeset = Spex.change_show_group(show_group)
-    user = socket.assigns[:current_user]
 
-    case is_admin?(socket, show_group) do
-      true ->
-        socket =
-          socket
-          |> stream(
-            :members,
-            show_group.group_memberships
-            |> Enum.sort_by(fn %{role: role} -> role end)
-          )
-          |> assign(
-            current_user: user,
-            changeset: changeset,
-            show_group: show_group,
-            page_title: show_group.group.name,
-            query: nil,
-            loading: false,
-            matches: [],
-            roles: [:gruppis, :chef],
-            role: :gruppis
-          )
-
-        {:ok, socket}
-
-      false ->
-        # Redirect to normal group page
-        {:ok, redirect(socket, to: Routes.group_path(socket, :group, show_group.id))}
+    if is_admin?(socket, show_group) do
+      {:ok,
+       socket
+       |> stream(
+         :members,
+         show_group.group_memberships
+         |> Enum.sort_by(fn %{role: role} -> role end)
+       )
+       |> assign(
+         changeset: changeset,
+         show_group: show_group,
+         page_title: show_group.group.name,
+         query: nil,
+         matches: [],
+         roles: [:gruppis, :chef],
+         role: :gruppis
+       )}
+    else
+      # Redirect to normal group page
+      {:ok, redirect(socket, to: ~p"/live/group/#{show_group}")}
     end
   end
 
@@ -48,34 +41,16 @@ defmodule HajWeb.GroupAdminLive do
     {:noreply, assign(socket, role: role, matches: [])}
   end
 
-  def handle_event("add_user", _, %{assigns: %{matches: []}} = socket) do
+  def handle_event("add_first_user", _, %{assigns: %{matches: []}} = socket) do
     {:noreply, socket}
   end
 
-  def handle_event("add_user", _, %{assigns: %{matches: [user | _]}} = socket) do
-    case Enum.any?(socket.assigns.show_group.group_memberships, fn member ->
-           member.user_id == user.id
-         end) do
-      true ->
-        {:noreply,
-         socket |> put_flash(:error, "Användaren är redan med i gruppen.") |> assign(matches: [])}
+  def handle_event("add_first_user", _, %{assigns: %{matches: [user | _]}} = socket) do
+    add_user(user.id, socket)
+  end
 
-      false ->
-        {:ok, member} =
-          Haj.Spex.create_group_membership(%{
-            user_id: user.id,
-            show_group_id: socket.assigns.show_group.id,
-            role: socket.assigns.role
-          })
-
-        member = Repo.preload(member, :user)
-
-        if member.role == :chef do
-          {:noreply, stream_insert(socket, :members, member, at: 0) |> assign(matches: [])}
-        else
-          {:noreply, stream_insert(socket, :members, member, at: -1) |> assign(matches: [])}
-        end
-    end
+  def handle_event("add_user", %{"id" => id}, socket) do
+    add_user(String.to_integer(id), socket)
   end
 
   def handle_event("save", %{"show_group" => show_group}, socket) do
@@ -95,6 +70,32 @@ defmodule HajWeb.GroupAdminLive do
     membership = Haj.Spex.get_group_membership!(id)
     {:ok, _} = Haj.Spex.delete_group_membership(membership)
     {:noreply, stream_delete(socket, :members, membership)}
+  end
+
+  def add_user(id, socket) do
+    case Enum.any?(socket.assigns.show_group.group_memberships, fn member ->
+           member.user_id == id
+         end) do
+      true ->
+        {:noreply,
+         socket |> put_flash(:error, "Användaren är redan med i gruppen.") |> assign(matches: [])}
+
+      false ->
+        {:ok, member} =
+          Haj.Spex.create_group_membership(%{
+            user_id: id,
+            show_group_id: socket.assigns.show_group.id,
+            role: socket.assigns.role
+          })
+
+        member = Repo.preload(member, :user)
+
+        if member.role == :chef do
+          {:noreply, stream_insert(socket, :members, member, at: 0) |> assign(matches: [])}
+        else
+          {:noreply, stream_insert(socket, :members, member, at: -1) |> assign(matches: [])}
+        end
+    end
   end
 
   def render(assigns) do
@@ -143,7 +144,7 @@ defmodule HajWeb.GroupAdminLive do
         for={%{}}
         as={:search_form}
         phx-change="suggest"
-        phx-submit="add_user"
+        phx-submit="add_first_user"
         autocomplete={:off}
         class="flex-grow"
       >
@@ -158,23 +159,23 @@ defmodule HajWeb.GroupAdminLive do
             value={user.id}
             class="px-3 py-2 text-black opacity-50 hover:opacity-100 cursor-pointer w-full text-left"
             phx-click="add_user"
-            phx-value-user={user.id}
+            phx-value-id={user.id}
           >
             <%= "#{user.first_name} #{user.last_name}" %>
           </button>
         <% else %>
           <button
             value={user.id}
-            class="px-3 py-2 text-black opacity-50 hover:opacity-100 cursor-pointer border-t "
+            class="px-3 py-2 text-black opacity-50 hover:opacity-100 cursor-pointer border-t w-full text-left"
             phx-click="add_user"
-            phx-value-user={user.id}
+            phx-value-id={user.id}
           >
             <%= "#{user.first_name} #{user.last_name}" %>
           </button>
         <% end %>
       </li>
     </ol>
-    <h3 class="uppercase font-semibold text-sm mb-[-8px] mt-4 ml-2">Gruppisar</h3>
+    <h3 class="uppercase font-semibold text-sm mb-[-8px] mt-4 ml-2">Medlemmar</h3>
     <.table id="members-table" rows={@streams.members}>
       <:col :let={{_id, member}} label="Namn">
         <.user_card user={member.user} />
@@ -183,12 +184,15 @@ defmodule HajWeb.GroupAdminLive do
         <%= member.user.email %>
       </:col>
       <:col :let={{_id, member}} label="Roll">
-        <p>
-          <%= if member.role == :chef do %>
-            <span class="bg-burgandy-50 px-1 rounded-md text-burgandy-400">Chef</span>
-          <% else %>
-            Gruppis
-          <% end %>
+        <p
+          :if={member.role == :chef}
+          class="bg-burgandy-50 px-1 rounded-md text-burgandy-400 inline-block"
+        >
+          Chef
+        </p>
+
+        <p :if={member.role == :gruppis}>
+          Gruppis
         </p>
       </:col>
       <:action :let={{id, member}}>

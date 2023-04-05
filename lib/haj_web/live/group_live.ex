@@ -6,6 +6,7 @@ defmodule HajWeb.GroupLive do
 
   def mount(%{"show_group_id" => show_group_id}, _session, socket) do
     show_group = Spex.get_show_group!(show_group_id)
+    dbg(show_group)
 
     {:ok, assign(socket, page_title: show_group.group.name, group: show_group)}
   end
@@ -38,12 +39,17 @@ defmodule HajWeb.GroupLive do
             </div>
           </div>
         </div>
-        <.link
-          navigate={Routes.group_admin_path(Endpoint, :index, @group.id)}
-          class="block text-md bg-burgandy-500 rounded-md text-white px-3 py-1 hover:bg-burgandy-400 text-sm"
-        >
-          Administrera
-        </.link>
+        <%= if @current_user.role == :admin ||
+      @group.group_memberships
+      |> Enum.any?(fn %{user_id: id, role: role} ->
+        role == :chef && id == @current_user.id end) do %>
+          <.link
+            navigate={~p"/live/group/admin/#{@group}"}
+            class="block text-md bg-burgandy-500 rounded-md text-white px-3 py-1 hover:bg-burgandy-400 text-sm"
+          >
+            Administrera
+          </.link>
+        <% end %>
       </div>
       <div class="">
         <%= if @group.application_description do %>
