@@ -9,7 +9,11 @@ defmodule Haj.Policy.Checks do
   def role(%User{role: role}, _object, role), do: true
   def role(_, _, _), do: false
 
-  def current_spex_member(%User{} = user, _, _) do
+  def spex_member(%User{} = user, _) do
+    Spex.member_of_any_spex?(user)
+  end
+
+  def current_spex_member(%User{} = user, _) do
     Spex.member_of_spex?(Spex.current_spex(), user)
   end
 

@@ -212,15 +212,29 @@ defmodule Haj.Spex do
     end
   end
 
+  def member_of_any_spex?(user) do
+    query =
+      from gm in GroupMembership,
+        where: gm.user_id == ^user.id,
+        limit: 1,
+        select: gm.id
+
+    Repo.one(query) != nil
+  end
+
   def curent_member_of_group_with_permission?(user_id, group_permission) do
     spex = current_spex()
 
     query =
       from gm in GroupMembership,
-        join: g in assoc(gm, :group),
+        join: sg in assoc(gm, :show_group),
+        join: g in assoc(sg, :group),
         where:
-          gm.user_id == ^user_id and g.permission == ^group_permission and gm.show_id == ^spex.id,
-        limit: 1
+          gm.user_id == ^user_id and
+            g.permission_group == ^group_permission and
+            sg.show_id == ^spex.id,
+        limit: 1,
+        select: gm.id
 
     case Repo.one(query) do
       nil -> false
@@ -231,9 +245,11 @@ defmodule Haj.Spex do
   def member_of_group_with_permission?(user_id, group_permission) do
     query =
       from gm in GroupMembership,
-        join: g in assoc(gm, :group),
-        where: gm.user_id == ^user_id and g.permission == ^group_permission,
-        limit: 1
+        join: sg in assoc(gm, :show_group),
+        join: g in assoc(sg, :group),
+        where: gm.user_id == ^user_id and g.permission_group == ^group_permission,
+        limit: 1,
+        select: gm.id
 
     case Repo.one(query) do
       nil -> false

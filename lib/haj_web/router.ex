@@ -86,7 +86,7 @@ defmodule HajWeb.Router do
     live_session :admin,
       on_mount: [
         {HajWeb.UserAuth, :ensure_authenticated},
-        {HajWeb.UserAuth, :ensure_admin},
+        {HajWeb.UserAuth, {:authorize, :settings_admin}},
         {HajWeb.Nav, :settings}
       ] do
       scope "/settings" do

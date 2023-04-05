@@ -1,6 +1,7 @@
 defmodule HajWeb.MerchAdminController do
   use HajWeb, :controller
 
+  alias Haj.Policy
   alias Haj.Merch
   alias Haj.Merch.MerchItem
 
@@ -155,13 +156,15 @@ defmodule HajWeb.MerchAdminController do
 
   # Only "chefer" and admins can interact here
   defp authorize(conn, _) do
-    if Enum.member?([:chef, :admin], conn.assigns.current_user.role) do
-      conn
-    else
-      conn
-      |> put_flash(:error, "Du har inte tillgång till denna sida.")
-      |> redirect(to: Routes.dashboard_path(conn, :index))
-      |> halt()
+    case Policy.authorize(:merch_admin, conn.assigns.current_user) do
+      :ok ->
+        conn
+
+      _ ->
+        conn
+        |> put_flash(:error, "Du har inte tillgång till denna sida.")
+        |> redirect(to: ~p"/dashboard")
+        |> halt()
     end
   end
 end

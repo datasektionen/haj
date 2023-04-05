@@ -2,9 +2,11 @@ defmodule HajWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  alias Haj.Policy
   alias Phoenix.LiveView
   alias Phoenix.Component
   alias Haj.Accounts
+  alias Haj.Accounts.User
   alias HajWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.
@@ -13,6 +15,15 @@ defmodule HajWeb.UserAuth do
   @max_age 60 * 60 * 24 * 60
   @remember_me_cookie "_haj_web_user_remember_me"
   @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
+
+  def on_mount({:authorize, action}, _params, _session, socket) do
+    with %User{} = user <- socket.assigns.current_user,
+         :ok <- Policy.authorize(action, user) do
+      {:cont, socket}
+    else
+      _ -> {:halt, redirect_require_admin(socket)}
+    end
+  end
 
   def on_mount(:current_user, _params, session, socket) do
     case session do
