@@ -398,26 +398,10 @@ defmodule Haj.Responsibilities do
     |> Repo.all()
   end
 
-  @doc """
-  Returns true or false if the user is authorized to change this responsibility.
-  """
-  def authorized?(responsibility, user_id) do
-    user = Accounts.get_user!(user_id)
-
-    case user.role do
-      :admin ->
-        true
-
-      _ ->
-        %{responsible_users: ru} = Repo.preload(responsibility, :responsible_users)
-        Enum.any?(ru, fn %{user_id: id} -> id == user_id end)
-    end
-  end
-
-  def has_had_responsibility?(responsibility, user_id) do
+  def has_had_responsibility?(responsibility, user) do
     query =
       from ru in ResponsibleUser,
-        where: ru.user_id == ^user_id and ru.responsibility_id == ^responsibility.id,
+        where: ru.user_id == ^user.id and ru.responsibility_id == ^responsibility.id,
         select: ru.id,
         limit: 1
 

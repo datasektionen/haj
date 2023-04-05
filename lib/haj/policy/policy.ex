@@ -56,6 +56,23 @@ defmodule Haj.Policy do
     end
   end
 
+  object :responsibility_comment do
+    action :edit do
+      allow :own_comment
+      allow role: :admin
+    end
+
+    action :delete do
+      allow :own_comment
+      allow role: :admin
+    end
+
+    action :create do
+      allow :has_responsibility
+      allow role: :admin
+    end
+  end
+
   object :settings do
     action :admin do
       allow role: :admin
