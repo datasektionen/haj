@@ -54,6 +54,7 @@ defmodule HajWeb.Layouts do
       </.nav_link_group>
 
       <.nav_link_group
+        :if={Policy.authorize?(:merch_buy, @current_user)}
         navigate={~p"/live/merch"}
         icon_name={:shopping_cart}
         title="Merch"

@@ -200,11 +200,13 @@ defmodule Haj.Spex do
 
   alias Haj.Spex.GroupMembership
 
-  def member_of_spex?(show, user_id) do
+  def member_of_spex?(show, user) do
     query =
       from gm in GroupMembership,
-        where: gm.show_id == ^show.id and gm.user_id == ^user_id,
-        limit: 1
+        join: sg in assoc(gm, :show_group),
+        where: sg.show_id == ^show.id and gm.user_id == ^user.id,
+        limit: 1,
+        select: gm.id
 
     case Repo.one(query) do
       nil -> false

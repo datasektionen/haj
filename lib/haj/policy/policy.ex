@@ -5,10 +5,14 @@ defmodule Haj.Policy do
     action :access do
       allow :spex_member
     end
+
+    action :admin do
+      allow role: :admin
+    end
   end
 
   object :merch do
-    action :buy_merch do
+    action :buy do
       allow :current_spex_member
 
       allow role: :admin

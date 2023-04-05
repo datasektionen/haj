@@ -43,7 +43,7 @@ defmodule HajWeb.Router do
     live_session :authenticated,
       on_mount: [
         {HajWeb.UserAuth, :ensure_authenticated},
-        {HajWeb.UserAuth, :ensure_spex_access},
+        {HajWeb.UserAuth, {:authorize, :haj_access}},
         HajWeb.Nav
       ] do
       live "/", DashboardLive.Index, :index

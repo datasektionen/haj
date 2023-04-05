@@ -58,27 +58,6 @@ defmodule HajWeb.UserAuth do
     Ecto.NoResultsError -> {:halt, redirect_require_login(socket)}
   end
 
-  def on_mount(:ensure_spex_access, _params, _session, socket) do
-    case socket.assigns.current_user do
-      %Accounts.User{role: role} when role in [:admin, :chef, :spexare] -> {:cont, socket}
-      _ -> {:halt, redirect_require_access(socket)}
-    end
-  end
-
-  def on_mount(:ensure_admin, _params, _session, socket) do
-    case socket.assigns.current_user do
-      %Accounts.User{role: role} when role in [:admin] -> {:cont, socket}
-      _ -> {:halt, redirect_require_admin(socket)}
-    end
-  end
-
-  def on_mount(:ensure_chef, _params, _session, socket) do
-    case socket.assigns.current_user do
-      %Accounts.User{role: role} when role in [:admin, :chef] -> {:cont, socket}
-      _ -> {:halt, redirect_require_admin(socket)}
-    end
-  end
-
   defp redirect_require_login(socket) do
     socket
     |> LiveView.put_flash(:error, "Please sign in")
@@ -228,7 +207,7 @@ defmodule HajWeb.UserAuth do
   end
 
   def require_spex_access(conn, _opts) do
-    if Enum.member?([:admin, :chef, :spexare], conn.assigns.current_user.role) do
+    if Policy.authorize(:haj_access, conn.assigns.current_user) do
       conn
     else
       conn
@@ -239,7 +218,7 @@ defmodule HajWeb.UserAuth do
   end
 
   def require_admin_access(conn, _opts) do
-    if conn.assigns.current_user.role == :admin do
+    if Policy.authorize(:haj_admin, conn.assigns.current_user) do
       conn
     else
       conn
