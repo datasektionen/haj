@@ -6,13 +6,16 @@ defmodule HajWeb.SettingsLive.User.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    login_secret = Application.get_env(:haj, :api_login_secret)
+
     {:ok,
      assign(
        socket,
        query: nil,
        role: nil,
        users: Accounts.list_users(),
-       roles: [{"Admin", :admin}, {"Chef", :chef}, {"Spexare", :spexare}, {"Ingen", :none}]
+       roles: [{"Admin", :admin}, {"Chef", :chef}, {"Spexare", :spexare}, {"Ingen", :none}],
+       login_secret: login_secret
      )}
   end
 
