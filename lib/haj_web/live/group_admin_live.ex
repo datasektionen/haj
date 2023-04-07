@@ -34,11 +34,11 @@ defmodule HajWeb.GroupAdminLive do
   def handle_event("suggest", %{"search_form" => %{"q" => query}}, socket) do
     users = Haj.Accounts.search_users(query)
 
-    {:noreply, assign(socket, matches: users)}
+    {:noreply, assign(socket, matches: users, query: query)}
   end
 
   def handle_event("update_role", %{"role_form" => %{"role" => role}}, socket) do
-    {:noreply, assign(socket, role: role, matches: [])}
+    {:noreply, assign(socket, role: role)}
   end
 
   def handle_event("add_first_user", _, %{assigns: %{matches: []}} = socket) do
@@ -72,10 +72,9 @@ defmodule HajWeb.GroupAdminLive do
     {:noreply, stream_delete(socket, :members, membership)}
   end
 
+  @spec add_user(any, Phoenix.LiveView.Socket.t()) :: {:noreply, any}
   def add_user(id, socket) do
-    case Enum.any?(socket.assigns.show_group.group_memberships, fn member ->
-           member.user_id == id
-         end) do
+    case Haj.Spex.is_member_of_show_group?(id, socket.assigns.show_group.id) do
       true ->
         {:noreply,
          socket |> put_flash(:error, "Användaren är redan med i gruppen.") |> assign(matches: [])}

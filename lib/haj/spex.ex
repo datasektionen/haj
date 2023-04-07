@@ -297,6 +297,23 @@ defmodule Haj.Spex do
   alias Haj.Spex.ShowGroup
 
   @doc """
+  Returns true or false indicating if a user is a member of a show group.
+
+  ## Examples
+
+      iex> is_member_of_show_group?(user_id, show_group_id)
+      true
+
+  """
+  def is_member_of_show_group?(user_id, show_group_id) do
+    Repo.exists?(
+      from sg in ShowGroup,
+        join: gm in assoc(sg, :group_memberships),
+        where: sg.id == ^show_group_id and gm.user_id == ^user_id
+    )
+  end
+
+  @doc """
   Returns the list of show_groups.
 
   ## Examples
