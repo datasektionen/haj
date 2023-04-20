@@ -39,6 +39,7 @@ if config_env() == :prod || config_env() == :staging do
   login_api_key = System.get_env("LOGIN_API_KEY") || raise "LOGIN_API_KEY is missing"
   login_host = System.get_env("LOGIN_HOST") || raise "LOGIN_HOST is missing"
   api_login_secret = System.get_env("API_LOGIN_SECRET") || raise "API_LOGIN_SECRET is missing"
+  zfinger_url = System.get_env("ZFINGER_URL") || "zfinger.datasektionen.se"
 
   config :haj,
     login_api_key: login_api_key,
