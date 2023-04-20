@@ -3,7 +3,7 @@ defmodule HajWeb.ResponsibilityLive.History do
   alias Haj.Spex
   alias Haj.Responsibilities
 
-  on_mount {HajWeb.UserAuth, :ensure_chef}
+  on_mount {HajWeb.UserAuth, {:authorize, :responsibility_read}}
 
   @impl true
   def mount(_params, _session, socket) do

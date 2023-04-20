@@ -4,11 +4,12 @@ defmodule HajWeb.Layouts do
 
   embed_templates "layouts/*"
 
+  alias Haj.Policy
   alias HajWeb.Endpoint
 
   def sidebar_nav_links(assigns) do
     ~H"""
-    <div :if={@current_user && @current_user.role in [:admin, :chef, :spexare]} class="space-y-1">
+    <div :if={@current_user && Policy.authorize?(:haj_access, @current_user)} class="space-y-1">
       <.nav_link
         navigate={~p"/live"}
         icon_name={:home}
@@ -38,7 +39,7 @@ defmodule HajWeb.Layouts do
       </.nav_link_group>
 
       <.nav_link_group
-        :if={@current_user.role in [:admin, :chef]}
+        :if={Policy.authorize?(:responsibility_read, @current_user)}
         navigate={~p"/live/responsibilities"}
         icon_name={:briefcase}
         title="Ansvar"
@@ -53,6 +54,7 @@ defmodule HajWeb.Layouts do
       </.nav_link_group>
 
       <.nav_link_group
+        :if={Policy.authorize?(:merch_buy, @current_user)}
         navigate={~p"/live/merch"}
         icon_name={:shopping_cart}
         title="Merch"
@@ -60,14 +62,14 @@ defmodule HajWeb.Layouts do
         expanded={@active_tab in [:merch, :merch_admin, :merch_orders]}
       >
         <:sub_link
-          :if={@current_user.role in [:admin, :chef]}
+          :if={Policy.authorize?(:merch_admin, @current_user)}
           navigate={~p"/live/merch-admin/"}
           title="Administrera"
           active={@active_tab == :merch_admin}
         />
 
         <:sub_link
-          :if={@current_user.role in [:admin, :chef]}
+          :if={Policy.authorize?(:merch_list_orders, @current_user)}
           navigate={~p"/live/merch-admin/orders"}
           title="Beställningar"
           active={@active_tab == :merch_orders}
@@ -75,7 +77,7 @@ defmodule HajWeb.Layouts do
       </.nav_link_group>
 
       <.nav_link_group
-        :if={@current_user.role == :admin}
+        :if={Policy.authorize?(:settings_admin, @current_user)}
         navigate={~p"/live/settings"}
         icon_name={:cog_6_tooth}
         title="Administrera"
