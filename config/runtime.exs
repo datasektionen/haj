@@ -44,7 +44,7 @@ if config_env() == :prod || config_env() == :staging do
   config :haj,
     login_api_key: login_api_key,
     login_host: login_host,
-    api_login_secret: api_login_secret
+    api_login_secret: api_login_secret,
     zfinger_url: zfinger_url
 
   # Variables for imgproxy
