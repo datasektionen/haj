@@ -45,6 +45,7 @@ if config_env() == :prod || config_env() == :staging do
     login_api_key: login_api_key,
     login_host: login_host,
     api_login_secret: api_login_secret
+    zfinger_url: zfinger_url
 
   # Variables for imgproxy
   imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"
