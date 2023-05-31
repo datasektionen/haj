@@ -68,6 +68,16 @@ defmodule HajWeb do
     end
   end
 
+  def embedded_live_view do
+    quote do
+      use Phoenix.LiveView
+
+      on_mount HajWeb.LiveFlash
+
+      unquote(html_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent

@@ -41,19 +41,19 @@ defmodule HajWeb.SettingsLive.ShowTest do
     setup [:create_show]
 
     test "lists all shows", %{conn: conn, show: show} do
-      {:ok, _index_live, html} = live(conn, ~p"/live/settings/shows")
+      {:ok, _index_live, html} = live(conn, ~p"/settings/shows")
 
       assert html =~ "Listing Shows"
       assert html =~ show.description
     end
 
     test "saves new show", %{conn: conn} do
-      {:ok, index_live, _html} = live(conn, ~p"/live/settings/shows")
+      {:ok, index_live, _html} = live(conn, ~p"/settings/shows")
 
       assert index_live |> element("a", "New Show") |> render_click() =~
                "New Show"
 
-      assert_patch(index_live, ~p"/live/settings/shows/new")
+      assert_patch(index_live, ~p"/settings/shows/new")
 
       assert index_live
              |> form("#show-form", show: @invalid_attrs)
@@ -63,7 +63,7 @@ defmodule HajWeb.SettingsLive.ShowTest do
              |> form("#show-form", show: @create_attrs)
              |> render_submit()
 
-      assert_patch(index_live, ~p"/live/settings/shows")
+      assert_patch(index_live, ~p"/settings/shows")
 
       html = render(index_live)
       assert html =~ "Show created successfully"
@@ -71,12 +71,12 @@ defmodule HajWeb.SettingsLive.ShowTest do
     end
 
     test "updates show in listing", %{conn: conn, show: show} do
-      {:ok, index_live, _html} = live(conn, ~p"/live/settings/shows")
+      {:ok, index_live, _html} = live(conn, ~p"/settings/shows")
 
       assert index_live |> element("#shows-#{show.id} a", "Edit") |> render_click() =~
                "Edit Show"
 
-      assert_patch(index_live, ~p"/live/settings/shows/#{show}/edit")
+      assert_patch(index_live, ~p"/settings/shows/#{show}/edit")
 
       assert index_live
              |> form("#show-form", show: @invalid_attrs)
@@ -86,7 +86,7 @@ defmodule HajWeb.SettingsLive.ShowTest do
              |> form("#show-form", show: @update_attrs)
              |> render_submit()
 
-      assert_patch(index_live, ~p"/live/settings/shows")
+      assert_patch(index_live, ~p"/settings/shows")
 
       html = render(index_live)
       assert html =~ "Show updated successfully"
@@ -94,7 +94,7 @@ defmodule HajWeb.SettingsLive.ShowTest do
     end
 
     test "deletes show in listing", %{conn: conn, show: show} do
-      {:ok, index_live, _html} = live(conn, ~p"/live/settings/shows")
+      {:ok, index_live, _html} = live(conn, ~p"/settings/shows")
 
       assert index_live |> element("#shows-#{show.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#shows-#{show.id}")
@@ -105,19 +105,19 @@ defmodule HajWeb.SettingsLive.ShowTest do
     setup [:create_show]
 
     test "displays show", %{conn: conn, show: show} do
-      {:ok, _show_live, html} = live(conn, ~p"/live/settings/shows/#{show}")
+      {:ok, _show_live, html} = live(conn, ~p"/settings/shows/#{show}")
 
       assert html =~ "Show Show"
       assert html =~ show.description
     end
 
     test "updates show within modal", %{conn: conn, show: show} do
-      {:ok, show_live, _html} = live(conn, ~p"/live/settings/shows/#{show}")
+      {:ok, show_live, _html} = live(conn, ~p"/settings/shows/#{show}")
 
       assert show_live |> element("a", "Edit") |> render_click() =~
                "Edit Show"
 
-      assert_patch(show_live, ~p"/live/settings/shows/#{show}/show/edit")
+      assert_patch(show_live, ~p"/settings/shows/#{show}/show/edit")
 
       assert show_live
              |> form("#show-form", show: @invalid_attrs)
@@ -127,7 +127,7 @@ defmodule HajWeb.SettingsLive.ShowTest do
              |> form("#show-form", show: @update_attrs)
              |> render_submit()
 
-      assert_patch(show_live, ~p"/live/settings/shows/#{show}")
+      assert_patch(show_live, ~p"/settings/shows/#{show}")
 
       html = render(show_live)
       assert html =~ "Show updated successfully"

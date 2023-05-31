@@ -2,6 +2,8 @@ defmodule HajWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  use HajWeb, :controller
+
   alias Haj.Policy
   alias Phoenix.LiveView
   alias Phoenix.Component
@@ -234,5 +236,5 @@ defmodule HajWeb.UserAuth do
 
   defp maybe_store_return_to(conn), do: conn
 
-  defp signed_in_path(conn), do: Routes.dashboard_path(conn, :index)
+  defp signed_in_path(conn), do: ~p"/dashboard"
 end

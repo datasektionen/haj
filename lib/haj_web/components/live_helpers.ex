@@ -6,7 +6,12 @@ defmodule HajWeb.LiveHelpers do
   alias HajWeb.Router.Helpers, as: Routes
   alias Phoenix.LiveView.JS
 
-  def home_path(), do: Routes.dashboard_path(Endpoint, :index)
+  use Phoenix.VerifiedRoutes,
+    endpoint: HajWeb.Endpoint,
+    router: HajWeb.Router,
+    statics: HajWeb.static_paths()
+
+  def home_path(), do: ~p"/dashboard"
 
   attr :name, :atom, required: true
   attr :outline, :boolean, default: false

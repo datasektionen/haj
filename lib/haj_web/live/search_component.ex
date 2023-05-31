@@ -80,8 +80,8 @@ defmodule HajWeb.SearchComponent do
     """
   end
 
-  defp navigate(%Accounts.User{} = user), do: ~p"/live/user/#{user.username}"
-  defp navigate(%Spex.ShowGroup{} = sg), do: ~p"/live/group/#{sg.id}"
+  defp navigate(%Accounts.User{} = user), do: ~p"/user/#{user.username}"
+  defp navigate(%Spex.ShowGroup{} = sg), do: ~p"/group/#{sg.id}"
 
   defp title(%Accounts.User{} = user), do: full_name(user)
   defp title(%Spex.ShowGroup{} = sg), do: sg.group.name

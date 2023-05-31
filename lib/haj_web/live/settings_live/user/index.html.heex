@@ -33,7 +33,7 @@
 <.table
   id="shows"
   rows={@users}
-  row_click={fn user -> JS.navigate(~p"/live/user/#{user.username}") end}
+  row_click={fn user -> JS.navigate(~p"/user/#{user.username}") end}
 >
   <:col :let={user} label="Namn"><%= user.full_name %></:col>
   <:col :let={user} label="Klass"><%= user.class %></:col>
@@ -43,7 +43,7 @@
   </:action>
 
   <:action :let={user}>
-    <.link patch={~p"/live/settings/users/#{user}/edit"}>Redigera</.link>
+    <.link patch={~p"/settings/users/#{user}/edit"}>Redigera</.link>
   </:action>
   <:action :let={user}>
     <.link
@@ -59,7 +59,7 @@
   :if={@live_action in [:edit]}
   id="user-modal"
   show
-  on_cancel={JS.navigate(~p"/live/settings/users")}
+  on_cancel={JS.navigate(~p"/settings/users")}
 >
   <.live_component
     module={HajWeb.SettingsLive.User.FormComponent}
@@ -68,6 +68,6 @@
     user={@user}
     roles={@roles}
     action={@live_action}
-    patch={~p"/live/settings/users"}
+    patch={~p"/settings/users"}
   />
 </.modal>

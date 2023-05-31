@@ -34,7 +34,7 @@ defmodule HajWeb.MerchLive.Index do
       false ->
         socket
         |> put_flash(:error, "Du kan inte redigera andras beställningar!")
-        |> push_navigate(to: ~p"/live/merch/")
+        |> push_navigate(to: ~p"/merch/")
     end
   end
 
@@ -69,7 +69,7 @@ defmodule HajWeb.MerchLive.Index do
   defp merch_item_card(assigns) do
     ~H"""
     <.link
-      patch={~p"/live/merch/new?merch_item_id=#{@item.id}"}
+      patch={~p"/merch/new?merch_item_id=#{@item.id}"}
       class="group relative overflow-hidden rounded-lg border px-4 py-6 shadow-sm"
     >
       <%= if @item.image do %>
@@ -100,7 +100,7 @@ defmodule HajWeb.MerchLive.Index do
       <div class="flex flex-row items-start justify-between gap-1">
         <p class="font-bold"><%= @order_item.merch_item.name %></p>
         <div class="flex flex-row justify-end gap-1">
-          <.link patch={~p"/live/merch/#{@order_item.id}/edit"}>
+          <.link patch={~p"/merch/#{@order_item.id}/edit"}>
             <Heroicons.pencil_square mini class="h-5 w-5 fill-gray-700 hover:fill-black" />
           </.link>
           <.link

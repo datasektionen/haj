@@ -38,7 +38,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
 
       _ ->
         socket
-        |> redirect_unathorized(~p"/live/responsibilities/#{responsibility}")
+        |> redirect_unathorized(~p"/responsibilities/#{responsibility}")
     end
   end
 
@@ -65,8 +65,8 @@ defmodule HajWeb.ResponsibilityLive.Show do
       _ ->
         socket
         |> put_flash(:error, "Du har inte behörighet att redigera kommentaren")
-        |> push_navigate(
-          to: ~p"/live/responsibilities/#{responsibility}/comments?show=#{comment.show_id}"
+        |> redirect_unathorized(
+          ~p"/responsibilities/#{responsibility}/comments?show=#{comment.show_id}"
         )
     end
   end
@@ -119,7 +119,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
   @impl true
   def handle_event("select_tab", %{"tab_form" => %{"tab" => tab}}, socket) do
     {:noreply,
-     socket |> push_patch(to: ~p"/live/responsibilities/#{socket.assigns.responsibility}/#{tab}")}
+     socket |> push_patch(to: ~p"/responsibilities/#{socket.assigns.responsibility}/#{tab}")}
   end
 
   @impl true
