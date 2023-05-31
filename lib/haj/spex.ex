@@ -372,6 +372,14 @@ defmodule Haj.Spex do
     )
   end
 
+  def is_chef_of_show_group?(show_group, user) do
+    Repo.exists?(
+      from sg in ShowGroup,
+        join: gm in assoc(sg, :group_memberships),
+        where: sg.id == ^show_group.id and gm.user_id == ^user.id and gm.role == :chef
+    )
+  end
+
   @doc """
   Returns the list of show_groups.
 

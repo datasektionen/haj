@@ -1,35 +1,22 @@
 <h1 class="mt-4 text-3xl font-bold">
   Redigera <span class="text-burgandy-600"><%= @page_title %></span>
 </h1>
-<.form :let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
-  <%= label(f, :application_description, "Beskrivning av gruppen",
-    class: "mt-4 font-medium text-zinc-600"
-  ) %>
-  <%= textarea(f, :application_description,
-    class: "border-1 mb-2 rounded-lg border-zinc-300 bg-zinc-50"
-  ) %>
+<.simple_form for={@form} phx-submit="save" class="flex flex-col pb-2">
+  <.input field={@form[:application_description]} label="Beskrivning av gruppen" type="textarea" />
+  <.input
+    field={@form[:application_extra_question]}
+    label="Extra fråga i ansökan. Om du lämnar detta blankt kommer ingen extra fråga visas."
+    type="textarea"
+  />
+  <.input field={@form[:application_open]} label="Gruppen går att söka" type="checkbox" />
 
-  <%= label(
-    f,
-    :application_extra_question,
-    "Extra fråga i ansökan. Om du lämnar detta blankt kommer ingen extra fråga visas.",
-    class: "mt-2 font-medium text-zinc-600"
-  ) %>
-  <%= textarea(f, :application_extra_question,
-    class: "border-1 mb-2 rounded-lg border-zinc-300 bg-zinc-50"
-  ) %>
+  <:actions>
+    <.button phx-disable-with="Sparar..." class="rounded-md px-16">Spara</.button>
+  </:actions>
+</.simple_form>
 
-  <div class="mb-2 flex items-center gap-2">
-    <%= checkbox(f, :application_open) %>
-    <%= label(f, :application_open, "Gruppen går att söka") %>
-  </div>
-
-  <%= submit("Spara",
-    class: "bg-burgandy-500 self-start rounded-md px-16 py-2 text-white hover:bg-burgandy-400"
-  ) %>
-</.form>
 <h2 class="text-burgandy-500 mt-6 font-bold uppercase">Lägg till medlemmar</h2>
-<p class="font-regular py-2 text-zinc-600">
+<p class="py-2 text-sm font-bold text-zinc-800">
   Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
 </p>
 <div class="flex flex-row items-stretch gap-2">
@@ -50,27 +37,26 @@
   </.form>
 </div>
 
-<ol id="matches" class="mt-2 flex flex-col rounded-md bg-slate-100">
+<ol id="matches" class="mt-2 flex flex-col overflow-hidden rounded-md bg-gray-50">
   <li :for={{user, i} <- Enum.with_index(@matches)}>
-    <%= if i == 0 do %>
-      <button
-        value={user.id}
-        class="w-full cursor-pointer px-3 py-2 text-left text-black opacity-50 hover:opacity-100"
-        phx-click="add_user"
-        phx-value-id={user.id}
-      >
-        <%= "#{user.first_name} #{user.last_name}" %>
-      </button>
-    <% else %>
-      <button
-        value={user.id}
-        class="w-full cursor-pointer border-t px-3 py-2 text-left text-black opacity-50 hover:opacity-100"
-        phx-click="add_user"
-        phx-value-id={user.id}
-      >
-        <%= "#{user.first_name} #{user.last_name}" %>
-      </button>
-    <% end %>
+    <button
+      :if={i == 0}
+      value={user.id}
+      class="w-full cursor-pointer bg-gray-200 px-3 py-3 text-left text-black opacity-50 hover:opacity-100"
+      phx-click="add_user"
+      phx-value-id={user.id}
+    >
+      <%= "#{user.first_name} #{user.last_name}" %>
+    </button>
+    <button
+      :if={i != 0}
+      value={user.id}
+      class="w-full cursor-pointer border-t px-3 py-3 text-left text-black opacity-50 hover:opacity-100"
+      phx-click="add_user"
+      phx-value-id={user.id}
+    >
+      <%= "#{user.first_name} #{user.last_name}" %>
+    </button>
   </li>
 </ol>
 <h3 class="mb-[-8px] mt-4 ml-2 text-sm font-semibold uppercase">Medlemmar</h3>

@@ -3,31 +3,36 @@ defmodule HajWeb.GroupLive.Admin do
 
   alias Haj.Spex
   alias Haj.Repo
+  alias Haj.Policy
 
   def mount(%{"show_group_id" => show_group_id}, _session, socket) do
     show_group = Spex.get_show_group!(show_group_id)
     changeset = Spex.change_show_group(show_group)
 
-    if is_admin?(socket, show_group) do
-      {:ok,
-       socket
-       |> stream(
-         :members,
-         show_group.group_memberships
-         |> Enum.sort_by(fn %{role: role} -> role end)
-       )
-       |> assign(
-         changeset: changeset,
-         show_group: show_group,
-         page_title: show_group.group.name,
-         query: nil,
-         matches: [],
-         roles: [:gruppis, :chef],
-         role: :gruppis
-       )}
-    else
-      # Redirect to normal group page
-      {:ok, redirect(socket, to: ~p"/live/group/#{show_group}")}
+    case Policy.authorize(:show_group_edit, socket.assigns.current_user, show_group) do
+      :ok ->
+        {:ok,
+         socket
+         |> stream(
+           :members,
+           show_group.group_memberships
+           |> Enum.sort_by(fn %{role: role} -> role end)
+         )
+         |> assign(
+           show_group: show_group,
+           page_title: show_group.group.name,
+           query: nil,
+           matches: [],
+           roles: [:gruppis, :chef],
+           role: :gruppis
+         )
+         |> assign_form(changeset)}
+
+      _ ->
+        {:ok,
+         socket
+         |> put_flash(:error, "Du har inte behörighet att redigera denna grupp")
+         |> redirect(to: ~p"/live/group/#{show_group}")}
     end
   end
 
@@ -59,10 +64,10 @@ defmodule HajWeb.GroupLive.Admin do
         {:noreply,
          socket
          |> put_flash(:info, "Sparat.")
-         |> assign(changeset: Spex.change_show_group(show_group))}
+         |> assign_form(Spex.change_show_group(show_group))}
 
       {:error, changeset} ->
-        {:noreply, socket |> put_flash(:error, "Något gick fel.") |> assign(changeset: changeset)}
+        {:noreply, socket |> put_flash(:error, "Något gick fel.") |> assign_form(changeset)}
     end
   end
 
@@ -72,36 +77,27 @@ defmodule HajWeb.GroupLive.Admin do
     {:noreply, stream_delete(socket, :members, membership)}
   end
 
-  @spec add_user(any, Phoenix.LiveView.Socket.t()) :: {:noreply, any}
   def add_user(id, socket) do
-    case Haj.Spex.is_member_of_show_group?(id, socket.assigns.show_group.id) do
-      true ->
-        {:noreply,
-         socket |> put_flash(:error, "Användaren är redan med i gruppen.") |> assign(matches: [])}
+    if Haj.Spex.is_member_of_show_group?(id, socket.assigns.show_group.id) do
+      {:noreply,
+       socket |> put_flash(:error, "Användaren är redan med i gruppen.") |> assign(matches: [])}
+    else
+      {:ok, member} =
+        Haj.Spex.create_group_membership(%{
+          user_id: id,
+          show_group_id: socket.assigns.show_group.id,
+          role: socket.assigns.role
+        })
 
-      false ->
-        {:ok, member} =
-          Haj.Spex.create_group_membership(%{
-            user_id: id,
-            show_group_id: socket.assigns.show_group.id,
-            role: socket.assigns.role
-          })
+      member = Repo.preload(member, :user)
 
-        member = Repo.preload(member, :user)
+      pos = if member.role == :chef, do: 0, else: -1
 
-        if member.role == :chef do
-          {:noreply, stream_insert(socket, :members, member, at: 0) |> assign(matches: [])}
-        else
-          {:noreply, stream_insert(socket, :members, member, at: -1) |> assign(matches: [])}
-        end
+      {:noreply, stream_insert(socket, :members, member, at: pos) |> assign(matches: [])}
     end
   end
 
-  defp is_admin?(socket, show_group) do
-    socket.assigns.current_user.role == :admin ||
-      show_group.group_memberships
-      |> Enum.any?(fn %{user_id: id, role: role} ->
-        role == :chef && id == socket.assigns.current_user.id
-      end)
+  defp assign_form(socket, changeset) do
+    assign(socket, form: to_form(changeset))
   end
 end
