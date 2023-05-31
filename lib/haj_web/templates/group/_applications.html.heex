@@ -49,7 +49,7 @@
                 </button>
               <% else %>
                 <%= button("Antag",
-                  to: Routes.group_index_path(@conn, :accept_user, @show_group.id, application.user.id),
+                  to: Routes.group_path(@conn, :accept_user, @show_group.id, application.user.id),
                   class: "bg-orange rounded-sm px-2 py-0.5 text-white",
                   data: [
                     confirm:
