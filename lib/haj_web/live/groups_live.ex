@@ -31,7 +31,7 @@ defmodule HajWeb.GroupsLive do
   defp group_card(assigns) do
     ~H"""
     <.link
-      navigate={Routes.group_path(Endpoint, :index, @show_group.id)}
+      navigate={Routes.group_index_path(Endpoint, :index, @show_group.id)}
       class="flex flex-col gap-1 rounded-lg border px-4 py-4 hover:bg-gray-50 sm:gap-1.5"
     >
       <div class="text-burgandy-500 text-lg font-bold">

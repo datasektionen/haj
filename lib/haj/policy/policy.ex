@@ -56,6 +56,13 @@ defmodule Haj.Policy do
     end
   end
 
+  object :show_group do
+    action :edit do
+      allow :is_chef
+      allow role: :admin
+    end
+  end
+
   object :responsibility_comment do
     action :edit do
       allow :own_comment

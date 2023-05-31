@@ -82,7 +82,7 @@ defmodule HajWeb.MembersLive do
       <:col :let={member} label="Grupper" class="hidden sm:table-cell">
         <div class="flex flex-row items-center space-x-1">
           <%= for group <- member.group_memberships do %>
-            <.link navigate={Routes.group_path(Endpoint, :index, group.show_group.id)}>
+            <.link navigate={Routes.group_index_path(Endpoint, :index, group.show_group.id)}>
               <div
                 class="rounded-full px-2 py-0.5 filter hover:brightness-90"
                 style={"background-color: #{get_color(:bg, group.show_group.group.id)};
