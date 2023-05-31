@@ -205,9 +205,11 @@ defmodule HajWeb.Layouts do
       >
         Mina uppgifter
       </.link>
+      <%!-- Settings currently don't exist --%>
+      <%!--
       <.link class="border-b px-4 py-2 hover:bg-burgandy-500 hover:text-white">
         Inställningar
-      </.link>
+      </.link> --%>
       <.link
         navigate={~p"/logout"}
         class="rounded-b-md px-4 py-2 hover:bg-burgandy-500 hover:text-white"
