@@ -1,15 +1,15 @@
-<div class="flex flex-row items-baseline justify-between w-full pt-4 sm:flex-col mr-auto">
-  <span class="text-2xl font-bold ">Ansvar</span>
+<div class="mr-auto flex w-full flex-row items-baseline justify-between pt-4 sm:flex-col">
+  <span class="text-2xl font-bold">Ansvar</span>
   <span class="text-sm text-gray-600">Visar <%= length(@responsibilities) %></span>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4">
+<div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
   <%= for responsibility <- @responsibilities do %>
     <.link
       navigate={~p"/live/responsibilities/#{responsibility}"}
-      class="flex flex-col gap-1 sm:gap-1.5 border rounded-lg px-4 py-4 hover:bg-gray-50"
+      class="flex flex-col gap-1 rounded-lg border px-4 py-4 hover:bg-gray-50 sm:gap-1.5"
     >
-      <div class="text-lg font-bold text-burgandy-500 pb-1">
+      <div class="text-burgandy-500 pb-1 text-lg font-bold">
         <%= responsibility.name %>
       </div>
 
@@ -21,7 +21,7 @@
             <div class="inline-flex flex-row items-center gap-2">
               <img
                 src={"https://zfinger.datasektionen.se/user/#{user.username}/image/100"}
-                class="h-6 w-6 rounded-full object-cover object-top inline-block filter"
+                class="inline-block h-6 w-6 rounded-full object-cover object-top filter"
               />
               <%= full_name(user) %>
             </div>

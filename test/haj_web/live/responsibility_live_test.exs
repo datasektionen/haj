@@ -49,7 +49,9 @@ defmodule HajWeb.ResponsibilityLiveTest do
     test "updates responsibility in listing", %{conn: conn, responsibility: responsibility} do
       {:ok, index_live, _html} = live(conn, ~p"/responsibilities")
 
-      assert index_live |> element("#responsibilities-#{responsibility.id} a", "Edit") |> render_click() =~
+      assert index_live
+             |> element("#responsibilities-#{responsibility.id} a", "Edit")
+             |> render_click() =~
                "Edit Responsibility"
 
       assert_patch(index_live, ~p"/responsibilities/#{responsibility}/edit")
@@ -72,7 +74,10 @@ defmodule HajWeb.ResponsibilityLiveTest do
     test "deletes responsibility in listing", %{conn: conn, responsibility: responsibility} do
       {:ok, index_live, _html} = live(conn, ~p"/responsibilities")
 
-      assert index_live |> element("#responsibilities-#{responsibility.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#responsibilities-#{responsibility.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#responsibilities-#{responsibility.id}")
     end
   end
