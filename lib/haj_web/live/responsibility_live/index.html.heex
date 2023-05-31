@@ -20,7 +20,7 @@
           <%= for user <- responsibility.responsible_users do %>
             <div class="inline-flex flex-row items-center gap-2">
               <img
-                src={"https://zfinger.datasektionen.se/user/#{user.username}/image/100"}
+                src={"https://#{Application.get_env(:haj, :zfinger_url)}/user/#{user.username}/image/100"}
                 class="h-6 w-6 rounded-full object-cover object-top inline-block filter"
               />
               <%= full_name(user) %>
