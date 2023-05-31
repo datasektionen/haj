@@ -1,7 +1,7 @@
 <.table id="groups-table" rows={@groups}>
   <:col :let={show_group} label="Grupp">
     <%= link("#{show_group.group.name}",
-      to: Routes.group_path(HajWeb.Endpoint, :group, show_group.id),
+      to: Routes.group_index_path(HajWeb.Endpoint, :group, show_group.id),
       class: "font-bold"
     ) %>
   </:col>

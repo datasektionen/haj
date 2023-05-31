@@ -66,10 +66,10 @@ defmodule HajWeb.Nav do
   defp set_active_tab(params, _url, socket) do
     active_tab =
       case socket.view do
-        HajWeb.GroupAdminLive ->
+        HajWeb.GroupLive.Admin ->
           {:group, String.to_integer(params["show_group_id"])}
 
-        HajWeb.GroupLive ->
+        HajWeb.GroupLive.Index ->
           {:group, String.to_integer(params["show_group_id"])}
 
         _ ->

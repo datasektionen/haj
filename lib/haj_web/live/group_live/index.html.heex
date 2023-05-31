@@ -1,0 +1,82 @@
+<div class="mt-4 flex flex-col justify-start gap-4 lg:rounded-lg lg:border lg:px-6 lg:py-6">
+  <div class="flex items-start justify-between">
+    <div class="flex flex-col gap-2 sm:flex-row sm:gap-12 xl:items-center">
+      <div class="">
+        <h3 class="text-2xl font-bold">
+          <%= @group.group.name %>
+        </h3>
+        <span class="text-sm text-gray-600">Del av METAspexet <%= @group.show.year.year %></span>
+      </div>
+      <div class="">
+        <h4 class="text-l font-bold">Ansvariga chefer</h4>
+        <div class="flex flex-col gap-2 pt-2">
+          <%= for chef <- chefer(@group) do %>
+            <.link navigate={Routes.user_path(Endpoint, :index, chef.username)} class="group">
+              <img
+                src={"https://zfinger.datasektionen.se/user/#{chef.username}/image/100"}
+                class="inline-block h-6 w-6 rounded-full object-cover object-top filter group-hover:brightness-90"
+              />
+              <span class="px-2 text-sm text-gray-700 group-hover:text-gray-900">
+                <%= full_name(chef) %>
+              </span>
+            </.link>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <%= if @current_user.role == :admin ||
+      @group.group_memberships
+      |> Enum.any?(fn %{user_id: id, role: role} ->
+        role == :chef && id == @current_user.id end) do %>
+      <.link
+        navigate={~p"/live/group/admin/#{@group}"}
+        class="text-md bg-burgandy-500 block rounded-md px-3 py-1 text-sm text-white hover:bg-burgandy-400"
+      >
+        Administrera
+      </.link>
+    <% end %>
+  </div>
+  <div class="">
+    <%= if @group.application_description do %>
+      <h4 class="text-l font-bold">Vad gör <%= @group.group.name %>?</h4>
+      <p class="whitespace-pre-wrap text-sm"><%= @group.application_description %></p>
+    <% end %>
+  </div>
+</div>
+<div class="pt-6 pb-4">
+  <div class="flex flex-row items-center pb-2">
+    <div class="flex flex-col">
+      <span class="text-xl font-bold">Alla Medlemmar</span>
+      <span class="text-sm text-gray-500">Totalt <%= length(@group.group_memberships) %></span>
+    </div>
+    <.link
+      href={~p"/show-groups/#{@group}/vcard"}
+      method="post"
+      class="ml-auto flex flex-row items-center gap-2 rounded-lg border px-3 py-2 hover:bg-gray-50"
+    >
+      <.icon name={:arrow_down_on_square_stack} mini class="h-5 w-5" />
+      <span class="text-sm">Ladda ner vcard</span>
+    </.link>
+  </div>
+
+  <.live_table rows={@group.group_memberships |> Enum.map(fn %{user: user} -> user end)}>
+    <:col :let={member} label="Namn">
+      <.user_card user={member} />
+    </:col>
+    <:col :let={member} label="KTH-id" class="hidden xs:table-cell">
+      <%= member.username %>
+    </:col>
+    <:col :let={member} label="Klass" class="hidden sm:table-cell">
+      <%= member.class %>
+    </:col>
+    <:col :let={member} label="Telefonnr">
+      <%= member.phone %>
+    </:col>
+    <:col :let={member} label="Mail" class="hidden lg:table-cell">
+      <%= member.email %>
+    </:col>
+    <:col :let={member} label="Google-konto" class="hidden xl:table-cell">
+      <%= member.google_account %>
+    </:col>
+  </.live_table>
+</div>

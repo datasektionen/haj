@@ -5,7 +5,7 @@
   <div class="flex-grow-[3]">
     <div class="grid md:grid-cols-3">
       <%= for show_group <- @user_groups do %>
-        <%= link to: Routes.group_path(@conn, :group, show_group.id) do %>
+        <%= link to: Routes.group_index_path(@conn, :group, show_group.id) do %>
           <div class="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 md:flex-col">
             <Heroicons.user_group solid class="h-10 md:h-14" />
             <div class="border-burgandy-500 text-center text-lg md:w-full md:border-t-2">

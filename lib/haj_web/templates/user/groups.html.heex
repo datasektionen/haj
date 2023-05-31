@@ -12,7 +12,7 @@
         <div class="">
           <%= for show_group <- show_groups do %>
             <%= link("#{show_group.group.name}",
-              to: Routes.group_path(@conn, :group, show_group.id),
+              to: Routes.group_index_path(@conn, :group, show_group.id),
               class: "block px-2 py-2 hover:bg-gray-200"
             ) %>
           <% end %>

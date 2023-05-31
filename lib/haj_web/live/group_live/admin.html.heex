@@ -1,0 +1,104 @@
+<h1 class="mt-4 text-3xl font-bold">
+  Redigera <span class="text-burgandy-600"><%= @page_title %></span>
+</h1>
+<.form :let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
+  <%= label(f, :application_description, "Beskrivning av gruppen",
+    class: "mt-4 font-medium text-zinc-600"
+  ) %>
+  <%= textarea(f, :application_description,
+    class: "border-1 mb-2 rounded-lg border-zinc-300 bg-zinc-50"
+  ) %>
+
+  <%= label(
+    f,
+    :application_extra_question,
+    "Extra fråga i ansökan. Om du lämnar detta blankt kommer ingen extra fråga visas.",
+    class: "mt-2 font-medium text-zinc-600"
+  ) %>
+  <%= textarea(f, :application_extra_question,
+    class: "border-1 mb-2 rounded-lg border-zinc-300 bg-zinc-50"
+  ) %>
+
+  <div class="mb-2 flex items-center gap-2">
+    <%= checkbox(f, :application_open) %>
+    <%= label(f, :application_open, "Gruppen går att söka") %>
+  </div>
+
+  <%= submit("Spara",
+    class: "bg-burgandy-500 self-start rounded-md px-16 py-2 text-white hover:bg-burgandy-400"
+  ) %>
+</.form>
+<h2 class="text-burgandy-500 mt-6 font-bold uppercase">Lägg till medlemmar</h2>
+<p class="font-regular py-2 text-zinc-600">
+  Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
+</p>
+<div class="flex flex-row items-stretch gap-2">
+  <.form :let={f} for={%{}} as={:role_form} phx-change="update_role">
+    <%= select(f, :role, @roles, class: "h-full rounded-md border-zinc-400", value: @role) %>
+  </.form>
+
+  <.form
+    :let={f}
+    for={%{}}
+    as={:search_form}
+    phx-change="suggest"
+    phx-submit="add_first_user"
+    autocomplete={:off}
+    class="flex-grow"
+  >
+    <%= text_input(f, :q, value: @query, class: "w-full rounded-md border-zinc-400") %>
+  </.form>
+</div>
+
+<ol id="matches" class="mt-2 flex flex-col rounded-md bg-slate-100">
+  <li :for={{user, i} <- Enum.with_index(@matches)}>
+    <%= if i == 0 do %>
+      <button
+        value={user.id}
+        class="w-full cursor-pointer px-3 py-2 text-left text-black opacity-50 hover:opacity-100"
+        phx-click="add_user"
+        phx-value-id={user.id}
+      >
+        <%= "#{user.first_name} #{user.last_name}" %>
+      </button>
+    <% else %>
+      <button
+        value={user.id}
+        class="w-full cursor-pointer border-t px-3 py-2 text-left text-black opacity-50 hover:opacity-100"
+        phx-click="add_user"
+        phx-value-id={user.id}
+      >
+        <%= "#{user.first_name} #{user.last_name}" %>
+      </button>
+    <% end %>
+  </li>
+</ol>
+<h3 class="mb-[-8px] mt-4 ml-2 text-sm font-semibold uppercase">Medlemmar</h3>
+<.table id="members-table" rows={@streams.members}>
+  <:col :let={{_id, member}} label="Namn">
+    <.user_card user={member.user} />
+  </:col>
+  <:col :let={{_id, member}} label="Mail">
+    <%= member.user.email %>
+  </:col>
+  <:col :let={{_id, member}} label="Roll">
+    <p
+      :if={member.role == :chef}
+      class="bg-burgandy-50 text-burgandy-400 inline-block rounded-md px-1"
+    >
+      Chef
+    </p>
+
+    <p :if={member.role == :gruppis}>
+      Gruppis
+    </p>
+  </:col>
+  <:action :let={{id, member}}>
+    <button
+      class="bg-burgandy-500 rounded-md px-2 py-0.5 text-white hover:bg-burgandy-400"
+      phx-click={JS.push("remove_user", value: %{id: member.id}) |> hide("##{id}")}
+    >
+      Ta bort
+    </button>
+  </:action>
+</.table>

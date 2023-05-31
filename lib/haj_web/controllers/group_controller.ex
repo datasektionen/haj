@@ -36,7 +36,7 @@ defmodule HajWeb.GroupController do
       false ->
         conn
         |> put_flash(:error, "Du har inte rättigheter att redigera gruppen.")
-        |> redirect(to: Routes.group_path(conn, :group, show_group_id))
+        |> redirect(to: Routes.group_index_path(conn, :group, show_group_id))
     end
   end
 
@@ -55,7 +55,7 @@ defmodule HajWeb.GroupController do
       false ->
         conn
         |> put_flash(:error, "Du har inte rättigheter att se ansökningar.")
-        |> redirect(to: Routes.group_path(conn, :group, show_group_id))
+        |> redirect(to: Routes.group_index_path(conn, :group, show_group_id))
     end
   end
 
@@ -76,7 +76,7 @@ defmodule HajWeb.GroupController do
             :error,
             "#{user.first_name} #{user.last_name} är redan medlem i #{show_group.group.name}."
           )
-          |> redirect(to: Routes.group_path(conn, :applications, show_group_id))
+          |> redirect(to: Routes.group_index_path(conn, :applications, show_group_id))
         else
           {:ok, _} =
             Haj.Spex.create_group_membership(%{
@@ -90,13 +90,13 @@ defmodule HajWeb.GroupController do
             :info,
             "#{user.first_name} #{user.last_name} antogs till #{show_group.group.name}."
           )
-          |> redirect(to: Routes.group_path(conn, :applications, show_group_id))
+          |> redirect(to: Routes.group_index_path(conn, :applications, show_group_id))
         end
 
       false ->
         conn
         |> put_flash(:error, "Du har inte rättigheter att anta medlemmar.")
-        |> redirect(to: Routes.group_path(conn, :group, show_group_id))
+        |> redirect(to: Routes.group_index_path(conn, :group, show_group_id))
     end
   end
 

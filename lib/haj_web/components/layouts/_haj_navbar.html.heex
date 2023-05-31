@@ -39,7 +39,7 @@
                 <%= link("Administrera", to: Routes.settings_path(@conn, :index)) %>
               </li>
             <% end %>
-            <li><%= link("Grupper", to: Routes.group_path(@conn, :index)) %></li>
+            <li><%= link("Grupper", to: Routes.group_index_path(@conn, :index)) %></li>
             <li><%= link("Medlemmar", to: Routes.members_path(@conn, :index)) %></li>
             <li><%= link("Min Sida", to: Routes.dashboard_path(@conn, :index)) %></li>
             <li><%= link("Nya designen", to: ~p"/live") %></li>
@@ -61,7 +61,7 @@
       <%= if @user.role == :admin do %>
         <li><%= link("Administrera", to: Routes.settings_path(@conn, :index)) %></li>
       <% end %>
-      <li><%= link("Grupper", to: Routes.group_path(@conn, :index)) %></li>
+      <li><%= link("Grupper", to: Routes.group_index_path(@conn, :index)) %></li>
       <li><%= link("Medlemmar", to: Routes.members_path(@conn, :index)) %></li>
       <li><%= link("Min Sida", to: Routes.dashboard_path(@conn, :index)) %></li>
       <li><%= link("Nya designen", to: ~p"/live") %></li>
