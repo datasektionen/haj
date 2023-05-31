@@ -29,7 +29,7 @@
 
     <.link
       :if={@authorized}
-      navigate={~p"/live/group/admin/#{@group}"}
+      navigate={~p"/group/admin/#{@group}"}
       class="text-md bg-burgandy-500 block rounded-md px-3 py-1 text-sm text-white hover:bg-burgandy-400"
     >
       Administrera
@@ -47,7 +47,7 @@
       <span class="text-sm text-gray-500">Totalt <%= length(@group.group_memberships) %></span>
     </div>
     <.link
-      href={~p"/show-groups/#{@group}/vcard"}
+      href={~p"/group/#{@group}/vcard"}
       method="post"
       class="ml-auto flex flex-row items-center gap-2 rounded-lg border px-3 py-2 hover:bg-gray-50"
     >
