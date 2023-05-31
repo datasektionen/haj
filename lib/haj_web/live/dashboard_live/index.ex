@@ -48,7 +48,7 @@ defmodule HajWeb.DashboardLive.Index do
   defp merch_card(assigns) do
     ~H"""
     <.link
-      patch={~p"/live/merch/#{@order_item.id}/edit"}
+      patch={~p"/merch/#{@order_item.id}/edit"}
       class="group relative overflow-hidden rounded-lg border shadow-sm"
     >
       <%= if @order_item.merch_item.image do %>

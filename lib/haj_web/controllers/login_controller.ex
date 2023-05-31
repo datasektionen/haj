@@ -3,7 +3,7 @@ defmodule HajWeb.LoginController do
 
   def login(conn, _params) do
     if conn.assigns[:current_user] do
-      conn |> redirect(to: Routes.dashboard_path(conn, :index))
+      conn |> redirect(to: ~p"/dashboard")
     else
       conn |> render("login.html")
     end

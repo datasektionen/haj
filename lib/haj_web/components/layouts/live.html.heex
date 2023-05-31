@@ -71,11 +71,12 @@
       <div class="flex w-full flex-row items-center justify-end space-x-4">
         <.live_component module={HajWeb.SearchComponent} id="search" />
         <div id="tobar-right" class="flex flex-row items-center space-x-4">
-          <div class="relative h-8 w-8">
+          <%!-- This is a notification icon, that is currently unused --%>
+          <%!-- <div class="relative h-8 w-8">
             <span class="bg-burgandy-500 absolute top-0.5 right-0.5 h-2.5 w-2.5 rounded-full">
             </span>
             <.icon name={:bell} outline class="h-8 w-8 text-gray-700" />
-          </div>
+          </div> --%>
           <div class="relative flex flex-row items-center">
             <button role="button" phx-click={show("#user-dropdown")} class="group">
               <img

@@ -6,14 +6,14 @@
   <:actions>
     <div class="flex flex-col items-end gap-2 md:flex-row">
       <.link
-        patch={~p"/live/settings/responsibilities/#{@responsibility}/new-responsible"}
+        patch={~p"/settings/responsibilities/#{@responsibility}/new-responsible"}
         phx-click={JS.push_focus()}
       >
         <.button>Lägg till ansvarig</.button>
       </.link>
 
       <.link
-        patch={~p"/live/settings/responsibilities/#{@responsibility}/show/edit"}
+        patch={~p"/settings/responsibilities/#{@responsibility}/show/edit"}
         phx-click={JS.push_focus()}
       >
         <.button>Redigera ansvar</.button>
@@ -47,13 +47,13 @@
   </:action>
 </.table>
 
-<.back navigate={~p"/live/settings/responsibilities"}>Tillbaka till ansvar</.back>
+<.back navigate={~p"/settings/responsibilities"}>Tillbaka till ansvar</.back>
 
 <.modal
   :if={@live_action == :edit}
   id="responsibility-modal"
   show
-  on_cancel={JS.patch(~p"/live/settings/responsibilities/#{@responsibility}")}
+  on_cancel={JS.patch(~p"/settings/responsibilities/#{@responsibility}")}
 >
   <.live_component
     module={HajWeb.SettingsLive.Responsibility.FormComponent}
@@ -61,7 +61,7 @@
     title={@page_title}
     action={@live_action}
     responsibility={@responsibility}
-    patch={~p"/live/settings/responsibilities/#{@responsibility}"}
+    patch={~p"/settings/responsibilities/#{@responsibility}"}
   />
 </.modal>
 
@@ -69,7 +69,7 @@
   :if={@live_action == :new_responsible}
   id="user-responsibility-modal"
   show
-  on_cancel={JS.patch(~p"/live/settings/responsibilities/#{@responsibility}")}
+  on_cancel={JS.patch(~p"/settings/responsibilities/#{@responsibility}")}
 >
   <.live_component
     module={HajWeb.SettingsLive.Responsibility.ResponsibleUserFormComponent}
@@ -77,6 +77,6 @@
     title={@page_title}
     responsibility={@responsibility}
     responsible_user={@responsible_user}
-    patch={~p"/live/settings/responsibilities/#{@responsibility}"}
+    patch={~p"/settings/responsibilities/#{@responsibility}"}
   />
 </.modal>
