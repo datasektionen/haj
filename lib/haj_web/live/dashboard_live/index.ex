@@ -1,6 +1,7 @@
 defmodule HajWeb.DashboardLive.Index do
   use HajWeb, :live_view
 
+  alias Haj.Policy
   alias Haj.Responsibilities
   alias Haj.Spex
   alias Haj.Merch
@@ -14,7 +15,12 @@ defmodule HajWeb.DashboardLive.Index do
       |> Enum.filter(fn %{show: show} -> show.id == current_show.id end)
 
     merch_order_items = Merch.get_current_merch_order_items(user_id)
-    responsibilities = Responsibilities.get_current_responsibilities(user_id)
+
+    responsibilities =
+      case Policy.authorize(:responsibility_read, socket.assigns.current_user) do
+        :ok -> Responsibilities.get_current_responsibilities(user_id)
+        _ -> []
+      end
 
     {:ok,
      assign(socket,

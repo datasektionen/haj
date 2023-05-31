@@ -61,6 +61,7 @@ defmodule HajWeb.Nav do
   tab SettingsLive.Food.Index, {:setting, :foods}
   tab SettingsLive.User.Index, {:setting, :users}
   tab SettingsLive.Merch.Index, {:setting, :merch}
+  tab SettingsLive.Responsibility.Index, {:setting, :responsibilities}
 
   defp set_active_tab(params, _url, socket) do
     active_tab =

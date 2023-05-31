@@ -125,7 +125,7 @@
         <div class="flex flex-row items-start justify-between">
           <div class="flex items-center">
             <img
-              src={"https://zfinger.datasektionen.se/user/#{comment.user.username}/image/100"}
+              src={"https://#{Application.get_env(:haj, :zfinger_url)}/user/#{comment.user.username}/image/100"}
               class="inline-block h-10 w-10 rounded-full object-cover object-top filter group-hover:brightness-90"
             />
             <div class="flex flex-col px-2">
@@ -224,7 +224,7 @@
           <div :if={users == []}>Ingen hade detta ansvar.</div>
           <div :for={user <- users} class="inline-flex flex-row items-center gap-2">
             <img
-              src={"https://zfinger.datasektionen.se/user/#{user.username}/image/100"}
+              src={"https://#{Application.get_env(:haj, :zfinger_url)}/user/#{user.username}/image/100"}
               class="inline-block h-6 w-6 rounded-full object-cover object-top filter"
             />
             <%= full_name(user) %>

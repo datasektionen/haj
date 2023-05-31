@@ -4,6 +4,8 @@ defmodule HajWeb.MerchLive.Index do
   alias Haj.Merch
   alias Haj.Spex
 
+  on_mount {HajWeb.UserAuth, {:authorize, :merch_buy}}
+
   @impl true
   def mount(_params, _session, socket) do
     show = Spex.current_spex()

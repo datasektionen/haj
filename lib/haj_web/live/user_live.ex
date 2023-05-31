@@ -17,7 +17,7 @@ defmodule HajWeb.UserLive do
     <div class="pt-4">
       <div class="flex flex-row items-center gap-4 pb-4">
         <img
-          src={"https://zfinger.datasektionen.se/user/#{@user.username}/image/200"}
+          src={"https://#{Application.get_env(:haj, :zfinger_url)}/user/#{@user.username}/image/200"}
           class="inline-block h-20 w-20 rounded-full object-cover object-top filter group-hover:brightness-90"
         />
         <div class="flex flex-col">

@@ -78,7 +78,7 @@ defmodule HajWeb.LiveHelpers do
         class="group flex flex-row items-center"
       >
         <img
-          src={"https://zfinger.datasektionen.se/user/#{@user.username}/image/100"}
+          src={"https://#{Application.get_env(:haj, :zfinger_url)}/user/#{@user.username}/image/100"}
           class="inline-block h-8 w-8 rounded-full object-cover object-top filter group-hover:brightness-90"
         />
         <span class="text-md px-2 text-gray-700 group-hover:text-gray-900">

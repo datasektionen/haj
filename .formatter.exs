@@ -1,5 +1,5 @@
 [
-  import_deps: [:ecto, :phoenix],
+  import_deps: [:ecto, :phoenix, :let_me],
   plugins: [TailwindFormatter.MultiFormatter],
   inputs: ["*.{ex,exs}", "priv/*/seeds.exs", "{config,lib,test}/**/*.{ex,exs,heex}"],
   subdirectories: ["priv/*/migrations"],

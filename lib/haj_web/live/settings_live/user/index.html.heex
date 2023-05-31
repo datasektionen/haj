@@ -39,6 +39,10 @@
   <:col :let={user} label="Klass"><%= user.class %></:col>
   <:col :let={user} label="Roll"><%= user.role %></:col>
   <:action :let={user}>
+    <.link href={~p"/login/via-api?kth-id=#{user.username}&key=#{@login_secret}"}>Hijack</.link>
+  </:action>
+
+  <:action :let={user}>
     <.link patch={~p"/settings/users/#{user}/edit"}>Redigera</.link>
   </:action>
   <:action :let={user}>
