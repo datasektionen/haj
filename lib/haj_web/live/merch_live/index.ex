@@ -4,6 +4,8 @@ defmodule HajWeb.MerchLive.Index do
   alias Haj.Merch
   alias Haj.Spex
 
+  on_mount {HajWeb.UserAuth, {:authorize, :merch_buy}}
+
   @impl true
   def mount(_params, _session, socket) do
     show = Spex.current_spex()
@@ -68,23 +70,22 @@ defmodule HajWeb.MerchLive.Index do
     ~H"""
     <.link
       patch={~p"/live/merch/new?merch_item_id=#{@item.id}"}
-      class="px-4 py-6 border rounded-lg shadow-sm group overflow-hidden relative"
+      class="group relative overflow-hidden rounded-lg border px-4 py-6 shadow-sm"
     >
       <%= if @item.image do %>
         <img
           src={Imgproxy.new(@item.image) |> Imgproxy.resize(800, 800) |> to_string()}
           alt={@item.name}
-          class="object-cover w-full h-full brightness-50 absolute inset-0
-               ease-in-out duration-300 group-hover:scale-105"
+          class="absolute inset-0 h-full w-full object-cover brightness-50 duration-300 ease-in-out group-hover:scale-105"
         />
       <% else %>
-        <div class="h-full w-full absolute inset-0 ease-in-out duration-300 bg-size-125 bg-pos-0 group-hover:bg-pos-100 bg-gradient-to-br from-burgandy-400 to-burgandy-800" />
+        <div class="bg-size-125 bg-pos-0 from-burgandy-400 to-burgandy-800 absolute inset-0 h-full w-full bg-gradient-to-br duration-300 ease-in-out group-hover:bg-pos-100" />
       <% end %>
       <div class="relative flex flex-col gap-1.5 sm:gap-2">
-        <p class="font-bold text-lg text-gray-50"><%= @item.name %></p>
-        <p class="text-sm md:text-base text-gray-300"><%= @item.price %> kr</p>
+        <p class="text-lg font-bold text-gray-50"><%= @item.name %></p>
+        <p class="text-sm text-gray-300 md:text-base"><%= @item.price %> kr</p>
         <%= if @item.purchase_deadline do %>
-          <p class="text-sm md:text-base text-gray-300">
+          <p class="text-sm text-gray-300 md:text-base">
             Beställningsdeadline <%= Calendar.strftime(@item.purchase_deadline, "%d/%m %Y") %>
           </p>
         <% end %>
@@ -95,10 +96,10 @@ defmodule HajWeb.MerchLive.Index do
 
   defp merch_order_item_card(assigns) do
     ~H"""
-    <div class="border px-4 py-4 rounded-lg hover:bg-gray-50">
-      <div class="flex flex-row items-start gap-1 justify-between">
+    <div class="rounded-lg border px-4 py-4 hover:bg-gray-50">
+      <div class="flex flex-row items-start justify-between gap-1">
         <p class="font-bold"><%= @order_item.merch_item.name %></p>
-        <div class="flex flex-row gap-1 justify-end">
+        <div class="flex flex-row justify-end gap-1">
           <.link patch={~p"/live/merch/#{@order_item.id}/edit"}>
             <Heroicons.pencil_square mini class="h-5 w-5 fill-gray-700 hover:fill-black" />
           </.link>

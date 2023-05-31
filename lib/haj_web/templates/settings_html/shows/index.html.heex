@@ -3,7 +3,7 @@
     <._side_bar current_spex={@current_spex} conn={@conn} />
   </div>
   <div class="flex-grow-[3]">
-    <div class="uppercase font-bold pt-2">Alla spex någonsinn</div>
+    <div class="pt-2 font-bold uppercase">Alla spex någonsinn</div>
     <.table id="shows-table" rows={@shows}>
       <:col :let={show}>
         <%= show.year.year %>
@@ -12,13 +12,13 @@
         <%= show.title %>
       </:col>
       <:col :let={show}>
-        <button class="bg-orange text-white px-2 py-0.5 rounded-sm">
+        <button class="bg-orange rounded-sm px-2 py-0.5 text-white">
           <%= link("Redigera", to: Routes.settings_path(@conn, :edit_show, show.id)) %>
         </button>
       </:col>
     </.table>
 
-    <button class="px-3 py-2 bg-burgandy-500 text-white mt-4">
+    <button class="bg-burgandy-500 mt-4 px-3 py-2 text-white">
       <%= link("Nytt spex", to: Routes.settings_path(@conn, :new_show)) %>
     </button>
   </div>

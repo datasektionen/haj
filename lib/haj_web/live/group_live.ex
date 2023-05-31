@@ -13,25 +13,25 @@ defmodule HajWeb.GroupLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mt-4 flex flex-col gap-4 justify-start lg:px-6 lg:py-6   lg:border lg:rounded-lg">
-      <div class="flex justify-between items-start">
+    <div class="mt-4 flex flex-col justify-start gap-4 lg:rounded-lg lg:border lg:px-6 lg:py-6">
+      <div class="flex items-start justify-between">
         <div class="flex flex-col gap-2 sm:flex-row sm:gap-12 xl:items-center">
           <div class="">
-            <h3 class="font-bold text-2xl">
+            <h3 class="text-2xl font-bold">
               <%= @group.group.name %>
             </h3>
             <span class="text-sm text-gray-600">Del av METAspexet <%= @group.show.year.year %></span>
           </div>
           <div class="">
-            <h4 class="font-bold text-l">Ansvariga chefer</h4>
+            <h4 class="text-l font-bold">Ansvariga chefer</h4>
             <div class="flex flex-col gap-2 pt-2">
               <%= for chef <- chefer(@group) do %>
                 <.link navigate={Routes.user_path(Endpoint, :index, chef.username)} class="group">
                   <img
                     src={"https://zfinger.datasektionen.se/user/#{chef.username}/image/100"}
-                    class="h-6 w-6 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
+                    class="inline-block h-6 w-6 rounded-full object-cover object-top filter group-hover:brightness-90"
                   />
-                  <span class="text-gray-700 text-sm px-2 group-hover:text-gray-900">
+                  <span class="px-2 text-sm text-gray-700 group-hover:text-gray-900">
                     <%= full_name(chef) %>
                   </span>
                 </.link>
@@ -45,7 +45,7 @@ defmodule HajWeb.GroupLive do
         role == :chef && id == @current_user.id end) do %>
           <.link
             navigate={~p"/live/group/admin/#{@group}"}
-            class="block text-md bg-burgandy-500 rounded-md text-white px-3 py-1 hover:bg-burgandy-400 text-sm"
+            class="text-md bg-burgandy-500 block rounded-md px-3 py-1 text-sm text-white hover:bg-burgandy-400"
           >
             Administrera
           </.link>
@@ -53,21 +53,21 @@ defmodule HajWeb.GroupLive do
       </div>
       <div class="">
         <%= if @group.application_description do %>
-          <h4 class="font-bold text-l">Vad gör <%= @group.group.name %>?</h4>
-          <p class="text-sm whitespace-pre-wrap"><%= @group.application_description %></p>
+          <h4 class="text-l font-bold">Vad gör <%= @group.group.name %>?</h4>
+          <p class="whitespace-pre-wrap text-sm"><%= @group.application_description %></p>
         <% end %>
       </div>
     </div>
     <div class="pt-6 pb-4">
       <div class="flex flex-row items-center pb-2">
         <div class="flex flex-col">
-          <span class="text-xl font-bold ">Alla Medlemmar</span>
-          <span class="text-sm text-gray-500 ">Totalt <%= length(@group.group_memberships) %></span>
+          <span class="text-xl font-bold">Alla Medlemmar</span>
+          <span class="text-sm text-gray-500">Totalt <%= length(@group.group_memberships) %></span>
         </div>
         <.link
           href={Routes.group_path(Endpoint, :vcard, @group.id)}
-          class="ml-auto flex flex-row items-center gap-2 border rounded-lg px-3 py-2
-                 hover:bg-gray-50"
+          method="post"
+          class="ml-auto flex flex-row items-center gap-2 rounded-lg border px-3 py-2 hover:bg-gray-50"
         >
           <.icon name={:arrow_down_on_square_stack} mini class="h-5 w-5" />
           <span class="text-sm">Ladda ner vcard</span>

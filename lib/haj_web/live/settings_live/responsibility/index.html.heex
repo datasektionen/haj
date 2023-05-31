@@ -1,0 +1,50 @@
+<.header>
+  Visar ansvar
+  <:actions>
+    <.link patch={~p"/live/settings/responsibilities/new"}>
+      <.button>Nytt ansvar</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="responsibilities"
+  rows={@streams.responsibilities}
+  row_click={
+    fn {_id, responsibility} ->
+      JS.navigate(~p"/live/settings/responsibilities/#{responsibility}")
+    end
+  }
+>
+  <:col :let={{_id, responsibility}} label="Namn"><%= responsibility.name %></:col>
+  <:action :let={{_id, responsibility}}>
+    <div class="sr-only">
+      <.link navigate={~p"/live/settings/responsibilities/#{responsibility}"}>Visa</.link>
+    </div>
+    <.link patch={~p"/live/settings/responsibilities/#{responsibility}/edit"}>Redigera</.link>
+  </:action>
+  <:action :let={{id, responsibility}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: responsibility.id}) |> hide("##{id}")}
+      data-confirm="Är du säker?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="responsibility-modal"
+  show
+  on_cancel={JS.navigate(~p"/live/settings/responsibilities")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.Responsibility.FormComponent}
+    id={@responsibility.id || :new}
+    title={@page_title}
+    action={@live_action}
+    responsibility={@responsibility}
+    patch={~p"/live/settings/responsibilities"}
+  />
+</.modal>

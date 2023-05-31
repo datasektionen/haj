@@ -99,25 +99,25 @@ defmodule HajWeb.GroupAdminLive do
 
   def render(assigns) do
     ~H"""
-    <h1 class="font-bold mt-4 text-3xl">
+    <h1 class="mt-4 text-3xl font-bold">
       Redigera <span class="text-burgandy-600"><%= @page_title %></span>
     </h1>
     <.form :let={f} for={@changeset} phx-submit="save" class="flex flex-col pb-2">
       <%= label(f, :application_description, "Beskrivning av gruppen",
-        class: "text-zinc-600 mt-4 font-medium"
+        class: "mt-4 font-medium text-zinc-600"
       ) %>
       <%= textarea(f, :application_description,
-        class: "mb-2 rounded-lg border-1 border-zinc-300 bg-zinc-50"
+        class: "border-1 mb-2 rounded-lg border-zinc-300 bg-zinc-50"
       ) %>
 
       <%= label(
         f,
         :application_extra_question,
         "Extra fråga i ansökan. Om du lämnar detta blankt kommer ingen extra fråga visas.",
-        class: "text-zinc-600 mt-2 font-medium"
+        class: "mt-2 font-medium text-zinc-600"
       ) %>
       <%= textarea(f, :application_extra_question,
-        class: "mb-2 rounded-lg border-1 border-zinc-300 bg-zinc-50"
+        class: "border-1 mb-2 rounded-lg border-zinc-300 bg-zinc-50"
       ) %>
 
       <div class="mb-2 flex items-center gap-2">
@@ -126,11 +126,11 @@ defmodule HajWeb.GroupAdminLive do
       </div>
 
       <%= submit("Spara",
-        class: "self-start bg-burgandy-500 hover:bg-burgandy-400 px-16 py-2 rounded-md text-white"
+        class: "bg-burgandy-500 self-start rounded-md px-16 py-2 text-white hover:bg-burgandy-400"
       ) %>
     </.form>
-    <h2 class="uppercase mt-6 font-bold text-burgandy-500">Lägg till medlemmar</h2>
-    <p class="py-2 text-zinc-600 font-regular">
+    <h2 class="text-burgandy-500 mt-6 font-bold uppercase">Lägg till medlemmar</h2>
+    <p class="font-regular py-2 text-zinc-600">
       Välj vilken typ av medlem (chef/gruppis), sök på användare och lägg sedan till!
     </p>
     <div class="flex flex-row items-stretch gap-2">
@@ -151,12 +151,12 @@ defmodule HajWeb.GroupAdminLive do
       </.form>
     </div>
 
-    <ol id="matches" class="flex flex-col bg-slate-100 rounded-md mt-2">
+    <ol id="matches" class="mt-2 flex flex-col rounded-md bg-slate-100">
       <li :for={{user, i} <- Enum.with_index(@matches)}>
         <%= if i == 0 do %>
           <button
             value={user.id}
-            class="px-3 py-2 text-black opacity-50 hover:opacity-100 cursor-pointer w-full text-left"
+            class="w-full cursor-pointer px-3 py-2 text-left text-black opacity-50 hover:opacity-100"
             phx-click="add_user"
             phx-value-id={user.id}
           >
@@ -165,7 +165,7 @@ defmodule HajWeb.GroupAdminLive do
         <% else %>
           <button
             value={user.id}
-            class="px-3 py-2 text-black opacity-50 hover:opacity-100 cursor-pointer border-t w-full text-left"
+            class="w-full cursor-pointer border-t px-3 py-2 text-left text-black opacity-50 hover:opacity-100"
             phx-click="add_user"
             phx-value-id={user.id}
           >
@@ -174,7 +174,7 @@ defmodule HajWeb.GroupAdminLive do
         <% end %>
       </li>
     </ol>
-    <h3 class="uppercase font-semibold text-sm mb-[-8px] mt-4 ml-2">Medlemmar</h3>
+    <h3 class="mb-[-8px] mt-4 ml-2 text-sm font-semibold uppercase">Medlemmar</h3>
     <.table id="members-table" rows={@streams.members}>
       <:col :let={{_id, member}} label="Namn">
         <.user_card user={member.user} />
@@ -185,7 +185,7 @@ defmodule HajWeb.GroupAdminLive do
       <:col :let={{_id, member}} label="Roll">
         <p
           :if={member.role == :chef}
-          class="bg-burgandy-50 px-1 rounded-md text-burgandy-400 inline-block"
+          class="bg-burgandy-50 text-burgandy-400 inline-block rounded-md px-1"
         >
           Chef
         </p>
@@ -196,7 +196,7 @@ defmodule HajWeb.GroupAdminLive do
       </:col>
       <:action :let={{id, member}}>
         <button
-          class="bg-burgandy-500 text-white px-2 py-0.5 rounded-md hover:bg-burgandy-400"
+          class="bg-burgandy-500 rounded-md px-2 py-0.5 text-white hover:bg-burgandy-400"
           phx-click={JS.push("remove_user", value: %{id: member.id}) |> hide("##{id}")}
         >
           Ta bort

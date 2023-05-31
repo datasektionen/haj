@@ -2,9 +2,11 @@ defmodule HajWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  alias Haj.Policy
   alias Phoenix.LiveView
   alias Phoenix.Component
   alias Haj.Accounts
+  alias Haj.Accounts.User
   alias HajWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.
@@ -13,6 +15,15 @@ defmodule HajWeb.UserAuth do
   @max_age 60 * 60 * 24 * 60
   @remember_me_cookie "_haj_web_user_remember_me"
   @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
+
+  def on_mount({:authorize, action}, _params, _session, socket) do
+    with %User{} = user <- socket.assigns.current_user,
+         :ok <- Policy.authorize(action, user) do
+      {:cont, socket}
+    else
+      _ -> {:halt, redirect_require_admin(socket)}
+    end
+  end
 
   def on_mount(:current_user, _params, session, socket) do
     case session do
@@ -51,6 +62,18 @@ defmodule HajWeb.UserAuth do
     socket
     |> LiveView.put_flash(:error, "Please sign in")
     |> LiveView.redirect(to: Routes.session_path(socket, :login))
+  end
+
+  defp redirect_require_admin(socket) do
+    socket
+    |> LiveView.put_flash(:error, "Du har inte access")
+    |> LiveView.redirect(to: Routes.dashboard_unauthorized_path(socket, :index))
+  end
+
+  defp redirect_require_access(socket) do
+    socket
+    |> LiveView.put_flash(:error, "Du har inte access")
+    |> LiveView.redirect(to: Routes.login_path(socket, :unauthorized))
   end
 
   @doc """
@@ -184,7 +207,7 @@ defmodule HajWeb.UserAuth do
   end
 
   def require_spex_access(conn, _opts) do
-    if Enum.member?([:admin, :chef, :spexare], conn.assigns.current_user.role) do
+    if Policy.authorize(:haj_access, conn.assigns.current_user) do
       conn
     else
       conn
@@ -195,7 +218,7 @@ defmodule HajWeb.UserAuth do
   end
 
   def require_admin_access(conn, _opts) do
-    if conn.assigns.current_user.role == :admin do
+    if Policy.authorize(:haj_admin, conn.assigns.current_user) do
       conn
     else
       conn

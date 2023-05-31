@@ -1,6 +1,8 @@
 defmodule HajWeb.DashboardLive.Index do
   use HajWeb, :live_view
 
+  alias Haj.Policy
+  alias Haj.Responsibilities
   alias Haj.Spex
   alias Haj.Merch
 
@@ -14,32 +16,31 @@ defmodule HajWeb.DashboardLive.Index do
 
     merch_order_items = Merch.get_current_merch_order_items(user_id)
 
+    responsibilities =
+      case Policy.authorize(:responsibility_read, socket.assigns.current_user) do
+        :ok -> Responsibilities.get_current_responsibilities(user_id)
+        _ -> []
+      end
+
     {:ok,
      assign(socket,
        user_groups: user_groups,
        merch_order_items: merch_order_items,
+       responsibilities: responsibilities,
        page_title: "Hem"
      )}
   end
 
-  defp group_card(assigns) do
+  attr :navigate, :any, required: true
+  slot :inner_block, required: true
+
+  defp card(assigns) do
     ~H"""
     <.link
-      navigate={~p"/live/group/#{@show_group.id}"}
-      class="flex flex-col gap-1 sm:gap-1.5 border rounded-lg shadow-sm px-4 py-4 hover:bg-gray-50"
+      navigate={@navigate}
+      class="flex flex-col gap-1 rounded-lg border px-4 py-4 shadow-sm hover:bg-gray-50 sm:gap-1.5"
     >
-      <div class="text-lg font-bold text-burgandy-500 inline-flex items-center gap-2">
-        <.icon name={:user_group} solid />
-        <span class="">
-          <%= @show_group.group.name %>
-        </span>
-      </div>
-      <div class="text-gray-500">
-        <%= length(@show_group.group_memberships) %> medlemmar
-      </div>
-      <div>
-        Du är <%= @role %>
-      </div>
+      <%= render_slot(@inner_block) %>
     </.link>
     """
   end
@@ -48,23 +49,21 @@ defmodule HajWeb.DashboardLive.Index do
     ~H"""
     <.link
       patch={~p"/live/merch/#{@order_item.id}/edit"}
-      class="border rounded-lg shadow-sm group overflow-hidden relative"
+      class="group relative overflow-hidden rounded-lg border shadow-sm"
     >
       <%= if @order_item.merch_item.image do %>
         <img
           src={Imgproxy.new(@order_item.merch_item.image) |> Imgproxy.resize(800, 800) |> to_string()}
           alt={@order_item.merch_item.name}
-          class="object-cover w-full h-full brightness-50 absolute inset-0
-               ease-in-out duration-300 group-hover:scale-105"
+          class="absolute inset-0 h-full w-full object-cover brightness-50 duration-300 ease-in-out group-hover:scale-105"
         />
       <% else %>
-        <div class="w-full h-full absolute inset-0 ease-in-out duration-300 bg-size-125 bg-pos-0 group-hover:bg-pos-100
-                    bg-gradient-to-br from-burgandy-400 to-burgandy-700" />
+        <div class="bg-size-125 bg-pos-0 from-burgandy-400 to-burgandy-700 absolute inset-0 h-full w-full bg-gradient-to-br duration-300 ease-in-out group-hover:bg-pos-100" />
       <% end %>
 
-      <div class="relative px-4 py-4 flex flex-col gap-1 sm:gap-1.5">
-        <p class="font-bold text-lg text-gray-50"><%= @order_item.merch_item.name %></p>
-        <p class="text-gray-200 text-sm">
+      <div class="relative flex flex-col gap-1 px-4 py-4 sm:gap-1.5">
+        <p class="text-lg font-bold text-gray-50"><%= @order_item.merch_item.name %></p>
+        <p class="text-sm text-gray-200">
           Storlek <%= @order_item.size %>, <%= @order_item.count %> st
         </p>
       </div>

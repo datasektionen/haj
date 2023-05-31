@@ -40,8 +40,15 @@ defmodule HajWeb.Router do
   scope "/live", HajWeb do
     pipe_through :browser
 
-    live_session :authenticated, on_mount: [{HajWeb.UserAuth, :ensure_authenticated}, HajWeb.Nav] do
+    live_session :authenticated,
+      on_mount: [
+        {HajWeb.UserAuth, :ensure_authenticated},
+        {HajWeb.UserAuth, {:authorize, :haj_access}},
+        HajWeb.Nav
+      ] do
       live "/", DashboardLive.Index, :index
+      live "/unauthorized", DashboardLive.Unauthorized, :index
+
       live "/user-settings", UserSettingsLive, :index
       live "/members", MembersLive, :index
       live "/user/:username", UserLive, :index
@@ -56,6 +63,80 @@ defmodule HajWeb.Router do
       live "/merch-admin", MerchAdminLive.Index, :index
       live "/merch-admin/new", MerchAdminLive.Index, :new
       live "/merch-admin/:id/edit", MerchAdminLive.Index, :edit
+
+      ## Responsibilities
+
+      live "/responsibilities", ResponsibilityLive.Index, :index
+      live "/responsibilities/history", ResponsibilityLive.History, :index
+      live "/responsibilities/new", ResponsibilityLive.Index, :new
+      live "/responsibilities/:id/edit", ResponsibilityLive.Index, :edit
+
+      live "/responsibilities/:id", ResponsibilityLive.Show, :show
+      live "/responsibilities/:id/comments", ResponsibilityLive.Show, :comments
+
+      live "/responsibilities/:id/comments/:comment_id/edit",
+           ResponsibilityLive.Show,
+           :edit_comment
+
+      live "/responsibilities/:id/history", ResponsibilityLive.Show, :history
+      live "/responsibilities/:id/show/edit", ResponsibilityLive.Show, :edit
+      live "/merch-admin/orders", MerchAdminLive.Orders, :index
+    end
+
+    # Admin only!
+    live_session :admin,
+      on_mount: [
+        {HajWeb.UserAuth, :ensure_authenticated},
+        {HajWeb.UserAuth, {:authorize, :settings_admin}},
+        {HajWeb.Nav, :settings}
+      ] do
+      scope "/settings" do
+        live "/", SettingsLive.Index, :index
+        live "/shows", SettingsLive.Show.Index, :index
+        live "/shows/new", SettingsLive.Show.Index, :new
+        live "/shows/:id/edit", SettingsLive.Show.Index, :edit
+
+        live "/shows/:id", SettingsLive.Show.Show, :show
+        live "/shows/:id/show/edit", SettingsLive.Show.Show, :edit
+
+        live "/shows/:id/show-groups/:show_group_id/edit",
+             SettingsLive.Show.Show,
+             :edit_show_group
+
+        live "/groups", SettingsLive.Group.Index, :index
+        live "/groups/new", SettingsLive.Group.Index, :new
+        live "/groups/:id/edit", SettingsLive.Group.Index, :edit
+        live "/groups/:id", SettingsLive.Group.Show, :show
+        live "/groups/:id/show/edit", SettingsLive.Group.Show, :edit
+
+        live "/groups/:id/show-groups/new", SettingsLive.Group.Show, :new_show_group
+
+        live "/groups/:id/show-groups/:show_group_id/edit",
+             SettingsLive.Group.Show,
+             :edit_show_group
+
+        live "/foods", SettingsLive.Food.Index, :index
+        live "/foods/new", SettingsLive.Food.Index, :new
+        live "/foods/:id/edit", SettingsLive.Food.Index, :edit
+
+        live "/foods/:id", SettingsLive.Food.Show, :show
+        live "/foods/:id/show/edit", SettingsLive.Food.Show, :edit
+
+        live "/users", SettingsLive.User.Index, :index
+        live "/users/:id/edit", SettingsLive.User.Index, :edit
+
+        live "/responsibilities", SettingsLive.Responsibility.Index, :index
+        live "/responsibilities/new", SettingsLive.Responsibility.Index, :new
+        live "/responsibilities/:id/edit", SettingsLive.Responsibility.Index, :edit
+
+        live "/responsibilities/:id", SettingsLive.Responsibility.Show, :show
+
+        live "/responsibilities/:id/new-responsible",
+             SettingsLive.Responsibility.Show,
+             :new_responsible
+
+        live "/responsibilities/:id/show/edit", SettingsLive.Responsibility.Show, :edit
+      end
     end
   end
 
@@ -96,6 +177,7 @@ defmodule HajWeb.Router do
       get "/:show_group_id", GroupController, :group
 
       get "/:show_group_id/vcard", GroupController, :vcard
+      post "/:show_group_id/vcard", GroupController, :vcard
       get "/:show_group_id/csv", GroupController, :csv
       get "/:show_group_id/applications", GroupController, :applications
       post "/:show_group_id/accept/:user_id", GroupController, :accept_user
@@ -107,6 +189,7 @@ defmodule HajWeb.Router do
     get "/merch-admin/:show_id", MerchAdminController, :index
     get "/merch-admin/:show_id/orders", MerchAdminController, :orders
     get "/merch-admin/:show_id/csv", MerchAdminController, :csv
+    post "/merch-admin/:show_id/csv", MerchAdminController, :csv
     get "/merch-admin/:show_id/new", MerchAdminController, :new
     post "/merch-admin/:show_id/new", MerchAdminController, :create
     get "/merch-admin/:id/edit", MerchAdminController, :edit

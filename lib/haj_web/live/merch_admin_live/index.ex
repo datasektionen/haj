@@ -5,6 +5,8 @@ defmodule HajWeb.MerchAdminLive.Index do
   alias Haj.Merch
   alias Haj.Merch.MerchItem
 
+  on_mount {HajWeb.UserAuth, {:authorize, :merch_admin}}
+
   @impl true
   def mount(params, _session, socket) do
     show =
@@ -82,8 +84,8 @@ defmodule HajWeb.MerchAdminLive.Index do
   defp field(assigns) do
     ~H"""
     <div class="border-b pt-2 pb-2">
-      <span class="text-sm text-gray-500 block pb-1"><%= @title %></span>
-      <span class="text-sm block whitespace-pre-line"><%= @text %></span>
+      <span class="block pb-1 text-sm text-gray-500"><%= @title %></span>
+      <span class="block whitespace-pre-line text-sm"><%= @text %></span>
     </div>
     """
   end

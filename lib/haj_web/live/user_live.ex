@@ -18,16 +18,16 @@ defmodule HajWeb.UserLive do
       <div class="flex flex-row items-center gap-4 pb-4">
         <img
           src={"https://zfinger.datasektionen.se/user/#{@user.username}/image/200"}
-          class="h-20 w-20 rounded-full object-cover object-top inline-block filter group-hover:brightness-90"
+          class="inline-block h-20 w-20 rounded-full object-cover object-top filter group-hover:brightness-90"
         />
         <div class="flex flex-col">
           <span class="text-2xl font-bold"><%= full_name(@user) %></span>
           <span class="text-sm text-gray-600"><%= "#{@user.username}@kth.se" %></span>
         </div>
       </div>
-      <div class="flex flex-col sm:flex-row sm:gap-8 justify-start w-full">
-        <div class="p-8 rounded-xl border-slate-200 border">
-          <h3 class="text-lg py-3 font-bold px-2 border-b border-burgandy-500">Uppgifter</h3>
+      <div class="flex w-full flex-col justify-start sm:flex-row sm:gap-8">
+        <div class="rounded-xl border border-slate-200 p-8">
+          <h3 class="border-burgandy-500 border-b px-2 py-3 text-lg font-bold">Uppgifter</h3>
           <dl>
             <.datalist_item description="KTH-id" data={@user.username} />
             <.datalist_item description="Klass" data={@user.class} />
@@ -37,19 +37,19 @@ defmodule HajWeb.UserLive do
             <.datalist_item description="Matpreferenser" data={display_foods(@user)} />
           </dl>
         </div>
-        <div class="sm:w-64 p-8 rounded-xl border-slate-200 border">
-          <h3 class="text-lg py-3 font-bold px-2 border-b border-burgandy-500">Grupper</h3>
+        <div class="rounded-xl border border-slate-200 p-8 sm:w-64">
+          <h3 class="border-burgandy-500 border-b px-2 py-3 text-lg font-bold">Grupper</h3>
 
           <%= for {year, show_groups} <- @groups do %>
             <div>
-              <div class="py-2 px-2 font-bold text-sm border-b border-burgandy-500">
+              <div class="border-burgandy-500 border-b px-2 py-2 text-sm font-bold">
                 <%= year.year %>
               </div>
 
               <%= for show_group <- show_groups do %>
                 <.link
                   navigate={Routes.group_path(Endpoint, :index, show_group.id)}
-                  class="block px-2 py-3 border-b hover:bg-gray-50 text-sm"
+                  class="block border-b px-2 py-3 text-sm hover:bg-gray-50"
                 >
                   <%= show_group.group.name %>
                 </.link>
@@ -73,7 +73,7 @@ defmodule HajWeb.UserLive do
 
   defp datalist_item(%{class: _class} = assigns) do
     ~H"""
-    <div class={"bg-white py-3 px-2 border-b sm:grid sm:grid-cols-3 sm:gap-2 #{@class}"}>
+    <div class={"#{@class} border-b bg-white px-2 py-3 sm:grid sm:grid-cols-3 sm:gap-2"}>
       <dt class="text-sm text-gray-400"><%= @description %></dt>
       <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0"><%= @data %></dd>
     </div>
