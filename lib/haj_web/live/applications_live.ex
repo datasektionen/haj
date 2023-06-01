@@ -1,5 +1,5 @@
 defmodule HajWeb.ApplicationsLive do
-  use HajWeb, :live_view
+  use HajWeb, :embedded_live_view
 
   alias Haj.Spex
   alias Haj.Applications
@@ -16,6 +16,7 @@ defmodule HajWeb.ApplicationsLive do
       |> assign(:title, "Ansökningar #{current_spex.year.year}")
       |> assign(:show, current_spex)
       |> assign(:applications, applications)
+      |> assign(active_tab: nil, expanded_tab: nil)
 
     {:ok, socket}
   end

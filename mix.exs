@@ -59,7 +59,8 @@ defmodule Haj.MixProject do
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:imgproxy, "~> 3.0"},
       {:earmark, "~> 1.4"},
-      {:html_sanitize_ex, "~> 1.4"}
+      {:html_sanitize_ex, "~> 1.4"},
+      {:let_me, "~> 1.0"}
     ]
   end
 

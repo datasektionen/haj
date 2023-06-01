@@ -2,7 +2,7 @@
   Alla spex
   <:subtitle>Visar alla spex som finns i Haj.</:subtitle>
   <:actions>
-    <.link patch={~p"/live/settings/shows/new"}>
+    <.link patch={~p"/settings/shows/new"}>
       <.button>Nytt Spex</.button>
     </.link>
   </:actions>
@@ -11,16 +11,16 @@
 <.table
   id="shows"
   rows={@streams.shows}
-  row_click={fn {_id, show} -> JS.navigate(~p"/live/settings/shows/#{show}") end}
+  row_click={fn {_id, show} -> JS.navigate(~p"/settings/shows/#{show}") end}
 >
   <:col :let={{_id, show}} label="Titel"><%= show.title %></:col>
   <:col :let={{_id, show}} label="Eller-titel"><%= show.or_title %></:col>
   <:col :let={{_id, show}} label="Datum/år"><%= show.year %></:col>
   <:action :let={{_id, show}}>
     <div class="sr-only">
-      <.link navigate={~p"/live/settings/shows/#{show}"}>Visa</.link>
+      <.link navigate={~p"/settings/shows/#{show}"}>Visa</.link>
     </div>
-    <.link patch={~p"/live/settings/shows/#{show}/edit"}>Redigera</.link>
+    <.link patch={~p"/settings/shows/#{show}/edit"}>Redigera</.link>
   </:action>
   <:action :let={{id, show}}>
     <.link
@@ -36,7 +36,7 @@
   :if={@live_action in [:new, :edit]}
   id="show-modal"
   show
-  on_cancel={JS.navigate(~p"/live/settings/shows")}
+  on_cancel={JS.navigate(~p"/settings/shows")}
 >
   <.live_component
     module={HajWeb.SettingsLive.Show.FormComponent}
@@ -44,6 +44,6 @@
     title={@page_title}
     action={@live_action}
     show={@show}
-    patch={~p"/live/settings/shows"}
+    patch={~p"/settings/shows"}
   />
 </.modal>

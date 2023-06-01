@@ -200,6 +200,65 @@ defmodule Haj.Spex do
 
   alias Haj.Spex.GroupMembership
 
+  def member_of_spex?(show, user) do
+    query =
+      from gm in GroupMembership,
+        join: sg in assoc(gm, :show_group),
+        where: sg.show_id == ^show.id and gm.user_id == ^user.id,
+        limit: 1,
+        select: gm.id
+
+    case Repo.one(query) do
+      nil -> false
+      _ -> true
+    end
+  end
+
+  def member_of_any_spex?(user) do
+    query =
+      from gm in GroupMembership,
+        where: gm.user_id == ^user.id,
+        limit: 1,
+        select: gm.id
+
+    Repo.one(query) != nil
+  end
+
+  def curent_member_of_group_with_permission?(user_id, group_permission) do
+    spex = current_spex()
+
+    query =
+      from gm in GroupMembership,
+        join: sg in assoc(gm, :show_group),
+        join: g in assoc(sg, :group),
+        where:
+          gm.user_id == ^user_id and
+            g.permission_group == ^group_permission and
+            sg.show_id == ^spex.id,
+        limit: 1,
+        select: gm.id
+
+    case Repo.one(query) do
+      nil -> false
+      _ -> true
+    end
+  end
+
+  def member_of_group_with_permission?(user_id, group_permission) do
+    query =
+      from gm in GroupMembership,
+        join: sg in assoc(gm, :show_group),
+        join: g in assoc(sg, :group),
+        where: gm.user_id == ^user_id and g.permission_group == ^group_permission,
+        limit: 1,
+        select: gm.id
+
+    case Repo.one(query) do
+      nil -> false
+      _ -> true
+    end
+  end
+
   @doc """
   Returns the list of group_memberships.
 
@@ -295,6 +354,31 @@ defmodule Haj.Spex do
   end
 
   alias Haj.Spex.ShowGroup
+
+  @doc """
+  Returns true or false indicating if a user is a member of a show group.
+
+  ## Examples
+
+      iex> is_member_of_show_group?(user_id, show_group_id)
+      true
+
+  """
+  def is_member_of_show_group?(user_id, show_group_id) do
+    Repo.exists?(
+      from sg in ShowGroup,
+        join: gm in assoc(sg, :group_memberships),
+        where: sg.id == ^show_group_id and gm.user_id == ^user_id
+    )
+  end
+
+  def is_chef_of_show_group?(show_group, user) do
+    Repo.exists?(
+      from sg in ShowGroup,
+        join: gm in assoc(sg, :group_memberships),
+        where: sg.id == ^show_group.id and gm.user_id == ^user.id and gm.role == :chef
+    )
+  end
 
   @doc """
   Returns the list of show_groups.

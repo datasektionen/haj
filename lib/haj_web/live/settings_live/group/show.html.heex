@@ -3,11 +3,11 @@
   <:subtitle>Visar alla årgångar av gruppen. Klicka för att redigera gruppen det året.</:subtitle>
   <:actions>
     <div class="flex flex-col items-end gap-2 md:flex-row">
-      <.link patch={~p"/live/settings/groups/#{@group}/show/edit"} phx-click={JS.push_focus()}>
+      <.link patch={~p"/settings/groups/#{@group}/show/edit"} phx-click={JS.push_focus()}>
         <.button>Redigera grupp</.button>
       </.link>
       <.link
-        patch={~p"/live/settings/groups/#{@group}/show-groups/new"}
+        patch={~p"/settings/groups/#{@group}/show-groups/new"}
         phx-click={JS.push_focus()}
       >
         <.button>Lägg till till spex</.button>
@@ -20,14 +20,14 @@
   small
   id="groups"
   rows={@streams.show_groups}
-  row_click={fn {_id, show_group} -> JS.navigate(~p"/live/group/#{show_group}") end}
+  row_click={fn {_id, show_group} -> JS.navigate(~p"/group/#{show_group}") end}
 >
   <:col :let={{_id, show_group}} label="Namn">
     <%= @group.name %> <%= show_group.show.year.year %>
   </:col>
 
   <:action :let={{_id, show_group}}>
-    <.link patch={~p"/live/settings/groups/#{@group}/show-groups/#{show_group}/edit"}>
+    <.link patch={~p"/settings/groups/#{@group}/show-groups/#{show_group}/edit"}>
       Redigera
     </.link>
   </:action>
@@ -41,13 +41,13 @@
   </:action>
 </.table>
 
-<.back navigate={~p"/live/settings/groups"}>Tillbaka till grupper</.back>
+<.back navigate={~p"/settings/groups"}>Tillbaka till grupper</.back>
 
 <.modal
   :if={@live_action == :edit}
   id="group-modal"
   show
-  on_cancel={JS.patch(~p"/live/settings/groups/#{@group}")}
+  on_cancel={JS.patch(~p"/settings/groups/#{@group}")}
 >
   <.live_component
     module={HajWeb.SettingsLive.Group.FormComponent}
@@ -55,7 +55,7 @@
     title={@page_title}
     action={@live_action}
     group={@group}
-    patch={~p"/live/settings/groups/#{@group}"}
+    patch={~p"/settings/groups/#{@group}"}
   />
 </.modal>
 
@@ -63,7 +63,7 @@
   :if={@live_action in [:edit_show_group, :new_show_group]}
   id="show-group-modal"
   show
-  on_cancel={JS.patch(~p"/live/settings/groups/#{@group}")}
+  on_cancel={JS.patch(~p"/settings/groups/#{@group}")}
 >
   <.live_component
     module={HajWeb.SettingsLive.Group.ShowGroupFormComponent}
@@ -77,6 +77,6 @@
     }
     name={group_name(@group, @show_group, @live_action)}
     show_group={@show_group}
-    patch={~p"/live/settings/groups/#{@group}"}
+    patch={~p"/settings/groups/#{@group}"}
   />
 </.modal>

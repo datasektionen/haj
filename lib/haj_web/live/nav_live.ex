@@ -61,13 +61,19 @@ defmodule HajWeb.Nav do
   tab SettingsLive.Food.Index, {:setting, :foods}
   tab SettingsLive.User.Index, {:setting, :users}
   tab SettingsLive.Merch.Index, {:setting, :merch}
+  tab SettingsLive.Responsibility.Index, {:setting, :responsibilities}
 
   defp set_active_tab(params, _url, socket) do
     active_tab =
-      if socket.view == HajWeb.GroupLive do
-        {:group, String.to_integer(params["show_group_id"])}
-      else
-        active_tab(socket.view)
+      case socket.view do
+        HajWeb.GroupLive.Admin ->
+          {:group, String.to_integer(params["show_group_id"])}
+
+        HajWeb.GroupLive.Index ->
+          {:group, String.to_integer(params["show_group_id"])}
+
+        _ ->
+          active_tab(socket.view)
       end
 
     {:cont, assign(socket, active_tab: active_tab)}

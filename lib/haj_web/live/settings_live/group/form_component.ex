@@ -22,6 +22,13 @@ defmodule HajWeb.SettingsLive.Group.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Namn" />
+        <.input
+          field={@form[:permission_group]}
+          type="select"
+          label="Behörighetsgrupp"
+          options={Haj.Spex.Group.group_permissions()}
+          prompt="Välj behörighetsgrupp"
+        />
         <:actions>
           <.button phx-disable-with="Sparar...">Spara grupp</.button>
         </:actions>

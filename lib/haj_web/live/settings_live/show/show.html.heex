@@ -2,7 +2,7 @@
   Spex: <%= @show.title %>
   <:subtitle>Detta är ett spex. Nedan visas alla spexgrupper i detta spex.</:subtitle>
   <:actions>
-    <.link patch={~p"/live/settings/shows/#{@show}/show/edit"} phx-click={JS.push_focus()}>
+    <.link patch={~p"/settings/shows/#{@show}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Redigera spex</.button>
     </.link>
   </:actions>
@@ -35,14 +35,14 @@
   small
   id="show-groups"
   rows={@streams.show_groups}
-  row_click={fn {_id, show_group} -> JS.navigate(~p"/live/group/#{show_group}") end}
+  row_click={fn {_id, show_group} -> JS.navigate(~p"/group/#{show_group}") end}
 >
   <:col :let={{_id, show_group}} label="Namn">
     <%= show_group.group.name %> <%= @show.year.year %>
   </:col>
 
   <:action :let={{_id, show_group}}>
-    <.link patch={~p"/live/settings/shows/#{@show}/show-groups/#{show_group}/edit"}>
+    <.link patch={~p"/settings/shows/#{@show}/show-groups/#{show_group}/edit"}>
       Redigera
     </.link>
   </:action>
@@ -56,13 +56,13 @@
   </:action>
 </.table>
 
-<.back navigate={~p"/live/settings/shows"}>Tillbaka till alla spex</.back>
+<.back navigate={~p"/settings/shows"}>Tillbaka till alla spex</.back>
 
 <.modal
   :if={@live_action == :edit}
   id="show-modal"
   show
-  on_cancel={JS.patch(~p"/live/settings/shows/#{@show}")}
+  on_cancel={JS.patch(~p"/settings/shows/#{@show}")}
 >
   <.live_component
     module={HajWeb.SettingsLive.Show.FormComponent}
@@ -70,7 +70,7 @@
     title={@page_title}
     action={@live_action}
     show={@show}
-    patch={~p"/live/settings/shows/#{@show}"}
+    patch={~p"/settings/shows/#{@show}"}
   />
 </.modal>
 
@@ -78,7 +78,7 @@
   :if={@live_action in [:edit_show_group]}
   id="show-group-modal"
   show
-  on_cancel={JS.patch(~p"/live/settings/shows/#{@show}")}
+  on_cancel={JS.patch(~p"/settings/shows/#{@show}")}
 >
   <.live_component
     module={HajWeb.SettingsLive.Group.ShowGroupFormComponent}
@@ -87,6 +87,6 @@
     action={:edit}
     name={"#{@show_group.group.name} #{@show.year.year}"}
     show_group={@show_group}
-    patch={~p"/live/settings/shows/#{@show}"}
+    patch={~p"/settings/shows/#{@show}"}
   />
 </.modal>

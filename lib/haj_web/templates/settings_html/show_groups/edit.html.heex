@@ -1,8 +1,0 @@
-<div class="flex flex-col gap-4 md:flex-row">
-  <div class="flex-grow-[1]">
-    <._side_bar current_spex={@current_spex} conn={@conn} />
-  </div>
-  <div class="flex-grow-[3]">
-    <%= live_render(@conn, HajWeb.GroupAdminLive, session: %{"show_group_id" => @show_group.id}) %>
-  </div>
-</div>

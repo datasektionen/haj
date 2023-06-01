@@ -44,7 +44,7 @@ users =
 
 # Groups
 
-groups = ~w"Webb Chefsgruppen Bygg"
+groups = ~w"Webb Chefsgruppen Bygg Lallarna"
 
 show_groups =
   Enum.map(groups, fn name ->
