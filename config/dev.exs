@@ -13,7 +13,15 @@ config :haj, Haj.Repo,
 config :haj,
   login_api_key: System.get_env("LOGIN_API_KEY"),
   login_host: System.get_env("LOGIN_HOST"),
-  haj_subdomain: "localhost"
+  hostname: "localhost.datasektionen.se",
+  port: 4001,
+  api_login_secret: System.get_env("API_LOGIN_SECRET"),
+  zfinger_url: System.get_env("ZFINGER_URL")
+
+
+config :imgproxy,
+  key: System.get_env("IMGPROXY_KEY"),
+  salt: System.get_env("IMGPROXY_SALT")
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

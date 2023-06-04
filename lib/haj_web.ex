@@ -17,13 +17,20 @@ defmodule HajWeb do
   and import those modules here.
   """
 
+  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
+
   def controller do
     quote do
-      use Phoenix.Controller, namespace: HajWeb
+      use Phoenix.Controller,
+        namespace: HajWeb,
+        formats: [:html, :json],
+        layouts: [html: HajWeb.Layouts]
 
       import Plug.Conn
       import HajWeb.Gettext
       alias HajWeb.Router.Helpers, as: Routes
+
+      unquote(verified_routes())
     end
   end
 
@@ -39,16 +46,35 @@ defmodule HajWeb do
         only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
 
       # Include shared imports and aliases for views
-      unquote(view_helpers())
+      unquote(html_helpers())
     end
   end
 
-  def live_view do
+  def live_view(opts \\ []) do
     quote do
-      use Phoenix.LiveView,
-        layout: {HajWeb.LayoutView, :live}
+      @opts Keyword.merge(
+              [
+                layout: {HajWeb.Layouts, :live},
+                container: {:div, class: "relative flex bg-white"}
+              ],
+              unquote(opts)
+            )
 
-      unquote(view_helpers())
+      use Phoenix.LiveView, @opts
+
+      on_mount HajWeb.LiveFlash
+
+      unquote(html_helpers())
+    end
+  end
+
+  def embedded_live_view do
+    quote do
+      use Phoenix.LiveView
+
+      on_mount HajWeb.LiveFlash
+
+      unquote(html_helpers())
     end
   end
 
@@ -56,7 +82,24 @@ defmodule HajWeb do
     quote do
       use Phoenix.LiveComponent
 
-      unquote(view_helpers())
+      import HajWeb.LiveFlash, only: [push_flash: 2]
+
+      unquote(html_helpers())
+    end
+  end
+
+  def html do
+    quote do
+      use Phoenix.Component
+
+      import Phoenix.Controller,
+        only: [
+          get_csrf_token: 0,
+          view_module: 1,
+          view_template: 1
+        ]
+
+      unquote(html_helpers())
     end
   end
 
@@ -64,7 +107,7 @@ defmodule HajWeb do
     quote do
       use Phoenix.Component
 
-      unquote(view_helpers())
+      unquote(html_helpers())
     end
   end
 
@@ -85,7 +128,7 @@ defmodule HajWeb do
     end
   end
 
-  defp view_helpers do
+  defp html_helpers do
     quote do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
@@ -97,8 +140,23 @@ defmodule HajWeb do
       import Phoenix.View
 
       import HajWeb.ErrorHelpers
+      import HajWeb.LiveHelpers
+
+      import HajWeb.CoreComponents
       import HajWeb.Gettext
       alias HajWeb.Router.Helpers, as: Routes
+      alias Phoenix.LiveView.JS
+
+      unquote(verified_routes())
+    end
+  end
+
+  def verified_routes do
+    quote do
+      use Phoenix.VerifiedRoutes,
+        endpoint: HajWeb.Endpoint,
+        router: HajWeb.Router,
+        statics: HajWeb.static_paths()
     end
   end
 

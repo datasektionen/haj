@@ -8,10 +8,10 @@ defmodule HajWeb.ErrorHelpers do
   @doc """
   Generates tag for inlined form input errors.
   """
-  def error_tag(form, field) do
+  def error_tag(form, field, opts \\ []) when is_list(opts) do
     Enum.map(Keyword.get_values(form.errors, field), fn error ->
       content_tag(:span, translate_error(error),
-        class: "invalid-feedback",
+        class: "invalid-feedback #{Keyword.get(opts, :class, "")}",
         phx_feedback_for: input_name(form, field)
       )
     end)

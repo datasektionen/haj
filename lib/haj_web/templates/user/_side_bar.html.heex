@@ -1,9 +1,0 @@
-<div class="flex flex-col">
-  <div class="px-3 py-2 bg-gray-100 uppercase font-bold"><%= name(@user) %></div>
-  <div class="px-3 py-2 border-b border-gray-300">
-    <%= link("Visa uppgifter", to: Routes.user_path(@conn, :index, @user.username)) %>
-  </div>
-  <div class="px-3 py-2 border-b border-gray-300">
-    <%= link("Grupper", to: Routes.user_path(@conn, :groups, @user.username)) %>
-  </div>
-</div>

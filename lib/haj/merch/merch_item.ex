@@ -13,12 +13,16 @@ defmodule Haj.Merch.MerchItem do
     belongs_to :show, Haj.Spex.Show
     has_many :merch_order_items, Haj.Merch.MerchOrderItem
 
+    field :temp_id, :string, virtual: true
+
     timestamps()
   end
 
   @doc false
   def changeset(merch_item, attrs) do
     merch_item
+    # So its persisted
+    |> Map.put(:temp_id, merch_item.temp_id || attrs["temp_id"])
     |> cast(attrs, [:name, :price, :sizes, :show_id, :purchase_deadline, :image, :description])
     |> validate_required([:name, :price, :sizes])
     |> validate_length(:sizes, min: 1)

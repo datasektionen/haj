@@ -1,0 +1,54 @@
+<header
+  x-data="{navbarOpen: false, atTop: true, scrolledUp: true, lastPos: 0}"
+  @scroll.window="
+        if(window.pageYOffset > 10) {
+            atTop = false
+            window.pageYOffset < lastPos ? scrolledUp = true : scrolledUp = false
+            lastPos = window.pageYOffset
+        } else {
+            atTop = true
+        }
+        "
+  x-init="window.pageYOffset > 10 ? atTop = false : atTop = true"
+>
+  <div
+    class="bg-burgandy-500 fixed top-0 z-30 flex h-16 w-full justify-center py-3 text-white transition-all duration-500"
+    x-bind:class="{'-translate-y-full bg-transparent': !atTop && !scrolledUp}"
+  >
+    <div class="flex h-full w-full items-center justify-between px-8 md:max-w-7xl md:self-center md:px-14">
+      <nav class="flex h-full items-center">
+        <%= if @user && Enum.member?([:admin, :chef, :spexare], @user.role) do %>
+          <button class="h-full md:hidden" @click="navbarOpen = !navbarOpen">
+            <Heroicons.bars_3 mini class="h-full" />
+          </button>
+
+          <ul class="hidden space-x-6 text-lg font-medium md:flex">
+            <%= if Enum.member?([:admin, :chef], @user.role) do %>
+              <li><%= link("Ansökningar", to: Routes.application_path(@conn, :index)) %></li>
+            <% end %>
+
+            <%= if @user.role == :admin do %>
+              <li></li>
+            <% end %>
+            <li><%= link("Nya designen", to: ~p"/dashboard") %></li>
+          </ul>
+        <% end %>
+      </nav>
+    </div>
+  </div>
+
+  <%= if @user && Enum.member?([:admin, :chef, :spexare], @user.role) do %>
+    <ul
+      class="bg-burgandy-500 fixed left-0 z-20 min-h-screen w-full translate-x-full transform space-y-2 px-8 pt-24 text-right text-xl font-bold text-white opacity-0 transition duration-300 md:hidden"
+      x-bind:class="{'translate-x-full opacity-0': !navbarOpen, 'translate-x-0 opacity-100': navbarOpen}"
+    >
+      <%= if Enum.member?([:admin, :chef], @user.role) do %>
+        <li><%= link("Ansökningar", to: Routes.application_path(@conn, :index)) %></li>
+      <% end %>
+
+      <%= if @user.role == :admin do %>
+      <% end %>
+      <li><%= link("Nya designen", to: ~p"/dashboard") %></li>
+    </ul>
+  <% end %>
+</header>

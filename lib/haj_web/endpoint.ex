@@ -20,7 +20,7 @@ defmodule HajWeb.Endpoint do
     at: "/",
     from: :haj,
     gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+    only: HajWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -46,5 +46,5 @@ defmodule HajWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug HajWeb.Plugs.SubdomainRouter
+  plug HajWeb.Router
 end

@@ -9,7 +9,6 @@ defmodule HajWeb.SessionController do
   Issues a request to the login server, by redirecting the user there
   """
   def login(conn, _params) do
-    Logger.info("logging in")
     host = Application.get_env(:haj, :login_host)
 
     scheme =
@@ -37,6 +36,7 @@ defmodule HajWeb.SessionController do
     host = Application.get_env(:haj, :login_host)
     api_key = Application.get_env(:haj, :login_api_key)
 
+    # TODO, move this to backend Haj.Login module
     {:ok, response} = HTTPoison.get("https://#{host}/verify/#{token}.json?api_key=#{api_key}")
 
     case response do
@@ -47,6 +47,23 @@ defmodule HajWeb.SessionController do
 
       _ ->
         conn |> put_status(503) |> text("503: Something went wrong")
+    end
+  end
+
+  def login_api(conn, %{"key" => key, "kth-id" => username}) do
+    secret = Application.get_env(:haj, :api_login_secret)
+
+    Logger.info("User #{username} is trying to log in via API")
+
+    case key == secret do
+      true ->
+        user = Accounts.get_user_by_username!(username)
+
+        Logger.info("User #{username} logged in via API")
+        UserAuth.log_in_user(conn, user)
+
+      _ ->
+        conn |> put_status(401) |> text("401: Unauthorized")
     end
   end
 

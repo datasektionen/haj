@@ -27,18 +27,94 @@ import topbar from "../vendor/topbar"
 import Alpine from "alpinejs";
 import intersect from '@alpinejs/intersect'
 import collapse from '@alpinejs/collapse'
+import easyMDE from "easymde";
 
 window.Alpine = Alpine
 Alpine.plugin(intersect)
 Alpine.plugin(collapse)
 Alpine.start()
 
-let hooks = {};
+
+const initEasyMDE = (element) => new easyMDE({
+    element: element,
+    forceSync: true,
+    status: false,
+    spellChecker: false,
+    minHeight: "120px"
+})
+
+let Hooks = {};
+
+Hooks.Flash = {
+    mounted() {
+        let hide = () => liveSocket.execJS(this.el, this.el.getAttribute("phx-click"))
+        this.timer = setTimeout(() => hide(), 8000)
+        this.el.addEventListener("phx:hide-start", () => clearTimeout(this.timer))
+        this.el.addEventListener("mouseover", () => {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => hide(), 8000)
+        })
+    },
+    destroyed() { clearTimeout(this.timer) }
+}
+
+Hooks.RichText = {
+    mounted() {
+        // The textarea should be (the first) child of the form with the hook
+        let textArea = initEasyMDE(this.el.querySelector("textarea"))
+
+        this.handleEvent(
+            "set_richtext_data",
+            (richtext_data) => {
+                if (richtext_data.id === this.el.id && richtext_data.richtext_data !== textArea.value()) {
+                    textArea.value(richtext_data.richtext_data)
+                }
+            }
+        )
+
+        textArea.codemirror.on("change", () => {
+            this.pushEventTo(
+                this.el,
+                "richtext_updated",
+                { richtext_data: textArea.value() }
+            );
+        })
+    }
+}
+
+let Uploaders = {}
+
+Uploaders.S3 = function (entries, onViewError) {
+    entries.forEach(entry => {
+
+        let formData = new FormData()
+        let { url, fields } = entry.meta
+
+        Object.entries(fields).forEach(([key, val]) => formData.append(key, val))
+        formData.append("file", entry.file)
+
+        let xhr = new XMLHttpRequest()
+        onViewError(() => xhr.abort())
+        xhr.onload = () => xhr.status === 204 ? entry.progress(100) : entry.error()
+        xhr.onerror = () => entry.error()
+
+        xhr.upload.addEventListener("progress", (event) => {
+            if (event.lengthComputable) {
+                let percent = Math.round((event.loaded / event.total) * 100)
+                if (percent < 100) { entry.progress(percent) }
+            }
+        })
+
+        xhr.open("POST", url, true)
+        xhr.send(formData)
+    })
+}
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
     params: { _csrf_token: csrfToken },
-    hooks: hooks,
+    uploaders: Uploaders,
+    hooks: Hooks,
     dom: {
         onBeforeElUpdated(from, to) {
             if (from._x_dataStack) {

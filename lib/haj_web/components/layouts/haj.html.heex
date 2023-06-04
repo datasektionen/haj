@@ -1,0 +1,14 @@
+<main class="">
+  <._haj_navbar conn={@conn} user={@current_user} />
+  <div class="flex min-h-screen flex-col justify-between bg-gray-100 pt-16">
+    <%= if assigns[:title] do %>
+      <._title conn={@conn} title={@title} />
+    <% end %>
+    <div class="flex flex-1 px-8 md:w-full md:max-w-7xl md:self-center md:px-14">
+      <.flash kind={:info} title="Success!" flash={@flash} />
+      <.flash kind={:error} title="Error!" flash={@flash} />
+      <%= @inner_content %>
+    </div>
+    <._footer conn={@conn} />
+  </div>
+</main>

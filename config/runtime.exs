@@ -20,7 +20,7 @@ if System.get_env("PHX_SERVER") do
   config :haj, HajWeb.Endpoint, server: true
 end
 
-if config_env() == :prod do
+if config_env() == :prod || config_env() == :staging do
   database_url =
     System.get_env("DATABASE_URL") ||
       raise """
@@ -38,12 +38,22 @@ if config_env() == :prod do
 
   login_api_key = System.get_env("LOGIN_API_KEY") || raise "LOGIN_API_KEY is missing"
   login_host = System.get_env("LOGIN_HOST") || raise "LOGIN_HOST is missing"
-  haj_subdomain = System.get_env("HAJ_SUBDOMAIN") || raise "HAJ_SUBDOMAIN is missing"
+  api_login_secret = System.get_env("API_LOGIN_SECRET") || raise "API_LOGIN_SECRET is missing"
+  zfinger_url = System.get_env("ZFINGER_URL") || "zfinger.datasektionen.se"
 
   config :haj,
     login_api_key: login_api_key,
     login_host: login_host,
-    haj_subdomain: haj_subdomain
+    api_login_secret: api_login_secret,
+    zfinger_url: zfinger_url
+
+  # Variables for imgproxy
+  imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"
+  imgproxy_salt = System.get_env("IMGPROXY_SALT") || raise "IMGPROXY_SALT is missing"
+
+  config :imgproxy,
+    key: imgproxy_key,
+    salt: imgproxy_salt
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
