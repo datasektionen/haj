@@ -5,7 +5,6 @@ defmodule Haj.Responsibilities do
 
   import Ecto.Query, warn: false
   import Haj.Utils.Preloader
-  alias Haj.Accounts
   alias Haj.Spex
   alias Haj.Repo
 
