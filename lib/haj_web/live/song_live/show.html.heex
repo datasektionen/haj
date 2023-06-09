@@ -36,8 +36,8 @@
         </path>
       </svg>
       <button :if={@loaded} phx-click={js_play_pause()}>
-        <.icon :if={!@playing} name={:play} outline class="h-6 w-6" />
-        <.icon :if={@playing} name={:pause} outline class="h-6 w-6" />
+        <.icon :if={!@playing} name={:play} solid class="h-6 w-6" />
+        <.icon :if={@playing} name={:pause} solid class="h-6 w-6" />
       </button>
       <div
         id="audio-progress-container"
@@ -84,11 +84,7 @@
       class="text-burgandy-500/80 flex flex-col gap-2 text-xl font-semibold sm:gap-3 sm:text-2xl lg:gap-4 lg:text-3xl"
       phx-update="ignore"
     >
-      <p
-        :for={{line, index} <- Enum.with_index(@lyrics)}
-        id={"song-line-#{index}"}
-        phx-click={JS.push("jump", value: %{index: index})}
-      >
+      <p :for={line <- @lyrics}>
         <%= line %>
       </p>
     </div>
