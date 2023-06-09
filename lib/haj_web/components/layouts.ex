@@ -79,7 +79,7 @@ defmodule HajWeb.Layouts do
       <.nav_link
         navigate={~p"/songs"}
         icon_name={:musical_note}
-        title="Sångarkiv"
+        title="Sånger"
         active={@active_tab == :songs}
       />
 
@@ -123,7 +123,7 @@ defmodule HajWeb.Layouts do
 
         <:sub_link
           navigate={~p"/settings/songs"}
-          title="Sångarkiv"
+          title="Sånger"
           active={@active_tab == {:setting, :song}}
         />
       </.nav_link_group>

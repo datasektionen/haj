@@ -17,9 +17,25 @@
 </div>
 
 <div :if={@song.file} id="audio-player" phx-hook="AudioPlayer">
-  <div :if={@loaded} class="sticky top-0 border-b bg-white py-2">
+  <div :if={@player} class="sticky top-0 border-b bg-white py-2">
     <div class="flex flex-row items-center justify-center gap-5">
-      <button phx-click="play">
+      <svg
+        :if={!@loaded}
+        class="h-6 w-6 animate-spin"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="black" stroke-width="4">
+        </circle>
+        <path
+          class="opacity-75"
+          fill="black"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        >
+        </path>
+      </svg>
+      <button :if={@loaded} phx-click={js_play_pause()}>
         <.icon :if={!@playing} name={:play} outline class="h-6 w-6" />
         <.icon :if={@playing} name={:pause} outline class="h-6 w-6" />
       </button>
@@ -43,7 +59,7 @@
       </div>
     </div>
   </div>
-  <audio src={Haj.Archive.s3_url(@song.file)}></audio>
+  <audio autoPlay=""></audio>
   <div class="flex flex-row justify-center pt-6">
     <div
       id="song-lines"
@@ -54,6 +70,7 @@
         :for={{line, index} <- Enum.with_index(@lyrics)}
         id={"song-line-#{index}"}
         phx-click={JS.push("jump", value: %{index: index})}
+        class="cursor-pointer hover:text-black"
       >
         <%= line %>
       </p>

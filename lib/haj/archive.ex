@@ -108,6 +108,25 @@ defmodule Haj.Archive do
     Song.changeset(song, attrs)
   end
 
+  def search_songs(search_phrase, options \\ []) do
+    include_rank = Keyword.get(options, :rank, false)
+
+    base_query =
+      from s in Song,
+        where: fragment("? % ?", s.name, ^search_phrase),
+        order_by: fragment("? % ?", s.name, ^search_phrase)
+
+    query =
+      if include_rank do
+        from [s] in base_query,
+          select: {s, fragment("similarity(?, ?)", s.name, ^search_phrase)}
+      else
+        base_query
+      end
+
+    Repo.all(query)
+  end
+
   defp after_save({:ok, result}, func) do
     {:ok, _result} = func.(result)
   end

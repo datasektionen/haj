@@ -100,18 +100,33 @@ Hooks.AudioPlayer = {
     this.lines = this.el.querySelector("#song-lines").children;
     this.timings = [];
 
-    this.handleEvent("load", ({ timings }) => {
+    let enableAudio = () => {
+      if (this.player.src) {
+        if (this.player.readyState === 0) {
+          document.removeEventListener("click", enableAudio);
+        }
+      }
+    };
+    document.addEventListener("click", enableAudio);
+    this.el.addEventListener("js:listen_now", () => {});
+
+    this.handleEvent("load", ({ url, timings }) => {
       formatted = timings.map((timing) => timing / 1000);
+      this.player.src = url;
       this.timings = formatted;
 
-      this.duration = this.el.querySelector("#audio-duration");
-      this.currentTime = this.el.querySelector("#audio-time");
-      this.progressBar = this.el.querySelector("#audio-progress");
-      this.duration.innerText = this.formatTime(this.player.duration);
-      this.currentTime.innerText = this.formatTime(this.player.currentTime);
+      this.player.addEventListener("loadedmetadata", () => {
+        this.duration = this.el.querySelector("#audio-duration");
+        this.currentTime = this.el.querySelector("#audio-time");
+        this.progressBar = this.el.querySelector("#audio-progress");
+        this.duration.innerText = this.formatTime(this.player.duration);
+        this.currentTime.innerText = this.formatTime(this.player.currentTime);
+        this.pushEventTo(this.el, "loaded");
+        this.stop();
+      });
     });
 
-    this.handleEvent("play_pause", () => {
+    this.el.addEventListener("js:play_pause", () => {
       if (this.player.paused) {
         this.play();
       } else {
@@ -129,6 +144,17 @@ Hooks.AudioPlayer = {
 
     this.handleEvent("pause", () => this.pause());
     this.handleEvent("stop", () => this.stop());
+
+    // Press l to log the current time in player, useful for creating timings
+    this.debugTimings = [];
+    this.el.addEventListener("keydown", (event) => {
+      if (event.keyCode === 76) {
+        // l
+        event.preventDefault();
+        this.debugTimings.push(this.player.currentTime);
+        console.log(this.debugTimings);
+      }
+    });
   },
 
   clearNextTimer() {
@@ -138,29 +164,20 @@ Hooks.AudioPlayer = {
 
   play() {
     this.clearNextTimer();
-    this.player.play().then(
-      () => {
-        this.progressTimer = setInterval(() => this.updateProgress(), 100);
-      },
-      (error) => {
-        if (error.name === "NotAllowedError") {
-          execJS("#enable-audio", "data-js-show");
-        }
-      }
-    );
+    this.player.play().then(() => {
+      this.progressTimer = setInterval(() => this.updateProgress(), 100);
+    });
   },
 
   pause() {
+    clearInterval(this.progressTimer);
     this.player.pause();
   },
 
   stop() {
     clearInterval(this.progressTimer);
     this.player.pause();
-    this.player.currentTime = 0;
     this.updateProgress();
-    this.duration.innerText = "";
-    this.currentTime.innerText = "";
   },
 
   updateProgress() {
@@ -169,20 +186,14 @@ Hooks.AudioPlayer = {
     }
     if (!this.nextTimer && this.player.currentTime >= this.player.duration) {
       clearInterval(this.progressTimer);
-      this.nextTimer = setTimeout(
-        () => this.pushEvent("next_song_auto"),
-        rand(0, 1500)
-      );
+      this.player.pause();
+      this.pushEventTo(this.el, "js_paused");
       return;
     }
-    
 
     currentLineIndex = this.timings.findLastIndex(
       (timing) => this.player.currentTime > timing - 0.2
     );
-
-    console.log(this.timings);
-    console.log(this.player.currentTime);
 
     if (currentLineIndex > -1) {
       if (currentLineIndex > 0) {
@@ -190,10 +201,11 @@ Hooks.AudioPlayer = {
           "font-bold",
           "text-black"
         );
-        this.lines[currentLineIndex - 1].classList.add("text-gray-700");
+        this.lines[currentLineIndex - 1].classList.add("text-gray-600");
       }
       this.lines[currentLineIndex].classList.add("font-bold", "text-black");
-      this.lines[currentLineIndex].classList.remove("text-gray-700");
+      this.lines[currentLineIndex].classList.remove("text-gray-600");
+      //this.lines[currentLineIndex].scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
     this.progressBar.style.width = `${
@@ -210,16 +222,16 @@ Hooks.AudioPlayer = {
   reformatLines(line) {
     for (let i = 0; i < this.lines.length; i++) {
       if (i < line) {
-        this.lines[i].classList.add("text-black", "text-gray-700");
-        this.lines[i].classList.remove("text-bold");
+        this.lines[i].classList.add("text-gray-600");
+        this.lines[i].classList.remove("text-bold", "text-black");
       } else if (i === line) {
         this.lines[i].classList.add("text-black", "text-bold");
-        this.lines[i].classList.remove("text-gray-500");
+        this.lines[i].classList.remove("text-gray-600");
       } else {
         this.lines[i].classList.remove(
           "text-black",
           "text-bold",
-          "text-gray-700"
+          "text-gray-600"
         );
       }
     }
