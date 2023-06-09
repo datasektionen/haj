@@ -151,7 +151,7 @@ Hooks.AudioPlayer = {
       if (event.keyCode === 76) {
         // l
         event.preventDefault();
-        this.debugTimings.push(this.player.currentTime);
+        this.debugTimings.push(parseInt(this.player.currentTime*1000));
         console.log(this.debugTimings);
       }
     });
