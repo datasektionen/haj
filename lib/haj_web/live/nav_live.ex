@@ -49,7 +49,7 @@ defmodule HajWeb.Nav do
   # Small macros for setting tabs. Syntax: tab ModuleName, :active_tab, :expanded_tab
   tab DashboardLive.Index, :dashboard
   tab MembersLive, :members
-  tab GroupsLive, :groups
+  tab GroupLive.Index, :groups
   tab MerchLive.Index, :merch
   tab MerchAdminLive.Index, :merch_admin
   tab MerchAdminLive.Orders, :merch_orders
@@ -57,6 +57,8 @@ defmodule HajWeb.Nav do
   tab ResponsibilityLive.History, :responsibility_history
   tab SongLive.Index, :songs
   tab SongLive.Show, :songs
+  tab ShowLive.Index, :shows
+
   tab SettingsLive.Index, :settings
   tab SettingsLive.Show.Index, {:setting, :shows}
   tab SettingsLive.Group.Index, {:setting, :groups}
@@ -69,10 +71,10 @@ defmodule HajWeb.Nav do
   defp set_active_tab(params, _url, socket) do
     active_tab =
       case socket.view do
-        HajWeb.GroupLive.Admin ->
+        HajWeb.GroupLive.Show ->
           {:group, String.to_integer(params["show_group_id"])}
 
-        HajWeb.GroupLive.Index ->
+        HajWeb.GroupLive.Admin ->
           {:group, String.to_integer(params["show_group_id"])}
 
         _ ->

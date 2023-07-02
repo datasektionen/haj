@@ -1,0 +1,49 @@
+<.form
+  :let={f}
+  as={:search_form}
+  phx-change="filter"
+  phx-no-submit
+  autocomplete={:off}
+  onkeydown="return event.key != 'Enter';"
+  class="flex flex-col gap-4 pt-4 sm:flex-row sm:items-center"
+>
+  <div class="mr-auto flex w-full flex-row items-baseline justify-between sm:flex-col">
+    <span class="text-2xl font-bold"><%= "Medlemmar i spexet #{@show.year.year}" %></span>
+    <span class="text-sm text-gray-600">Visar <%= length(@members) %> medlemmar</span>
+  </div>
+  <%= text_input(f, :q,
+    value: @query,
+    phx_debounce: 500,
+    placeholder: "Sök",
+    class: "h-10 rounded-full text-sm"
+  ) %>
+  <%= select(f, :group, @groups,
+    class: "h-10 rounded-full text-sm",
+    value: @group,
+    prompt: "Alla grupper"
+  ) %>
+</.form>
+
+<.live_table rows={@members}>
+  <:col :let={member} label="Namn">
+    <.user_card user={member} />
+  </:col>
+  <:col :let={member} label="KTH-id">
+    <%= member.username %>
+  </:col>
+  <:col :let={member} label="Grupper" class="hidden sm:table-cell">
+    <div class="flex flex-row items-center space-x-1">
+      <%= for group <- member.group_memberships do %>
+        <.link navigate={~p"/group/#{group.show_group_id}"}>
+          <div
+            class="rounded-full px-2 py-0.5 filter hover:brightness-90"
+            style={"background-color: #{get_color(:bg, group.show_group.group.id)};
+                      color: #{pick_text_color(get_color(:bg, group.show_group.group.id))};"}
+          >
+            <%= group.show_group.group.name %>
+          </div>
+        </.link>
+      <% end %>
+    </div>
+  </:col>
+</.live_table>

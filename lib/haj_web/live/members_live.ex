@@ -31,7 +31,7 @@ defmodule HajWeb.MembersLive do
           Spex.list_members_for_show(socket.assigns.show_id)
 
         {group, ""} ->
-          Spex.get_group_members(group)
+          Spex.get_show_group_members(group)
 
         {"", query} ->
           Spex.search_show_members(socket.assigns.show_id, query)
@@ -82,7 +82,7 @@ defmodule HajWeb.MembersLive do
       <:col :let={member} label="Grupper" class="hidden sm:table-cell">
         <div class="flex flex-row items-center space-x-1">
           <%= for group <- member.group_memberships do %>
-            <.link navigate={Routes.group_index_path(Endpoint, :index, group.show_group.id)}>
+            <.link navigate={~p"/group/#{group.show_group_id}"}>
               <div
                 class="rounded-full px-2 py-0.5 filter hover:brightness-90"
                 style={"background-color: #{get_color(:bg, group.show_group.group.id)};

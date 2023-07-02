@@ -52,17 +52,23 @@ defmodule HajWeb.Router do
       live "/user-settings", UserSettingsLive, :index
       live "/members", MembersLive, :index
       live "/user/:username", UserLive, :index
-      live "/groups", GroupsLive, :index
-      live "/group/:show_group_id", GroupLive.Index, :index
+
+      ## Groups
+      live "/groups", GroupLive.Index, :index
+      live "/group/:show_group_id", GroupLive.Show, :show
       live "/group/admin/:show_group_id", GroupLive.Admin, :index
 
+      ## Merch
       live "/merch", MerchLive.Index, :index
       live "/merch/new", MerchLive.Index, :new
       live "/merch/:merch_order_item_id/edit", MerchLive.Index, :edit
 
+      ## Merch admin
+
       live "/merch-admin", MerchAdminLive.Index, :index
       live "/merch-admin/new", MerchAdminLive.Index, :new
       live "/merch-admin/:id/edit", MerchAdminLive.Index, :edit
+      live "/merch-admin/orders", MerchAdminLive.Orders, :index
 
       ## Responsibilities
 
@@ -80,10 +86,14 @@ defmodule HajWeb.Router do
 
       live "/responsibilities/:id/history", ResponsibilityLive.Show, :history
       live "/responsibilities/:id/show/edit", ResponsibilityLive.Show, :edit
-      live "/merch-admin/orders", MerchAdminLive.Orders, :index
 
+      ## Songs
       live "/songs", SongLive.Index, :index
       live "/songs/:id", SongLive.Show, :show
+
+      ## Shows
+      live "/shows", ShowLive.Index, :index
+      live "/shows/:show_id", ShowLive.Show, :index
     end
 
     # Admin only!

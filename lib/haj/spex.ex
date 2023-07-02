@@ -507,8 +507,8 @@ defmodule Haj.Spex do
   @doc """
   Preloads all current group membership information from a list of users
   """
-  def preload_user_groups(users) do
-    %{id: show_id} = current_spex()
+  def preload_user_groups(users, options \\ []) do
+    show_id = Keyword.get(options, :show_id, current_spex().id)
 
     query =
       from gm in GroupMembership,
@@ -533,15 +533,12 @@ defmodule Haj.Spex do
     Repo.one!(from g in Group, where: g.name == ^name)
   end
 
-  def get_group_members(group_id) do
-    %{id: spex_id} = current_spex()
-
+  def get_show_group_members(show_group_id) do
     query =
-      from g in Group,
-        join: sg in assoc(g, :show_groups),
+      from sg in ShowGroup,
         join: gm in assoc(sg, :group_memberships),
         join: u in assoc(gm, :user),
-        where: sg.show_id == ^spex_id and g.id == ^group_id,
+        where: sg.id == ^show_group_id,
         select: u
 
     Repo.all(query)
