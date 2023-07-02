@@ -28,7 +28,7 @@
     </div>
 
     <.link
-      :if={@authorized}
+      :if={@authorized_admin}
       navigate={~p"/group/admin/#{@group}"}
       class="text-md bg-burgandy-500 block rounded-md px-3 py-1 text-sm text-white hover:bg-burgandy-400"
     >
@@ -37,7 +37,7 @@
   </div>
   <div :if={@group.application_description} class="">
     <h4 class="text-l font-bold">Vad gör <%= @group.group.name %>?</h4>
-    <p class="whitespace-pre-wrap text-sm"><%= @group.application_description %></p>
+    <p class="whitespace-pre-wrap text-sm"><%= @group.group.description %></p>
   </div>
 </div>
 <div class="pt-6 pb-4">
