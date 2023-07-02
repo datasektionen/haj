@@ -55,6 +55,8 @@ defmodule HajWeb.Nav do
   tab MerchAdminLive.Orders, :merch_orders
   tab ResponsibilityLive.Index, :responsibilities
   tab ResponsibilityLive.History, :responsibility_history
+  tab SongLive.Index, :songs
+  tab SongLive.Show, :songs
   tab SettingsLive.Index, :settings
   tab SettingsLive.Show.Index, {:setting, :shows}
   tab SettingsLive.Group.Index, {:setting, :groups}
@@ -62,6 +64,7 @@ defmodule HajWeb.Nav do
   tab SettingsLive.User.Index, {:setting, :users}
   tab SettingsLive.Merch.Index, {:setting, :merch}
   tab SettingsLive.Responsibility.Index, {:setting, :responsibilities}
+  tab SettingsLive.Song.Index, {:setting, :song}
 
   defp set_active_tab(params, _url, socket) do
     active_tab =

@@ -1,5 +1,6 @@
 defmodule HajWeb.SearchComponent do
   use HajWeb, :live_component
+  alias Haj.Archive
   alias Haj.Accounts
   alias Haj.Spex
 
@@ -13,7 +14,8 @@ defmodule HajWeb.SearchComponent do
     # Sort results based on similarity
     results =
       (Accounts.search_spex_users(q, rank: true) ++
-         Spex.search_show_groups(current_spex.id, q, rank: true))
+         Spex.search_show_groups(current_spex.id, q, rank: true) ++
+         Archive.search_songs(q, rank: true))
       |> Enum.sort_by(&elem(&1, 1), &>=/2)
       |> Enum.map(&elem(&1, 0))
 
@@ -82,12 +84,15 @@ defmodule HajWeb.SearchComponent do
 
   defp navigate(%Accounts.User{} = user), do: ~p"/user/#{user.username}"
   defp navigate(%Spex.ShowGroup{} = sg), do: ~p"/group/#{sg.id}"
+  defp navigate(%Archive.Song{} = song), do: ~p"/songs/#{song.id}"
 
   defp title(%Accounts.User{} = user), do: full_name(user)
   defp title(%Spex.ShowGroup{} = sg), do: sg.group.name
+  defp title(%Archive.Song{} = song), do: song.name
 
   defp type(%Accounts.User{}), do: "Person"
   defp type(%Spex.ShowGroup{}), do: "Grupp"
+  defp type(%Archive.Song{}), do: "Låt"
 
   defp open_search() do
     JS.hide(to: "#search-icon")

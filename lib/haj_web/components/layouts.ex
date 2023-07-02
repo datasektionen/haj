@@ -76,6 +76,13 @@ defmodule HajWeb.Layouts do
         />
       </.nav_link_group>
 
+      <.nav_link
+        navigate={~p"/songs"}
+        icon_name={:musical_note}
+        title="Sånger"
+        active={@active_tab == :songs}
+      />
+
       <.nav_link_group
         :if={Policy.authorize?(:settings_admin, @current_user)}
         navigate={~p"/settings"}
@@ -112,6 +119,12 @@ defmodule HajWeb.Layouts do
           navigate={~p"/settings/responsibilities"}
           title="Ansvar"
           active={@active_tab == {:setting, :responsibilities}}
+        />
+
+        <:sub_link
+          navigate={~p"/settings/songs"}
+          title="Sånger"
+          active={@active_tab == {:setting, :song}}
         />
       </.nav_link_group>
     </div>

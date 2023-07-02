@@ -59,7 +59,9 @@ defmodule Haj.MixProject do
       {:imgproxy, "~> 3.0"},
       {:earmark, "~> 1.4"},
       {:html_sanitize_ex, "~> 1.4"},
-      {:let_me, "~> 1.0"}
+      {:let_me, "~> 1.0"},
+      {:ex_aws, "~> 2.1.2"},
+      {:ex_aws_s3, "~> 2.0"}
     ]
   end
 
