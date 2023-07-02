@@ -81,6 +81,9 @@ defmodule HajWeb.Router do
       live "/responsibilities/:id/history", ResponsibilityLive.Show, :history
       live "/responsibilities/:id/show/edit", ResponsibilityLive.Show, :edit
       live "/merch-admin/orders", MerchAdminLive.Orders, :index
+
+      live "/songs", SongLive.Index, :index
+      live "/songs/:id", SongLive.Show, :show
     end
 
     # Admin only!
@@ -136,6 +139,13 @@ defmodule HajWeb.Router do
              :new_responsible
 
         live "/responsibilities/:id/show/edit", SettingsLive.Responsibility.Show, :edit
+
+        live "/songs", SettingsLive.Song.Index, :index
+        live "/songs/new", SettingsLive.Song.Index, :new
+        live "/songs/:id/edit", SettingsLive.Song.Index, :edit
+
+        live "/songs/:id", SettingsLive.Song.Show, :show
+        live "/songs/:id/show/edit", SettingsLive.Song.Show, :edit
       end
     end
   end
