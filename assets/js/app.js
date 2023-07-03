@@ -151,7 +151,7 @@ Hooks.AudioPlayer = {
       if (event.keyCode === 76) {
         // l
         event.preventDefault();
-        this.debugTimings.push(parseInt(this.player.currentTime*1000));
+        this.debugTimings.push(parseInt(this.player.currentTime * 1000));
         console.log(this.debugTimings);
       }
     });
@@ -235,6 +235,44 @@ Hooks.AudioPlayer = {
         );
       }
     }
+  },
+};
+
+Hooks.SearchElement = {
+  mounted() {
+    const searchBarContainer = this.el;
+    document.addEventListener("keydown", (event) => {
+      
+      if (event.key !== "ArrowUp" && event.key !== "ArrowDown") {
+        return;
+      }
+
+      const focusElemnt = document.querySelector(":focus");
+
+      if (!focusElemnt) {
+        return;
+      }
+
+      if (!searchBarContainer.contains(focusElemnt)) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const tabElements = document.querySelectorAll(
+        "#search-input, #search-results a"
+      );
+      const focusIndex = Array.from(tabElements).indexOf(focusElemnt);
+      const tabElementsCount = tabElements.length - 1;
+
+      if (event.key === "ArrowUp") {
+        tabElements[focusIndex > 0 ? focusIndex - 1 : tabElementsCount].focus();
+      }
+
+      if (event.key === "ArrowDown") {
+        tabElements[focusIndex < tabElementsCount ? focusIndex + 1 : 0].focus();
+      }
+    });
   },
 };
 
