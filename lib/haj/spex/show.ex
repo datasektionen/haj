@@ -12,7 +12,7 @@ defmodule Haj.Spex.Show do
     field :slack_webhook_url, :string
 
     has_many :show_groups, Haj.Spex.ShowGroup
-    has_many :songs, Haj.Spex.Song
+    has_many :songs, Haj.Archive.Song
 
     timestamps()
   end

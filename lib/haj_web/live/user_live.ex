@@ -48,7 +48,7 @@ defmodule HajWeb.UserLive do
 
               <%= for show_group <- show_groups do %>
                 <.link
-                  navigate={Routes.group_index_path(Endpoint, :index, show_group.id)}
+                  navigate={~p"/group/#{show_group.id}"}
                   class="block border-b px-2 py-3 text-sm hover:bg-gray-50"
                 >
                   <%= show_group.group.name %>

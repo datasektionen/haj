@@ -1,79 +1,12 @@
-<div class="mt-4 flex flex-col justify-start gap-4 lg:rounded-lg lg:border lg:px-6 lg:py-6">
-  <div class="flex items-start justify-between">
-    <div class="flex flex-col gap-2 sm:flex-row sm:gap-12 xl:items-center">
-      <div class="">
-        <h3 class="text-2xl font-bold">
-          <%= @group.group.name %>
-        </h3>
-        <span class="text-sm text-gray-600">Del av METAspexet <%= @group.show.year.year %></span>
-      </div>
-      <div class="">
-        <h4 class="text-l font-bold">Ansvariga chefer</h4>
-        <div class="flex flex-col gap-2 pt-2">
-          <.link
-            :for={chef <- chefer(@group)}
-            navigate={Routes.user_path(Endpoint, :index, chef.username)}
-            class="group"
-          >
-            <img
-              src={"https://zfinger.datasektionen.se/user/#{chef.username}/image/100"}
-              class="inline-block h-6 w-6 rounded-full object-cover object-top filter group-hover:brightness-90"
-            />
-            <span class="px-2 text-sm text-gray-700 group-hover:text-gray-900">
-              <%= full_name(chef) %>
-            </span>
-          </.link>
-        </div>
-      </div>
-    </div>
-
-    <.link
-      :if={@authorized}
-      navigate={~p"/group/admin/#{@group}"}
-      class="text-md bg-burgandy-500 block rounded-md px-3 py-1 text-sm text-white hover:bg-burgandy-400"
-    >
-      Administrera
-    </.link>
-  </div>
-  <div :if={@group.application_description} class="">
-    <h4 class="text-l font-bold">Vad gör <%= @group.group.name %>?</h4>
-    <p class="whitespace-pre-wrap text-sm"><%= @group.application_description %></p>
-  </div>
-</div>
-<div class="pt-6 pb-4">
-  <div class="flex flex-row items-center pb-2">
-    <div class="flex flex-col">
-      <span class="text-xl font-bold">Alla Medlemmar</span>
-      <span class="text-sm text-gray-500">Totalt <%= length(@group.group_memberships) %></span>
-    </div>
-    <.link
-      href={~p"/group/#{@group}/vcard"}
-      method="post"
-      class="ml-auto flex flex-row items-center gap-2 rounded-lg border px-3 py-2 hover:bg-gray-50"
-    >
-      <.icon name={:arrow_down_on_square_stack} mini class="h-5 w-5" />
-      <span class="text-sm">Ladda ner vcard</span>
-    </.link>
+<div>
+  <div class="mr-auto flex w-full flex-row items-baseline justify-between pt-4 sm:flex-col">
+    <span class="text-2xl font-bold">Grupper</span>
+    <span class="text-sm text-gray-600">Visar <%= length(@groups) %></span>
   </div>
 
-  <.live_table rows={@group.group_memberships |> Enum.map(fn %{user: user} -> user end)}>
-    <:col :let={member} label="Namn">
-      <.user_card user={member} />
-    </:col>
-    <:col :let={member} label="KTH-id" class="hidden xs:table-cell">
-      <%= member.username %>
-    </:col>
-    <:col :let={member} label="Klass" class="hidden sm:table-cell">
-      <%= member.class %>
-    </:col>
-    <:col :let={member} label="Telefonnr">
-      <%= member.phone %>
-    </:col>
-    <:col :let={member} label="Mail" class="hidden lg:table-cell">
-      <%= member.email %>
-    </:col>
-    <:col :let={member} label="Google-konto" class="hidden xl:table-cell">
-      <%= member.google_account %>
-    </:col>
-  </.live_table>
+  <div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <%= for group <- @groups do %>
+      <.group_card show_group={group} members={Enum.count(group.group_memberships)} />
+    <% end %>
+  </div>
 </div>

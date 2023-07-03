@@ -6,6 +6,7 @@ defmodule Haj.Spex.Group do
 
   schema "groups" do
     field :name, :string
+    field :description, :string
     field :permission_group, Ecto.Enum, values: @group_permissions
 
     has_many :show_groups, Haj.Spex.ShowGroup
@@ -16,7 +17,7 @@ defmodule Haj.Spex.Group do
   @doc false
   def changeset(group, attrs) do
     group
-    |> cast(attrs, [:name, :permission_group])
+    |> cast(attrs, [:name, :permission_group, :description])
     |> validate_required([:name])
   end
 

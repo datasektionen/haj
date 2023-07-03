@@ -22,6 +22,7 @@ defmodule HajWeb.SettingsLive.Group.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Namn" />
+        <.input field={@form[:description]} type="textarea" label="Beskrivning" />
         <.input
           field={@form[:permission_group]}
           type="select"

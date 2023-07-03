@@ -121,7 +121,7 @@ defmodule Haj.Applications do
   def get_applications_for_show_group(show_group_id) do
     query =
       from a in Application,
-        join: asg in ApplicationShowGroup,
+        join: asg in assoc(a, :application_show_groups),
         where: asg.application_id == a.id,
         where: asg.show_group_id == ^show_group_id,
         preload: [user: [], application_show_groups: [show_group: [group: []]]]

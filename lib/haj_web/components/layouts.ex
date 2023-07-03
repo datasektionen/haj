@@ -83,6 +83,13 @@ defmodule HajWeb.Layouts do
         active={@active_tab == :songs}
       />
 
+      <.nav_link
+        navigate={~p"/shows"}
+        icon_name={:newspaper}
+        title="Historia"
+        active={@active_tab == :shows}
+      />
+
       <.nav_link_group
         :if={Policy.authorize?(:settings_admin, @current_user)}
         navigate={~p"/settings"}

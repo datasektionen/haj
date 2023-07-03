@@ -82,7 +82,7 @@
     </div>
 
     <div class="flex w-full flex-row items-center justify-end space-x-4">
-      <.live_component module={HajWeb.SearchComponent} id="search" />
+      <.live_component module={HajWeb.SearchComponent} user={@current_user} id="search" />
       <div id="tobar-right" class="flex flex-row items-center space-x-4">
         <%!-- This is a notification icon, that is currently unused --%>
         <%!-- <div class="relative h-8 w-8">
