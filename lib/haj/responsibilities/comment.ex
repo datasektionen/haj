@@ -22,7 +22,7 @@ defmodule Haj.Responsibilities.Comment do
   end
 
   defp gen_html_text(%{valid?: true, changes: %{text: text}} = changeset) do
-    put_change(changeset, :text_html, Haj.Markdown.to_html!(text))
+    put_change(changeset, :text_html, Haj.Markdown.to_html!(text, with_ids: true))
   end
 
   defp gen_html_text(changeset), do: changeset
