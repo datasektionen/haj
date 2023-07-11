@@ -4,7 +4,13 @@
 </div>
 
 <div class="relative mx-auto flex flex-row justify-start gap-4 border-b md:max-w-3xl xl:max-w-5xl">
-  <.form :let={f} as={:tab_form} phx-change="select_tab" phx-no-submit class="my-4 xs:hidden">
+  <.form
+    :let={f}
+    as={:tab_form}
+    phx-change="select_tab"
+    phx-no-submit
+    class="my-4 w-full xs:hidden"
+  >
     <%= select(
       f,
       :tab,
@@ -51,7 +57,11 @@
       <div class="mb-4 border-b pt-4 pb-4">
         <div class="flex flex-row items-center justify-between">
           <h2 class="text-burgandy-500 mb-1 text-xl font-bold">Beskrivning</h2>
-          <.link :if={@live_action == :edit} patch={~p"/responsibilities/#{@responsibility}"}>
+          <.link
+            :if={@live_action == :edit}
+            data-confirm={@saved || "Du har osparade ändringar! Vill du verkligen lämna sidan?"}
+            patch={~p"/responsibilities/#{@responsibility}"}
+          >
             <.icon name={:x_mark} mini class="h-5" />
           </.link>
           <.link
@@ -62,9 +72,36 @@
           </.link>
         </div>
         <p class="text-gray-500">Årsöverskridande beskrivning av ansvaret.</p>
-        <p class="text-gray-500">
-          Uppdaterades <%= format_date(@responsibility.updated_at) %>
-        </p>
+        <div id="updated_at" class="inline-flex items-center space-x-2 text-gray-500">
+          <div>
+            Uppdaterades <%= format_date(@responsibility.updated_at) %>
+          </div>
+          <div id="updated_container" data-wait={show_saving()} data-done={hide_saving()}>
+            <svg
+              id="updated_spinner"
+              class="hidden h-3.5 w-3.5 animate-spin"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="black" stroke-width="4">
+              </circle>
+              <path
+                class="opacity-75"
+                fill="black"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              >
+              </path>
+            </svg>
+            <div
+              id="updated_check"
+              class="hidden flex-row items-center gap-1 rounded-lg border px-1 text-sm"
+            >
+              <.icon name={:check_circle} mini class="h-3.5" />
+              <span>Sparad</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div :if={@live_action == :edit} class="max-w-full">
         <.live_component
@@ -133,14 +170,12 @@
                 <%= full_name(comment.user) %>
               </span>
               <span class="text-sm text-gray-500">
-                <%= format_date(comment.inserted_at) %>
+                <%= format_date(comment.updated_at) %>
               </span>
             </div>
           </div>
           <div class="inline-flex gap-1 text-gray-700">
-            <.link navigate={
-              ~p"/responsibilities/#{@responsibility}/comments/#{comment}/edit"
-            }>
+            <.link navigate={~p"/responsibilities/#{@responsibility}/comments/#{comment}/edit"}>
               <.icon name={:pencil_square} mini class="h-5" />
             </.link>
 
@@ -176,10 +211,46 @@
   :if={@live_action in [:edit_comment]}
   id="comment-modal"
   show
+  data_confirm={@saved || "Du har osparade ändringar! Vill du verkligen lämna sidan?"}
   on_cancel={JS.navigate(~p"/responsibilities/#{@responsibility}/comments?show=#{@show}")}
 >
   <:title>
-    Redigera testamente
+    <div>
+      Redigera testamente
+    </div>
+    <div
+      id="updated_at"
+      class="inline-flex items-center space-x-2 text-sm font-normal text-gray-500"
+    >
+      <div>
+        Uppdaterades <%= format_date(@comment.updated_at) %>
+      </div>
+      <div id="updated_container" data-wait={show_saving()} data-done={hide_saving()}>
+        <svg
+          id="updated_spinner"
+          class="hidden h-3.5 w-3.5 animate-spin"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="black" stroke-width="4">
+          </circle>
+          <path
+            class="opacity-75"
+            fill="black"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          >
+          </path>
+        </svg>
+        <div
+          id="updated_check"
+          class="hidden flex-row items-center gap-1 rounded-lg border px-1 text-sm"
+        >
+          <.icon name={:check_circle} mini class="h-3.5" />
+          <span>Sparad</span>
+        </div>
+      </div>
+    </div>
   </:title>
 
   <:subtitle>
