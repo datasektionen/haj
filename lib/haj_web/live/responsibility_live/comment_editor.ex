@@ -59,17 +59,21 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
   def handle_event("richtext_updated", %{"richtext_data" => richtext_data}, socket) do
     # If empty, or when cleared, we have sometimes saved
     saved = if richtext_data == "", do: true, else: false
-
     send(self(), {:set_saved, saved})
 
     {:noreply,
      socket
      |> assign(clientside_rich_text: richtext_data, saved: saved)
+     |> autosave_with_debounce(%{text: richtext_data})
      |> push_event("richtext_event", %{richtext_data: richtext_data})}
   end
 
   @impl true
-  def handle_event("validate", %{"comment" => params}, socket) do
+  def handle_event("save", %{"comment" => params}, socket) do
+    save_comment(socket, socket.assigns.action, params)
+  end
+
+  defp autosave_with_debounce(socket, params) do
     # This fires whenever the text changes
     timer =
       case socket.assigns.next_autosave do
@@ -92,17 +96,12 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
           )
       end
 
-    {:noreply,
-     push_event(socket, "js-exec", %{
-       to: "#updated_container",
-       attr: "data-wait"
-     })
-     |> assign(next_autosave: timer)}
-  end
-
-  @impl true
-  def handle_event("save", %{"comment" => params}, socket) do
-    save_comment(socket, socket.assigns.action, params)
+    socket
+    |> push_event("js-exec", %{
+      to: "#updated_container",
+      attr: "data-wait"
+    })
+    |> assign(next_autosave: timer)
   end
 
   defp save_comment(socket, :new, params) do
@@ -155,7 +154,6 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
         for={@changeset}
         phx-target={@myself}
         phx-submit="save"
-        phx-change="validate"
         id="richtext_form"
         class="flex flex-col gap-4"
       >
@@ -166,7 +164,7 @@ defmodule HajWeb.ResponsibilityLive.CommentEditor do
           phx-target={@myself}
           id={@rich_text_id}
         >
-          <%= textarea(f, :text, value: @clientside_rich_text) %>
+          <%= textarea(f, :text) %>
         </div>
         <%= error_tag(f, :text) %>
         <div class="flex justify-end">

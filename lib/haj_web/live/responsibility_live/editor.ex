@@ -56,8 +56,17 @@ defmodule HajWeb.ResponsibilityLive.Editor do
     end
   end
 
-  @impl true
-  def handle_event("validate", %{"responsibility" => params}, socket) do
+  def handle_event("richtext_updated", %{"richtext_data" => richtext_data}, socket) do
+    send(self(), {:set_saved, false})
+
+    {:noreply,
+     socket
+     |> assign(clientside_rich_text: richtext_data, saved: false)
+     |> autosave_with_debounce(%{description: richtext_data})
+     |> push_event("richtext_event", %{richtext_data: richtext_data})}
+  end
+
+  defp autosave_with_debounce(socket, params) do
     # This fires whenever the text changes
     timer =
       case socket.assigns.next_autosave do
@@ -80,21 +89,12 @@ defmodule HajWeb.ResponsibilityLive.Editor do
           )
       end
 
-    {:noreply,
-     push_event(socket, "js-exec", %{
-       to: "#updated_container",
-       attr: "data-wait"
-     })
-     |> assign(next_autosave: timer)}
-  end
-
-  def handle_event("richtext_updated", %{"richtext_data" => richtext_data}, socket) do
-    send(self(), {:set_saved, false})
-
-    {:noreply,
-     socket
-     |> assign(clientside_rich_text: richtext_data, saved: false)
-     |> push_event("richtext_event", %{richtext_data: richtext_data})}
+    socket
+    |> push_event("js-exec", %{
+      to: "#updated_container",
+      attr: "data-wait"
+    })
+    |> assign(next_autosave: timer)
   end
 
   @impl true
@@ -106,7 +106,6 @@ defmodule HajWeb.ResponsibilityLive.Editor do
         for={@changeset}
         phx-target={@myself}
         phx-submit="save"
-        phx-change="validate"
         id="richtext_form"
         class="flex flex-col gap-4"
       >
@@ -117,7 +116,7 @@ defmodule HajWeb.ResponsibilityLive.Editor do
           phx-target={@myself}
           id={"comment_richtext_#{@responsibility.id}"}
         >
-          <%= textarea(f, :description, value: @clientside_rich_text) %>
+          <%= textarea(f, :description) %>
         </div>
         <%= error_tag(f, :description) %>
         <div class="flex justify-end">
