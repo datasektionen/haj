@@ -38,6 +38,7 @@ defmodule HajWeb.CoreComponents do
   attr :show, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
   attr :on_confirm, JS, default: %JS{}
+  attr :data_confirm, :string, default: ""
 
   slot :inner_block, required: true
   slot :title
@@ -75,6 +76,7 @@ defmodule HajWeb.CoreComponents do
               <div class="absolute top-6 right-5">
                 <button
                   phx-click={hide_modal(@on_cancel, @id)}
+                  data-confirm={@data_confirm}
                   type="button"
                   class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
                   aria-label={gettext("close")}

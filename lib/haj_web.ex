@@ -23,8 +23,7 @@ defmodule HajWeb do
     quote do
       use Phoenix.Controller,
         namespace: HajWeb,
-        formats: [:html, :json],
-        layouts: [html: HajWeb.Layouts]
+        formats: [:html, :json]
 
       import Plug.Conn
       import HajWeb.Gettext

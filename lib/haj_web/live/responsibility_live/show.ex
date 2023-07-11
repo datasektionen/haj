@@ -34,6 +34,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
     case Policy.authorize(:responsibility_edit, user, responsibility) do
       :ok ->
         socket
+        |> assign(saved: true)
         |> assign(page_title: "Redigera ansvar")
 
       _ ->
@@ -59,6 +60,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
         |> assign(show: show)
         |> assign(comments: Responsibilities.get_comments_for_show(responsibility, show.id))
         |> assign(authorized: true)
+        |> assign(saved: true)
         |> assign(comment: comment)
         |> assign(shows: shows)
 
@@ -158,6 +160,31 @@ defmodule HajWeb.ResponsibilityLive.Show do
      )}
   end
 
+  @impl true
+  def handle_info({:responsibility_updated, responsibility}, socket) do
+    {:noreply,
+     assign(socket, responsibility: responsibility)
+     |> assign(saved: true)
+     |> push_event("js-exec", %{
+       to: "#updated_container",
+       attr: "data-done"
+     })}
+  end
+
+  @impl true
+  def handle_info({:comment_updated, comment}, socket) do
+    {:noreply,
+     assign(socket, comment: comment)
+     |> assign(saved: true)
+     |> push_event("js-exec", %{
+       to: "#updated_container",
+       attr: "data-done"
+     })}
+  end
+
+  @impl true
+  def handle_info({:set_saved, value}, socket), do: {:noreply, assign(socket, saved: value)}
+
   defp redirect_unathorized(socket, navigate) do
     socket
     |> put_flash(:error, "Du är inte ansvarig för detta ansvar och kan inte ändra på det.")
@@ -196,5 +223,15 @@ defmodule HajWeb.ResponsibilityLive.Show do
       </div>
     </section>
     """
+  end
+
+  defp show_saving(js \\ %JS{}) do
+    JS.show(js, to: "#updated_spinner")
+    |> JS.hide(to: "#updated_check")
+  end
+
+  defp hide_saving(js \\ %JS{}) do
+    JS.hide(js, to: "#updated_spinner")
+    |> JS.show(to: "#updated_check", display: "flex")
   end
 end
