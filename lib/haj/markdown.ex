@@ -40,6 +40,7 @@ defmodule Haj.Markdown do
     do: {{tag, attrs, nil, m}, acc}
 
   defp slugify(data) when is_list(data) do
+    # From https://github.com/yzhang-gh/vscode-markdown/blob/99f85cf9475d00ed6898ce74bad05128f1efee8f/src/util/slugify.ts#L15
     Enum.join(data, "")
     |> String.replace(~r/[^\p{L}\p{M}\p{Nd}\p{Nl}\p{Pc}\- ]/u, "")
     |> String.downcase()
