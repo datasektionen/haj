@@ -53,7 +53,7 @@
     </div>
   </div>
 
-  <div class="flex flex-col gap-4 pt-2">
+  <div :if={Policy.authorize?(:merch_buy, @current_user)} class="flex flex-col gap-4 pt-2">
     <.link navigate={~p"/merch"} class="group mr-auto inline-flex items-center gap-1">
       <h3 class="text-xl font-bold group-hover:text-burgandy-600">Merchbeställningar</h3>
       <.icon name={:arrow_right} mini class="inline-block h-5 group-hover:fill-burgandy-600" />

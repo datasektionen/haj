@@ -34,7 +34,7 @@ defmodule HajWeb.Router do
     end
 
     get "/", LoginController, :login
-    get "/unauthorized", LoginController, :unauthorized
+    get "/login/unauthorized", LoginController, :unauthorized
   end
 
   scope "/", HajWeb do
@@ -168,8 +168,12 @@ defmodule HajWeb.Router do
 
     post "/merch-admin/:show_id/csv", MerchAdminController, :csv
 
-    get "/applications", ApplicationController, :index
-    get "/applications/export", ApplicationController, :export
+    scope "/" do
+      pipe_through [:require_admin_access]
+
+      get "/applications", ApplicationController, :index
+      get "/applications/export", ApplicationController, :export
+    end
   end
 
   scope "/sok", HajWeb do

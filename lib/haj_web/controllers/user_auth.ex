@@ -23,7 +23,14 @@ defmodule HajWeb.UserAuth do
          :ok <- Policy.authorize(action, user) do
       {:cont, socket}
     else
-      _ -> {:halt, redirect_require_admin(socket)}
+      _ ->
+        case action do
+          :haj_access ->
+            {:halt, redirect_require_access(socket)}
+
+          _ ->
+            {:halt, redirect_require_admin(socket)}
+        end
     end
   end
 
@@ -69,13 +76,13 @@ defmodule HajWeb.UserAuth do
   defp redirect_require_admin(socket) do
     socket
     |> LiveView.put_flash(:error, "Du har inte access")
-    |> LiveView.redirect(to: Routes.dashboard_unauthorized_path(socket, :index))
+    |> LiveView.redirect(to: ~p"/unauthorized")
   end
 
   defp redirect_require_access(socket) do
     socket
     |> LiveView.put_flash(:error, "Du har inte access")
-    |> LiveView.redirect(to: Routes.login_path(socket, :unauthorized))
+    |> LiveView.redirect(to: ~p"/login/unauthorized")
   end
 
   @doc """
@@ -209,23 +216,23 @@ defmodule HajWeb.UserAuth do
   end
 
   def require_spex_access(conn, _opts) do
-    if Policy.authorize(:haj_access, conn.assigns.current_user) do
+    if Policy.authorize?(:haj_access, conn.assigns.current_user) do
       conn
     else
       conn
       |> put_flash(:error, "Du har inte access här.")
-      |> redirect(to: Routes.login_path(conn, :unauthorized))
+      |> redirect(to: ~p"/login/unauthorized")
       |> halt()
     end
   end
 
   def require_admin_access(conn, _opts) do
-    if Policy.authorize(:haj_admin, conn.assigns.current_user) do
+    if Policy.authorize?(:haj_admin, conn.assigns.current_user) do
       conn
     else
       conn
       |> put_flash(:error, "Du har inte access här.")
-      |> redirect(to: Routes.login_path(conn, :unauthorized))
+      |> redirect(to: ~p"/unauthorized")
       |> halt()
     end
   end
@@ -236,5 +243,5 @@ defmodule HajWeb.UserAuth do
 
   defp maybe_store_return_to(conn), do: conn
 
-  defp signed_in_path(conn), do: ~p"/dashboard"
+  defp signed_in_path(_conn), do: ~p"/dashboard"
 end
