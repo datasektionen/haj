@@ -46,7 +46,7 @@
 <div
   :if={@live_action == :show || @live_action == :edit}
   x-data="{atElement: '', titles: []}"
-  x-init="titles = [...document.querySelectorAll('[id^=heading]')]"
+  x-init="titles = [...document.querySelectorAll('[data-heading-index]')]"
   @scroll.window="atElement = titles.reduce((highest, elem) => {
                 elemBounds = elem.getBoundingClientRect(); highestBounds = highest.getBoundingClientRect();
                 return ((highestBounds.bottom < 0) || (elemBounds.top < highestBounds.top)) ? elem : highest}, titles[0]);
@@ -113,7 +113,7 @@
       </div>
       <article
         :if={@live_action == :show}
-        class="prose max-w-full prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg"
+        class="prose max-w-full prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-ul:my-0 prose-li:my-0 prose-code:before:content-[''] prose-code:after:content-[''] prose-code:font-semibold"
         id="description_content"
       >
         <%= raw(@responsibility.description_html) %>
@@ -187,7 +187,7 @@
             </.link>
           </div>
         </div>
-        <div class="prose max-w-full prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg">
+        <div class="prose max-w-full prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-ul:my-0 prose-li:my-0 prose-code:before:content-[''] prose-code:after:content-[''] prose-code:font-semibold">
           <%= raw(comment.text_html) %>
         </div>
       </div>
