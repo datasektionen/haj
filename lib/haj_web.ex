@@ -142,6 +142,7 @@ defmodule HajWeb do
       import HajWeb.LiveHelpers
 
       import HajWeb.CoreComponents
+      import HajWeb.Components
       import HajWeb.Gettext
       alias HajWeb.Router.Helpers, as: Routes
       alias Phoenix.LiveView.JS
@@ -164,5 +165,9 @@ defmodule HajWeb do
   """
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])
+  end
+
+  defmacro __using__({which, opts}) when is_atom(which) and is_list(opts) do
+    apply(__MODULE__, which, [opts])
   end
 end

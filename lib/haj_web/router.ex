@@ -177,9 +177,12 @@ defmodule HajWeb.Router do
   end
 
   scope "/sok", HajWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser]
 
-    get "/", ApplyController, :index
+    live "/", ApplyLive.Index, :index
+    live "/edit", ApplyLive.EditInfo, :edit
+    live "/groups", ApplyLive.Groups, :groups
+
     get "/sucess", ApplyController, :created
     post "/", ApplyController, :apply
   end

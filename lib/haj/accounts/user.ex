@@ -55,4 +55,13 @@ defmodule Haj.Accounts.User do
       message: "Får ej vara tomt."
     )
   end
+
+  @doc false
+  def application_changeset(user, attrs \\ %{}) do
+    changeset(user, attrs)
+    |> validate_required([:class, :phone], message: "Får ej vara tomt.")
+    |> validate_change(:username, fn :username, _ ->
+      [username: "Du kan inte ändra KTH-id!"]
+    end)
+  end
 end
