@@ -100,20 +100,25 @@ defmodule HajWeb.ApplyLive.Groups do
       Enum.filter(apps, fn {_, v} -> v == "true" end)
       |> Enum.map(fn {k, _} -> String.to_integer(k) end)
 
-    if Applications.open?() do
-      case Applications.create_application(
-             socket.assigns.current_user.id,
-             Spex.current_spex().id,
-             sgs
-           ) do
-        {:ok, _} ->
-          {:noreply, socket |> push_navigate(to: ~p"/sok/complete")}
+    cond do
+      length(sgs) == 0 ->
+        {:noreply, socket |> put_flash(:error, "Du måste söka minst en grupp!")}
 
-        {:error, _} ->
-          {:noreply, socket |> put_flash(:error, "Något gick fel!")}
-      end
-    else
-      {:noreply, socket |> put_flash(:error, "Ansökan är stängd.") |> redirect(to: ~p"/sok")}
+      !Applications.open?() ->
+        {:noreply, socket |> put_flash(:error, "Ansökan är stängd.") |> redirect(to: ~p"/sok")}
+
+      true ->
+        case Applications.create_application(
+               socket.assigns.current_user.id,
+               Spex.current_spex().id,
+               sgs
+             ) do
+          {:ok, _} ->
+            {:noreply, socket |> push_navigate(to: ~p"/sok/complete")}
+
+          {:error, _} ->
+            {:noreply, socket |> put_flash(:error, "Något gick fel!")}
+        end
     end
   end
 
