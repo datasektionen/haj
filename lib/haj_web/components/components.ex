@@ -1,14 +1,12 @@
 defmodule HajWeb.Components do
   use Phoenix.Component
   use HajWeb, :verified_routes
-  import HajWeb.CoreComponents
-  import HajWeb.LiveHelpers
 
   embed_templates "components/*"
 
   attr :class, :string, default: ""
 
-  slot :col, required: true do
+  slot :step, required: true do
     attr :status, :atom, required: true
     attr :to, :string
   end
@@ -22,7 +20,7 @@ defmodule HajWeb.Components do
     number_of_statuses = 4
 
     statuses =
-      Enum.map(1..4, fn index ->
+      Enum.map(1..number_of_statuses, fn index ->
         cond do
           step == index -> :current
           step > index -> :complete
@@ -32,7 +30,6 @@ defmodule HajWeb.Components do
 
     assigns =
       assign(assigns, statuses: statuses)
-      |> dbg()
 
     ~H"""
     <.steps {@rest}>

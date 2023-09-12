@@ -36,7 +36,7 @@ defmodule HajWeb.ApplicationsLive do
     <div class="border-burgandy-500 mb-2 flex flex-col gap-2 border-b-2 py-2 md:flex-row md:items-center">
       <div class="font-bold uppercase">Filtrera</div>
 
-      <.form :let={f} as={:filter} phx-change="filter" class="w-full md:w-auto">
+      <.form :let={f} for={%{}} as={:filter} phx-change="filter" class="w-full md:w-auto">
         <%= select(f, :show_group, group_options(@show.show_groups),
           class: "h-full w-full",
           prompt: "Alla grupper"

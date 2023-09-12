@@ -4,6 +4,8 @@ defmodule Haj.Applications do
   """
 
   import Ecto.Query, warn: false
+  alias Haj.Spex.ShowGroup
+  alias Haj.Spex
   alias Haj.Repo
 
   alias Haj.Applications.Application
@@ -42,27 +44,24 @@ defmodule Haj.Applications do
   Creates an application. Takes a list of show, groups, user id and a show id.
   If there is already an application for that show for that user, replaces and creates a new applicaiton.
   """
-  def create_application(
-        %{"show_groups" => show_groups, "user_id" => user_id, "show_id" => show_id} = attrs \\ %{}
-      ) do
+  def create_application(user_id, show_id, show_groups) do
     Repo.transaction(fn ->
       previous =
         Repo.one(from a in Application, where: a.show_id == ^show_id and a.user_id == ^user_id)
 
       if previous != nil do
-        {:ok, _} = Repo.delete(previous)
+        Repo.delete(previous)
+        # Repo.rollback(:already_applied)
       end
 
       {:ok, application} =
-        %Application{}
-        |> Application.changeset(attrs)
+        %Application{user_id: user_id, show_id: show_id}
         |> Repo.insert()
 
-      Enum.each(show_groups, fn %{id: id, special_text: text} ->
+      Enum.each(show_groups, fn id ->
         Repo.insert(%ApplicationShowGroup{
           application_id: application.id,
-          show_group_id: id,
-          special_text: text
+          show_group_id: id
         })
       end)
     end)
@@ -80,10 +79,18 @@ defmodule Haj.Applications do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_application(%Application{} = application, attrs) do
-    application
-    |> Application.changeset(attrs)
-    |> Repo.update()
+  def update_application(%Application{} = application, attrs, options \\ []) do
+    case Keyword.get(options, :with_show_groups, false) do
+      true ->
+        application
+        |> Application.changeset_with_show_groups(attrs)
+        |> Repo.update()
+
+      false ->
+        application
+        |> Application.changeset(attrs)
+        |> Repo.update()
+    end
   end
 
   @doc """
@@ -142,6 +149,31 @@ defmodule Haj.Applications do
   end
 
   @doc """
+  Returns an application for a user for the current show.
+  """
+  def get_current_application_for_user(user_id) do
+    query =
+      from a in Application,
+        where: a.user_id == ^user_id and a.show_id == ^Spex.current_spex().id,
+        preload: [application_show_groups: []]
+
+    Repo.one(query)
+  end
+
+  @doc """
+  Returns a list of show groups for an application.
+  """
+  def get_show_groups_for_application(application_id) do
+    query =
+      from sg in ShowGroup,
+        join: asg in assoc(sg, :application_show_groups),
+        where: asg.application_id == ^application_id,
+        preload: :group
+
+    Repo.all(query)
+  end
+
+  @doc """
   Returns all application for a show.
   """
   def list_applications_for_show(show_id) do
@@ -151,5 +183,24 @@ defmodule Haj.Applications do
         preload: [application_show_groups: [show_group: [group: []]], user: []]
 
     Repo.all(query)
+  end
+
+  @doc """
+  Returns true if it is possible to apply for the current show.
+  """
+  def open?() do
+    show = Spex.current_spex()
+    current_date = DateTime.now!("Etc/UTC")
+
+    case show.application_opens && DateTime.compare(show.application_opens, current_date) do
+      :lt ->
+        case DateTime.compare(show.application_closes, current_date) do
+          :gt -> true
+          _ -> false
+        end
+
+      _ ->
+        false
+    end
   end
 end

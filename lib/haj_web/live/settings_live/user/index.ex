@@ -1,7 +1,6 @@
 defmodule HajWeb.SettingsLive.User.Index do
   use HajWeb, :live_view
 
-  alias Phoenix.HTML.Safe.Phoenix.LiveView
   alias Haj.Accounts
 
   @impl true

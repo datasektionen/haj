@@ -2,7 +2,6 @@ defmodule HajWeb.MembersLive do
   use HajWeb, :live_view
 
   alias Haj.Spex
-  alias HajWeb.Endpoint
 
   def mount(_params, _session, socket) do
     %{id: show_id} = Spex.current_spex()
@@ -48,6 +47,7 @@ defmodule HajWeb.MembersLive do
     ~H"""
     <.form
       :let={f}
+      for={%{}}
       as={:search_form}
       phx-change="filter"
       phx-no-submit

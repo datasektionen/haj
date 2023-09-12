@@ -58,7 +58,7 @@ defmodule HajWeb.SearchComponent do
 
           <div class="fixed inset-0 overflow-y-auto px-4 py-4 sm:px-6 sm:py-20 md:py-32 lg:py-[15vh] lg:px-8">
             <button
-              phx-click={close_search(@myself)}
+              phx-click={close_search()}
               id="close-search-icon"
               class="text-gray-700 hover:text-gray-500"
               style="display: none;"
@@ -81,6 +81,7 @@ defmodule HajWeb.SearchComponent do
               >
                 <.form
                   :let={f}
+                  for={%{}}
                   as={:search_form}
                   phx-change="search"
                   phx-target={@myself}
@@ -171,7 +172,7 @@ defmodule HajWeb.SearchComponent do
     # |> JS.add_class("hidden xs:flex", to: "#tobar-right")
   end
 
-  defp close_search(js \\ %JS{}) do
+  defp close_search() do
     JS.hide(to: "#search-form")
     |> JS.hide(to: "#close-search-icon")
     |> JS.hide(to: "#searchbar-dialog")

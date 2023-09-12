@@ -17,7 +17,7 @@ defmodule HajWeb.SessionController do
     do_login(conn, params)
   end
 
-  defp do_login(conn, params) do
+  defp do_login(conn, _params) do
     host = Application.get_env(:haj, :login_host)
 
     scheme =

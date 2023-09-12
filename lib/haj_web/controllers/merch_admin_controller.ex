@@ -59,11 +59,6 @@ defmodule HajWeb.MerchAdminController do
     CSV.encode([titles | orders]) |> Enum.to_list()
   end
 
-  # Makes the comma seperated string sizes in merch params to array
-  defp split_merch_comma_separated(merch_params) do
-    Map.update(merch_params, "sizes", [], fn str -> String.split(str, ",", trim: true) end)
-  end
-
   # Only "chefer" and admins can interact here
   defp authorize(conn, _) do
     case Policy.authorize(:merch_admin, conn.assigns.current_user) do

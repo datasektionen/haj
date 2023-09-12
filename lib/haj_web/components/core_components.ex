@@ -565,6 +565,7 @@ defmodule HajWeb.CoreComponents do
 
   slot :col, required: true do
     attr :label, :string
+    attr :expand, :boolean
   end
 
   slot :expanded, doc: "the slot being expanded"

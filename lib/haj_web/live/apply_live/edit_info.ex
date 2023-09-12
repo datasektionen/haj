@@ -18,6 +18,7 @@ defmodule HajWeb.ApplyLive.EditInfo do
     {:ok, assign_form(socket, changeset)}
   end
 
+  @impl true
   def handle_event("validate", %{"user" => params}, socket) do
     changeset =
       socket.assigns[:current_user]
@@ -27,6 +28,7 @@ defmodule HajWeb.ApplyLive.EditInfo do
     {:noreply, assign_form(socket, changeset)}
   end
 
+  @impl true
   def handle_event("save", %{"user" => params}, socket) do
     changeset =
       socket.assigns[:current_user]
@@ -51,16 +53,16 @@ defmodule HajWeb.ApplyLive.EditInfo do
   @impl true
   def render(assigns) do
     ~H"""
-    <.application_steps class="mt-8 mt-auto" step={2} />
+    <.application_steps class="mt-8" step={2} />
 
-    <div class="mt-8 flex flex-col">
+    <div class="mt-16 flex flex-col">
       <h2 class="text-2xl font-semibold">
         Persondata och kontaktuppgifter
       </h2>
-      <p class="mt-4 text-sm text-gray-500">
+      <p class="mt-4 text-sm text-gray-500 sm:text-base">
         Genom att fylla i data i här godkänner du att uppgifterna sparas för rekrytering.
         Om du vill veta mer om hur uppgifterna används eller att dina uppgifter ska tas bort kan du höra av dig
-        till <a href="mailto:webb@metaspexet.se" class="text-black">webbansvarig</a>.
+        till <a href="mailto:direqtionen@metaspexet.se" class="text-burgandy-500 font-bold">Direqtionen</a>.
       </p>
 
       <.form
@@ -103,7 +105,7 @@ defmodule HajWeb.ApplyLive.EditInfo do
         />
         <div class="col-span-6 border-t pt-4 text-right">
           <.button type="submit">
-            Spara
+            Nästa
           </.button>
         </div>
       </.form>

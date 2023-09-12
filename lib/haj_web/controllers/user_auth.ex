@@ -48,8 +48,8 @@ defmodule HajWeb.UserAuth do
     end
   end
 
-  def on_mount(:ensure_authenticated, _params, session, socket) do
-    on_mount({:ensure_authenticated, signed_in_path()}, _params, session, socket)
+  def on_mount(:ensure_authenticated, params, session, socket) do
+    on_mount({:ensure_authenticated, signed_in_path()}, params, session, socket)
   end
 
   def on_mount({:ensure_authenticated, return_to}, _params, session, socket) do
@@ -231,6 +231,17 @@ defmodule HajWeb.UserAuth do
 
   def require_admin_access(conn, _opts) do
     if Policy.authorize?(:haj_admin, conn.assigns.current_user) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Du har inte access här.")
+      |> redirect(to: ~p"/unauthorized")
+      |> halt()
+    end
+  end
+
+  def require_auth(conn, action) when is_atom(action) do
+    if Policy.authorize?(action, conn.assigns.current_user) do
       conn
     else
       conn

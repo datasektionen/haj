@@ -6,9 +6,11 @@ defmodule HajWeb.ApplyLive.Groups do
          container: {:div, class: "flex h-full flex-col bg-zinc-50"}
        ]}
 
-  alias Haj.Accounts
-
   on_mount {HajWeb.UserAuth, {:ensure_authenticated, "/sok/groups"}}
+
+  alias Haj.Spex
+  alias Haj.Applications.ApplicationShowGroup
+  alias Haj.Applications
 
   @impl true
   def mount(_params, _session, socket) do
@@ -28,7 +30,33 @@ defmodule HajWeb.ApplyLive.Groups do
          |> push_navigate(to: ~p"/sok/edit")}
 
       false ->
-        {:ok, socket}
+        current_spex = Spex.current_spex()
+
+        {application, pre_filled?} =
+          case Haj.Applications.get_applications_for_user(user.id)
+               |> Enum.filter(fn %{show_id: id} -> id == current_spex.id end) do
+            [app | _] -> {app, true}
+            _ -> {%Haj.Applications.Application{}, false}
+          end
+
+        groups =
+          Spex.get_show_groups_for_show(current_spex.id)
+          |> Enum.filter(fn %{application_open: o} -> o end)
+
+        socket =
+          if pre_filled? do
+            put_flash(
+              socket,
+              :info,
+              "Data fylld från tidigare ansökan. Du kan uppdatera den genom att fylla i nya uppfiter."
+            )
+          else
+            socket
+          end
+
+        changeset = Haj.Applications.change_application(application)
+
+        {:ok, assign(socket, groups: groups, application: application) |> assign_form(changeset)}
     end
   end
 
@@ -36,20 +64,123 @@ defmodule HajWeb.ApplyLive.Groups do
     assign(socket, form: to_form(changeset))
   end
 
+  defp applied?(application, show_group) do
+    case application.application_show_groups do
+      show_groups when is_list(show_groups) ->
+        Enum.any?(application.application_show_groups, fn %{show_group_id: id} ->
+          id == show_group.id
+        end)
+
+      _ ->
+        false
+    end
+  end
+
+  @impl true
+  def handle_event("validate", %{"application" => %{"application_show_groups" => apps}}, socket) do
+    application_show_groups =
+      Enum.filter(apps, fn {_, v} -> v == "true" end)
+      |> Enum.map(fn {k, _} -> String.to_integer(k) end)
+      |> Enum.reduce([], fn id, acc ->
+        [%ApplicationShowGroup{show_group_id: id} | acc]
+      end)
+
+    {:noreply,
+     assign(socket,
+       application: %{
+         socket.assigns.application
+         | application_show_groups: application_show_groups
+       }
+     )}
+  end
+
+  @impl true
+  def handle_event("save", %{"application" => %{"application_show_groups" => apps}}, socket) do
+    sgs =
+      Enum.filter(apps, fn {_, v} -> v == "true" end)
+      |> Enum.map(fn {k, _} -> String.to_integer(k) end)
+
+    if Applications.open?() do
+      case Applications.create_application(
+             socket.assigns.current_user.id,
+             Spex.current_spex().id,
+             sgs
+           ) do
+        {:ok, _} ->
+          {:noreply, socket |> push_navigate(to: ~p"/sok/complete")}
+
+        {:error, _} ->
+          {:noreply, socket |> put_flash(:error, "Något gick fel!")}
+      end
+    else
+      {:noreply, socket |> put_flash(:error, "Ansökan är stängd.") |> redirect(to: ~p"/sok")}
+    end
+  end
+
+  defp chefer(group) do
+    chefs =
+      Enum.filter(group.group_memberships, fn u -> u.role == :chef end)
+      |> Enum.map(fn chef ->
+        "#{chef.user.first_name} #{chef.user.last_name}"
+      end)
+
+    case chefs do
+      [] -> "Chef saknas"
+      [c] -> "Chef: #{c}"
+      _ -> "Chefer: " <> Enum.join(chefs, ", ")
+    end
+  end
+
   @impl true
   def render(assigns) do
     ~H"""
-    <.application_steps class="mt-8 mt-auto" step={3} />
+    <.application_steps class="mt-8" step={3} />
 
-    <div class="mt-8 flex flex-col">
+    <div class="mt-16 flex flex-col">
       <h2 class="text-2xl font-semibold">
         Grupper
       </h2>
-      <p class="mt-4 text-sm text-gray-500">
-        Genom att fylla i data i här godkänner du att uppgifterna sparas för rekrytering.
-        Om du vill veta mer om hur uppgifterna används eller att dina uppgifter ska tas bort kan du höra av dig
-        till <a href="mailto:webb@metaspexet.se" class="text-black">webbansvarig</a>.
+
+      <p class="mt-4 text-sm text-gray-500 sm:text-base">
+        Här finns alla grupper i spexet med beskrivningar. Klicka i de grupper som du vill söka. Det går alltid att söka flera grupper och gå
+        på intervju för att få mer information och sedan bestämma sig.
       </p>
+
+      <.form
+        for={@form}
+        phx-change="validate"
+        phx-submit="save"
+        class="mt-6 flex flex-col divide-y divide-gray-200"
+      >
+        <div :for={sg <- @groups} class="flex flex-row items-center py-4">
+          <div>
+            <div class="flex flex-row items-center justify-between">
+              <label name={sg.id} class="text-xl font-bold">
+                <%= sg.group.name %>
+              </label>
+              <.input
+                type="checkbox"
+                name={"application[application_show_groups][#{sg.id}]"}
+                value={applied?(@application, sg)}
+              />
+            </div>
+
+            <p>
+              <%= chefer(sg) %>
+            </p>
+
+            <p class="pt-1 text-sm text-gray-600 sm:text-base">
+              <span class="whitespace-pre-line"><%= sg.application_description %></span>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-span-6 border-t pt-4 text-right">
+          <.button type="submit">
+            Nästa
+          </.button>
+        </div>
+      </.form>
     </div>
     """
   end

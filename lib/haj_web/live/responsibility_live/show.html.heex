@@ -6,6 +6,7 @@
 <div class="relative mx-auto flex flex-row justify-start gap-4 border-b md:max-w-3xl xl:max-w-5xl">
   <.form
     :let={f}
+    for={%{}}
     as={:tab_form}
     phx-change="select_tab"
     phx-no-submit
@@ -147,7 +148,7 @@
       </h1>
 
       <p class="ml-auto">Välj år</p>
-      <.form :let={f} as={:comments_form} phx-change="select_show" phx-no-submit>
+      <.form :let={f} for={%{}} as={:comments_form} phx-change="select_show" phx-no-submit>
         <%= select(f, :show, @shows, class: "h-10 rounded-lg text-sm", value: @show.id) %>
       </.form>
     </div>
