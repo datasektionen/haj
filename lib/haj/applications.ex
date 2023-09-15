@@ -236,20 +236,17 @@ defmodule Haj.Applications do
     spex = Spex.current_spex()
     api_key = Application.get_env(:haj, :spam_api_key)
 
-    {:ok, res} =
-      HTTPoison.post(
-        @spam_url,
-        {:form,
-         [
-           {"from", "metaspexet@datasektionen.se"},
-           {"to", to},
-           {"subject", "Din ansökan till METAspexet #{spex.year.year}"},
-           {"content", message},
-           {"template", "metaspexet"},
-           {"key", api_key}
-         ]}
-      )
-
-    dbg(res)
+    HTTPoison.post(
+      @spam_url,
+      {:form,
+       [
+         {"from", "metaspexet@datasektionen.se"},
+         {"to", to},
+         {"subject", "Din ansökan till METAspexet #{spex.year.year}"},
+         {"content", message},
+         {"template", "metaspexet"},
+         {"key", api_key}
+       ]}
+    )
   end
 end
