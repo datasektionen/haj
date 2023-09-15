@@ -42,6 +42,8 @@ defmodule HajWeb.ApplyLive.Groups do
         groups =
           Spex.get_show_groups_for_show(current_spex.id)
           |> Enum.filter(fn %{application_open: o} -> o end)
+          # Temp manus fix, should be removed
+          |> Enum.sort_by(fn %{group: %{name: n}} -> n == "Manus" end, :desc)
 
         socket =
           if pre_filled? do
@@ -158,13 +160,12 @@ defmodule HajWeb.ApplyLive.Groups do
         class="mt-6 flex flex-col divide-y divide-gray-200"
       >
         <div :for={sg <- @groups} class="flex flex-row items-center py-4">
-          <div>
+          <label class="hover:cursor-pointer">
             <div class="flex flex-row items-center justify-between">
-              <label name={sg.id} class="text-xl font-bold">
+              <div name={sg.id} class="text-xl font-bold">
                 <%= sg.group.name %>
-              </label>
-              <.input
-                type="checkbox"
+              </div>
+              <.group_checkbox
                 name={"application[application_show_groups][#{sg.id}]"}
                 value={applied?(@application, sg)}
               />
@@ -177,7 +178,7 @@ defmodule HajWeb.ApplyLive.Groups do
             <p class="pt-1 text-sm text-gray-600 sm:text-base">
               <span class="whitespace-pre-line"><%= sg.application_description %></span>
             </p>
-          </div>
+          </label>
         </div>
 
         <div class="col-span-6 border-t pt-4 text-right">
@@ -186,6 +187,25 @@ defmodule HajWeb.ApplyLive.Groups do
           </.button>
         </div>
       </.form>
+    </div>
+    """
+  end
+
+  defp group_checkbox(%{value: value} = assigns) do
+    assigns =
+      assign_new(assigns, :checked, fn -> Phoenix.HTML.Form.normalize_value("checkbox", value) end)
+
+    ~H"""
+    <div phx-feedback-for={@name}>
+      <input type="hidden" name={@name} value="false" />
+      <input
+        type="checkbox"
+        id={@name}
+        name={@name}
+        value="true"
+        checked={@checked}
+        class="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+      />
     </div>
     """
   end
