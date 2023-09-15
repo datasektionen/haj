@@ -15,7 +15,7 @@ defmodule HajWeb.ApplyLive.EditInfo do
     user = socket.assigns[:current_user]
     changeset = Accounts.change_user(user)
 
-    {:ok, assign_form(socket, changeset)}
+    {:ok, assign_form(socket, changeset) |> assign(page_title: "Uppgifter")}
   end
 
   @impl true

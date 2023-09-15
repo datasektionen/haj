@@ -30,6 +30,7 @@ defmodule HajWeb.ApplyLive.Complete do
 
       {:ok,
        socket
+       |> assign(page_title: "Ansök")
        |> assign(show_groups: show_groups, application: application)
        |> assign_form(Applications.change_application(application))}
     end
@@ -50,14 +51,22 @@ defmodule HajWeb.ApplyLive.Complete do
              with_show_groups: true
            ) do
         {:ok, application} ->
-          message =
+          slack_message =
             Haj.Slack.application_message(
               socket.assigns.current_user,
               application,
               socket.assigns.show_groups
             )
 
-          Haj.Slack.send_message(Spex.current_spex().slack_webhook_url, message)
+          email =
+            Applications.application_email(
+              socket.assigns.current_user,
+              application,
+              socket.assigns.show_groups
+            )
+
+          Haj.Slack.send_message(Spex.current_spex().slack_webhook_url, slack_message)
+          Haj.Applications.send_email(socket.assigns.current_user.email, email)
 
           {:noreply,
            put_flash(socket, :info, "Ansökan lyckades!")

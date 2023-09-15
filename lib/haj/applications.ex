@@ -8,7 +8,7 @@ defmodule Haj.Applications do
   alias Haj.Spex
   alias Haj.Repo
 
-  alias Haj.Applications.Application
+  alias Haj.Applications.Application, as: App
   alias Haj.Applications.ApplicationShowGroup
 
   @doc """
@@ -21,7 +21,7 @@ defmodule Haj.Applications do
 
   """
   def list_applications do
-    Repo.all(Application)
+    Repo.all(App)
   end
 
   @doc """
@@ -38,7 +38,7 @@ defmodule Haj.Applications do
       ** (Ecto.NoResultsError)
 
   """
-  def get_application!(id), do: Repo.get!(Application, id)
+  def get_application!(id), do: Repo.get!(App, id)
 
   @doc """
   Creates an application. Takes a list of show, groups, user id and a show id.
@@ -47,7 +47,7 @@ defmodule Haj.Applications do
   def create_application(user_id, show_id, show_groups) do
     Repo.transaction(fn ->
       previous =
-        Repo.one(from a in Application, where: a.show_id == ^show_id and a.user_id == ^user_id)
+        Repo.one(from a in App, where: a.show_id == ^show_id and a.user_id == ^user_id)
 
       if previous != nil do
         Repo.delete(previous)
@@ -55,7 +55,7 @@ defmodule Haj.Applications do
       end
 
       {:ok, application} =
-        %Application{user_id: user_id, show_id: show_id}
+        %App{user_id: user_id, show_id: show_id}
         |> Repo.insert()
 
       Enum.each(show_groups, fn id ->
@@ -79,16 +79,16 @@ defmodule Haj.Applications do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_application(%Application{} = application, attrs, options \\ []) do
+  def update_application(%App{} = application, attrs, options \\ []) do
     case Keyword.get(options, :with_show_groups, false) do
       true ->
         application
-        |> Application.changeset_with_show_groups(attrs)
+        |> App.changeset_with_show_groups(attrs)
         |> Repo.update()
 
       false ->
         application
-        |> Application.changeset(attrs)
+        |> App.changeset(attrs)
         |> Repo.update()
     end
   end
@@ -105,7 +105,7 @@ defmodule Haj.Applications do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_application(%Application{} = application) do
+  def delete_application(%App{} = application) do
     Repo.delete(application)
   end
 
@@ -118,8 +118,8 @@ defmodule Haj.Applications do
       %Ecto.Changeset{data: %Application{}}
 
   """
-  def change_application(%Application{} = application, attrs \\ %{}) do
-    Application.changeset(application, attrs)
+  def change_application(%App{} = application, attrs \\ %{}) do
+    App.changeset(application, attrs)
   end
 
   @doc """
@@ -127,7 +127,7 @@ defmodule Haj.Applications do
   """
   def get_applications_for_show_group(show_group_id) do
     query =
-      from a in Application,
+      from a in App,
         join: asg in assoc(a, :application_show_groups),
         where: asg.application_id == a.id,
         where: asg.show_group_id == ^show_group_id,
@@ -141,7 +141,7 @@ defmodule Haj.Applications do
   """
   def get_applications_for_user(user_id) do
     query =
-      from a in Application,
+      from a in App,
         where: a.user_id == ^user_id,
         preload: [application_show_groups: []]
 
@@ -153,7 +153,7 @@ defmodule Haj.Applications do
   """
   def get_current_application_for_user(user_id) do
     query =
-      from a in Application,
+      from a in App,
         where: a.user_id == ^user_id and a.show_id == ^Spex.current_spex().id,
         preload: [application_show_groups: []]
 
@@ -178,7 +178,7 @@ defmodule Haj.Applications do
   """
   def list_applications_for_show(show_id) do
     query =
-      from a in Application,
+      from a in App,
         where: a.show_id == ^show_id,
         preload: [application_show_groups: [show_group: [group: []]], user: []]
 
@@ -202,5 +202,54 @@ defmodule Haj.Applications do
       _ ->
         false
     end
+  end
+
+  def application_email(user, application, show_groups) do
+    spex = Spex.current_spex()
+
+    show_group_names =
+      Enum.map(application.application_show_groups, fn sg ->
+        show_groups[sg.show_group_id].group.name
+      end)
+      |> Enum.join(", ")
+
+    """
+    <h2>Tack för din ansökan!</h2>
+    <p>Din ansökan till METAspexet #{spex.year.year} har tagits emot. Nedan kommer en sammanfattning av din ansökan:</p>
+    <ul>
+      <li><b>Namn</b>: #{user.first_name} #{user.last_name}</li>
+      <li><b>Mail</b>: #{user.email}</li>
+      <li><b>Telefonnummer</b>: #{user.phone}</li>
+      <li><b>Sökta grupper</b>: #{show_group_names}</li>
+    </ul>
+    Du kommer inom kort kontaktas av chefer för de grupper du sökt. Om du har några frågor eller funderingar
+    är du välkommen att kontakta Direqtionen på <a href="mailto:direqtionen@metaspexet.se">direqtionen@metaspexet.se</a>.
+    <br/><br/>
+    Hälsningar,<br/><br/>
+    Chefsgruppen för METAspexet 2024
+    """
+  end
+
+  @spam_url "https://spam.datasektionen.se/api/sendmail"
+
+  def send_email(to, message) do
+    spex = Spex.current_spex()
+    api_key = Application.get_env(:haj, :spam_api_key)
+
+    {:ok, res} =
+      HTTPoison.post(
+        @spam_url,
+        {:form,
+         [
+           {"from", "metaspexet@datasektionen.se"},
+           {"to", to},
+           {"subject", "Din ansökan till METAspexet #{spex.year.year}"},
+           {"content", message},
+           {"template", "metaspexet"},
+           {"key", api_key}
+         ]}
+      )
+
+    dbg(res)
   end
 end

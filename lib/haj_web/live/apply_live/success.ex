@@ -26,6 +26,7 @@ defmodule HajWeb.ApplyLive.Success do
 
       {:ok,
        socket
+       |> assign(page_title: "Ansökan lyckades")
        |> assign(application: application, show_groups: show_groups)}
     end
   end

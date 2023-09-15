@@ -58,7 +58,9 @@ defmodule HajWeb.ApplyLive.Groups do
 
         changeset = Haj.Applications.change_application(application)
 
-        {:ok, assign(socket, groups: groups, application: application) |> assign_form(changeset)}
+        {:ok,
+         assign(socket, groups: groups, application: application, page_title: "Sök grupper")
+         |> assign_form(changeset)}
     end
   end
 

@@ -11,7 +11,7 @@ defmodule HajWeb.ApplyLive.Index do
     open = Haj.Applications.open?()
     show = Haj.Spex.current_spex()
 
-    {:ok, assign(socket, open: open, show: show)}
+    {:ok, assign(socket, open: open, show: show, page_title: "Sök")}
   end
 
   @impl true
