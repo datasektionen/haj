@@ -162,7 +162,7 @@ defmodule HajWeb.ApplyLive.Groups do
         class="mt-6 flex flex-col divide-y divide-gray-200"
       >
         <div :for={sg <- @groups} class="flex flex-row items-center py-4">
-          <label class="hover:cursor-pointer">
+          <label class="w-full hover:cursor-pointer">
             <div class="flex flex-row items-center justify-between">
               <div name={sg.id} class="text-xl font-bold">
                 <%= sg.group.name %>
