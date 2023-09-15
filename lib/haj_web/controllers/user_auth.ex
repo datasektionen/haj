@@ -48,7 +48,11 @@ defmodule HajWeb.UserAuth do
     end
   end
 
-  def on_mount(:ensure_authenticated, _params, session, socket) do
+  def on_mount(:ensure_authenticated, params, session, socket) do
+    on_mount({:ensure_authenticated, signed_in_path()}, params, session, socket)
+  end
+
+  def on_mount({:ensure_authenticated, return_to}, _params, session, socket) do
     case session do
       %{"user_token" => user_token} ->
         new_socket =
@@ -61,16 +65,15 @@ defmodule HajWeb.UserAuth do
         {:cont, new_socket}
 
       %{} ->
-        {:halt, redirect_require_login(socket)}
+        {:halt, redirect_require_login(socket, %{"return_url" => return_to})}
     end
   rescue
     Ecto.NoResultsError -> {:halt, redirect_require_login(socket)}
   end
 
-  defp redirect_require_login(socket) do
+  defp redirect_require_login(socket, params \\ %{}) do
     socket
-    |> LiveView.put_flash(:error, "Please sign in")
-    |> LiveView.redirect(to: Routes.session_path(socket, :login))
+    |> LiveView.redirect(to: Routes.session_path(socket, :login, params))
   end
 
   defp redirect_require_admin(socket) do
@@ -237,11 +240,23 @@ defmodule HajWeb.UserAuth do
     end
   end
 
+  def require_auth(conn, action) when is_atom(action) do
+    if Policy.authorize?(action, conn.assigns.current_user) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Du har inte access här.")
+      |> redirect(to: ~p"/unauthorized")
+      |> halt()
+    end
+  end
+
   defp maybe_store_return_to(%{method: "GET"} = conn) do
     put_session(conn, :user_return_to, current_path(conn))
   end
 
   defp maybe_store_return_to(conn), do: conn
 
+  defp signed_in_path(), do: ~p"/dashboard"
   defp signed_in_path(_conn), do: ~p"/dashboard"
 end

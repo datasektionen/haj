@@ -1,7 +1,6 @@
 defmodule HajWeb.UserLive do
   use HajWeb, :live_view
   alias Haj.Accounts
-  alias HajWeb.Endpoint
 
   def mount(%{"username" => username}, _session, socket) do
     user = Accounts.get_user_by_username!(username) |> Accounts.preload(:foods)

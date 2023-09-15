@@ -6,7 +6,7 @@ defmodule Haj.Slack do
   """
   def send_message(webhook_url, message) do
     if webhook_url do
-      Logger.info("Sent slack message to #{webhook_url}")
+      Logger.info("Sending slack message to #{webhook_url}")
 
       {_, res} =
         HTTPoison.post(webhook_url, "{\"text\":\"#{message}\"}", [
@@ -15,5 +15,17 @@ defmodule Haj.Slack do
 
       Logger.debug(res)
     end
+  end
+
+  def application_message(user, application, show_groups) do
+    show_group_names =
+      Enum.map(application.application_show_groups, fn sg ->
+        show_groups[sg.show_group_id].group.name
+      end)
+      |> Enum.join(", ")
+
+    """
+    #{user.first_name} #{user.last_name} (#{user.email}) sökte just till följande grupper: #{show_group_names}.
+    """
   end
 end

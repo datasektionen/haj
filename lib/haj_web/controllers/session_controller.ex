@@ -8,7 +8,16 @@ defmodule HajWeb.SessionController do
   @doc """
   Issues a request to the login server, by redirecting the user there
   """
-  def login(conn, _params) do
+  def login(conn, %{"return_url" => return_url} = params) do
+    conn = put_session(conn, :user_return_to, return_url)
+    do_login(conn, params)
+  end
+
+  def login(conn, params) do
+    do_login(conn, params)
+  end
+
+  defp do_login(conn, _params) do
     host = Application.get_env(:haj, :login_host)
 
     scheme =

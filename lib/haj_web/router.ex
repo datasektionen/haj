@@ -168,8 +168,12 @@ defmodule HajWeb.Router do
 
     post "/merch-admin/:show_id/csv", MerchAdminController, :csv
 
+    pipeline :require_applications_read do
+      plug :require_auth, :applications_read
+    end
+
     scope "/" do
-      pipe_through [:require_admin_access]
+      pipe_through :require_applications_read
 
       get "/applications", ApplicationController, :index
       get "/applications/export", ApplicationController, :export
@@ -177,11 +181,13 @@ defmodule HajWeb.Router do
   end
 
   scope "/sok", HajWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser]
 
-    get "/", ApplyController, :index
-    get "/sucess", ApplyController, :created
-    post "/", ApplyController, :apply
+    live "/", ApplyLive.Index, :index
+    live "/edit", ApplyLive.EditInfo, :edit
+    live "/groups", ApplyLive.Groups, :groups
+    live "/complete", ApplyLive.Complete, :groups
+    live "/success", ApplyLive.Success, :created
   end
 
   # Other scopes may use custom stacks.

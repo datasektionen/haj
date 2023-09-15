@@ -2,8 +2,6 @@ defmodule HajWeb.ShowLive.Show do
   use HajWeb, :live_view
 
   alias Haj.Spex
-  alias HajWeb.Endpoint
-  alias Haj.Policy
 
   def mount(%{"show_id" => show_id}, _session, socket) do
     show = Spex.get_show!(show_id)

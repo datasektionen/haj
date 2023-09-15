@@ -85,4 +85,11 @@ defmodule Haj.Policy do
       allow role: :admin
     end
   end
+
+  object :applications do
+    action :read do
+      allow role: :admin
+      allow current_group_member: :chefsgruppen
+    end
+  end
 end
