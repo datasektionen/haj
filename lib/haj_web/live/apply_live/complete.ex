@@ -101,9 +101,10 @@ defmodule HajWeb.ApplyLive.Complete do
         </.inputs_for>
 
         <.input
+          :if={length(Map.keys(@show_groups)) > 1}
           field={@form[:ranking]}
           type="textarea"
-          label="Eftersom du söker flera grupper: Rangordna vilka grupper du helst vill vara med i"
+          label={"Eftersom du söker flera grupper (#{group_names(@show_groups)}): Rangordna vilka grupper du helst vill vara med i"}
         />
 
         <.input field={@form[:other]} type="textarea" label="Har du något övrigt på hjärtat?" />
@@ -125,5 +126,10 @@ defmodule HajWeb.ApplyLive.Complete do
       </.form>
     </div>
     """
+  end
+
+  defp group_names(show_groups) do
+    Enum.map(show_groups, fn {_, sg} -> sg.group.name end)
+    |> Enum.join(", ")
   end
 end
