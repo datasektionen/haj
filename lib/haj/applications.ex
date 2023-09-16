@@ -191,7 +191,12 @@ defmodule Haj.Applications do
   def open?() do
     show = Spex.current_spex()
     current_date = DateTime.now!("Etc/UTC")
+    IO.inspect(show)
 
+    #HOTFIX!!!! The true atom should be deleted the following should be uncommented when the spex has a proper open date!
+    true
+
+    """
     case show.application_opens && DateTime.compare(show.application_opens, current_date) do
       :lt ->
         case DateTime.compare(show.application_closes, current_date) do
@@ -202,6 +207,7 @@ defmodule Haj.Applications do
       _ ->
         false
     end
+    """
   end
 
   def application_email(user, application, show_groups) do
