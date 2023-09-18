@@ -32,8 +32,6 @@ defmodule HajWeb.ApplicationsLive do
   end
 
   def render(assigns) do
-    text_to_html_opts = []
-
     ~H"""
     <div class="border-burgandy-500 mb-2 flex flex-col gap-2 border-b-2 py-2 md:flex-row md:items-center">
       <div class="font-bold uppercase">Filtrera</div>
