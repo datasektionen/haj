@@ -59,7 +59,12 @@ defmodule HajWeb.ApplyLive.Groups do
         changeset = Haj.Applications.change_application(application)
 
         {:ok,
-         assign(socket, groups: groups, application: application, page_title: "Sök grupper")
+         assign(socket,
+           groups: groups,
+           application: application,
+           page_title: "Sök grupper",
+           pre_filled: pre_filled?
+         )
          |> assign_form(changeset)}
     end
   end
@@ -118,6 +123,17 @@ defmodule HajWeb.ApplyLive.Groups do
                sgs
              ) do
           {:ok, _} ->
+            socket =
+              if socket.assigns.pre_filled do
+                put_flash(
+                  socket,
+                  :info,
+                  "Din ansökan uppdaterades. Glöm inte att genomföra hela ansökan!"
+                )
+              else
+                socket
+              end
+
             {:noreply, socket |> push_navigate(to: ~p"/sok/complete")}
 
           {:error, _} ->
