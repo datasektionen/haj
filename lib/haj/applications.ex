@@ -42,55 +42,62 @@ defmodule Haj.Applications do
 
   @doc """
   Creates an application. Takes a list of show, groups, user id and a show id.
-  If there is already an application for that show for that user, replaces and creates a new applicaiton.
+  If there is already a pending application for that show for that user, it updates that application instead.
   """
   def create_application(user_id, show_id, show_groups) do
     Repo.transaction(fn ->
       previous =
-        Repo.one(from a in App, where: a.show_id == ^show_id and a.user_id == ^user_id)
+        Repo.one(
+          from a in App,
+            where: a.show_id == ^show_id and a.user_id == ^user_id and a.status == ^:pending,
+            preload: :application_show_groups
+        )
 
       if previous != nil do
-        Repo.delete(previous)
-        # Repo.rollback(:already_applied)
+        prev_sgs = Enum.map(previous.application_show_groups, fn asg -> asg.show_group_id end)
+        to_delete = prev_sgs -- show_groups
+        to_add = show_groups -- prev_sgs
+
+        Repo.delete_all(
+          from a in ApplicationShowGroup,
+            where: a.application_id == ^previous.id and a.show_group_id in ^to_delete
+        )
+
+        Enum.each(to_add, fn id ->
+          Repo.insert(%ApplicationShowGroup{
+            application_id: previous.id,
+            show_group_id: id
+          })
+        end)
+      else
+        {:ok, application} =
+          %App{user_id: user_id, show_id: show_id}
+          |> Repo.insert()
+
+        Enum.each(show_groups, fn id ->
+          Repo.insert(%ApplicationShowGroup{
+            application_id: application.id,
+            show_group_id: id
+          })
+        end)
       end
-
-      {:ok, application} =
-        %App{user_id: user_id, show_id: show_id}
-        |> Repo.insert()
-
-      Enum.each(show_groups, fn id ->
-        Repo.insert(%ApplicationShowGroup{
-          application_id: application.id,
-          show_group_id: id
-        })
-      end)
     end)
   end
 
   @doc """
-  Updates a application.
-
-  ## Examples
-
-      iex> update_application(application, %{field: new_value})
-      {:ok, %Application{}}
-
-      iex> update_application(application, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
+  Completes a pending application. Deletes all other applications for the user for the same show.
   """
-  def update_application(%App{} = application, attrs, options \\ []) do
-    case Keyword.get(options, :with_show_groups, false) do
-      true ->
-        application
-        |> App.changeset_with_show_groups(attrs)
-        |> Repo.update()
+  def complete_application(%App{} = application, attrs) do
+    Repo.transaction(fn ->
+      app = application |> App.changeset_with_show_groups(attrs) |> Repo.update!()
 
-      false ->
-        application
-        |> App.changeset(attrs)
-        |> Repo.update()
-    end
+      Repo.delete_all(
+        from a in App,
+          where: a.id != ^app.id and a.show_id == ^app.show_id and a.user_id == ^app.user_id
+      )
+
+      app
+    end)
   end
 
   @doc """
@@ -130,7 +137,7 @@ defmodule Haj.Applications do
       from a in App,
         join: asg in assoc(a, :application_show_groups),
         where: asg.application_id == a.id,
-        where: asg.show_group_id == ^show_group_id,
+        where: asg.show_group_id == ^show_group_id and a.status == ^:submitted,
         preload: [user: [], application_show_groups: [show_group: [group: []]]]
 
     Repo.all(query)
@@ -154,7 +161,22 @@ defmodule Haj.Applications do
   def get_current_application_for_user(user_id) do
     query =
       from a in App,
-        where: a.user_id == ^user_id and a.show_id == ^Spex.current_spex().id,
+        where:
+          a.user_id == ^user_id and a.show_id == ^Spex.current_spex().id and
+            a.status == ^:submitted,
+        preload: [application_show_groups: []]
+
+    Repo.one(query)
+  end
+
+  @doc """
+  Returns an application for a user for the current show.
+  """
+  def get_pending_application_for_user(user_id) do
+    query =
+      from a in App,
+        where:
+          a.user_id == ^user_id and a.show_id == ^Spex.current_spex().id and a.status == ^:pending,
         preload: [application_show_groups: []]
 
     Repo.one(query)
@@ -179,7 +201,7 @@ defmodule Haj.Applications do
   def list_applications_for_show(show_id) do
     query =
       from a in App,
-        where: a.show_id == ^show_id,
+        where: a.show_id == ^show_id and a.status == ^:submitted,
         preload: [application_show_groups: [show_group: [group: []]], user: []]
 
     Repo.all(query)
