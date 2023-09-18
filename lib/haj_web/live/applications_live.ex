@@ -32,6 +32,8 @@ defmodule HajWeb.ApplicationsLive do
   end
 
   def render(assigns) do
+    text_to_html_opts = []
+
     ~H"""
     <div class="border-burgandy-500 mb-2 flex flex-col gap-2 border-b-2 py-2 md:flex-row md:items-center">
       <div class="font-bold uppercase">Filtrera</div>
@@ -89,13 +91,34 @@ defmodule HajWeb.ApplicationsLive do
                 </tr>
                 <tr x-show="show" class={if rem(i, 2) == 0, do: "bg-white", else: "bg-gray-50"}>
                   <td colspan="5" class="w-full gap-2 px-4 py-3">
-                    <div>Tid för ansökan: <%= application.inserted_at %></div>
-                    <div>Övrigt: <%= application.other %></div>
-                    <div>Eventuell rangordning: <%= application.ranking %></div>
+                    <div><b>Tid för ansökan:</b> <%= application.inserted_at %></div>
+                    <hr class="mb-2"/>
+                    <div>
+                      <p><b>Övrigt</b></p>
+                      <%= case application.other do
+                        nil -> ~H"<i>inget svar</i>"
+                        text -> text_to_html(text, text_to_html_opts)
+                      end %>
+                    </div>
+                    <hr class="mb-2"/>
+                    <div>
+                      <p><b>Eventuell rangordning</b></p>
+                      <p>
+                        <%= case application.ranking do
+                          nil -> ~H"<i>inget svar</i>"
+                          text -> text_to_html(text, text_to_html_opts)
+                        end %>
+                      </p>
+                    </div>
                     <%= for asg <- application.application_show_groups do %>
                       <%= if asg.show_group.application_extra_question do %>
+                        <hr class="mb-2"/>
                         <div>
-                          <%= asg.show_group.application_extra_question %>: <%= asg.special_text %>
+                          <p><b> <%= asg.show_group.application_extra_question %> </b></p>
+                          <%= case asg.special_text do
+                            nil -> ~H"<i>inget svar</i>"
+                            text -> text_to_html(text, text_to_html_opts)
+                          end %>
                         </div>
                       <% end %>
                     <% end %>
