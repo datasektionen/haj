@@ -95,30 +95,31 @@ defmodule HajWeb.ApplicationsLive do
                     <hr class="mb-2"/>
                     <div>
                       <p><b>Övrigt</b></p>
-                      <%= case application.other do
-                        nil -> ~H"<i>inget svar</i>"
-                        text -> text_to_html(text, text_to_html_opts)
-                      end %>
+                      <%= if application.other == nil do %>
+                        <i>Inget svar</i>
+                      <%= else %>
+                        <p class="whitespace-pre-line"> <%= application.other %> </p>
+                      <%= end %>
                     </div>
                     <hr class="mb-2"/>
                     <div>
                       <p><b>Eventuell rangordning</b></p>
-                      <p>
-                        <%= case application.ranking do
-                          nil -> ~H"<i>inget svar</i>"
-                          text -> text_to_html(text, text_to_html_opts)
-                        end %>
-                      </p>
+                      <%= if application.ranking == nil do %>
+                        <i>Inget svar</i>
+                      <%= else %>
+                        <p class="whitespace-pre-line"> <%= application.ranking %> </p>
+                      <%= end %>
                     </div>
                     <%= for asg <- application.application_show_groups do %>
                       <%= if asg.show_group.application_extra_question do %>
                         <hr class="mb-2"/>
                         <div>
                           <p><b> <%= asg.show_group.application_extra_question %> </b></p>
-                          <%= case asg.special_text do
-                            nil -> ~H"<i>inget svar</i>"
-                            text -> text_to_html(text, text_to_html_opts)
-                          end %>
+                          <%= if asg.special_text == nil do %>
+                            <i>Inget svar</i>
+                          <%= else %>
+                            <p class="whitespace-pre-line"> <%= asg.special_text %> </p>
+                          <%= end %>
                         </div>
                       <% end %>
                     <% end %>
