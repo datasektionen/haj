@@ -47,23 +47,44 @@ defmodule Haj.Applications do
   def create_application(user_id, show_id, show_groups) do
     Repo.transaction(fn ->
       previous =
-        Repo.one(from a in App, where: a.show_id == ^show_id and a.user_id == ^user_id)
+        Repo.one(
+          from a in App,
+            where: a.show_id == ^show_id and a.user_id == ^user_id,
+            preload: :application_show_groups
+        )
 
       if previous != nil do
-        Repo.delete(previous)
-        # Repo.rollback(:already_applied)
+        prev_sgs = Enum.map(previous.application_show_groups, fn asg -> asg.show_group_id end)
+        to_delete = prev_sgs -- show_groups
+        to_add = show_groups -- prev_sgs
+
+        Repo.delete_all(
+          from a in ApplicationShowGroup,
+            where: a.application_id == ^previous.id and a.show_group_id in ^to_delete
+        )
+
+        Enum.each(to_add, fn id ->
+          Repo.insert(%ApplicationShowGroup{
+            application_id: previous.id,
+            show_group_id: id
+          })
+        end)
+
+        previous
+        |> App.changeset(%{status: :pending})
+        |> Repo.update!()
+      else
+        {:ok, application} =
+          %App{user_id: user_id, show_id: show_id}
+          |> Repo.insert()
+
+        Enum.each(show_groups, fn id ->
+          Repo.insert(%ApplicationShowGroup{
+            application_id: application.id,
+            show_group_id: id
+          })
+        end)
       end
-
-      {:ok, application} =
-        %App{user_id: user_id, show_id: show_id}
-        |> Repo.insert()
-
-      Enum.each(show_groups, fn id ->
-        Repo.insert(%ApplicationShowGroup{
-          application_id: application.id,
-          show_group_id: id
-        })
-      end)
     end)
   end
 
@@ -130,7 +151,7 @@ defmodule Haj.Applications do
       from a in App,
         join: asg in assoc(a, :application_show_groups),
         where: asg.application_id == a.id,
-        where: asg.show_group_id == ^show_group_id,
+        where: asg.show_group_id == ^show_group_id and a.status == ^:submitted,
         preload: [user: [], application_show_groups: [show_group: [group: []]]]
 
     Repo.all(query)
@@ -179,7 +200,7 @@ defmodule Haj.Applications do
   def list_applications_for_show(show_id) do
     query =
       from a in App,
-        where: a.show_id == ^show_id,
+        where: a.show_id == ^show_id and a.status == ^:submitted,
         preload: [application_show_groups: [show_group: [group: []]], user: []]
 
     Repo.all(query)
