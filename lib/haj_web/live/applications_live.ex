@@ -89,13 +89,35 @@ defmodule HajWeb.ApplicationsLive do
                 </tr>
                 <tr x-show="show" class={if rem(i, 2) == 0, do: "bg-white", else: "bg-gray-50"}>
                   <td colspan="5" class="w-full gap-2 px-4 py-3">
-                    <div>Tid för ansökan: <%= application.inserted_at %></div>
-                    <div>Övrigt: <%= application.other %></div>
-                    <div>Eventuell rangordning: <%= application.ranking %></div>
+                    <div><b>Tid för ansökan:</b> <%= application.inserted_at %></div>
+                    <hr class="mb-2"/>
+                    <div>
+                      <p><b>Övrigt</b></p>
+                      <%= if application.other == nil do %>
+                        <i>Inget svar</i>
+                      <%= else %>
+                        <p class="whitespace-pre-line"> <%= application.other %> </p>
+                      <%= end %>
+                    </div>
+                    <hr class="mb-2"/>
+                    <div>
+                      <p><b>Eventuell rangordning</b></p>
+                      <%= if application.ranking == nil do %>
+                        <i>Inget svar</i>
+                      <%= else %>
+                        <p class="whitespace-pre-line"> <%= application.ranking %> </p>
+                      <%= end %>
+                    </div>
                     <%= for asg <- application.application_show_groups do %>
                       <%= if asg.show_group.application_extra_question do %>
+                        <hr class="mb-2"/>
                         <div>
-                          <%= asg.show_group.application_extra_question %>: <%= asg.special_text %>
+                          <p><b> <%= asg.show_group.application_extra_question %> </b></p>
+                          <%= if asg.special_text == nil do %>
+                            <i>Inget svar</i>
+                          <%= else %>
+                            <p class="whitespace-pre-line"> <%= asg.special_text %> </p>
+                          <%= end %>
                         </div>
                       <% end %>
                     <% end %>
