@@ -33,10 +33,9 @@ defmodule HajWeb.ApplyLive.Groups do
         current_spex = Spex.current_spex()
 
         {application, pre_filled?} =
-          case Haj.Applications.get_applications_for_user(user.id)
-               |> Enum.filter(fn %{show_id: id} -> id == current_spex.id end) do
-            [app | _] -> {app, true}
-            _ -> {%Haj.Applications.Application{}, false}
+          case Haj.Applications.get_current_application_for_user(user.id) do
+            nil -> {%Haj.Applications.Application{}, false}
+            app -> {app, true}
           end
 
         groups =

@@ -14,7 +14,7 @@ defmodule HajWeb.ApplyLive.Complete do
   @impl true
   def mount(_params, _session, socket) do
     user = socket.assigns[:current_user]
-    application = Applications.get_current_application_for_user(user.id)
+    application = Applications.get_pending_application_for_user(user.id)
 
     if application == nil do
       {:ok,
@@ -45,11 +45,7 @@ defmodule HajWeb.ApplyLive.Complete do
     if Applications.open?() do
       application_params = Map.put(application_params, "status", :submitted)
 
-      case Applications.update_application(
-             socket.assigns.application,
-             application_params,
-             with_show_groups: true
-           ) do
+      case Applications.complete_application(socket.assigns.application, application_params) do
         {:ok, application} ->
           slack_message =
             Haj.Slack.application_message(
