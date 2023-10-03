@@ -58,6 +58,7 @@ defmodule HajWeb.Nav do
   tab SongLive.Index, :songs
   tab SongLive.Show, :songs
   tab ShowLive.Index, :shows
+  tab ApplicationsLive.Index, :applications
 
   tab SettingsLive.Index, :settings
   tab SettingsLive.Show.Index, {:setting, :shows}

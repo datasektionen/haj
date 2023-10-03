@@ -3,7 +3,7 @@
     <%= "Steg #{Enum.find_index(@step, fn step -> step.status == :current end) + 1} av #{length(@step)}" %>
   </p>
   <ol role="list" class="ml-8 flex items-center space-x-5">
-    <li :for={{step, index} <- Enum.with_index(@step)} class="relative md:flex md:flex-1">
+    <li :for={{step, _index} <- Enum.with_index(@step)} class="relative md:flex md:flex-1">
       <.link
         :if={step.status == :complete}
         navigate={step.to}

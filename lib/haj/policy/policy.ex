@@ -91,5 +91,10 @@ defmodule Haj.Policy do
       allow role: :admin
       allow current_group_member: :chefsgruppen
     end
+
+    action :approve do
+      allow :is_chef
+      allow role: :admin
+    end
   end
 end
