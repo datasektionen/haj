@@ -181,7 +181,7 @@ defmodule HajWeb.Router do
       pipe_through :require_applications_read
 
       #   get "/applications", ApplicationController, :index
-      get "/applications/export", ApplicationController, :export
+      get "/applications/export/csv", ApplicationController, :export
     end
   end
 
