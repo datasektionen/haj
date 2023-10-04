@@ -90,7 +90,7 @@ defmodule HajWeb.Router do
       ## Applications
       live "/applications", ApplicationsLive.Index, :index
       live "/applications/:id", ApplicationsLive.Show, :show
-      live "/applications/:id/confirm", ApplicationsLive.Show, :confirm
+      live "/applications/:id/confirm", ApplicationsLive.Show, :approve
 
       ## Songs
       live "/songs", SongLive.Index, :index

@@ -13,7 +13,12 @@ defmodule HajWeb.ResponsibilityLive.History do
     {current, prev} =
       Enum.split_with(responsibilities, fn %{show_id: id} -> id == current_show.id end)
 
-    {:ok, assign(socket, current_responsibilities: current, prev_responsibilities: prev)}
+    {:ok,
+     assign(socket,
+       page_title: "Dina ansvar",
+       current_responsibilities: current,
+       prev_responsibilities: prev
+     )}
   end
 
   attr :navigate, :any, required: true

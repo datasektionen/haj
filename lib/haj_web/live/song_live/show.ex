@@ -15,7 +15,14 @@ defmodule HajWeb.SongLive.Show do
 
     lyrics = parse_lyrics(song.text)
 
-    {:noreply, assign(socket, song: song, lyrics: lyrics, player: false, loaded: false)}
+    {:noreply,
+     assign(socket,
+       page_title: song.name,
+       song: song,
+       lyrics: lyrics,
+       player: false,
+       loaded: false
+     )}
   end
 
   def handle_event("play_pause", _params, socket) do

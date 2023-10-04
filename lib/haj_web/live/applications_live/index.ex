@@ -29,7 +29,7 @@ defmodule HajWeb.ApplicationsLive.Index do
 
     {:ok,
      socket
-     |> assign(:title, "Ansökningar #{current_spex.year.year}")
+     |> assign(:page_title, "Ansökningar")
      |> assign(:show, current_spex)
      |> assign(:applications, applications)
      |> assign(:stats, stats)

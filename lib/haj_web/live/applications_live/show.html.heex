@@ -71,7 +71,7 @@
 </div>
 
 <.modal
-  :if={@live_action in [:confirm]}
+  :if={@live_action in [:approve]}
   id="app-confirm-modal"
   show
   on_cancel={JS.navigate(~p"/applications/#{@application}")}
