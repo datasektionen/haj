@@ -498,7 +498,7 @@ defmodule HajWeb.CoreComponents do
 
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class={["mt-11", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
+      <table class={["mt-6", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
         <thead class="text-[0.8125rem] text-left leading-6 text-zinc-500">
           <tr>
             <th :for={col <- @col} class={["p-0 pr-6 pb-4 font-normal", Map.get(col, :class, "")]}>
@@ -583,7 +583,7 @@ defmodule HajWeb.CoreComponents do
 
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class={["mt-11", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
+      <table class={["mt-6", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
         <thead class="text-[0.8125rem] text-left leading-6 text-zinc-500">
           <tr>
             <th :for={col <- @col} class="p-0 pr-6 pb-4 font-normal"><%= col[:label] %></th>
