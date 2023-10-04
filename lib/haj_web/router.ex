@@ -87,6 +87,11 @@ defmodule HajWeb.Router do
       live "/responsibilities/:id/history", ResponsibilityLive.Show, :history
       live "/responsibilities/:id/show/edit", ResponsibilityLive.Show, :edit
 
+      ## Applications
+      live "/applications", ApplicationsLive.Index, :index
+      live "/applications/:id", ApplicationsLive.Show, :show
+      live "/applications/:id/confirm", ApplicationsLive.Show, :approve
+
       ## Songs
       live "/songs", SongLive.Index, :index
       live "/songs/:id", SongLive.Show, :show
@@ -175,8 +180,8 @@ defmodule HajWeb.Router do
     scope "/" do
       pipe_through :require_applications_read
 
-      get "/applications", ApplicationController, :index
-      get "/applications/export", ApplicationController, :export
+      #   get "/applications", ApplicationController, :index
+      get "/applications/export/csv", ApplicationController, :export
     end
   end
 

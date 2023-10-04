@@ -3,7 +3,7 @@
   <div class="fixed inset-0 bg-gray-600 bg-opacity-75" phx-click={hide_mobile_sidebar()}></div>
   <div
     id="mobile-sidebar"
-    class="bg-burgandy-500 relative flex min-h-screen w-full max-w-xs flex-1 flex-col pt-4"
+    class="bg-burgandy-500 relative flex h-screen w-full max-w-xs flex-1 flex-col overflow-y-auto pt-4"
   >
     <div class="mt-2 flex w-full flex-row items-center justify-between px-4">
       <svg class="-mt-1 inline-block h-8 w-8 fill-white" viewBox="0 0 391.85 526.59">
@@ -19,7 +19,7 @@
         <.icon name={:chevron_left} class="h-full w-full text-white" />
       </button>
     </div>
-    <nav class="px-4 pt-6">
+    <nav class="px-4 py-6">
       <.sidebar_nav_links
         :if={@current_user}
         current_user={@current_user}
@@ -52,7 +52,7 @@
     </div>
     <!-- Sidebar -->
     <div class="flex h-0 flex-1 flex-col">
-      <nav class="overflow-y-auto px-4">
+      <nav class="overflow-y-auto px-4 pb-6">
         <.sidebar_nav_links
           :if={@current_user}
           current_user={@current_user}
@@ -70,7 +70,7 @@
   </div>
 </div>
 <!-- Top bar -->
-<div class="flex w-screen flex-col lg:pl-64">
+<div class="flex min-h-screen w-screen flex-col lg:pl-64">
   <div
     :if={@current_user}
     class="flex w-full flex-row items-center justify-between border-b px-4 py-4 lg:px-6 lg:py-4"

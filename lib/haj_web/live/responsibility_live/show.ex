@@ -16,16 +16,16 @@ defmodule HajWeb.ResponsibilityLive.Show do
   def handle_params(%{"id" => id} = params, _, socket) do
     responsibility = Responsibilities.get_responsibility!(id)
 
-    socket =
-      socket
-      |> assign(:responsibility, responsibility)
-
-    {:noreply, socket |> apply_action(socket.assigns.live_action, params)}
+    {:noreply,
+     socket
+     |> assign(:responsibility, responsibility)
+     |> apply_action(socket.assigns.live_action, params)}
   end
 
   defp apply_action(socket, :show, %{"id" => _id}) do
-    socket
-    |> assign(page_title: "Ansvar")
+    %{responsibility: responsibility} = socket.assigns
+
+    assign(socket, page_title: responsibility.name)
   end
 
   defp apply_action(socket, :edit, %{"id" => _id}) do
@@ -85,7 +85,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
     authorized = Policy.authorize?(:responsibility_comment_create, user, responsibility)
 
     socket
-    |> assign(page_title: "Testamenten")
+    |> assign(page_title: "#{responsibility.name} · Testamenten")
     |> assign(show: show)
     |> assign(comments: Responsibilities.get_comments_for_show(responsibility, show.id))
     |> assign(authorized: authorized)
@@ -97,8 +97,10 @@ defmodule HajWeb.ResponsibilityLive.Show do
   end
 
   defp apply_action(socket, :history, _params) do
+    %{responsibility: responsibility} = socket.assigns
+
     socket
-    |> assign(page_title: "Historik")
+    |> assign(page_title: "#{responsibility.name} · Historik")
     |> assign(
       :responsible_users,
       Responsibilities.get_users_for_responsibility_grouped(socket.assigns.responsibility.id)

@@ -1,0 +1,87 @@
+<div>
+  <div class="flex flex-row justify-between px-4 pt-4 sm:px-0">
+    <div>
+      <h3 class="text-2xl font-bold leading-7 text-gray-900">Ansökan</h3>
+      <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+        Ansökan till METAspexet <%= @show.year.year %>
+      </p>
+    </div>
+    <.link navigate={~p"/applications/#{@application}/confirm"}>
+      <.button>
+        Antag
+      </.button>
+    </.link>
+  </div>
+  <div class="mt-6">
+    <dl class="grid grid-cols-1 sm:grid-cols-2">
+      <.field name="Namn">
+        <%= @application.user.full_name %>
+      </.field>
+      <.field name="Klass">
+        <%= @application.user.class %>
+      </.field>
+      <.field name="Email">
+        <%= @application.user.email %>
+      </.field>
+      <.field name="Telefon">
+        <%= @application.user.phone %>
+      </.field>
+      <.field name="Tid för ansökan">
+        <%= @application.updated_at %>
+      </.field>
+
+      <.field name="Grupper">
+        <div class="flex max-w-sm flex-wrap items-center gap-1">
+          <.link
+            :for={group <- @application.application_show_groups}
+            navigate={~p"/group/#{group.show_group_id}"}
+          >
+            <div
+              class="rounded-full px-2 py-0.5 filter hover:brightness-90"
+              style={"background-color: #{get_color(:bg, group.show_group.group.id)};
+                      color: #{pick_text_color(get_color(:bg, group.show_group.group.id))};"}
+            >
+              <%= group.show_group.group.name %>
+            </div>
+          </.link>
+        </div>
+      </.field>
+
+      <.field :if={length(@application.application_show_groups) > 1} large name="Rangordning">
+        <span :if={@application.ranking == nil} class="italic">Inget svar</span>
+        <span class="whitespace-pre-line"><%= @application.ranking %></span>
+      </.field>
+
+      <.field large name="Övrigt">
+        <span :if={@application.other == nil} class="italic">Inget svar</span>
+        <span class="whitespace-pre-line"><%= @application.other %></span>
+      </.field>
+
+      <.field
+        :for={asg <- @application.application_show_groups}
+        :if={asg.show_group.application_extra_question}
+        large
+        name={asg.show_group.application_extra_question}
+      >
+        <span :if={asg.special_text == nil} class="italic">Inget svar</span>
+        <span class="whitespace-pre-line"><%= asg.special_text %></span>
+      </.field>
+    </dl>
+  </div>
+</div>
+
+<.modal
+  :if={@live_action in [:approve]}
+  id="app-confirm-modal"
+  show
+  on_cancel={JS.navigate(~p"/applications/#{@application}")}
+>
+  <.live_component
+    module={HajWeb.ApplicationsLive.ApproveComponent}
+    current_user={@current_user}
+    id={@application.id}
+    application={@application}
+    action={@live_action}
+    navigate={~p"/applications/#{@application}"}
+  />
+</.modal>

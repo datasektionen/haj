@@ -189,6 +189,10 @@ defmodule HajWeb.LiveHelpers do
 
   def format_date(other), do: other
 
+  @colors ~w"#8dd3c7 #ffffb3 #bebada #fb8072 #80b1d3 #fdb462 #b3de69 #fccde5 #d9d9d9 #bc80bd #ccebc5 #ffed6f"
+
+  def get_color(:bg, index), do: Enum.at(@colors, rem(index - 1, 12), "#4e79a7")
+
   def pick_text_color(hex_color) do
     colors = hex_to_rgb(hex_color)
 

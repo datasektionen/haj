@@ -18,19 +18,19 @@ defmodule HajWeb.ResponsibilityLive.Index do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
-    |> assign(:page_title, "Edit Responsibility")
+    |> assign(:page_title, "Redigera ansvar")
     |> assign(:responsibility, Responsibilities.get_responsibility!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Responsibility")
+    |> assign(:page_title, "Nytt ansvar")
     |> assign(:responsibility, %Responsibility{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Responsibilities")
+    |> assign(:page_title, "Ansvar")
     |> assign(:responsibility, nil)
   end
 

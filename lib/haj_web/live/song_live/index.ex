@@ -14,7 +14,8 @@ defmodule HajWeb.SongLive.Index do
         [key: "#{year.year}: #{title}", value: id]
       end)
 
-    {:ok, assign(socket, songs: songs, show: show, show_options: show_options)}
+    {:ok,
+     assign(socket, page_title: "Sånger", songs: songs, show: show, show_options: show_options)}
   end
 
   def handle_event("select_show", %{"show" => show_id}, socket) do

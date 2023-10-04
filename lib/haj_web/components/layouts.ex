@@ -77,6 +77,14 @@ defmodule HajWeb.Layouts do
       </.nav_link_group>
 
       <.nav_link
+        :if={Policy.authorize?(:applications_read, @current_user)}
+        navigate={~p"/applications"}
+        icon_name={:user_plus}
+        title="Ansökningar"
+        active={@active_tab == :applications}
+      />
+
+      <.nav_link
         navigate={~p"/songs"}
         icon_name={:musical_note}
         title="Sånger"

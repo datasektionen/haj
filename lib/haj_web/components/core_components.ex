@@ -485,6 +485,7 @@ defmodule HajWeb.CoreComponents do
 
   slot :col, required: true do
     attr :label, :string
+    attr :class, :string
   end
 
   slot :action, doc: "the slot for showing user actions in the last table column"
@@ -497,10 +498,12 @@ defmodule HajWeb.CoreComponents do
 
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class={["mt-11", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
+      <table class={["mt-6", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
         <thead class="text-[0.8125rem] text-left leading-6 text-zinc-500">
           <tr>
-            <th :for={col <- @col} class="p-0 pr-6 pb-4 font-normal"><%= col[:label] %></th>
+            <th :for={col <- @col} class={["p-0 pr-6 pb-4 font-normal", Map.get(col, :class, "")]}>
+              <%= col[:label] %>
+            </th>
             <th class="relative p-0 pb-4"><span class="sr-only"><%= gettext("Actions") %></span></th>
           </tr>
         </thead>
@@ -513,7 +516,7 @@ defmodule HajWeb.CoreComponents do
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
-              class={["relative p-0", @row_click && "hover:cursor-pointer"]}
+              class={["relative p-0", @row_click && "hover:cursor-pointer", Map.get(col, :class, "")]}
             >
               <div class="block py-4 pr-6">
                 <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
@@ -580,7 +583,7 @@ defmodule HajWeb.CoreComponents do
 
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class={["mt-11", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
+      <table class={["mt-6", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
         <thead class="text-[0.8125rem] text-left leading-6 text-zinc-500">
           <tr>
             <th :for={col <- @col} class="p-0 pr-6 pb-4 font-normal"><%= col[:label] %></th>

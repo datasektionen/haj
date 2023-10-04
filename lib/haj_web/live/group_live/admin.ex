@@ -32,7 +32,7 @@ defmodule HajWeb.GroupLive.Admin do
         {:ok,
          socket
          |> put_flash(:error, "Du har inte behörighet att redigera denna grupp")
-         |> redirect(to: ~p"/live/group/#{show_group}")}
+         |> redirect(to: ~p"/group/#{show_group}")}
     end
   end
 
