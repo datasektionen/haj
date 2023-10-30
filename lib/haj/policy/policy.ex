@@ -61,6 +61,11 @@ defmodule Haj.Policy do
       allow :is_chef
       allow role: :admin
     end
+
+    action :export do
+      allow :is_chef
+      allow role: :admin
+    end
   end
 
   object :responsibility_comment do
