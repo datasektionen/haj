@@ -76,7 +76,7 @@ defmodule HajWeb.MerchLive.Index do
         <img
           src={Imgproxy.new(@item.image) |> Imgproxy.resize(800, 800) |> to_string()}
           alt={@item.name}
-          class="absolute inset-0 h-full w-full object-cover brightness-50 duration-300 ease-in-out group-hover:scale-105"
+          class="absolute inset-0 h-full w-full object-cover brightness-50 bg-[rgba(255,255,255,0.5)] duration-300 ease-in-out group-hover:scale-105"
         />
       <% else %>
         <div class="bg-size-125 bg-pos-0 from-burgandy-400 to-burgandy-800 absolute inset-0 h-full w-full bg-gradient-to-br duration-300 ease-in-out group-hover:bg-pos-100" />
