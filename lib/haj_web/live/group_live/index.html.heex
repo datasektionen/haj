@@ -5,8 +5,18 @@
   </div>
 
   <div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    <%= for group <- @groups do %>
-      <.group_card show_group={group} members={Enum.count(group.group_memberships)} />
-    <% end %>
+    <.generic_card
+      :for={sg <- @groups}
+      navigate={~p"/group/#{sg.id}"}
+      class="flex flex-col gap-1 rounded-lg border px-4 py-4 hover:bg-gray-50 sm:gap-1.5"
+    >
+      <:title>
+        <%= sg.group.name %>
+      </:title>
+      <:subtitle class="text-gray-500">
+        <%= Enum.count(sg.group_memberships) %> medlemmar
+      </:subtitle>
+      <%= chefer(sg) %>
+    </.generic_card>
   </div>
 </div>

@@ -28,7 +28,7 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
           phx-change="validate"
         >
           <.input field={@form[:name]} type="text" label="Namn" />
-          <.input field={@form[:description]} type="text" label="Beskrivning" />
+          <.input field={@form[:description]} type="textarea" label="Beskrivning" />
           <.input field={@form[:ticket_limit]} type="number" label="Biljettgräns" />
           <.input field={@form[:event_date]} type="datetime-local" label="Datum" />
           <.input field={@form[:purchase_deadline]} type="datetime-local" label="Köpdeadline" />

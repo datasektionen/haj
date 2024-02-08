@@ -50,17 +50,11 @@ defmodule HajWeb.SettingsLive.Index do
 
   defp setting_card(assigns) do
     ~H"""
-    <.link
-      navigate={@navigate}
-      class="flex flex-col gap-1 rounded-lg border px-4 py-4 hover:bg-gray-50 sm:gap-1.5"
-    >
-      <div class="text-burgandy-500 text-lg font-bold">
-        <%= @name %>
-      </div>
-      <div class="text-sm">
-        <%= render_slot(@inner_block) %>
-      </div>
-    </.link>
+    <.generic_card navigate={@navigate}>
+      <:title><%= @name %></:title>
+
+      <%= render_slot(@inner_block) %>
+    </.generic_card>
     """
   end
 end

@@ -5,7 +5,7 @@ defmodule Haj.Repo.Migrations.CreateEvents do
     create table(:events) do
       add :name, :string
       add :description, :text
-      add :image, :string
+      add :image, :text
       add :ticket_limit, :integer
       add :event_date, :utc_datetime
       add :purchase_deadline, :utc_datetime

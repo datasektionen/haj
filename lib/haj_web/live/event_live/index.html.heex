@@ -1,7 +1,10 @@
-<h3 class="text-5xl">Events</h3>
+<div>
+  <div class="mr-auto flex w-full flex-row items-baseline justify-between pt-4 sm:flex-col">
+    <span class="text-2xl font-bold">Events</span>
+    <span class="text-sm text-gray-600">Partaj och annat skoj</span>
+  </div>
 
-<.online_count online_count={@online_count} />
-
-<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-  <.event_card :for={event <- @events} event={event} />
+  <div class="grid grid-cols-1 gap-8 pt-4 md:grid-cols-2 lg:grid-cols-3">
+    <.event_card :for={event <- @events} event={event} />
+  </div>
 </div>

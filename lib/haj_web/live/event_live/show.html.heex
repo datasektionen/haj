@@ -1,9 +1,98 @@
-<div class="w-full">
-  <h3 class="text-5xl"><%= @event.name %></h3>
-  <p><%= @event.description %></p>
-  <img
-    src="https://biljettsystem.salamon.xyz/serve-static/images/tiktok.jpg"
-    alt={"Picture of #{@event.name}"}
-    class="w-full"
+<div :if={@event.image} class="relative mt-4 overflow-hidden rounded-2xl">
+  <div
+    class="absolute inset-0 z-0 h-full w-full scale-105 bg-cover bg-center blur-3xl"
+    style={"background-image: url('#{@event.image}')"}
   />
+  <img src={@event.image} alt={"Picture of #{@event.name}"} class="relative z-0 mx-auto max-h-96" />
 </div>
+<div class="flex flex-row gap-4 pt-4 pb-4">
+  <%!-- Main content --%>
+  <div class="flex-[3]">
+    <div class="mt-2 flex flex-col gap-1">
+      <div class="text-gray-700">
+        <%= Calendar.strftime(@event.event_date, "%A %d %B %H:%M",
+          month_names: &swe_month_name/1,
+          day_of_week_names: &swe_day_name/1
+        ) %>
+      </div>
+
+      <div class="mb-2 text-4xl font-bold">
+        <%= @event.name %>
+      </div>
+
+      <div class="whitespace-pre-line"><%= @event.description %></div>
+    </div>
+  </div>
+
+  <%!-- Right side bar --%>
+  <div
+    class="flex-[2] fixed inset-0 hidden flex-col border-t bg-white pt-2 md:relative md:inset-auto md:block md:border-none"
+    id="tickets"
+  >
+    <div class="flex flex-row items-center justify-between p-4 md:hidden">
+      <h3 class="text-xl font-bold">Köp biljetter</h3>
+      <button phx-click={toggle_mobile_tickets()}>
+        <.icon name={:x_circle} class="h-8 w-8 text-gray-600" mini />
+      </button>
+    </div>
+
+    <div class="flex flex-row items-center gap-1 px-4 py-2 text-sm md:p-2 md:text-base">
+      <.icon name={:user} />
+      <span><%= max(@online_count - 1, 0) %></span>
+      <p class="h-min pl-1">andra spexare som väntar på biljetter</p>
+    </div>
+
+    <div class="flex flex-auto flex-col p-4 md:rounded-xl md:border md:p-6">
+      <div class="flex flex-auto flex-col gap-4">
+        <div :for={ticket <- @event.ticket_types} class="flex flex-row justify-between">
+          <div>
+            <div class="font-medium"><%= ticket.name %></div>
+            <div class="text-sm text-gray-800">
+              <p :if={ticket.price == 0}>Gratis</p>
+              <p :if={ticket.price != 0}><%= ticket.price %> kr</p>
+            </div>
+          </div>
+          <div class="flex flex-row items-center gap-2">
+            <button
+              :if={@selected[ticket.id] > 0}
+              class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl shadow-md hover:cursor-pointer hover:bg-gray-100"
+              phx-click={JS.push("dec", value: %{id: ticket.id})}
+            >
+              <.icon name={:minus} mini />
+            </button>
+
+            <div class="flex h-10 w-8 items-center justify-center rounded-lg bg-gray-200">
+              <span><%= @selected[ticket.id] %></span>
+            </div>
+
+            <button
+              class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl shadow-md hover:cursor-pointer hover:bg-gray-100"
+              phx-click={JS.push("inc", value: %{id: ticket.id})}
+            >
+              <.icon name={:plus} mini />
+            </button>
+          </div>
+        </div>
+
+        <div :if={@price > 0} class="text-right text-gray-700">
+          Totalt: <%= @price %> kr
+        </div>
+
+        <.button class="mt-auto">
+          Fortsätt
+        </.button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="fixed right-0 bottom-0 left-0 flex h-20 flex-row items-center justify-end border-t bg-white px-4 md:hidden"
+  id="bottom-bar"
+>
+  <.button class="flex flex-row items-center gap-2" phx-click={toggle_mobile_tickets()}>
+    Biljetter
+  </.button>
+</div>
+
+<%!-- <.online_count online_count={@online_count} /> --%>

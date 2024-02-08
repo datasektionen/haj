@@ -48,4 +48,31 @@ defmodule HajWeb.Components do
     </.steps>
     """
   end
+
+  @doc """
+  A generic card component with a title, subtitle and inner block.
+  """
+  attr :navigate, :any, required: true
+  slot :title, required: true
+  slot :subtitle
+  slot :inner_block, required: true
+
+  def generic_card(assigns) do
+    ~H"""
+    <.link
+      navigate={@navigate}
+      class="flex flex-col gap-1 rounded-lg border bg-white px-4 py-4 shadow-sm duration-150 hover:bg-gray-50 sm:gap-1.5"
+    >
+      <div class="text-burgandy-500 inline-flex items-center gap-2 text-lg font-bold">
+        <%= render_slot(@title) %>
+      </div>
+
+      <div :if={@subtitle != []} class="text-gray-500">
+        <%= render_slot(@subtitle) %>
+      </div>
+
+      <%= render_slot(@inner_block) %>
+    </.link>
+    """
+  end
 end

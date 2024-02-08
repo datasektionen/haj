@@ -43,7 +43,13 @@ defmodule Haj.Events do
       ** (Ecto.NoResultsError)
 
   """
-  def get_event!(id), do: Repo.get!(Event, id)
+  def get_event!(id) do
+    Repo.one!(
+      from e in Event,
+        where: e.id == ^id,
+        preload: :ticket_types
+    )
+  end
 
   @doc """
   Creates a event.
@@ -256,7 +262,7 @@ defmodule Haj.Events do
     %EventRegistration{}
     |> EventRegistration.changeset(attrs)
     |> Repo.insert()
-    |> notify_subscribers([:registration, :created])
+    |> notify_subscribers({:registration, :created})
   end
 
   @doc """
@@ -289,9 +295,9 @@ defmodule Haj.Events do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_event_registration(%EventRegistration{} = event_registration) do
+  def delete_event_registration(%EventRegistration{id: id} = event_registration) do
     Repo.delete(event_registration)
-    |> notify_subscribers([:registration, :deleted])
+    |> notify_subscribers({:registration, :deleted})
   end
 
   @doc """
@@ -322,12 +328,14 @@ defmodule Haj.Events do
     Repo.one(q)
   end
 
-  def subscribe do
-    Phoenix.PubSub.subscribe(Haj.PubSub, @topic)
+  def subscribe(event_id) do
+    Phoenix.PubSub.subscribe(Haj.PubSub, "event:#{event_id}")
   end
 
-  defp notify_subscribers({:ok, result}, event) do
-    Phoenix.PubSub.broadcast(Haj.PubSub, @topic, {__MODULE__, event, result})
+  defp notify_subscribers({:ok, result}, action) do
+    topic = "event:#{result.id}"
+
+    Phoenix.PubSub.broadcast(Haj.PubSub, topic, {__MODULE__, action, result})
     {:ok, result}
   end
 

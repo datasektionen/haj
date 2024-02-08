@@ -5,8 +5,10 @@
   </div>
 
   <div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    <%= for show <- @shows do %>
-      <.show_card show={show} />
-    <% end %>
+    <.generic_card :for={show <- @shows} navigate={~p"/shows/#{show.id}"}>
+      <:title><%= show.title %></:title>
+      <:subtitle :if={show.or_title}>eller <%= show.or_title %></:subtitle>
+      METAspexet <%= show.year.year %>
+    </.generic_card>
   </div>
 </div>
