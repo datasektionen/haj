@@ -50,13 +50,18 @@ defmodule Haj.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
-      {:tailwind_formatter, "~> 0.3.2", only: :dev, runtime: false},
+      {:tailwind_formatter, "~> 0.3.6", only: [:dev, :test], runtime: false},
       {:heroicons, "~> 0.5.1"},
       {:httpoison, "~> 1.8"},
       {:csv, "~> 2.4"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:imgproxy, "~> 3.0"}
+      {:imgproxy, "~> 3.0"},
+      {:earmark, "~> 1.4"},
+      {:html_sanitize_ex, "~> 1.4"},
+      {:let_me, "~> 1.0"},
+      {:ex_aws, "~> 2.1.2"},
+      {:ex_aws_s3, "~> 2.0"}
     ]
   end
 

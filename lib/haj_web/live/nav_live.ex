@@ -29,7 +29,6 @@ defmodule HajWeb.Nav.ActiveTab do
 end
 
 defmodule HajWeb.Nav do
-  alias HajWeb.EventAdminLive
   use HajWeb, :component
   use HajWeb.Nav.ActiveTab
 
@@ -48,29 +47,42 @@ defmodule HajWeb.Nav do
   end
 
   # Small macros for setting tabs. Syntax: tab ModuleName, :active_tab, :expanded_tab
-  tab(DashboardLive.Index, :dashboard)
-  tab(MembersLive, :members)
-  tab(GroupsLive, :groups)
-  tab(MerchLive.Index, :merch)
-  tab(MerchAdminLive.Index, :merch_admin)
-  tab(MerchAdminLive.Orders, :merch_orders)
-  tab(ResponsibilityLive.Index, :responsibilities)
-  tab(ResponsibilityLive.History, :responsibility_history)
-  tab(SettingsLive.Index, :settings)
-  tab(SettingsLive.Show.Index, {:setting, :shows})
-  tab(SettingsLive.Group.Index, {:setting, :groups})
-  tab(SettingsLive.Food.Index, {:setting, :foods})
-  tab(SettingsLive.User.Index, {:setting, :users})
-  tab(SettingsLive.Merch.Index, {:setting, :merch})
-  tab(EventAdminLive.Index, {:setting, :event})
-  tab(EventLive.Index, :events)
+  tab DashboardLive.Index, :dashboard
+  tab MembersLive, :members
+  tab GroupLive.Index, :groups
+  tab MerchLive.Index, :merch
+  tab MerchAdminLive.Index, :merch_admin
+  tab MerchAdminLive.Orders, :merch_orders
+  tab ResponsibilityLive.Index, :responsibilities
+  tab ResponsibilityLive.History, :responsibility_history
+  tab SongLive.Index, :songs
+  tab SongLive.Show, :songs
+  tab ShowLive.Index, :shows
+  tab ApplicationsLive.Index, :applications
+
+  tab SettingsLive.Index, :settings
+  tab SettingsLive.Show.Index, {:setting, :shows}
+  tab SettingsLive.Group.Index, {:setting, :groups}
+  tab SettingsLive.Food.Index, {:setting, :foods}
+  tab SettingsLive.User.Index, {:setting, :users}
+  tab SettingsLive.Merch.Index, {:setting, :merch}
+  tab SettingsLive.Responsibility.Index, {:setting, :responsibilities}
+  tab SettingsLive.Song.Index, {:setting, :song}
+
+  tab EventAdminLive.Index, {:setting, :event}
+  tab EventLive.Index, :events
 
   defp set_active_tab(params, _url, socket) do
     active_tab =
-      if socket.view == HajWeb.GroupLive do
-        {:group, String.to_integer(params["show_group_id"])}
-      else
-        active_tab(socket.view)
+      case socket.view do
+        HajWeb.GroupLive.Show ->
+          {:group, String.to_integer(params["show_group_id"])}
+
+        HajWeb.GroupLive.Admin ->
+          {:group, String.to_integer(params["show_group_id"])}
+
+        _ ->
+          active_tab(socket.view)
       end
 
     {:cont, assign(socket, active_tab: active_tab)}

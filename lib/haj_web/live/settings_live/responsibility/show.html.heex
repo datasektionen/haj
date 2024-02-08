@@ -1,0 +1,82 @@
+<.header>
+  Ansvar: <%= @responsibility.name %>
+  <:subtitle>
+    Detta är ett ansvar i databasen, nedan visas alla spex som detta ansvar är tillagt till.
+  </:subtitle>
+  <:actions>
+    <div class="flex flex-col items-end gap-2 md:flex-row">
+      <.link
+        patch={~p"/settings/responsibilities/#{@responsibility}/new-responsible"}
+        phx-click={JS.push_focus()}
+      >
+        <.button>Lägg till ansvarig</.button>
+      </.link>
+
+      <.link
+        patch={~p"/settings/responsibilities/#{@responsibility}/show/edit"}
+        phx-click={JS.push_focus()}
+      >
+        <.button>Redigera ansvar</.button>
+      </.link>
+    </div>
+  </:actions>
+</.header>
+
+<.table small id="users" rows={@streams.responsible_users}>
+  <:col :let={{_id, responsible_user}} label="Namn">
+    <%= responsible_user.user.full_name %>
+  </:col>
+
+  <:col :let={{_id, responsible_user}} label="Spex">
+    <%= responsible_user.show.title %>
+  </:col>
+
+  <:col :let={{_id, responsible_user}} label="Spexår">
+    <%= responsible_user.show.year %>
+  </:col>
+
+  <:action :let={{id, responsible_user}}>
+    <.link
+      phx-click={
+        JS.push("remove_responsible_user", value: %{id: responsible_user.id}) |> hide("##{id}")
+      }
+      data-confirm="Är du säker?"
+    >
+      Ta bort
+    </.link>
+  </:action>
+</.table>
+
+<.back navigate={~p"/settings/responsibilities"}>Tillbaka till ansvar</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="responsibility-modal"
+  show
+  on_cancel={JS.patch(~p"/settings/responsibilities/#{@responsibility}")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.Responsibility.FormComponent}
+    id={@responsibility.id}
+    title={@page_title}
+    action={@live_action}
+    responsibility={@responsibility}
+    patch={~p"/settings/responsibilities/#{@responsibility}"}
+  />
+</.modal>
+
+<.modal
+  :if={@live_action == :new_responsible}
+  id="user-responsibility-modal"
+  show
+  on_cancel={JS.patch(~p"/settings/responsibilities/#{@responsibility}")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.Responsibility.ResponsibleUserFormComponent}
+    id={:new}
+    title={@page_title}
+    responsibility={@responsibility}
+    responsible_user={@responsible_user}
+    patch={~p"/settings/responsibilities/#{@responsibility}"}
+  />
+</.modal>

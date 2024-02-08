@@ -1,7 +1,7 @@
 <.header>
   Alla matpreferenser
   <:actions>
-    <.link patch={~p"/live/settings/foods/new"}>
+    <.link patch={~p"/settings/foods/new"}>
       <.button>Ny mat</.button>
     </.link>
   </:actions>
@@ -14,14 +14,14 @@
   small
   id="foods"
   rows={@streams.foods}
-  row_click={fn {_id, food} -> JS.navigate(~p"/live/settings/foods/#{food}") end}
+  row_click={fn {_id, food} -> JS.navigate(~p"/settings/foods/#{food}") end}
 >
   <:col :let={{_id, food}} label="Namn"><%= food.name %></:col>
   <:action :let={{_id, food}}>
     <div class="sr-only">
-      <.link navigate={~p"/live/settings/foods/#{food}"}>Visa</.link>
+      <.link navigate={~p"/settings/foods/#{food}"}>Visa</.link>
     </div>
-    <.link patch={~p"/live/settings/foods/#{food}/edit"}>Redigera</.link>
+    <.link patch={~p"/settings/foods/#{food}/edit"}>Redigera</.link>
   </:action>
   <:action :let={{id, food}}>
     <.link
@@ -37,7 +37,7 @@
   :if={@live_action in [:new, :edit]}
   id="food-modal"
   show
-  on_cancel={JS.navigate(~p"/live/settings/foods")}
+  on_cancel={JS.navigate(~p"/settings/foods")}
 >
   <.live_component
     module={HajWeb.SettingsLive.Food.FormComponent}
@@ -45,6 +45,6 @@
     title={@page_title}
     action={@live_action}
     food={@food}
-    patch={~p"/live/settings/foods"}
+    patch={~p"/settings/foods"}
   />
 </.modal>

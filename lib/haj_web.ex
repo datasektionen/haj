@@ -23,8 +23,7 @@ defmodule HajWeb do
     quote do
       use Phoenix.Controller,
         namespace: HajWeb,
-        formats: [:html, :json],
-        layouts: [html: HajWeb.Layouts]
+        formats: [:html, :json]
 
       import Plug.Conn
       import HajWeb.Gettext
@@ -61,6 +60,16 @@ defmodule HajWeb do
             )
 
       use Phoenix.LiveView, @opts
+
+      on_mount HajWeb.LiveFlash
+
+      unquote(html_helpers())
+    end
+  end
+
+  def embedded_live_view do
+    quote do
+      use Phoenix.LiveView
 
       on_mount HajWeb.LiveFlash
 
@@ -133,6 +142,7 @@ defmodule HajWeb do
       import HajWeb.LiveHelpers
 
       import HajWeb.CoreComponents
+      import HajWeb.Components
       import HajWeb.Gettext
       alias HajWeb.Router.Helpers, as: Routes
       alias Phoenix.LiveView.JS
@@ -155,5 +165,9 @@ defmodule HajWeb do
   """
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])
+  end
+
+  defmacro __using__({which, opts}) when is_atom(which) and is_list(opts) do
+    apply(__MODULE__, which, [opts])
   end
 end

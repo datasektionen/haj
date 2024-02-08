@@ -4,86 +4,157 @@ defmodule HajWeb.Layouts do
 
   embed_templates("layouts/*")
 
+  alias Haj.Policy
   alias HajWeb.Endpoint
 
   def sidebar_nav_links(assigns) do
     ~H"""
-    <div class="space-y-1">
-      <%= if @current_user && Enum.member?([:admin, :chef, :spexare], @current_user.role) do %>
-        <.nav_link
-          navigate={~p"/live"}
-          icon_name={:home}
-          title="Min sida"
-          active={@active_tab == :dashboard}
+    <div :if={@current_user && Policy.authorize?(:haj_access, @current_user)} class="space-y-1">
+      <.nav_link
+        navigate={~p"/dashboard"}
+        icon_name={:home}
+        title="Min sida"
+        active={@active_tab == :dashboard}
+      />
+      <.nav_link
+        navigate={~p"/members"}
+        icon_name={:user}
+        title="Medlemmar"
+        active={@active_tab == :members}
+      />
+
+      <.nav_link_group
+        navigate={~p"/groups"}
+        icon_name={:user_group}
+        title="Grupper"
+        active={@active_tab == :groups}
+        expanded={any_group_active(@current_user.group_memberships, @active_tab)}
+      >
+        <:sub_link
+          :for={g <- @current_user.group_memberships}
+          navigate={~p"/group/#{g.show_group}"}
+          title={g.show_group.group.name}
+          active={@active_tab == {:group, g.show_group_id}}
         />
-        <.nav_link
-          navigate={~p"/live/members"}
-          icon_name={:user}
-          title="Medlemmar"
-          active={@active_tab == :members}
+      </.nav_link_group>
+
+      <.nav_link
+        navigate={~p"/events"}
+        icon_name={:calendar_days}
+        title="Events"
+        active={@active_tab == :events}
+      />
+
+      <.nav_link_group
+        :if={Policy.authorize?(:responsibility_read, @current_user)}
+        navigate={~p"/responsibilities"}
+        icon_name={:briefcase}
+        title="Ansvar"
+        active={@active_tab == :responsibilities}
+        expanded={@active_tab in [:responsibilities, :responsibility_history]}
+      >
+        <:sub_link
+          navigate={~p"/responsibilities/history"}
+          title="Dina ansvar"
+          active={@active_tab == :responsibility_history}
+        />
+      </.nav_link_group>
+
+      <.nav_link_group
+        :if={Policy.authorize?(:merch_buy, @current_user)}
+        navigate={~p"/merch"}
+        icon_name={:shopping_cart}
+        title="Merch"
+        active={@active_tab == :merch}
+        expanded={@active_tab in [:merch, :merch_admin, :merch_orders]}
+      >
+        <:sub_link
+          :if={Policy.authorize?(:merch_admin, @current_user)}
+          navigate={~p"/merch-admin/"}
+          title="Administrera"
+          active={@active_tab == :merch_admin}
         />
 
-        <.nav_link_group
-          navigate={~p"/live/groups"}
-          icon_name={:user_group}
+        <:sub_link
+          :if={Policy.authorize?(:merch_list_orders, @current_user)}
+          navigate={~p"/merch-admin/orders"}
+          title="Beställningar"
+          active={@active_tab == :merch_orders}
+        />
+      </.nav_link_group>
+
+      <.nav_link
+        :if={Policy.authorize?(:applications_read, @current_user)}
+        navigate={~p"/applications"}
+        icon_name={:user_plus}
+        title="Ansökningar"
+        active={@active_tab == :applications}
+      />
+
+      <.nav_link
+        navigate={~p"/songs"}
+        icon_name={:musical_note}
+        title="Sånger"
+        active={@active_tab == :songs}
+      />
+
+      <.nav_link
+        navigate={~p"/shows"}
+        icon_name={:newspaper}
+        title="Historia"
+        active={@active_tab == :shows}
+      />
+
+      <.nav_link_group
+        :if={Policy.authorize?(:settings_admin, @current_user)}
+        navigate={~p"/settings"}
+        icon_name={:cog_6_tooth}
+        title="Administrera"
+        active={@active_tab == :settings}
+        expanded={@expanded_tab == :settings}
+      >
+        <:sub_link
+          navigate={~p"/settings/shows"}
+          title="Spex"
+          active={@active_tab == {:setting, :shows}}
+        />
+
+        <:sub_link
+          navigate={~p"/settings/groups"}
           title="Grupper"
-          active={@active_tab == :groups}
-          expanded={any_group_active(@current_user.group_memberships, @active_tab)}
-        >
-          <:sub_link
-            :for={g <- @current_user.group_memberships}
-            navigate={~p"/live/group/#{g.show_group}"}
-            title={g.show_group.group.name}
-            active={@active_tab == {:group, g.show_group_id}}
-          />
-        </.nav_link_group>
-
-        <.nav_link
-          navigate={~p"/live/events"}
-          icon_name={:calendar_days}
-          title="Events"
-          active={@active_tab == :events}
+          active={@active_tab == {:setting, :groups}}
         />
 
-        <.nav_link_group
-          :if={@current_user.role == :admin}
-          navigate={~p"/live/settings"}
-          icon_name={:cog_6_tooth}
-          title="Inställningar"
-          active={@active_tab == :settings}
-          expanded={@expanded_tab == :settings}
-        >
-          <:sub_link
-            navigate={~p"/live/settings/shows"}
-            title="Spex"
-            active={@active_tab == {:setting, :shows}}
-          />
+        <:sub_link
+          navigate={~p"/settings/foods"}
+          title="Mat"
+          active={@active_tab == {:setting, :foods}}
+        />
 
-          <:sub_link
-            navigate={~p"/live/settings/groups"}
-            title="Grupper"
-            active={@active_tab == {:setting, :groups}}
-          />
+        <:sub_link
+          navigate={~p"/settings/events-admin"}
+          title="Event"
+          active={@active_tab == {:setting, :event}}
+        />
 
-          <:sub_link
-            navigate={~p"/live/settings/foods"}
-            title="Mat"
-            active={@active_tab == {:setting, :foods}}
-          />
+        <:sub_link
+          navigate={~p"/settings/users"}
+          title="Användare"
+          active={@active_tab == {:setting, :users}}
+        />
 
-          <:sub_link
-            navigate={~p"/live/settings/events-admin"}
-            title="Event"
-            active={@active_tab == {:setting, :event}}
-          />
+        <:sub_link
+          navigate={~p"/settings/responsibilities"}
+          title="Ansvar"
+          active={@active_tab == {:setting, :responsibilities}}
+        />
 
-          <:sub_link
-            navigate={~p"/live/settings/users"}
-            title="Användare"
-            active={@active_tab == {:setting, :users}}
-          />
-        </.nav_link_group>
-      <% end %>
+        <:sub_link
+          navigate={~p"/settings/songs"}
+          title="Sånger"
+          active={@active_tab == {:setting, :song}}
+        />
+      </.nav_link_group>
     </div>
     """
   end
@@ -95,16 +166,16 @@ defmodule HajWeb.Layouts do
       end)
   end
 
-  attr(:active, :boolean, default: false)
-  attr(:expanded, :boolean, default: false)
-  attr(:navigate, :any, required: true)
-  attr(:icon_name, :atom, required: true)
-  attr(:title, :string, required: true)
+  attr :active, :boolean, default: false
+  attr :expanded, :boolean, default: false
+  attr :navigate, :any, required: true
+  attr :icon_name, :atom, required: true
+  attr :title, :string, required: true
 
   slot :sub_link do
-    attr(:navigate, :any, required: true)
-    attr(:title, :string, required: true)
-    attr(:active, :boolean)
+    attr :navigate, :any, required: true
+    attr :title, :string, required: true
+    attr :active, :boolean
   end
 
   def nav_link_group(assigns) do
@@ -175,9 +246,11 @@ defmodule HajWeb.Layouts do
       >
         Mina uppgifter
       </.link>
+      <%!-- Settings currently don't exist --%>
+      <%!--
       <.link class="border-b px-4 py-2 hover:bg-burgandy-500 hover:text-white">
         Inställningar
-      </.link>
+      </.link> --%>
       <.link
         navigate={~p"/logout"}
         class="rounded-b-md px-4 py-2 hover:bg-burgandy-500 hover:text-white"

@@ -338,15 +338,20 @@ defmodule Haj.Merch do
       size = Ecto.Changeset.get_field(changeset, :size)
       merch_item_id = Ecto.Changeset.get_field(changeset, :merch_item_id)
 
-      case {merch_item_id, size} in Enum.map(
-             order.merch_order_items,
-             &{&1.merch_item_id, &1.size}
-           ) do
-        true ->
-          Repo.rollback("Storleken redan beställd.")
+      previously_ordered =
+        Enum.filter(order.merch_order_items, fn item ->
+          item.merch_item_id == merch_item_id and item.size == size
+        end)
 
-        false ->
+      cond do
+        previously_ordered == [] ->
           Repo.update(changeset)
+
+        merch_order_item.id in Enum.map(previously_ordered, & &1.id) ->
+          Repo.update(changeset)
+
+        true ->
+          Repo.rollback("Denna merch är redan beställd i den här storleken.")
       end
     end)
   end

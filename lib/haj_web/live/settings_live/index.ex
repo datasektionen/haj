@@ -18,20 +18,26 @@ defmodule HajWeb.SettingsLive.Index do
       </.header>
 
       <div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <.setting_card name="Spex" navigate={~p"/live/settings/shows"}>
+        <.setting_card name="Spex" navigate={~p"/settings/shows"}>
           Redigera alla spex
         </.setting_card>
-        <.setting_card name="Grupper" navigate={~p"/live/settings/groups"}>
+        <.setting_card name="Grupper" navigate={~p"/settings/groups"}>
           Redigera grupper och spexgrupper
         </.setting_card>
-        <.setting_card name="Mat" navigate={~p"/live/settings/foods"}>
+        <.setting_card name="Mat" navigate={~p"/settings/foods"}>
           Redigera matpreferenser
         </.setting_card>
-        <.setting_card name="Användare" navigate={~p"/live/settings/users"}>
+        <.setting_card name="Användare" navigate={~p"/settings/users"}>
           Redigera användare och användaruppgifter
         </.setting_card>
-        <.setting_card name="Events" navigate={~p"/live/settings/events-admin"}>
+        <.setting_card name="Events" navigate={~p"/settings/events-admin"}>
           Redigera events
+        </.setting_card>
+        <.setting_card name="Ansvar" navigate={~p"/settings/responsibilities"}>
+          Redigera ansvar
+        </.setting_card>
+        <.setting_card name="Sånger" navigate={~p"/settings/songs"}>
+          Redigera sånger
         </.setting_card>
       </div>
     </div>

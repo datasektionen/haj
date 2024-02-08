@@ -1,0 +1,43 @@
+<nav aria-label="Progress" class={["flex items-center justify-center", @class]}>
+  <p clas="text-sm font-medium">
+    <%= "Steg #{Enum.find_index(@step, fn step -> step.status == :current end) + 1} av #{length(@step)}" %>
+  </p>
+  <ol role="list" class="ml-8 flex items-center space-x-5">
+    <li :for={{step, _index} <- Enum.with_index(@step)} class="relative md:flex md:flex-1">
+      <.link
+        :if={step.status == :complete}
+        navigate={step.to}
+        class="bg-burgandy-600 block h-2.5 w-2.5 rounded-full hover:bg-burgandy-900"
+      >
+        <span class="sr-only">
+          <%= render_slot(step) %>
+        </span>
+      </.link>
+
+      <.link
+        :if={step.status == :current}
+        navigate={step.to}
+        class="relative flex items-center justify-center"
+        aria-current="step"
+      >
+        <span class="absolute flex h-5 w-5 p-px" aria-hidden="true">
+          <span class="bg-burgandy-200 h-full w-full rounded-full" />
+        </span>
+        <span class="bg-burgandy-600 relative block h-2.5 w-2.5 rounded-full" aria-hidden="true" />
+        <span class="sr-only">
+          <%= render_slot(step) %>
+        </span>
+      </.link>
+
+      <.link
+        :if={step.status == :future}
+        navigate={step.to}
+        class="block h-2.5 w-2.5 rounded-full bg-gray-200 hover:bg-gray-400"
+      >
+        <span class="sr-only">
+          <%= render_slot(step) %>
+        </span>
+      </.link>
+    </li>
+  </ol>
+</nav>

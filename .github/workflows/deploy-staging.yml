@@ -1,5 +1,8 @@
 name: Fly Deploy Staging
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - dev
@@ -7,11 +10,12 @@ env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 jobs:
   deploy:
+      timeout-minutes: 5
       name: Deploy app
       runs-on: ubuntu-latest
       environment: 
         name: staging
-        url: https://haj-staging.fly.dev
+        url: https://betaspexet.se
       steps:
         - uses: actions/checkout@v2
         - uses: superfly/flyctl-actions/setup-flyctl@master

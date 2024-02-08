@@ -38,6 +38,7 @@ defmodule HajWeb.CoreComponents do
   attr :show, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
   attr :on_confirm, JS, default: %JS{}
+  attr :data_confirm, :string, default: ""
 
   slot :inner_block, required: true
   slot :title
@@ -63,7 +64,7 @@ defmodule HajWeb.CoreComponents do
         tabindex="0"
       >
         <div class="flex min-h-full items-center justify-center">
-          <div class="w-full max-w-3xl p-4 sm:p-6 lg:py-8">
+          <div class="w-full max-w-4xl p-4 sm:p-6 lg:py-8">
             <.focus_wrap
               id={"#{@id}-container"}
               phx-mounted={@show && show_modal(@id)}
@@ -75,6 +76,7 @@ defmodule HajWeb.CoreComponents do
               <div class="absolute top-6 right-5">
                 <button
                   phx-click={hide_modal(@on_cancel, @id)}
+                  data-confirm={@data_confirm}
                   type="button"
                   class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
                   aria-label={gettext("close")}
@@ -83,7 +85,7 @@ defmodule HajWeb.CoreComponents do
                 </button>
               </div>
               <div id={"#{@id}-content"}>
-                <header :if={@title != []}>
+                <header :if={@title != []} class="mb-2">
                   <h1 id={"#{@id}-title"} class="text-lg font-semibold leading-8 text-zinc-800">
                     <%= render_slot(@title) %>
                   </h1>
@@ -224,11 +226,12 @@ defmodule HajWeb.CoreComponents do
 
   slot :inner_block, required: true
   slot :actions, doc: "the slot for form actions, such as a submit button"
+  attr :class, :string, default: ""
 
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="mt-10 space-y-4 bg-white">
+      <div class={["mt-10 space-y-4 bg-white", @class]}>
         <%= render_slot(@inner_block, f) %>
         <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
           <%= render_slot(action, f) %>
@@ -288,6 +291,7 @@ defmodule HajWeb.CoreComponents do
   attr :name, :any
   attr :label, :string, default: nil
   attr :value, :any
+  attr :class, :string, default: ""
 
   attr :type, :string,
     default: "text",
@@ -320,7 +324,7 @@ defmodule HajWeb.CoreComponents do
       assign_new(assigns, :checked, fn -> Phoenix.HTML.Form.normalize_value("checkbox", value) end)
 
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div phx-feedback-for={@name} class={@class}>
       <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
         <input type="hidden" name={@name} value="false" />
         <input
@@ -341,7 +345,7 @@ defmodule HajWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div phx-feedback-for={@name} class={@class}>
       <.label for={@id}><%= @label %></.label>
       <select
         id={@id}
@@ -360,7 +364,7 @@ defmodule HajWeb.CoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div phx-feedback-for={@name} class={@class}>
       <.label for={@id}><%= @label %></.label>
       <textarea
         id={@id || @name}
@@ -381,7 +385,7 @@ defmodule HajWeb.CoreComponents do
 
   def input(assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div phx-feedback-for={@name} class={@class}>
       <.label for={@id}><%= @label %></.label>
       <input
         type={@type}
@@ -393,7 +397,8 @@ defmodule HajWeb.CoreComponents do
           "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
           "border-zinc-300 focus:border-zinc-400 focus:ring-zinc-800/5",
-          @errors != [] && "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
+          @errors != [] && "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10",
+          Map.get(@rest, :disabled, false) && "bg-gray-50"
         ]}
         {@rest}
       />
@@ -480,6 +485,7 @@ defmodule HajWeb.CoreComponents do
 
   slot :col, required: true do
     attr :label, :string
+    attr :class, :string
   end
 
   slot :action, doc: "the slot for showing user actions in the last table column"
@@ -492,10 +498,12 @@ defmodule HajWeb.CoreComponents do
 
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class={["mt-11", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
+      <table class={["mt-6", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
         <thead class="text-[0.8125rem] text-left leading-6 text-zinc-500">
           <tr>
-            <th :for={col <- @col} class="p-0 pr-6 pb-4 font-normal"><%= col[:label] %></th>
+            <th :for={col <- @col} class={["p-0 pr-6 pb-4 font-normal", Map.get(col, :class, "")]}>
+              <%= col[:label] %>
+            </th>
             <th class="relative p-0 pb-4"><span class="sr-only"><%= gettext("Actions") %></span></th>
           </tr>
         </thead>
@@ -508,7 +516,7 @@ defmodule HajWeb.CoreComponents do
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
-              class={["relative p-0", @row_click && "hover:cursor-pointer"]}
+              class={["relative p-0", @row_click && "hover:cursor-pointer", Map.get(col, :class, "")]}
             >
               <div class="block py-4 pr-6">
                 <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
@@ -529,6 +537,97 @@ defmodule HajWeb.CoreComponents do
               </div>
             </td>
           </tr>
+        </tbody>
+      </table>
+    </div>
+    """
+  end
+
+  @doc ~S"""
+  Renders an expandable table using Alpine JS.
+
+  ## Examples
+
+      <.table id="users" rows={@users}>
+        <:col :let={user} label="id"><%= user.id %></:col>
+        <:col :let={user} label="username"><%= user.username %></:col>
+      </.table>
+  """
+  attr :id, :string, required: true
+  attr :rows, :list, required: true
+  attr :row_id, :any, required: true, doc: "the function for generating the row id"
+  attr :row_click, :any, default: nil, doc: "the function for handling phx-click on each row"
+
+  attr :small, :boolean,
+    default: false,
+    doc: "Whether to use the small table variant (use this with few cols)"
+
+  attr :row_item, :any,
+    default: &Function.identity/1,
+    doc: "the function for mapping each row before calling the :col and :action slots"
+
+  slot :col, required: true do
+    attr :label, :string
+    attr :expand, :boolean
+  end
+
+  slot :expanded, doc: "the slot being expanded"
+
+  slot :action, doc: "the slot for showing user actions in the last table column"
+
+  def expandable_table(assigns) do
+    assigns =
+      with %{rows: %Phoenix.LiveView.LiveStream{}} <- assigns do
+        assign(assigns, row_id: assigns.row_id || fn {id, _item} -> id end)
+      end
+
+    ~H"""
+    <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
+      <table class={["mt-6", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
+        <thead class="text-[0.8125rem] text-left leading-6 text-zinc-500">
+          <tr>
+            <th :for={col <- @col} class="p-0 pr-6 pb-4 font-normal"><%= col[:label] %></th>
+            <th class="relative p-0 pb-4"><span class="sr-only"><%= gettext("Actions") %></span></th>
+          </tr>
+        </thead>
+        <tbody
+          id={@id}
+          phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
+          class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700"
+          x-data="{show: null}"
+        >
+          <%= for row <- @rows do %>
+            <tr id={@row_id && @row_id.(row)} class="group hover:bg-zinc-50">
+              <td
+                :for={{col, i} <- Enum.with_index(@col)}
+                phx-click={@row_click && @row_click.(row)}
+                class={["relative p-0", @row_click && "hover:cursor-pointer"]}
+              >
+                <div class="block py-4 pr-6">
+                  <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
+                  <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
+                    <%= render_slot(col, @row_item.(row)) %>
+                  </span>
+                </div>
+              </td>
+              <td :if={@action != []} class="relative w-14 p-0">
+                <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
+                  <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-50 sm:rounded-r-xl" />
+                  <span
+                    :for={action <- @action}
+                    class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+                  >
+                    <%= render_slot(action, @row_item.(row)) %>
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr x-show={"show == '#{@row_id.(row)}'"} }>
+              <td colspan={length(@col)} class="w-full">
+                <%= render_slot(@expanded, @row_item.(row)) %>
+              </td>
+            </tr>
+          <% end %>
         </tbody>
       </table>
     </div>

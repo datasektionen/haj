@@ -1,6 +1,8 @@
 defmodule HajWeb.DashboardLive.Index do
   use HajWeb, :live_view
 
+  alias Haj.Policy
+  alias Haj.Responsibilities
   alias Haj.Spex
   alias Haj.Merch
 
@@ -14,32 +16,31 @@ defmodule HajWeb.DashboardLive.Index do
 
     merch_order_items = Merch.get_current_merch_order_items(user_id)
 
+    responsibilities =
+      case Policy.authorize(:responsibility_read, socket.assigns.current_user) do
+        :ok -> Responsibilities.get_current_responsibilities(user_id)
+        _ -> []
+      end
+
     {:ok,
      assign(socket,
        user_groups: user_groups,
        merch_order_items: merch_order_items,
+       responsibilities: responsibilities,
        page_title: "Hem"
      )}
   end
 
-  defp group_card(assigns) do
+  attr :navigate, :any, required: true
+  slot :inner_block, required: true
+
+  defp card(assigns) do
     ~H"""
     <.link
-      navigate={~p"/live/group/#{@show_group.id}"}
+      navigate={@navigate}
       class="flex flex-col gap-1 rounded-lg border px-4 py-4 shadow-sm hover:bg-gray-50 sm:gap-1.5"
     >
-      <div class="text-burgandy-500 inline-flex items-center gap-2 text-lg font-bold">
-        <.icon name={:user_group} solid />
-        <span class="">
-          <%= @show_group.group.name %>
-        </span>
-      </div>
-      <div class="text-gray-500">
-        <%= length(@show_group.group_memberships) %> medlemmar
-      </div>
-      <div>
-        Du är <%= @role %>
-      </div>
+      <%= render_slot(@inner_block) %>
     </.link>
     """
   end
@@ -47,7 +48,7 @@ defmodule HajWeb.DashboardLive.Index do
   defp merch_card(assigns) do
     ~H"""
     <.link
-      patch={~p"/live/merch/#{@order_item.id}/edit"}
+      patch={~p"/merch/#{@order_item.id}/edit"}
       class="group relative overflow-hidden rounded-lg border shadow-sm"
     >
       <%= if @order_item.merch_item.image do %>

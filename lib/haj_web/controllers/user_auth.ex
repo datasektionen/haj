@@ -2,9 +2,13 @@ defmodule HajWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  use HajWeb, :controller
+
+  alias Haj.Policy
   alias Phoenix.LiveView
   alias Phoenix.Component
   alias Haj.Accounts
+  alias Haj.Accounts.User
   alias HajWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.
@@ -13,6 +17,22 @@ defmodule HajWeb.UserAuth do
   @max_age 60 * 60 * 24 * 60
   @remember_me_cookie "_haj_web_user_remember_me"
   @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
+
+  def on_mount({:authorize, action}, _params, _session, socket) do
+    with %User{} = user <- socket.assigns.current_user,
+         :ok <- Policy.authorize(action, user) do
+      {:cont, socket}
+    else
+      _ ->
+        case action do
+          :haj_access ->
+            {:halt, redirect_require_access(socket)}
+
+          _ ->
+            {:halt, redirect_require_admin(socket)}
+        end
+    end
+  end
 
   def on_mount(:current_user, _params, session, socket) do
     case session do
@@ -28,7 +48,11 @@ defmodule HajWeb.UserAuth do
     end
   end
 
-  def on_mount(:ensure_authenticated, _params, session, socket) do
+  def on_mount(:ensure_authenticated, params, session, socket) do
+    on_mount({:ensure_authenticated, signed_in_path()}, params, session, socket)
+  end
+
+  def on_mount({:ensure_authenticated, return_to}, _params, session, socket) do
     case session do
       %{"user_token" => user_token} ->
         new_socket =
@@ -41,46 +65,27 @@ defmodule HajWeb.UserAuth do
         {:cont, new_socket}
 
       %{} ->
-        {:halt, redirect_require_login(socket)}
+        {:halt, redirect_require_login(socket, %{"return_url" => return_to})}
     end
   rescue
     Ecto.NoResultsError -> {:halt, redirect_require_login(socket)}
   end
 
-  def on_mount(:ensure_admin, _params, session, socket) do
-    case session do
-      %{"user_token" => user_token} ->
-        new_socket =
-          Component.assign_new(socket, :current_user, fn ->
-            Accounts.get_user_by_session_token(user_token)
-            |> Haj.Spex.preload_user_groups()
-          end)
-
-        user = %Accounts.User{} = new_socket.assigns.current_user
-
-        if user.role == :admin do
-          {:cont, new_socket}
-        else
-          {:halt, redirect_require_admin(socket)}
-        end
-
-      %{} ->
-        {:halt, redirect_require_admin(socket)}
-    end
-  rescue
-    Ecto.NoResultsError -> {:halt, redirect_require_admin(socket)}
-  end
-
-  defp redirect_require_login(socket) do
+  defp redirect_require_login(socket, params \\ %{}) do
     socket
-    |> LiveView.put_flash(:error, "Please sign in")
-    |> LiveView.redirect(to: Routes.session_path(socket, :login))
+    |> LiveView.redirect(to: Routes.session_path(socket, :login, params))
   end
 
   defp redirect_require_admin(socket) do
     socket
-    |> LiveView.put_flash(:error, "Du har inte admin-access")
-    |> LiveView.redirect(to: Routes.dashboard_unauthorized_path(socket, :index))
+    |> LiveView.put_flash(:error, "Du har inte access")
+    |> LiveView.redirect(to: ~p"/unauthorized")
+  end
+
+  defp redirect_require_access(socket) do
+    socket
+    |> LiveView.put_flash(:error, "Du har inte access")
+    |> LiveView.redirect(to: ~p"/login/unauthorized")
   end
 
   @doc """
@@ -214,23 +219,34 @@ defmodule HajWeb.UserAuth do
   end
 
   def require_spex_access(conn, _opts) do
-    if Enum.member?([:admin, :chef, :spexare], conn.assigns.current_user.role) do
+    if Policy.authorize?(:haj_access, conn.assigns.current_user) do
       conn
     else
       conn
       |> put_flash(:error, "Du har inte access här.")
-      |> redirect(to: Routes.login_path(conn, :unauthorized))
+      |> redirect(to: ~p"/login/unauthorized")
       |> halt()
     end
   end
 
   def require_admin_access(conn, _opts) do
-    if conn.assigns.current_user.role == :admin do
+    if Policy.authorize?(:haj_admin, conn.assigns.current_user) do
       conn
     else
       conn
       |> put_flash(:error, "Du har inte access här.")
-      |> redirect(to: Routes.login_path(conn, :unauthorized))
+      |> redirect(to: ~p"/unauthorized")
+      |> halt()
+    end
+  end
+
+  def require_auth(conn, action) when is_atom(action) do
+    if Policy.authorize?(action, conn.assigns.current_user) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Du har inte access här.")
+      |> redirect(to: ~p"/unauthorized")
       |> halt()
     end
   end
@@ -241,5 +257,6 @@ defmodule HajWeb.UserAuth do
 
   defp maybe_store_return_to(conn), do: conn
 
-  defp signed_in_path(conn), do: Routes.dashboard_path(conn, :index)
+  defp signed_in_path(), do: ~p"/dashboard"
+  defp signed_in_path(_conn), do: ~p"/dashboard"
 end

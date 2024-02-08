@@ -1,7 +1,7 @@
 <.header>
   Listing Events
   <:actions>
-    <.link patch={~p"/live/settings/events-admin/new"}>
+    <.link patch={~p"/settings/events-admin/new"}>
       <.button>New Event</.button>
     </.link>
   </:actions>
@@ -15,7 +15,7 @@
   <:col :let={event} label="Event date"><%= event.event_date %></:col>
   <:col :let={event} label="Purchase deadline"><%= event.purchase_deadline %></:col>
   <:action :let={event}>
-    <.link patch={~p"/live/settings/events-admin/#{event}/edit"}>Edit</.link>
+    <.link patch={~p"/settings/events-admin/#{event}/edit"}>Edit</.link>
   </:action>
   <:action :let={event}>
     <.link phx-click={JS.push("delete", value: %{id: event.id})} data-confirm="Are you sure?">
@@ -28,7 +28,7 @@
   :if={@live_action in [:new, :edit]}
   id="event-modal"
   show
-  on_cancel={JS.navigate(~p"/live/settings/events-admin")}
+  on_cancel={JS.navigate(~p"/settings/events-admin")}
 >
   <.live_component
     module={HajWeb.EventAdminLive.FormComponent}
@@ -36,6 +36,6 @@
     title={@page_title}
     action={@live_action}
     event={@event}
-    navigate={~p"/live/settings/events-admin"}
+    navigate={~p"/settings/events-admin"}
   />
 </.modal>

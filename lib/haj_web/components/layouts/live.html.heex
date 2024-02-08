@@ -3,7 +3,7 @@
   <div class="fixed inset-0 bg-gray-600 bg-opacity-75" phx-click={hide_mobile_sidebar()}></div>
   <div
     id="mobile-sidebar"
-    class="bg-burgandy-500 relative flex min-h-screen w-full max-w-xs flex-1 flex-col py-4"
+    class="bg-burgandy-500 relative flex h-screen w-full max-w-xs flex-1 flex-col overflow-y-auto pt-4"
   >
     <div class="mt-2 flex w-full flex-row items-center justify-between px-4">
       <svg class="-mt-1 inline-block h-8 w-8 fill-white" viewBox="0 0 391.85 526.59">
@@ -19,20 +19,25 @@
         <.icon name={:chevron_left} class="h-full w-full text-white" />
       </button>
     </div>
-    <nav class="px-4 pt-6">
-      <%= if @current_user do %>
-        <.sidebar_nav_links
-          current_user={@current_user}
-          active_tab={@active_tab}
-          expanded_tab={@expanded_tab}
-        />
-      <% end %>
+    <nav class="px-4 py-6">
+      <.sidebar_nav_links
+        :if={@current_user}
+        current_user={@current_user}
+        active_tab={@active_tab}
+        expanded_tab={@expanded_tab}
+      />
     </nav>
+    <div class="text-burgandy-100 border-burgandy-600 bg-burgandy-600/50 mt-auto inline-flex items-center justify-center gap-1 border-t-2 px-4 py-4 text-sm">
+      Skapad med <.icon name={:heart} class="inline-block h-4 w-4 fill-current" /> av
+      <a href="mailto:asalamon@kth.se" class="link-underline text-burgandy-50">
+        Adrian Salamon
+      </a>
+    </div>
   </div>
 </div>
 <!-- Static sidebar for desktop -->
 <div class="fixed top-0 hidden h-screen self-start lg:flex lg:flex-grow">
-  <div class="bg-burgandy-500 flex w-64 flex-col border-r py-8">
+  <div class="bg-burgandy-500 flex w-64 flex-col border-r pt-8">
     <div class="flex items-center px-6 pb-8">
       <.link
         navigate={home_path()}
@@ -46,56 +51,60 @@
       </.link>
     </div>
     <!-- Sidebar -->
-    <div class="flex h-0 flex-1 flex-col overflow-y-auto">
-      <nav class="px-4">
-        <%= if @current_user do %>
-          <.sidebar_nav_links
-            current_user={@current_user}
-            active_tab={@active_tab}
-            expanded_tab={@expanded_tab}
-          />
-        <% end %>
+    <div class="flex h-0 flex-1 flex-col">
+      <nav class="overflow-y-auto px-4 pb-6">
+        <.sidebar_nav_links
+          :if={@current_user}
+          current_user={@current_user}
+          active_tab={@active_tab}
+          expanded_tab={@expanded_tab}
+        />
       </nav>
+      <div class="text-burgandy-100 border-burgandy-600 bg-burgandy-600/50 mt-auto inline-flex items-center justify-center gap-1 border-t-2 px-4 py-4 text-sm">
+        Skapad med <.icon name={:heart} class="inline-block h-4 w-4 fill-current" /> av
+        <a href="mailto:asalamon@kth.se" class="link-underline text-burgandy-50">
+          Adrian Salamon
+        </a>
+      </div>
     </div>
   </div>
 </div>
-<div class="flex w-screen flex-col lg:pl-64">
-  <%= if @current_user do %>
-    <div class="flex w-full flex-row items-center justify-between border-b px-4 py-4 lg:px-6 lg:py-4">
-      <div class="flex flex-row items-center lg:hidden">
-        <button id="show-mobile-sidebar" phx-click={show_mobile_sidebar()} class="">
-          <.icon name={:bars_3_center_left} class="fill-burgandy-500 h-8 w-8" />
-        </button>
-      </div>
+<!-- Top bar -->
+<div class="flex min-h-screen w-screen flex-col lg:pl-64">
+  <div
+    :if={@current_user}
+    class="flex w-full flex-row items-center justify-between border-b px-4 py-4 lg:px-6 lg:py-4"
+  >
+    <div class="flex flex-row items-center lg:hidden">
+      <button id="show-mobile-sidebar" phx-click={show_mobile_sidebar()} class="">
+        <.icon name={:bars_3_center_left} class="fill-burgandy-500 h-8 w-8" />
+      </button>
+    </div>
 
-      <div class="flex w-full flex-row items-center justify-end space-x-4">
-        <.live_component module={HajWeb.SearchComponent} id="search" />
-        <div id="tobar-right" class="flex flex-row items-center space-x-4">
-          <div class="relative h-8 w-8">
+    <div class="flex w-full flex-row items-center justify-end space-x-4">
+      <.live_component module={HajWeb.SearchComponent} user={@current_user} id="search" />
+      <div id="tobar-right" class="flex flex-row items-center space-x-4">
+        <%!-- This is a notification icon, that is currently unused --%>
+        <%!-- <div class="relative h-8 w-8">
             <span class="bg-burgandy-500 absolute top-0.5 right-0.5 h-2.5 w-2.5 rounded-full">
             </span>
             <.icon name={:bell} outline class="h-8 w-8 text-gray-700" />
-          </div>
-          <div class="relative flex flex-row items-center">
-            <button role="button" phx-click={show("#user-dropdown")} class="group">
-              <img
-                src={"https://zfinger.datasektionen.se/user/#{@current_user.username}/image/100"}
-                class="h-10 w-10 rounded-full border-2 border-gray-300 object-cover object-top group-hover:brightness-95"
-              />
-            </button>
-            <div
-              id="user-dropdown"
-              class="absolute top-12 right-0 z-10 w-48"
-              style="display: none;"
-            >
-              <div class="fixed inset-0" phx-click={JS.hide(to: "#user-dropdown")} />
-              <.user_dropdown user={@current_user} />
-            </div>
+          </div> --%>
+        <div class="relative flex flex-row items-center">
+          <button role="button" phx-click={show("#user-dropdown")} class="group">
+            <img
+              src={"https://#{Application.get_env(:haj, :zfinger_url)}/user/#{@current_user.username}/image/100"}
+              class="h-10 w-10 rounded-full border-2 border-gray-300 object-cover object-top group-hover:brightness-95"
+            />
+          </button>
+          <div id="user-dropdown" class="absolute top-12 right-0 z-10 w-48" style="display: none;">
+            <div class="fixed inset-0" phx-click={JS.hide(to: "#user-dropdown")} />
+            <.user_dropdown user={@current_user} />
           </div>
         </div>
       </div>
     </div>
-  <% end %>
+  </div>
   <div class="px-4 pt-2 pb-8 lg:px-6">
     <%= @inner_content %>
   </div>

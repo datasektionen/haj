@@ -1,0 +1,92 @@
+<div class="flex w-full flex-col items-start gap-2 py-4 sm:flex-row">
+  <div class="mr-auto flex flex-col justify-between">
+    <h2 class="text-2xl font-bold">Sång: <%= @song.name %></h2>
+    <span class="text-gray-600">
+      Orginaltitel och melodi: <%= @song.original_name %>
+    </span>
+    <span class="text-gray-600">
+      Musiknummer <%= @song.number %> i spexet <%= @song.show.title %>
+    </span>
+  </div>
+  <div :if={@song.file}>
+    <.button class="flex flex-row items-center gap-2">
+      <.icon name={:play_circle} mini class="h-4 w-4" />
+      <span phx-click="load">Spela låt</span>
+    </.button>
+  </div>
+</div>
+
+<div :if={@song.file} id="audio-player" phx-hook="AudioPlayer">
+  <div :if={@player} class="sticky top-0 border-b bg-white py-2">
+    <div class="flex flex-row items-center justify-center gap-5">
+      <svg
+        :if={!@loaded}
+        class="h-6 w-6 animate-spin"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="black" stroke-width="4">
+        </circle>
+        <path
+          class="opacity-75"
+          fill="black"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        >
+        </path>
+      </svg>
+      <button :if={@loaded} phx-click={js_play_pause()}>
+        <.icon :if={!@playing} name={:play} solid class="h-6 w-6" />
+        <.icon :if={@playing} name={:pause} solid class="h-6 w-6" />
+      </button>
+      <div
+        id="audio-progress-container"
+        class="flex-auto overflow-hidden rounded-full bg-gray-200"
+        phx-update="ignore"
+      >
+        <div
+          id="audio-progress"
+          class="bg-burgandy-500 h-1.5 w-0"
+          data-min="0"
+          data-max="100"
+          data-val="0"
+        >
+        </div>
+      </div>
+      <div id="audio-timing" class="flex flex-col" phx-update="ignore">
+        <div id="audio-time"></div>
+        <div id="audio-duration"></div>
+      </div>
+    </div>
+  </div>
+  <audio autoPlay=""></audio>
+  <div class="flex flex-row justify-center pt-6">
+    <div
+      id="song-lines"
+      class="text-burgandy-500/80 flex flex-col gap-2 text-xl font-semibold sm:gap-3 sm:text-2xl lg:gap-4 lg:text-3xl"
+      phx-update="ignore"
+    >
+      <p
+        :for={{line, index} <- Enum.with_index(@lyrics)}
+        id={"song-line-#{index}"}
+        phx-click={JS.push("jump", value: %{index: index})}
+        class="cursor-pointer hover:text-black"
+      >
+        <%= line %>
+      </p>
+    </div>
+  </div>
+</div>
+<div :if={!@song.file}>
+  <div class="flex flex-row justify-center pt-6">
+    <div
+      id="song-lines"
+      class="text-burgandy-500/80 flex flex-col gap-2 text-xl font-semibold sm:gap-3 sm:text-2xl lg:gap-4 lg:text-3xl"
+      phx-update="ignore"
+    >
+      <p :for={line <- @lyrics}>
+        <%= line %>
+      </p>
+    </div>
+  </div>
+</div>

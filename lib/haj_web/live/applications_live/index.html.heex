@@ -1,0 +1,109 @@
+<div>
+  <div class="mr-auto flex w-full flex-row items-baseline justify-between pt-4 sm:flex-col">
+    <span class="text-2xl font-bold">Ansökningar</span>
+  </div>
+
+  <div class="flex flex-col">
+    <dl class="mt-5 hidden grid-cols-3 gap-5 sm:grid">
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="truncate text-sm font-medium text-gray-500">Antal ansökningar</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+          <%= @stats.apps %>
+        </dd>
+      </div>
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="truncate text-sm font-medium text-gray-500">Antal gruppsökningar</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+          <%= @stats.group_apps %>
+        </dd>
+      </div>
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="truncate text-sm font-medium text-gray-500">Populäraste grupp</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+          <%= @stats.most_popular_group %>
+        </dd>
+      </div>
+    </dl>
+
+    <.form :let={_f} for={%{}} as={:filter} phx-change="filter" class="mt-2 flex gap-2">
+      <.input
+        type="select"
+        name="show_group"
+        prompt="Alla grupper"
+        class="flex-grow"
+        options={group_options(@show.show_groups)}
+        value={@selected}
+      />
+
+      <.link
+        href={~p"/applications/export/csv"}
+        class="mt-1 flex flex-row items-center rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm hover:bg-gray-50"
+      >
+        <.icon name={:arrow_down_on_square_stack} mini class="h-5 w-5" />
+        <span class="sm:text-sm">Exportera csv</span>
+      </.link>
+    </.form>
+
+    <.table
+      small
+      id="applicaiton_table"
+      rows={@applications}
+      row_click={fn app -> JS.navigate(~p"/applications/#{app}") end}
+    >
+      <:col :let={app} label="Namn">
+        <%= app.user.full_name %>
+      </:col>
+
+      <:col :let={app} label="Email" class="hidden sm:table-cell">
+        <%= app.user.email %>
+      </:col>
+      <:col :let={app} label="Telefon" class="hidden xs:table-cell">
+        <%= app.user.phone %>
+      </:col>
+      <:col :let={app} label="Klass" class="">
+        <%= app.user.class %>
+      </:col>
+      <:col :let={app} label="Grupper" class="hidden md:table-cell">
+        <div class="flex max-w-sm flex-wrap items-center gap-1">
+          <.link
+            :for={group <- app.application_show_groups}
+            navigate={~p"/group/#{group.show_group_id}"}
+          >
+            <div
+              class="rounded-full px-2 py-0.5 filter hover:brightness-90"
+              style={"background-color: #{get_color(:bg, group.show_group.group.id)};
+                      color: #{pick_text_color(get_color(:bg, group.show_group.group.id))};"}
+            >
+              <%= group.show_group.group.name %>
+            </div>
+          </.link>
+        </div>
+      </:col>
+    </.table>
+
+    <%!-- <a
+      href="/applications/stats"
+      data-phx-link="redirect"
+      data-phx-link-state="push"
+      class="group inline-flex items-center gap-1"
+    >
+      <span class="text-burgandy-500 font-bold group-hover:text-burgandy-700">
+        Mer statistik
+      </span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="fill-burgandy-500 inline-block h-5 group-hover:fill-burgandy-700"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
+          clip-rule="evenodd"
+        >
+        </path>
+      </svg>
+    </a> --%>
+  </div>
+</div>

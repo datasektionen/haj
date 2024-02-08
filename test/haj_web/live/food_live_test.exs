@@ -17,19 +17,19 @@ defmodule HajWeb.SettingsLive.FoodTest do
     setup [:create_food]
 
     test "lists all foods", %{conn: conn, food: food} do
-      {:ok, _index_live, html} = live(conn, ~p"/live/settings/foods")
+      {:ok, _index_live, html} = live(conn, ~p"/settings/foods")
 
       assert html =~ "Listing Foods"
       assert html =~ food.name
     end
 
     test "saves new food", %{conn: conn} do
-      {:ok, index_live, _html} = live(conn, ~p"/live/settings/foods")
+      {:ok, index_live, _html} = live(conn, ~p"/settings/foods")
 
       assert index_live |> element("a", "New Food") |> render_click() =~
                "New Food"
 
-      assert_patch(index_live, ~p"/live/settings/foods/new")
+      assert_patch(index_live, ~p"/settings/foods/new")
 
       assert index_live
              |> form("#food-form", food: @invalid_attrs)
@@ -39,7 +39,7 @@ defmodule HajWeb.SettingsLive.FoodTest do
              |> form("#food-form", food: @create_attrs)
              |> render_submit()
 
-      assert_patch(index_live, ~p"/live/settings/foods")
+      assert_patch(index_live, ~p"/settings/foods")
 
       html = render(index_live)
       assert html =~ "Food created successfully"
@@ -47,12 +47,12 @@ defmodule HajWeb.SettingsLive.FoodTest do
     end
 
     test "updates food in listing", %{conn: conn, food: food} do
-      {:ok, index_live, _html} = live(conn, ~p"/live/settings/foods")
+      {:ok, index_live, _html} = live(conn, ~p"/settings/foods")
 
       assert index_live |> element("#foods-#{food.id} a", "Edit") |> render_click() =~
                "Edit Food"
 
-      assert_patch(index_live, ~p"/live/settings/foods/#{food}/edit")
+      assert_patch(index_live, ~p"/settings/foods/#{food}/edit")
 
       assert index_live
              |> form("#food-form", food: @invalid_attrs)
@@ -62,7 +62,7 @@ defmodule HajWeb.SettingsLive.FoodTest do
              |> form("#food-form", food: @update_attrs)
              |> render_submit()
 
-      assert_patch(index_live, ~p"/live/settings/foods")
+      assert_patch(index_live, ~p"/settings/foods")
 
       html = render(index_live)
       assert html =~ "Food updated successfully"
@@ -70,7 +70,7 @@ defmodule HajWeb.SettingsLive.FoodTest do
     end
 
     test "deletes food in listing", %{conn: conn, food: food} do
-      {:ok, index_live, _html} = live(conn, ~p"/live/settings/foods")
+      {:ok, index_live, _html} = live(conn, ~p"/settings/foods")
 
       assert index_live |> element("#foods-#{food.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#foods-#{food.id}")
@@ -81,19 +81,19 @@ defmodule HajWeb.SettingsLive.FoodTest do
     setup [:create_food]
 
     test "displays food", %{conn: conn, food: food} do
-      {:ok, _show_live, html} = live(conn, ~p"/live/settings/foods/#{food}")
+      {:ok, _show_live, html} = live(conn, ~p"/settings/foods/#{food}")
 
       assert html =~ "Show Food"
       assert html =~ food.name
     end
 
     test "updates food within modal", %{conn: conn, food: food} do
-      {:ok, show_live, _html} = live(conn, ~p"/live/settings/foods/#{food}")
+      {:ok, show_live, _html} = live(conn, ~p"/settings/foods/#{food}")
 
       assert show_live |> element("a", "Edit") |> render_click() =~
                "Edit Food"
 
-      assert_patch(show_live, ~p"/live/settings/foods/#{food}/show/edit")
+      assert_patch(show_live, ~p"/settings/foods/#{food}/show/edit")
 
       assert show_live
              |> form("#food-form", food: @invalid_attrs)
@@ -103,7 +103,7 @@ defmodule HajWeb.SettingsLive.FoodTest do
              |> form("#food-form", food: @update_attrs)
              |> render_submit()
 
-      assert_patch(show_live, ~p"/live/settings/foods/#{food}")
+      assert_patch(show_live, ~p"/settings/foods/#{food}")
 
       html = render(show_live)
       assert html =~ "Food updated successfully"

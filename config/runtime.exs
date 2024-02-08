@@ -39,11 +39,15 @@ if config_env() == :prod || config_env() == :staging do
   login_api_key = System.get_env("LOGIN_API_KEY") || raise "LOGIN_API_KEY is missing"
   login_host = System.get_env("LOGIN_HOST") || raise "LOGIN_HOST is missing"
   api_login_secret = System.get_env("API_LOGIN_SECRET") || raise "API_LOGIN_SECRET is missing"
+  zfinger_url = System.get_env("ZFINGER_URL") || "zfinger.datasektionen.se"
+  spam_api_key = System.get_env("SPAM_API_KEY") || raise "SPAM_API_KEY is missing"
 
   config :haj,
     login_api_key: login_api_key,
     login_host: login_host,
-    api_login_secret: api_login_secret
+    api_login_secret: api_login_secret,
+    zfinger_url: zfinger_url,
+    spam_api_key: spam_api_key
 
   # Variables for imgproxy
   imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"

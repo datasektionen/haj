@@ -6,7 +6,12 @@ defmodule HajWeb.LiveHelpers do
   alias HajWeb.Router.Helpers, as: Routes
   alias Phoenix.LiveView.JS
 
-  def home_path(), do: Routes.dashboard_path(Endpoint, :index)
+  use Phoenix.VerifiedRoutes,
+    endpoint: HajWeb.Endpoint,
+    router: HajWeb.Router,
+    statics: HajWeb.static_paths()
+
+  def home_path(), do: ~p"/dashboard"
 
   attr :name, :atom, required: true
   attr :outline, :boolean, default: false
@@ -73,7 +78,7 @@ defmodule HajWeb.LiveHelpers do
         class="group flex flex-row items-center"
       >
         <img
-          src={"https://zfinger.datasektionen.se/user/#{@user.username}/image/100"}
+          src={"https://#{Application.get_env(:haj, :zfinger_url)}/user/#{@user.username}/image/100"}
           class="inline-block h-8 w-8 rounded-full object-cover object-top filter group-hover:brightness-90"
         />
         <span class="text-md px-2 text-gray-700 group-hover:text-gray-900">
@@ -183,6 +188,10 @@ defmodule HajWeb.LiveHelpers do
   end
 
   def format_date(other), do: other
+
+  @colors ~w"#8dd3c7 #ffffb3 #bebada #fb8072 #80b1d3 #fdb462 #b3de69 #fccde5 #d9d9d9 #bc80bd #ccebc5 #ffed6f"
+
+  def get_color(:bg, index), do: Enum.at(@colors, rem(index - 1, 12), "#4e79a7")
 
   def pick_text_color(hex_color) do
     colors = hex_to_rgb(hex_color)
