@@ -57,9 +57,11 @@ defmodule Haj.Events do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_event(attrs \\ %{}) do
+  def create_event(attrs \\ %{}, opts \\ []) do
+    with_tickets = Keyword.get(opts, :with_tickets, false)
+
     %Event{}
-    |> Event.changeset(attrs)
+    |> Event.changeset(attrs, with_tickets: with_tickets)
     |> Repo.insert()
   end
 
@@ -76,17 +78,11 @@ defmodule Haj.Events do
 
   """
   def update_event(%Event{} = event, attrs, opts \\ []) do
-    with_ticets = Keyword.get(opts, :with_tickets, false)
+    with_tickets = Keyword.get(opts, :with_tickets, false)
 
-    if with_ticets do
-      event
-      |> Event.changeset_ticket_types(attrs)
-      |> Repo.update()
-    else
-      event
-      |> Event.changeset(attrs)
-      |> Repo.update()
-    end
+    event
+    |> Event.changeset(attrs, with_tickets: with_tickets)
+    |> Repo.update()
   end
 
   @doc """
@@ -114,8 +110,11 @@ defmodule Haj.Events do
       %Ecto.Changeset{data: %Event{}}
 
   """
-  def change_event(%Event{} = event, attrs \\ %{}) do
-    Event.changeset(event, attrs)
+  def change_event(%Event{} = event, attrs \\ %{}, opts \\ []) do
+    with_tickets = Keyword.get(opts, :with_tickets, false)
+
+    event
+    |> Event.changeset(attrs, with_tickets: with_tickets)
   end
 
   @doc """

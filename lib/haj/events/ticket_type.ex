@@ -18,5 +18,6 @@ defmodule Haj.Events.TicketType do
     ticket_type
     |> cast(attrs, [:price, :name, :description])
     |> validate_required([:price, :name, :description])
+    |> validate_number(:price, greater_than_or_equal_to: 0)
   end
 end

@@ -1,4 +1,4 @@
-defmodule HajWeb.EventAdminLive.Index do
+defmodule HajWeb.SettingsLive.Event.Index do
   use HajWeb, :live_view
 
   alias Haj.Events
@@ -17,19 +17,19 @@ defmodule HajWeb.EventAdminLive.Index do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
-    |> assign(:page_title, "Edit Event")
+    |> assign(:page_title, "Redigera event")
     |> assign(:event, Events.get_event!(id) |> Repo.preload(:ticket_types))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Event")
+    |> assign(:page_title, "Nytt event")
     |> assign(:event, %Event{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Events")
+    |> assign(:page_title, "Event")
     |> assign(:event, nil)
   end
 

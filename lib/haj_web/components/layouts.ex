@@ -132,7 +132,7 @@ defmodule HajWeb.Layouts do
         />
 
         <:sub_link
-          navigate={~p"/settings/events-admin"}
+          navigate={~p"/settings/events"}
           title="Event"
           active={@active_tab == {:setting, :event}}
         />

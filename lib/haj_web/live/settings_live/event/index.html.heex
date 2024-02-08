@@ -1,0 +1,40 @@
+<.header>
+  Event
+  <:actions>
+    <.link patch={~p"/settings/events/new"}>
+      <.button>Nytt event</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="events" rows={@events}>
+  <:col :let={event} label="Namn"><%= event.name %></:col>
+  <:col :let={event} label="Biljettgräns"><%= event.ticket_limit %></:col>
+  <:col :let={event} label="Datum"><%= format_date(event.event_date) %></:col>
+  <:col :let={event} label="Köpdeadline"><%= format_date(event.purchase_deadline) %></:col>
+
+  <:action :let={event}>
+    <.link patch={~p"/settings/events/#{event}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={event}>
+    <.link phx-click={JS.push("delete", value: %{id: event.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="event-modal"
+  show
+  on_cancel={JS.navigate(~p"/settings/events")}
+>
+  <.live_component
+    module={HajWeb.SettingsLive.Event.FormComponent}
+    id={@event.id || :new}
+    title={@page_title}
+    action={@live_action}
+    event={@event}
+    navigate={~p"/settings/events"}
+  />
+</.modal>

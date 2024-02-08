@@ -118,9 +118,9 @@ defmodule HajWeb.Router do
         live "/shows/new", SettingsLive.Show.Index, :new
         live "/shows/:id/edit", SettingsLive.Show.Index, :edit
 
-        live "/events-admin", EventAdminLive.Index, :index
-        live "/events-admin/new", EventAdminLive.Index, :new
-        live "/events-admin/:id/edit", EventAdminLive.Index, :edit
+        live "/events", SettingsLive.Event.Index, :index
+        live "/events/new", SettingsLive.Event.Index, :new
+        live "/events/:id/edit", SettingsLive.Event.Index, :edit
 
         live "/shows/:id", SettingsLive.Show.Show, :show
         live "/shows/:id/show/edit", SettingsLive.Show.Show, :edit

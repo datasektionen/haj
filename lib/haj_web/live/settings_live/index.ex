@@ -3,7 +3,7 @@ defmodule HajWeb.SettingsLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, socket |> assign(:page_title, "Administrera")}
   end
 
   @impl true
@@ -30,7 +30,7 @@ defmodule HajWeb.SettingsLive.Index do
         <.setting_card name="Användare" navigate={~p"/settings/users"}>
           Redigera användare och användaruppgifter
         </.setting_card>
-        <.setting_card name="Events" navigate={~p"/settings/events-admin"}>
+        <.setting_card name="Events" navigate={~p"/settings/events"}>
           Redigera events
         </.setting_card>
         <.setting_card name="Ansvar" navigate={~p"/settings/responsibilities"}>
