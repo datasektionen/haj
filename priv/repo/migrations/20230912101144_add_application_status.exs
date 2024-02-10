@@ -3,7 +3,7 @@ defmodule Haj.Repo.Migrations.AddApplicationStatus do
 
   def change do
     alter table(:applications) do
-      add(:status, :string, default: "pending")
+      add :status, :string, default: "pending"
     end
   end
 end

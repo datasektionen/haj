@@ -44,6 +44,7 @@ defmodule HajWeb.EventLive.Show do
     {:noreply, socket}
   end
 
+  @impl true
   def handle_event("inc", %{"id" => id}, socket) do
     selected = Map.update(socket.assigns.selected, id, 0, &(&1 + 1))
     price = socket.assigns.price + socket.assigns.ticket_types[id].price
@@ -51,6 +52,7 @@ defmodule HajWeb.EventLive.Show do
     {:noreply, assign(socket, selected: selected, price: price)}
   end
 
+  @impl true
   def handle_event("dec", %{"id" => id}, socket) do
     selected = Map.update(socket.assigns.selected, id, 0, &(&1 - 1))
     price = socket.assigns.price - socket.assigns.ticket_types[id].price

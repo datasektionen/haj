@@ -33,8 +33,9 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
           <.input field={@form[:event_date]} type="datetime-local" label="Datum" />
           <.input field={@form[:purchase_deadline]} type="datetime-local" label="Köpdeadline" />
           <.input field={@form[:image]} type="text" label="Bild" />
+          <.input field={@form[:has_tickets]} type="checkbox" label="Har biljetter" />
 
-          <div class="space-y-4">
+          <div :if={@form[:has_tickets].value} class="space-y-4">
             <h3 class="text-lg font-semibold leading-8 text-zinc-800">Biljettyper</h3>
             <.inputs_for :let={f_nested} field={@form[:ticket_types]}>
               <input type="hidden" name="event[tickets_sort][]" value={f_nested.index} />
@@ -103,8 +104,6 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
       socket.assigns.event
       |> Events.change_event(event_params, with_tickets: true)
       |> Map.put(:action, :validate)
-
-    IO.inspect(assign_form(socket, changeset))
 
     {:noreply, assign_form(socket, changeset)}
   end

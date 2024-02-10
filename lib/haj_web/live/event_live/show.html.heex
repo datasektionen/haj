@@ -44,7 +44,11 @@
 
     <div class="flex flex-auto flex-col p-4 md:rounded-xl md:border md:p-6">
       <div class="flex flex-auto flex-col gap-4">
-        <div :for={ticket <- @event.ticket_types} class="flex flex-row justify-between">
+        <div
+          :for={ticket <- @event.ticket_types}
+          :if={@event.has_tickets}
+          class="flex flex-row justify-between"
+        >
           <div>
             <div class="font-medium"><%= ticket.name %></div>
             <div class="text-sm text-gray-800">
@@ -78,8 +82,9 @@
           Totalt: <%= @price %> kr
         </div>
 
-        <.button class="mt-auto">
-          Fortsätt
+        <.button class="mt-auto" phx-click="register">
+          <span :if={@event.has_tickets}>Köp biljetter</span>
+          <span :if={!@event.has_tickets}>Anmälan</span>
         </.button>
       </div>
     </div>

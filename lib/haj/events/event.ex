@@ -9,8 +9,10 @@ defmodule Haj.Events.Event do
     field :name, :string
     field :purchase_deadline, :utc_datetime
     field :ticket_limit, :integer
+    field :has_tickets, :boolean, default: true
 
     has_many :ticket_types, Haj.Events.TicketType, on_replace: :delete
+    has_many :event_registrations, Haj.Events.EventRegistration, on_replace: :delete
 
     timestamps()
   end
@@ -28,7 +30,15 @@ defmodule Haj.Events.Event do
 
   defp default_changeset(event, attrs) do
     event
-    |> cast(attrs, [:name, :description, :image, :ticket_limit, :event_date, :purchase_deadline])
+    |> cast(attrs, [
+      :name,
+      :description,
+      :image,
+      :ticket_limit,
+      :event_date,
+      :purchase_deadline,
+      :has_tickets
+    ])
     |> validate_required([
       :name,
       :description,
