@@ -3,8 +3,8 @@ defmodule Haj.Repo.Migrations.CreateForms do
 
   def change do
     create table(:forms) do
-      add(:name, :string)
-      add(:description, :string)
+      add :name, :string
+      add :description, :string
 
       timestamps()
     end
