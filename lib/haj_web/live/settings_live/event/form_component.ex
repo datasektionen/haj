@@ -42,7 +42,9 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
             field={@form[:form_id]}
             label="Formulär"
             chosen={@form[:form_id].value}
-            placeholder={@form[:form].value && @form[:form].value.name}
+            placeholder={
+              Ecto.assoc_loaded?(@form.data.form) && @form[:form].value && @form[:form].value.name
+            }
           />
 
           <div :if={@form[:has_tickets].value} class="space-y-4">
