@@ -16,19 +16,19 @@ defmodule HajWeb.SettingsLive.Form.Index do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
-    |> assign(:page_title, "Edit Form")
+    |> assign(:page_title, "Redigera formulär")
     |> assign(:form, Forms.get_form!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Form")
+    |> assign(:page_title, "Nytt formulär")
     |> assign(:form, %Form{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Forms")
+    |> assign(:page_title, "Formulär")
     |> assign(:form, nil)
   end
 

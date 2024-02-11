@@ -2,8 +2,6 @@ defmodule HajWeb.EventLive.Index do
   use HajWeb, :live_view
 
   alias Haj.Events
-  alias Haj.Events.Event
-  alias Haj.Presence
 
   @impl true
   def mount(_params, _session, socket) do
@@ -36,25 +34,6 @@ defmodule HajWeb.EventLive.Index do
       {:error, _} ->
         {:noreply, socket |> put_flash(:error, "Error")}
     end
-  end
-
-  defp ticket_format_date(event_date) do
-    Calendar.strftime(event_date, "%d %B %Y")
-  end
-
-  defp ticket_format_time(event_date) do
-    Calendar.strftime(event_date, "%H:%M")
-  end
-
-  defp online_count(assigns) do
-    ~H"""
-    <div class="justify my-10 flex items-center">
-      <div class="bg-burgandy-400 mr-3 rounded px-5 py-1 text-center text-white">
-        <p><%= max(@online_count - 1, 0) %></p>
-      </div>
-      <p class="h-min">andra metaloger som väntar på biljetter</p>
-    </div>
-    """
   end
 
   defp event_card(assigns) do

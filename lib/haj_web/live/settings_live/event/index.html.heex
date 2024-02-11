@@ -14,11 +14,11 @@
   <:col :let={event} label="Köpdeadline"><%= format_date(event.purchase_deadline) %></:col>
 
   <:action :let={event}>
-    <.link patch={~p"/settings/events/#{event}/edit"}>Edit</.link>
+    <.link patch={~p"/settings/events/#{event}/edit"}>Redigera</.link>
   </:action>
   <:action :let={event}>
     <.link phx-click={JS.push("delete", value: %{id: event.id})} data-confirm="Are you sure?">
-      Delete
+      Radera
     </.link>
   </:action>
 </.table>

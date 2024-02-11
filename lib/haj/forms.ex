@@ -41,7 +41,7 @@ defmodule Haj.Forms do
     Repo.one!(
       from f in Form,
         where: f.id == ^id,
-        join: q in assoc(f, :questions),
+        left_join: q in assoc(f, :questions),
         preload: [questions: q]
     )
   end

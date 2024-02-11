@@ -6,8 +6,8 @@ defmodule Haj.Forms.Form do
     field :description, :string
     field :name, :string
 
-    has_many :questions, Haj.Forms.Question
-    has_many :responses, Haj.Forms.Response
+    has_many :questions, Haj.Forms.Question, on_replace: :delete
+    has_many :responses, Haj.Forms.Response, on_replace: :delete
 
     timestamps()
   end
@@ -17,5 +17,6 @@ defmodule Haj.Forms.Form do
     form
     |> cast(attrs, [:name, :description])
     |> validate_required([:name, :description])
+    |> cast_assoc(:questions, sort_param: :questions_sort, drop_param: :questions_drop)
   end
 end
