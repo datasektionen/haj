@@ -65,3 +65,10 @@ defmodule Haj.Accounts.User do
     end)
   end
 end
+
+defimpl Phoenix.HTML.Safe, for: Haj.Accounts.User do
+  def to_iodata(user) do
+    user.full_name
+    |> Phoenix.HTML.Engine.html_escape()
+  end
+end
