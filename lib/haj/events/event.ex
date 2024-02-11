@@ -13,6 +13,7 @@ defmodule Haj.Events.Event do
 
     has_many :ticket_types, Haj.Events.TicketType, on_replace: :delete
     has_many :event_registrations, Haj.Events.EventRegistration, on_replace: :delete
+    belongs_to :form, Haj.Forms.Form
 
     timestamps()
   end
@@ -37,7 +38,8 @@ defmodule Haj.Events.Event do
       :ticket_limit,
       :event_date,
       :purchase_deadline,
-      :has_tickets
+      :has_tickets,
+      :form_id
     ])
     |> validate_required([
       :name,

@@ -103,6 +103,7 @@ defmodule HajWeb.Router do
       ## Events
       live "/events", EventLive.Index, :index
       live "/events/:id", EventLive.Show, :index
+      live "/events/:id/register", EventLive.Show, :register
 
       live "/forms/:id", FormLive.Index, :index
     end

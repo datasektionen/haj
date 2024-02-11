@@ -3,7 +3,10 @@ defmodule HajWeb.Components.SearchComboboxComponent do
 
   @impl true
   def update(assigns, socket) do
-    {:ok, socket |> assign(assigns) |> assign(query: "", results: [], chosen: nil)}
+    chosen = Map.get(assigns, :chosen, nil)
+    placeholder = Map.get(assigns, :placeholder, "")
+
+    {:ok, socket |> assign(assigns) |> assign(query: placeholder, results: [], chosen: chosen)}
   end
 
   @impl true

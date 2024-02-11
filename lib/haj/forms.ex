@@ -4,7 +4,6 @@ defmodule Haj.Forms do
   """
 
   import Ecto.Query, warn: false
-  alias Ecto.Changeset
   alias Haj.Repo
   alias Ecto.Multi
 
@@ -21,6 +20,15 @@ defmodule Haj.Forms do
   """
   def list_forms do
     Repo.all(Form)
+  end
+
+  def search_forms(search_phrase) do
+    query =
+      from f in Form,
+        where: fragment("? %> ?", f.name, ^search_phrase),
+        order_by: {:desc, fragment("word_similarity(?, ?)", f.name, ^search_phrase)}
+
+    Repo.all(query)
   end
 
   @doc """
@@ -310,7 +318,7 @@ defmodule Haj.Forms do
     query =
       from f in Form,
         where: f.id == ^form_id,
-        join: q in assoc(f, :questions),
+        left_join: q in assoc(f, :questions),
         preload: [questions: q]
 
     form = Repo.one!(query)

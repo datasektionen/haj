@@ -31,6 +31,12 @@ defmodule HajWeb.EventLive.Show do
      |> assign_selected_tickets(event.ticket_types)}
   end
 
+  @impl true
+  def handle_params(%{"id" => id}, _url, socket) do
+    {:noreply, assign(socket, event: Events.get_event!(id))}
+  end
+
+  @impl true
   def handle_info(
         %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
         %{assigns: %{online_count: count}} = socket
@@ -58,6 +64,11 @@ defmodule HajWeb.EventLive.Show do
     price = socket.assigns.price - socket.assigns.ticket_types[id].price
 
     {:noreply, assign(socket, selected: selected, price: price)}
+  end
+
+  @impl true
+  def handle_event("register", _, socket) do
+    {:noreply, push_patch(socket, to: ~p"/events/#{socket.assigns.event}/register")}
   end
 
   defp assign_selected_tickets(socket, ticket_types) do

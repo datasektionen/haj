@@ -10,8 +10,6 @@ defmodule Haj.Events do
   alias Haj.Events.TicketType
   alias Haj.Events.EventRegistration
 
-  @topic inspect(__MODULE__)
-
   @doc """
   Returns the list of events.
 
@@ -47,7 +45,7 @@ defmodule Haj.Events do
     Repo.one!(
       from e in Event,
         where: e.id == ^id,
-        preload: :ticket_types
+        preload: [:ticket_types, :form]
     )
   end
 

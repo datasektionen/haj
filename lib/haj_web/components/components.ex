@@ -4,6 +4,8 @@ defmodule HajWeb.Components do
 
   embed_templates "components/*"
 
+  import HajWeb.CoreComponents
+
   attr :class, :string, default: ""
 
   slot :step, required: true do
@@ -73,6 +75,39 @@ defmodule HajWeb.Components do
 
       <%= render_slot(@inner_block) %>
     </.link>
+    """
+  end
+
+  ## Form component
+
+  attr :question, :any, required: true
+  attr :field, :any, required: true
+
+  def form_input(%{question: %{type: :select}} = assigns) do
+    ~H"""
+    <.input field={@field} type="select" options={@question.options} label={@question.name} />
+    """
+  end
+
+  def form_input(%{question: %{type: :multi_select}} = assigns) do
+    ~H"""
+    <label class="block text-sm font-semibold leading-6 text-zinc-800">
+      <%= @question.name %>
+    </label>
+    <div :for={option <- @question.options}>
+      <.input
+        name={"#{@field.name}[#{option}]"}
+        type="checkbox"
+        value={option in Ecto.Changeset.get_field(assigns.field.form.source, assigns.field.field, [])}
+        label={option}
+      />
+    </div>
+    """
+  end
+
+  def form_input(assigns) do
+    ~H"""
+    <.input field={@field} type="text" label={@question.name} />
     """
   end
 end

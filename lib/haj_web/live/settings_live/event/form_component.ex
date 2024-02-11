@@ -35,6 +35,16 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
           <.input field={@form[:image]} type="text" label="Bild" />
           <.input field={@form[:has_tickets]} type="checkbox" label="Har biljetter" />
 
+          <.live_component
+            id="search-component"
+            module={HajWeb.Components.SearchComboboxComponent}
+            search_fn={&Haj.Forms.search_forms/1}
+            field={@form[:form_id]}
+            label="Formulär"
+            chosen={@form[:form_id].value}
+            placeholder={@form[:form].value && @form[:form].value.name}
+          />
+
           <div :if={@form[:has_tickets].value} class="space-y-4">
             <h3 class="text-lg font-semibold leading-8 text-zinc-800">Biljettyper</h3>
             <.inputs_for :let={f_nested} field={@form[:ticket_types]}>
@@ -108,16 +118,18 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
     {:noreply, assign_form(socket, changeset)}
   end
 
-  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
-    assign(socket, :form, to_form(changeset))
-  end
-
+  @impl true
   def handle_event("save", %{"event" => event_params}, socket) do
     save_event(socket, socket.assigns.action, event_params)
   end
 
+  @impl true
   def handle_event("delete", %{"ticket" => ticket_type}, socket) do
     delete_ticket_type(socket, ticket_type)
+  end
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
   end
 
   defp save_event(socket, :edit, event_params) do

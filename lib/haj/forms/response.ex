@@ -5,6 +5,7 @@ defmodule Haj.Forms.Response do
   schema "form_responses" do
     belongs_to :form, Haj.Forms.Form
     belongs_to :user, Haj.Accounts.User
+    belongs_to :event_registration, Haj.Events.EventRegistration
 
     has_many :question_responses, Haj.Forms.QuestionResponse
 

@@ -100,4 +100,18 @@
   </.button>
 </div>
 
-<%!-- <.online_count online_count={@online_count} /> --%>
+<.modal
+  :if={@live_action == :register}
+  id="food-modal"
+  show
+  on_cancel={JS.patch(~p"/events/#{@event}")}
+>
+  <.live_component
+    module={HajWeb.EventLive.FormComponent}
+    id={@event.id}
+    action={@live_action}
+    event={@event}
+    patch={~p"/events/#{@event}"}
+    current_user={@current_user}
+  />
+</.modal>

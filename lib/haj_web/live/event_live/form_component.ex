@@ -1,14 +1,35 @@
-defmodule HajWeb.FormLive.Index do
+defmodule HajWeb.EventLive.FormComponent do
+  use HajWeb, :live_component
   alias Haj.Forms
-  use HajWeb, :live_view
 
-  def mount(%{"id" => id}, _session, socket) do
-    changeset = Forms.get_form_changeset!(id, %{})
-    form = Forms.get_form!(id)
-    {:ok, assign(socket, form: form) |> assign_form(changeset)}
+  @impl true
+  def render(assigns) do
+    ~H"""
+    <div>
+      <.form for={@response_form} phx-submit="save" phx-change="validate" phx-target={@myself}>
+        <.form_input
+          :for={question <- @form.questions}
+          question={question}
+          field={@response_form[String.to_atom("#{question.id}")]}
+        />
+
+        <.button phx-disable-with="Sparar...">Spara</.button>
+      </.form>
+    </div>
+    """
   end
 
+  @impl true
+  def update(%{event: event} = assigns, socket) do
+    changeset = Forms.get_form_changeset!(event.form_id, %{})
+    form = Forms.get_form!(event.form_id)
+
+    {:ok, assign(socket, assigns) |> assign(form: form) |> assign_form(changeset)}
+  end
+
+  @impl true
   def handle_event("validate", %{"form_response" => response}, socket) do
+    # We need to flatten all multi-responses to a list
     response = flatten_response(response)
 
     changeset =
@@ -17,12 +38,14 @@ defmodule HajWeb.FormLive.Index do
     {:noreply, assign_form(socket, changeset)}
   end
 
+  @impl true
   def handle_event("save", %{"form_response" => response}, socket) do
     response = flatten_response(response)
 
     case Forms.submit_form(socket.assigns.form.id, socket.assigns.current_user.id, response) do
       {:ok, _} ->
-        {:noreply, put_flash(socket, :info, "Skickade svar")}
+        push_flash(:info, "Skickade svar")
+        {:noreply, socket}
 
       {:error, changeset} ->
         {:noreply, assign_form(socket, changeset)}

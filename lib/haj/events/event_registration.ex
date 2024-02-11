@@ -7,6 +7,8 @@ defmodule Haj.Events.EventRegistration do
     belongs_to :user, Haj.Accounts.User
     belongs_to :event, Haj.Events.Event
 
+    has_one :form_response, Haj.Forms.Response
+
     timestamps()
   end
 

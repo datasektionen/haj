@@ -10,7 +10,6 @@ defmodule Haj.Forms.Question do
     field :options, {:array, :string}
 
     belongs_to :form, Haj.Forms.Form
-    has_many :responses, Haj.Forms.Response
 
     timestamps()
   end
