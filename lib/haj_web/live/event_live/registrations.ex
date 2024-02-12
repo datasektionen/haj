@@ -15,16 +15,39 @@ defmodule HajWeb.EventLive.Registrations do
     event = Events.get_event!(id, form: [:questions])
     registrations = Events.list_event_registrations(id)
 
+    most_popular =
+      Enum.flat_map(registrations, & &1.user.group_memberships)
+      |> Enum.map(& &1.show_group.group)
+      |> Enum.frequencies()
+      |> Enum.sort_by(fn {_, c} -> c end, &>=/2)
+      |> Enum.take(1)
+      |> Enum.map(fn {group, _} -> group.name end)
+
     {:noreply,
-     assign(socket, event: event, registrations: registrations)
+     assign(socket, event: event, registrations: registrations, most_popular: most_popular)
      |> apply_action(socket.assigns.live_action, params)}
+  end
+
+  @impl true
+  def handle_event("select_tab", %{"tab" => tab}, socket) do
+    event = socket.assigns.event
+
+    path =
+      case tab do
+        "users" -> ~p"/events/#{event}/registrations/users"
+        "food" -> ~p"/events/#{event}/registrations/food"
+        "questions" -> ~p"/events/#{event}/registrations/questions"
+      end
+
+    {:noreply, push_patch(socket, to: path)}
   end
 
   defp apply_action(socket, :users, _params), do: assign(socket, page_title: "Anmälda")
 
   defp apply_action(socket, :food, _params) do
     food_counts =
-      Enum.flat_map(socket.assigns.registrations, & &1.user.foods)
+      Enum.filter(socket.assigns.registrations, & &1.attending)
+      |> Enum.flat_map(& &1.user.foods)
       |> Enum.group_by(& &1.id, & &1.name)
       |> Enum.flat_map(fn {key, values} -> Enum.frequencies(values) end)
       |> Enum.sort_by(fn c -> c end, &>=/2)

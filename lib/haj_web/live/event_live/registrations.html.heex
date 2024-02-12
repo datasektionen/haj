@@ -3,14 +3,21 @@
 <dl class="mt-5 hidden grid-cols-3 gap-5 sm:grid">
   <.stats_card title="Antal svar" value={length(@registrations)} />
   <.stats_card title="Antal anmälda" value={length(Enum.filter(@registrations, & &1.attending))} />
+  <.stats_card
+    title="Mest anmälda grupp"
+    value={if @most_popular == [], do: "Ingen", else: hd(@most_popular)}
+  />
 </dl>
 
-<div class="sm:hidden">
-  <select class="block w-full rounded-md border-gray-300 py-2 pr-10 pl-3 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
-    <option>Anmälda</option>
-    <option>Frågor</option>
-    <option>Matpreferenser</option>
-  </select>
+<div class="mt-4 sm:hidden">
+  <.form phx-change="select_tab">
+    <.input
+      type="select"
+      name="tab"
+      options={[{"Anmälda", :users}, {"Frågor", :questions}, {"Matpreferenser", :food}]}
+      value={@live_action}
+    />
+  </.form>
 </div>
 <div class="hidden pt-4 sm:block">
   <div class="border-b border-gray-200">
@@ -39,7 +46,7 @@
     <%= reg.user.full_name %>
   </:col>
 
-  <:col :let={reg} label="Kommer" class="hidden sm:table-cell">
+  <:col :let={reg} label="Kommer" class="">
     <%= if reg.attending, do: "Ja", else: "Nej" %>
   </:col>
 
@@ -128,7 +135,7 @@
     Inga anmälda med matpreferenser
   </span>
 
-  <dl class="hidden grid-cols-5 gap-5 sm:grid">
+  <dl class="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-5">
     <.stats_card :for={{food, count} <- @food_counts} title={food} value={count} />
   </dl>
 
