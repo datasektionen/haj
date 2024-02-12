@@ -10,6 +10,7 @@ defmodule HajWeb.UserAuth do
   alias Haj.Accounts
   alias Haj.Accounts.User
   alias HajWeb.Router.Helpers, as: Routes
+  alias Haj.Spex
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -40,7 +41,7 @@ defmodule HajWeb.UserAuth do
         {:cont,
          Component.assign_new(socket, :current_user, fn ->
            Accounts.get_user_by_session_token(user_token)
-           |> Haj.Spex.preload_user_groups()
+           |> Spex.preload_user_groups()
          end)}
 
       %{} ->
@@ -58,7 +59,7 @@ defmodule HajWeb.UserAuth do
         new_socket =
           Component.assign_new(socket, :current_user, fn ->
             Accounts.get_user_by_session_token(user_token)
-            |> Haj.Spex.preload_user_groups()
+            |> Spex.preload_user_groups()
           end)
 
         %Accounts.User{} = new_socket.assigns.current_user
@@ -169,7 +170,8 @@ defmodule HajWeb.UserAuth do
 
     user =
       user_token &&
-        Accounts.get_user_by_session_token(user_token) |> Haj.Spex.preload_user_groups()
+        Accounts.get_user_by_session_token(user_token)
+        |> Spex.preload_user_groups()
 
     assign(conn, :current_user, user)
   end

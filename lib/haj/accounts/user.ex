@@ -22,6 +22,7 @@ defmodule Haj.Accounts.User do
 
     many_to_many :foods, Haj.Foods.Food, join_through: "food_preferences", on_replace: :delete
     has_many :group_memberships, Haj.Spex.GroupMembership
+    has_many :user_tokens, Haj.Accounts.UserToken
 
     field :food_preference_other, :string
 

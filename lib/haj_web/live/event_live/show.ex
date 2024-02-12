@@ -68,7 +68,13 @@ defmodule HajWeb.EventLive.Show do
 
   @impl true
   def handle_event("register", _, socket) do
-    {:noreply, push_patch(socket, to: ~p"/events/#{socket.assigns.event}/register")}
+    if socket.assigns.event.has_tickets do
+      selected = Enum.filter(socket.assigns.selected, fn {_, count} -> count > 0 end)
+      IO.inspect(selected)
+      {:noreply, socket}
+    else
+      {:noreply, push_patch(socket, to: ~p"/events/#{socket.assigns.event}/register")}
+    end
   end
 
   defp assign_selected_tickets(socket, ticket_types) do

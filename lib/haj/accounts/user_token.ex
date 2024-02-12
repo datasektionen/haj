@@ -2,6 +2,7 @@ defmodule Haj.Accounts.UserToken do
   use Ecto.Schema
   import Ecto.Query
   alias Haj.Accounts.UserToken
+  alias Haj.Accounts.User
 
   @rand_size 32
   @session_validity_in_days 60
@@ -49,10 +50,11 @@ defmodule Haj.Accounts.UserToken do
   """
   def verify_session_token_query(token) do
     query =
-      from token in token_and_context_query(token, "session"),
-        join: user in assoc(token, :user),
-        where: token.inserted_at > ago(@session_validity_in_days, "day"),
-        select: user
+      from user in User,
+        join: ut in assoc(user, :user_tokens),
+        where: ut.token == ^token,
+        where: ut.context == "session",
+        where: ut.inserted_at > ago(@session_validity_in_days, "day")
 
     {:ok, query}
   end
