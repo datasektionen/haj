@@ -41,11 +41,11 @@ defmodule Haj.Events do
       ** (Ecto.NoResultsError)
 
   """
-  def get_event!(id) do
+  def get_event!(id, preloads \\ [:ticket_types, :form]) do
     Repo.one!(
       from e in Event,
         where: e.id == ^id,
-        preload: [:ticket_types, :form]
+        preload: ^preloads
     )
   end
 
@@ -229,6 +229,36 @@ defmodule Haj.Events do
   end
 
   @doc """
+  Returns the list of event_registrations for a given event. Preloads litteraly everything.
+  """
+
+  def list_event_registrations(event_id) do
+    spex = Haj.Spex.current_spex()
+
+    members_query =
+      from gm in Haj.Spex.GroupMembership,
+        join: sg in assoc(gm, :show_group),
+        join: g in assoc(sg, :group),
+        where: sg.show_id == ^spex.id,
+        order_by: sg.id,
+        preload: [show_group: {sg, group: g}]
+
+    query =
+      from r in EventRegistration,
+        where: r.event_id == ^event_id,
+        join: u in assoc(r, :user),
+        left_join: fp in assoc(u, :foods),
+        left_join: fr in assoc(r, :response),
+        left_join: qr in assoc(fr, :question_responses),
+        preload: [
+          user: {u, [group_memberships: ^members_query, foods: fp]},
+          response: {fr, question_responses: qr}
+        ]
+
+    Repo.all(query)
+  end
+
+  @doc """
   Gets a single event_registration.
 
   Raises `Ecto.NoResultsError` if the Event registration does not exist.
@@ -293,7 +323,7 @@ defmodule Haj.Events do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_event_registration(%EventRegistration{id: id} = event_registration) do
+  def delete_event_registration(%EventRegistration{} = event_registration) do
     Repo.delete(event_registration)
     |> notify_subscribers({:registration, :deleted})
   end
@@ -324,6 +354,19 @@ defmodule Haj.Events do
         select: count(r.id)
 
     Repo.one(q)
+  end
+
+  @doc """
+  Returns a registration for an event for a user, if one exists.
+  """
+  def get_registration_for_user(event_id, user_id) do
+    query =
+      from r in EventRegistration,
+        where: r.event_id == ^event_id and r.user_id == ^user_id
+
+    # preload: [form_response: [question_responses: []]]
+
+    Repo.one(query)
   end
 
   def subscribe(event_id) do

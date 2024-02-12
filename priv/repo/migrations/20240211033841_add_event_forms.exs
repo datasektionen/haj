@@ -7,7 +7,7 @@ defmodule Haj.Repo.Migrations.AddEventForms do
     end
 
     alter table(:event_registrations) do
-      add :form_response_id, references(:form_responses, on_delete: :nilify_all)
+      add :response_id, references(:form_responses, on_delete: :nilify_all)
     end
 
     create index(:event_registrations, [:form_response_id])

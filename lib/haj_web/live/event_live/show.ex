@@ -33,7 +33,10 @@ defmodule HajWeb.EventLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _url, socket) do
-    {:noreply, assign(socket, event: Events.get_event!(id))}
+    registration = Events.get_registration_for_user(id, socket.assigns.current_user.id)
+    event = Events.get_event!(id)
+
+    {:noreply, assign(socket, page_title: event.name, event: event, registration: registration)}
   end
 
   @impl true
@@ -69,8 +72,7 @@ defmodule HajWeb.EventLive.Show do
   @impl true
   def handle_event("register", _, socket) do
     if socket.assigns.event.has_tickets do
-      selected = Enum.filter(socket.assigns.selected, fn {_, count} -> count > 0 end)
-      IO.inspect(selected)
+      _selected = Enum.filter(socket.assigns.selected, fn {_, count} -> count > 0 end)
       {:noreply, socket}
     else
       {:noreply, push_patch(socket, to: ~p"/events/#{socket.assigns.event}/register")}

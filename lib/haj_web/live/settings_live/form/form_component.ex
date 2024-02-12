@@ -124,10 +124,7 @@ defmodule HajWeb.SettingsLive.Form.FormComponent do
 
   @impl true
   def handle_event("validate", %{"form" => form_params}, socket) do
-    params =
-      form_params
-      |> merge_options()
-      |> dbg()
+    params = merge_options(form_params)
 
     changeset =
       socket.assigns.form
@@ -172,9 +169,7 @@ defmodule HajWeb.SettingsLive.Form.FormComponent do
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
-    form =
-      to_form(changeset)
-      |> IO.inspect(label: "assign_form")
+    form = to_form(changeset)
 
     assign(socket, :client_form, form)
   end

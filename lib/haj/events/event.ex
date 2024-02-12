@@ -12,7 +12,7 @@ defmodule Haj.Events.Event do
     field :has_tickets, :boolean, default: true
 
     has_many :ticket_types, Haj.Events.TicketType, on_replace: :delete
-    has_many :event_registrations, Haj.Events.EventRegistration, on_replace: :delete
+    has_many :registrations, Haj.Events.EventRegistration, on_replace: :delete
     belongs_to :form, Haj.Forms.Form
 
     timestamps()

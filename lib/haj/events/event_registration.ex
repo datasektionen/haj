@@ -7,7 +7,9 @@ defmodule Haj.Events.EventRegistration do
     belongs_to :user, Haj.Accounts.User
     belongs_to :event, Haj.Events.Event
 
-    has_one :form_response, Haj.Forms.Response
+    field :attending, :boolean, default: false
+
+    belongs_to :response, Haj.Forms.Response
 
     timestamps()
   end
@@ -15,7 +17,7 @@ defmodule Haj.Events.EventRegistration do
   @doc false
   def changeset(event_registration, attrs) do
     event_registration
-    |> cast(attrs, [:ticket_type_id, :user_id, :event_id])
-    |> validate_required([:ticket_type_id, :user_id])
+    |> cast(attrs, [:ticket_type_id, :user_id, :event_id, :response_id, :attending])
+    |> validate_required([:user_id, :event_id])
   end
 end

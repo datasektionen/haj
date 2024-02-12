@@ -314,6 +314,16 @@ defmodule Haj.Forms do
   @doc """
   Retruns a changeset for a form submission
   """
+  def get_form_changeset!(form_id, %Response{} = response) do
+    attrs =
+      response.question_responses
+      |> Enum.reduce(%{}, fn qr, acc ->
+        Map.put(acc, String.to_atom("#{qr.question_id}"), qr.answer || qr.multi_answer)
+      end)
+
+    get_form_changeset!(form_id, attrs)
+  end
+
   def get_form_changeset!(form_id, attrs) do
     query =
       from f in Form,
@@ -475,6 +485,10 @@ defmodule Haj.Forms do
     QuestionResponse.changeset(question_response, attrs)
   end
 
+  @doc """
+  Submits a form response for a user and form. Creates a response, as well as
+  all the question responses for the form.
+  """
   def submit_form(form_id, user_id, attrs) do
     changeset = get_form_changeset!(form_id, attrs)
 
@@ -491,7 +505,11 @@ defmodule Haj.Forms do
           end)
 
         multi =
-          Multi.new() |> Multi.insert(:response, %Response{user_id: user_id, form_id: form_id})
+          Multi.new()
+          |> Multi.insert(:response, %Response{
+            user_id: user_id,
+            form_id: form_id
+          })
 
         {_n, multi} =
           Enum.reduce(question_responses, {0, multi}, fn qr, {n, m} ->
@@ -506,5 +524,58 @@ defmodule Haj.Forms do
       {:error, changeset} ->
         {:error, changeset}
     end
+  end
+
+  @doc """
+  Updates a form response for a form. Modifies the response, as well as
+  replaces all the question responses with new answers.
+  """
+  def update_form_response(form_id, form_response, attrs) do
+    changeset = get_form_changeset!(form_id, attrs)
+
+    case changeset |> Ecto.Changeset.apply_action(:create) do
+      {:ok, data} ->
+        question_responses =
+          Enum.map(data, fn {key, val} ->
+            id = Atom.to_string(key) |> String.to_integer()
+
+            case val do
+              ans when is_list(ans) -> %QuestionResponse{question_id: id, multi_answer: ans}
+              ans -> %QuestionResponse{question_id: id, answer: ans}
+            end
+          end)
+
+        multi =
+          Multi.new()
+          |> Multi.delete_all(
+            :question_responses,
+            from(qr in QuestionResponse, where: qr.response_id == ^form_response.id)
+          )
+
+        {_n, multi} =
+          Enum.reduce(question_responses, {0, multi}, fn qr, {n, m} ->
+            {n + 1,
+             Multi.insert(m, n, fn _ ->
+               %QuestionResponse{qr | response_id: form_response.id}
+             end)}
+          end)
+
+        Repo.transaction(multi)
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
+
+  @doc """
+  Returns a form response for a user and form, if one exists.
+  """
+  def get_response_for_user(form_id, user_id) do
+    query =
+      from r in Response,
+        where: r.form_id == ^form_id and r.user_id == ^user_id,
+        preload: [question_responses: []]
+
+    Repo.one(query)
   end
 end
