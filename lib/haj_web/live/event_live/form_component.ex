@@ -70,15 +70,6 @@ defmodule HajWeb.EventLive.FormComponent do
   @impl true
   def handle_event(
         "validate",
-        %{"attending" => attending},
-        socket
-      ) do
-    {:noreply, assign(socket, attending: attending)}
-  end
-
-  @impl true
-  def handle_event(
-        "validate",
         %{"form_response" => response, "attending" => attending},
         socket
       ) do
@@ -92,10 +83,20 @@ defmodule HajWeb.EventLive.FormComponent do
   end
 
   @impl true
+  def handle_event(
+        "validate",
+        %{"attending" => attending},
+        socket
+      ) do
+    {:noreply, assign(socket, attending: attending)}
+  end
+
+  @impl true
   def handle_event("save", %{"form_response" => response, "attending" => attending}, socket) do
     response = flatten_response(response)
 
-    {:noreply, assign(socket, attending: attending) |> save(socket.assigns.registration)}
+    {:noreply,
+     assign(socket, attending: attending) |> save(socket.assigns.registration, response)}
   end
 
   @impl true
@@ -111,7 +112,7 @@ defmodule HajWeb.EventLive.FormComponent do
            Events.create_event_registration(%{
              event_id: event.id,
              user_id: user.id,
-             form_response_id: form_response[:response].id,
+             response_id: form_response[:response].id,
              attending: attending
            }) do
       push_flash(:info, "Du är nu anmäld!")

@@ -74,6 +74,9 @@
           <%= group.name %>
         </div>
       </div>
+      <div :if={length(@group_counts) == 0} class="pt-2">
+        Inga svar
+      </div>
     </div>
   </div>
 
@@ -88,6 +91,9 @@
           <%= class %>
         </div>
       </div>
+      <div :if={length(@class_counts) == 0} class="pt-2">
+        Inga svar
+      </div>
     </div>
   </div>
 
@@ -95,17 +101,23 @@
     <div :for={question <- @event.form.questions} class="rounded-lg border p-4">
       <span class="font-bold"><%= question.name %></span>
       <div class="mt-2 flex max-h-64 flex-col divide-y overflow-y-auto border-t">
-        <div
-          :for={{answer, count} <- @response_counts[question.id]}
-          class="flex flex-row gap-2 py-2 last:pb-0"
-        >
-          <div class="min-w-6 flex items-center justify-center rounded-full bg-gray-100 font-medium">
-            <%= count %>
+        <%= if @response_counts[question.id] do %>
+          <div
+            :for={{answer, count} <- @response_counts[question.id]}
+            class="flex flex-row gap-2 py-2 last:pb-0"
+          >
+            <div class="min-w-6 flex items-center justify-center rounded-full bg-gray-100 font-medium">
+              <%= count %>
+            </div>
+            <div>
+              <%= answer %>
+            </div>
           </div>
-          <div>
-            <%= answer %>
+        <% else %>
+          <div class="pt-2">
+            Inga svar
           </div>
-        </div>
+        <% end %>
       </div>
     </div>
   <% end %>

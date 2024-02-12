@@ -364,8 +364,6 @@ defmodule Haj.Events do
       from r in EventRegistration,
         where: r.event_id == ^event_id and r.user_id == ^user_id
 
-    # preload: [form_response: [question_responses: []]]
-
     Repo.one(query)
   end
 
