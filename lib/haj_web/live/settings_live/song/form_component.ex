@@ -10,7 +10,7 @@ defmodule HajWeb.SettingsLive.Song.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage song records in your database.</:subtitle>
+        <:subtitle>Använd detta formulär för att redigera sånger i databasen.</:subtitle>
       </.header>
 
       <.simple_form

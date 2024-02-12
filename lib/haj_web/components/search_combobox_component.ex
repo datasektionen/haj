@@ -15,7 +15,6 @@ defmodule HajWeb.Components.SearchComboboxComponent do
       socket.assigns.search_fn.(query)
       |> Enum.take(5)
 
-    IO.inspect(results)
     {:noreply, assign(socket, results: results, query: query)}
   end
 

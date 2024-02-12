@@ -13,7 +13,7 @@ defmodule HajWeb.UserLive do
 
   def render(assigns) do
     ~H"""
-    <div class="pt-4">
+    <div class="">
       <div class="flex flex-row items-center gap-4 pb-4">
         <img
           src={"https://#{Application.get_env(:haj, :zfinger_url)}/user/#{@user.username}/image/200"}

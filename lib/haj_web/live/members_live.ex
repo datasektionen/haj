@@ -53,7 +53,7 @@ defmodule HajWeb.MembersLive do
       phx-no-submit
       autocomplete={:off}
       onkeydown="return event.key != 'Enter';"
-      class="flex flex-col gap-4 pt-4 sm:flex-row sm:items-center"
+      class="flex flex-col gap-4 sm:flex-row sm:items-center"
     >
       <div class="mr-auto flex w-full flex-row items-baseline justify-between sm:flex-col">
         <span class="text-2xl font-bold">Medlemmar</span>

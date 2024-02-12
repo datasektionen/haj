@@ -78,7 +78,9 @@ defmodule HajWeb.Components do
     """
   end
 
-  ## Form component
+  @doc """
+  A generic form component that works with Changesets generated from Haj.Form.
+  """
 
   attr :question, :any, required: true
   attr :field, :any, required: true
@@ -91,16 +93,22 @@ defmodule HajWeb.Components do
 
   def form_input(%{question: %{type: :multi_select}} = assigns) do
     ~H"""
-    <label class="block text-sm font-semibold leading-6 text-zinc-800">
-      <%= @question.name %>
-    </label>
-    <div :for={option <- @question.options}>
-      <.input
-        name={"#{@field.name}[#{option}]"}
-        type="checkbox"
-        value={option in Ecto.Changeset.get_field(assigns.field.form.source, assigns.field.field, [])}
-        label={option}
-      />
+    <div>
+      <label class="block text-sm font-semibold leading-6 text-zinc-800">
+        <%= @question.name %>
+      </label>
+      <div class="mt-2 flex flex-col gap-1">
+        <div :for={option <- @question.options}>
+          <.input
+            name={"#{@field.name}[#{option}]"}
+            type="checkbox"
+            value={
+              option in Ecto.Changeset.get_field(assigns.field.form.source, assigns.field.field, [])
+            }
+            label={option}
+          />
+        </div>
+      </div>
     </div>
     """
   end
@@ -108,6 +116,23 @@ defmodule HajWeb.Components do
   def form_input(assigns) do
     ~H"""
     <.input field={@field} type="text" label={@question.name} />
+    """
+  end
+
+  @doc """
+  A generic stats card component with a title and value.
+  """
+  attr :title, :string, required: true
+  attr :value, :string, required: true
+
+  def stats_card(assigns) do
+    ~H"""
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="truncate text-sm font-medium text-gray-500"><%= @title %></dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+        <%= @value %>
+      </dd>
+    </div>
     """
   end
 end

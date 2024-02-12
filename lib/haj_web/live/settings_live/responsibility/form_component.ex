@@ -9,7 +9,7 @@ defmodule HajWeb.SettingsLive.Responsibility.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Ändra datan kring ett ansvar i databasen..</:subtitle>
+        <:subtitle>Ändra datan kring ett ansvar i databasen.</:subtitle>
       </.header>
 
       <.simple_form

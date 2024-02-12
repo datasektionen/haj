@@ -1,28 +1,13 @@
 <div>
-  <div class="mr-auto flex w-full flex-row items-baseline justify-between pt-4 sm:flex-col">
+  <div class="mr-auto flex w-full flex-row items-baseline justify-between sm:flex-col">
     <span class="text-2xl font-bold">Ansökningar</span>
   </div>
 
   <div class="flex flex-col">
     <dl class="mt-5 hidden grid-cols-3 gap-5 sm:grid">
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-        <dt class="truncate text-sm font-medium text-gray-500">Antal ansökningar</dt>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-          <%= @stats.apps %>
-        </dd>
-      </div>
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-        <dt class="truncate text-sm font-medium text-gray-500">Antal gruppsökningar</dt>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-          <%= @stats.group_apps %>
-        </dd>
-      </div>
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-        <dt class="truncate text-sm font-medium text-gray-500">Populäraste grupp</dt>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-          <%= @stats.most_popular_group %>
-        </dd>
-      </div>
+      <.stats_card title="Antal ansökningar" value={@stats.apps} />
+      <.stats_card title="Antal gruppsökningar" value={@stats.group_apps} />
+      <.stats_card title="Populäraste grupp" value={@stats.most_popular_group} />
     </dl>
 
     <.form :let={_f} for={%{}} as={:filter} phx-change="filter" class="mt-2 flex gap-2">

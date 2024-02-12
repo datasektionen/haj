@@ -1,8 +1,8 @@
 <.header>
-  Listing Songs
+  Sånger
   <:actions>
     <.link patch={~p"/settings/songs/new"}>
-      <.button>New Song</.button>
+      <.button>Ny sång</.button>
     </.link>
   </:actions>
 </.header>
@@ -18,9 +18,9 @@
   <:col :let={{_id, song}} label="Spex"><%= song.show.year.year %></:col>
   <:action :let={{_id, song}}>
     <div class="sr-only">
-      <.link navigate={~p"/settings/songs/#{song}"}>Show</.link>
+      <.link navigate={~p"/settings/songs/#{song}"}>Visa</.link>
     </div>
-    <.link patch={~p"/settings/songs/#{song}/edit"}>Edit</.link>
+    <.link patch={~p"/settings/songs/#{song}/edit"}>Redigera</.link>
   </:action>
   <:action :let={{id, song}}>
     <.link

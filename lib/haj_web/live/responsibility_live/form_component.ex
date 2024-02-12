@@ -9,7 +9,7 @@ defmodule HajWeb.ResponsibilityLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage responsibility records in your database.</:subtitle>
+        <:subtitle>Använd detta formulär för att redigera ansvar i databasen.</:subtitle>
       </.header>
 
       <.simple_form

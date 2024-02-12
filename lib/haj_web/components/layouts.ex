@@ -114,6 +114,12 @@ defmodule HajWeb.Layouts do
         expanded={@expanded_tab == :settings}
       >
         <:sub_link
+          navigate={~p"/settings/users"}
+          title="Användare"
+          active={@active_tab == {:setting, :users}}
+        />
+
+        <:sub_link
           navigate={~p"/settings/shows"}
           title="Spex"
           active={@active_tab == {:setting, :shows}}
@@ -126,6 +132,11 @@ defmodule HajWeb.Layouts do
         />
 
         <:sub_link
+          navigate={~p"/settings/responsibilities"}
+          title="Ansvar"
+          active={@active_tab == {:setting, :responsibilities}}
+        />
+        <:sub_link
           navigate={~p"/settings/foods"}
           title="Mat"
           active={@active_tab == {:setting, :foods}}
@@ -134,25 +145,19 @@ defmodule HajWeb.Layouts do
         <:sub_link
           navigate={~p"/settings/events"}
           title="Event"
-          active={@active_tab == {:setting, :event}}
+          active={@active_tab == {:setting, :events}}
         />
 
         <:sub_link
-          navigate={~p"/settings/users"}
-          title="Användare"
-          active={@active_tab == {:setting, :users}}
-        />
-
-        <:sub_link
-          navigate={~p"/settings/responsibilities"}
-          title="Ansvar"
-          active={@active_tab == {:setting, :responsibilities}}
+          navigate={~p"/settings/forms"}
+          title="Formulär"
+          active={@active_tab == {:setting, :forms}}
         />
 
         <:sub_link
           navigate={~p"/settings/songs"}
           title="Sånger"
-          active={@active_tab == {:setting, :song}}
+          active={@active_tab == {:setting, :songs}}
         />
       </.nav_link_group>
     </div>
