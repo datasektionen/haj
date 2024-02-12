@@ -1,12 +1,18 @@
 <div>
-  <div class="mr-auto flex w-full flex-row items-baseline justify-between pt-4 sm:flex-col">
+  <div class="mr-auto flex w-full flex-row items-baseline justify-between sm:flex-col">
     <span class="text-2xl font-bold">Grupper</span>
     <span class="text-sm text-gray-600">Visar <%= length(@groups) %></span>
   </div>
 
   <div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    <%= for group <- @groups do %>
-      <.group_card show_group={group} members={Enum.count(group.group_memberships)} />
-    <% end %>
+    <.generic_card :for={sg <- @groups} navigate={~p"/group/#{sg.id}"}>
+      <:title>
+        <%= sg.group.name %>
+      </:title>
+      <:subtitle class="text-gray-500">
+        <%= Enum.count(sg.group_memberships) %> medlemmar
+      </:subtitle>
+      <%= chefer(sg) %>
+    </.generic_card>
   </div>
 </div>

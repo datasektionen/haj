@@ -3,7 +3,7 @@ defmodule Haj.Repo.Migrations.AddGroupPermission do
 
   def change do
     alter table(:groups) do
-      add(:permission_group, :string)
+      add :permission_group, :string
     end
   end
 end

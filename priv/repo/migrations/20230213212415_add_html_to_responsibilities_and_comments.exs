@@ -3,11 +3,11 @@ defmodule Haj.Repo.Migrations.AddHtmlToResponsibilitiesAndComments do
 
   def change do
     alter table(:responsibilities) do
-      add(:description_html, :text)
+      add :description_html, :text
     end
 
     alter table(:responsibility_comments) do
-      add(:text_html, :text)
+      add :text_html, :text
     end
   end
 end

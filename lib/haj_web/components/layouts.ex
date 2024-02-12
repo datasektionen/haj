@@ -2,7 +2,7 @@ defmodule HajWeb.Layouts do
   use HajWeb, :html
   require Logger
 
-  embed_templates "layouts/*"
+  embed_templates("layouts/*")
 
   alias Haj.Policy
   alias HajWeb.Endpoint
@@ -37,6 +37,13 @@ defmodule HajWeb.Layouts do
           active={@active_tab == {:group, g.show_group_id}}
         />
       </.nav_link_group>
+
+      <.nav_link
+        navigate={~p"/events"}
+        icon_name={:calendar_days}
+        title="Events"
+        active={@active_tab == :events}
+      />
 
       <.nav_link_group
         :if={Policy.authorize?(:responsibility_read, @current_user)}
@@ -107,6 +114,12 @@ defmodule HajWeb.Layouts do
         expanded={@expanded_tab == :settings}
       >
         <:sub_link
+          navigate={~p"/settings/users"}
+          title="Användare"
+          active={@active_tab == {:setting, :users}}
+        />
+
+        <:sub_link
           navigate={~p"/settings/shows"}
           title="Spex"
           active={@active_tab == {:setting, :shows}}
@@ -119,27 +132,32 @@ defmodule HajWeb.Layouts do
         />
 
         <:sub_link
+          navigate={~p"/settings/responsibilities"}
+          title="Ansvar"
+          active={@active_tab == {:setting, :responsibilities}}
+        />
+        <:sub_link
           navigate={~p"/settings/foods"}
           title="Mat"
           active={@active_tab == {:setting, :foods}}
         />
 
         <:sub_link
-          navigate={~p"/settings/users"}
-          title="Användare"
-          active={@active_tab == {:setting, :users}}
+          navigate={~p"/settings/events"}
+          title="Event"
+          active={@active_tab == {:setting, :events}}
         />
 
         <:sub_link
-          navigate={~p"/settings/responsibilities"}
-          title="Ansvar"
-          active={@active_tab == {:setting, :responsibilities}}
+          navigate={~p"/settings/forms"}
+          title="Formulär"
+          active={@active_tab == {:setting, :forms}}
         />
 
         <:sub_link
           navigate={~p"/settings/songs"}
           title="Sånger"
-          active={@active_tab == {:setting, :song}}
+          active={@active_tab == {:setting, :songs}}
         />
       </.nav_link_group>
     </div>

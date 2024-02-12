@@ -99,6 +99,18 @@ defmodule HajWeb.Router do
       ## Shows
       live "/shows", ShowLive.Index, :index
       live "/shows/:show_id", ShowLive.Show, :index
+
+      ## Events
+      live "/events", EventLive.Index, :index
+      live "/events/:id", EventLive.Show, :index
+      live "/events/:id/register", EventLive.Show, :register
+
+      live "/events/:id/registrations", EventLive.Registrations, :users
+      live "/events/:id/registrations/users", EventLive.Registrations, :users
+      live "/events/:id/registrations/questions", EventLive.Registrations, :questions
+      live "/events/:id/registrations/food", EventLive.Registrations, :food
+
+      live "/forms/:id", FormLive.Index, :index
     end
 
     # Admin only!
@@ -113,6 +125,10 @@ defmodule HajWeb.Router do
         live "/shows", SettingsLive.Show.Index, :index
         live "/shows/new", SettingsLive.Show.Index, :new
         live "/shows/:id/edit", SettingsLive.Show.Index, :edit
+
+        live "/events", SettingsLive.Event.Index, :index
+        live "/events/new", SettingsLive.Event.Index, :new
+        live "/events/:id/edit", SettingsLive.Event.Index, :edit
 
         live "/shows/:id", SettingsLive.Show.Show, :show
         live "/shows/:id/show/edit", SettingsLive.Show.Show, :edit
@@ -161,6 +177,13 @@ defmodule HajWeb.Router do
 
         live "/songs/:id", SettingsLive.Song.Show, :show
         live "/songs/:id/show/edit", SettingsLive.Song.Show, :edit
+
+        live "/forms", SettingsLive.Form.Index, :index
+        live "/forms/new", SettingsLive.Form.Index, :new
+        live "/forms/:id/edit", SettingsLive.Form.Index, :edit
+
+        live "/forms/:id", SettingsLive.Form.Show, :show
+        live "/forms/:id/show/edit", SettingsLive.Form.Show, :edit
       end
     end
   end

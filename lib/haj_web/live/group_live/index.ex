@@ -10,25 +10,6 @@ defmodule HajWeb.GroupLive.Index do
     {:ok, assign(socket, page_title: "Grupper", groups: groups)}
   end
 
-  defp group_card(assigns) do
-    ~H"""
-    <.link
-      navigate={~p"/group/#{@show_group.id}"}
-      class="flex flex-col gap-1 rounded-lg border px-4 py-4 hover:bg-gray-50 sm:gap-1.5"
-    >
-      <div class="text-burgandy-500 text-lg font-bold">
-        <%= @show_group.group.name %>
-      </div>
-      <div class="text-gray-500">
-        <%= @members %> medlemmar
-      </div>
-      <div>
-        <%= chefer(@show_group) %>
-      </div>
-    </.link>
-    """
-  end
-
   defp chefer(group) do
     chefer =
       Enum.filter(group.group_memberships, fn %{role: role} -> role == :chef end)

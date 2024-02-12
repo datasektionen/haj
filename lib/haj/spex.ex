@@ -513,10 +513,12 @@ defmodule Haj.Spex do
     query =
       from gm in GroupMembership,
         join: sg in assoc(gm, :show_group),
+        join: g in assoc(sg, :group),
         where: sg.show_id == ^show_id,
-        order_by: sg.id
+        order_by: sg.id,
+        preload: [show_group: {sg, group: g}]
 
-    Repo.preload(users, group_memberships: {query, [show_group: [group: []]]})
+    Repo.preload(users, group_memberships: query)
   end
 
   def get_show_groups_for_user(userid) do

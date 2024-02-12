@@ -62,7 +62,7 @@ defmodule HajWeb.UserSettingsLive do
       for={@changeset}
       phx-change="validate"
       phx-submit="save"
-      class="grid grid-cols-6 gap-4 pt-2 md:gap-6"
+      class="grid grid-cols-6 gap-4 md:gap-6"
     >
       <div class="col-span-6">
         <h2 class="text-2xl font-bold">Dina uppgifter</h2>

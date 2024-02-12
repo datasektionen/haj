@@ -19,15 +19,15 @@ defmodule Haj.Policy do
     end
 
     action :admin do
-      allow current_group_member: :grafiq
-
       allow role: :admin
+
+      allow current_group_member: :grafiq
     end
 
     action :list_orders do
-      allow current_group_member: :grafiq
-
       allow role: :admin
+
+      allow current_group_member: :grafiq
     end
   end
 
@@ -100,6 +100,13 @@ defmodule Haj.Policy do
     action :approve do
       allow :is_chef
       allow role: :admin
+    end
+  end
+
+  object :event_registrations do
+    action :read do
+      allow role: :admin
+      allow current_group_member: :chefsgruppen
     end
   end
 end
