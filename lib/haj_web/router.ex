@@ -168,6 +168,8 @@ defmodule HajWeb.Router do
   scope "/", HajWeb do
     pipe_through [:browser, :require_authenticated_user, :require_spex_access]
 
+    post "/show/:id/csv", GroupController, :csv
+
     post "/group/:show_group_id/csv", GroupController, :csv
     post "/group/:show_group_id/vcard", GroupController, :vcard
 

@@ -56,6 +56,12 @@ defmodule Haj.Policy do
     end
   end
 
+  object :show do
+    action :export do
+      allow role: :admin
+    end
+  end
+
   object :show_group do
     action :edit do
       allow :is_chef

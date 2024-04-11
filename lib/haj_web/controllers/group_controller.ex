@@ -2,6 +2,24 @@ defmodule HajWeb.GroupController do
   use HajWeb, :controller
   alias Haj.Policy
 
+  def csv(conn, %{"id" => show_id}) do
+    users = Haj.Spex.list_members_for_show(show_id)
+
+    if Policy.authorize?(:show_export, conn.assigns.current_user) do
+      csv_data = to_csv(users)
+
+      conn
+      |> put_resp_content_type("text/csv")
+      |> put_resp_header("content-disposition", "attachment; filename=\"medlemmar.csv\"")
+      |> put_root_layout(false)
+      |> send_resp(200, csv_data)
+    else
+      conn
+      |> put_flash(:error, "Du har inte behörighet")
+      |> redirect(to: ~p"/dashboard")
+    end
+  end
+
   def csv(conn, %{"show_group_id" => show_group_id}) do
     show_group = Haj.Spex.get_show_group!(show_group_id)
     users = Enum.map(show_group.group_memberships, fn %{user: user} -> user end)
