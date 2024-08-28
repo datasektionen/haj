@@ -31,8 +31,7 @@ defmodule HajWeb.DashboardLive.Index do
      )}
   end
 
-  attr :navigate, :any, required: true
-  slot :inner_block, required: true
+  attr :order_item, Haj.Merch.MerchOrderItem
 
   defp merch_card(assigns) do
     ~H"""

@@ -56,7 +56,11 @@ defmodule HajWeb.Components do
   """
   attr :navigate, :any, required: true
   slot :title, required: true
-  slot :subtitle
+
+  slot :subtitle do
+    attr :class, :string
+  end
+
   slot :inner_block, required: true
 
   def generic_card(assigns) do

@@ -49,7 +49,7 @@ defmodule HajWeb.EventLive.Registrations do
       Enum.filter(socket.assigns.registrations, & &1.attending)
       |> Enum.flat_map(& &1.user.foods)
       |> Enum.group_by(& &1.id, & &1.name)
-      |> Enum.flat_map(fn {key, values} -> Enum.frequencies(values) end)
+      |> Enum.flat_map(fn {_key, values} -> Enum.frequencies(values) end)
       |> Enum.sort_by(fn c -> c end, &>=/2)
 
     special_users =
