@@ -5,8 +5,12 @@ defmodule HajWeb.Components.SearchComboboxComponent do
   def update(assigns, socket) do
     chosen = Map.get(assigns, :chosen, nil)
     placeholder = Map.get(assigns, :placeholder, "")
+    all_fn = Map.get(assigns, :all_fn, fn -> [] end)
 
-    {:ok, socket |> assign(assigns) |> assign(query: placeholder, results: [], chosen: chosen)}
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign(query: placeholder, results: [], chosen: chosen, all_fn: all_fn)}
   end
 
   @impl true
@@ -16,6 +20,13 @@ defmodule HajWeb.Components.SearchComboboxComponent do
       |> Enum.take(5)
 
     {:noreply, assign(socket, results: results, query: query)}
+  end
+
+  @impl true
+  def handle_event("show_all", _query, socket) do
+    results = socket.assigns.all_fn.()
+
+    {:noreply, assign(socket, results: results)}
   end
 
   @impl true
@@ -54,6 +65,8 @@ defmodule HajWeb.Components.SearchComboboxComponent do
           <button
             type="button"
             class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none"
+            phx-click="show_all"
+            phx-target={@myself}
           >
             <svg
               class="h-5 w-5 text-gray-400"

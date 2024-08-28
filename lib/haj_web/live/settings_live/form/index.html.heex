@@ -16,7 +16,7 @@
   <:action :let={{id, form}}>
     <.link
       phx-click={JS.push("delete", value: %{id: form.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?"
+      data-confirm="Är du säker, alla formulärsvar kommer försvinna!?"
     >
       Radera
     </.link>

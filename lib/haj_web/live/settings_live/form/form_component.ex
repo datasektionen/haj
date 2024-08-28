@@ -182,18 +182,15 @@ defmodule HajWeb.SettingsLive.Form.FormComponent do
   end
 
   defp merge_options(form_params) do
-    if form_params["questions"] do
-      Map.update!(
-        form_params,
-        "questions",
-        fn qs ->
-          Enum.map(qs, &replace_options/1)
-          |> Enum.into(%{})
-        end
-      )
-    else
-      form_params
-    end
+    Map.update(
+      form_params,
+      "questions",
+      %{},
+      fn qs ->
+        Enum.map(qs, &replace_options/1)
+        |> Enum.into(%{})
+      end
+    )
   end
 
   defp replace_options({index, question}) do

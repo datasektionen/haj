@@ -40,8 +40,14 @@ defmodule HajWeb.SettingsLive.Form.Index do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     form = Forms.get_form!(id)
-    {:ok, _} = Forms.delete_form(form)
 
-    {:noreply, stream_delete(socket, :forms, form)}
+    case Forms.delete_form(form) do
+      {:ok, _} ->
+        {:noreply, stream_delete(socket, :forms, form)}
+
+      {:error, _} ->
+        put_flash(socket, :error, "Kunde inte ta bort formuläret")
+        {:noreply, socket}
+    end
   end
 end

@@ -33,12 +33,18 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
           <.input field={@form[:event_date]} type="datetime-local" label="Datum" />
           <.input field={@form[:purchase_deadline]} type="datetime-local" label="Köpdeadline" />
           <.input field={@form[:image]} type="text" label="Bild" />
-          <.input field={@form[:has_tickets]} type="checkbox" label="Har biljetter" />
+          <.input
+            field={@form[:has_tickets]}
+            type="checkbox"
+            label="Har biljetter (don't use, experimental)"
+            disabled
+          />
 
           <.live_component
             id="search-component"
             module={HajWeb.Components.SearchComboboxComponent}
             search_fn={&Haj.Forms.search_forms/1}
+            all_fn={&Haj.Forms.list_forms/0}
             field={@form[:form_id]}
             label="Formulär"
             chosen={@form[:form_id].value}
