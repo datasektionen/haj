@@ -4,6 +4,7 @@ defmodule Haj.Policy do
   object :haj do
     action :access do
       allow :spex_member
+      allow role: :admin
     end
 
     action :admin do
