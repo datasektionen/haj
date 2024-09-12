@@ -92,6 +92,13 @@ defmodule HajWeb.Router do
       live "/applications/:id", ApplicationsLive.Show, :show
       live "/applications/:id/confirm", ApplicationsLive.Show, :approve
 
+      ## Song administration
+      live "/songs/edit", SongLive.Edit.Index, :index
+      live "/songs/edit/new", SongLive.Edit.Index, :new
+      live "/songs/edit/:id/edit", SongLive.Edit.Index, :edit
+      live "/songs/edit/:id", SongLive.Edit.Show, :show
+      live "/songs/edit/:id/show/edit", SongLive.Edit.Show, :edit
+
       ## Songs
       live "/songs", SongLive.Index, :index
       live "/songs/:id", SongLive.Show, :show
@@ -154,13 +161,6 @@ defmodule HajWeb.Router do
              :new_responsible
 
         live "/responsibilities/:id/show/edit", SettingsLive.Responsibility.Show, :edit
-
-        live "/songs", SettingsLive.Song.Index, :index
-        live "/songs/new", SettingsLive.Song.Index, :new
-        live "/songs/:id/edit", SettingsLive.Song.Index, :edit
-
-        live "/songs/:id", SettingsLive.Song.Show, :show
-        live "/songs/:id/show/edit", SettingsLive.Song.Show, :edit
       end
     end
   end

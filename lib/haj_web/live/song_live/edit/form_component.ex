@@ -1,4 +1,4 @@
-defmodule HajWeb.SettingsLive.Song.FormComponent do
+defmodule HajWeb.SongLive.Edit.FormComponent do
   use HajWeb, :live_component
 
   alias Haj.Archive

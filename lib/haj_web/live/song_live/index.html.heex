@@ -1,8 +1,20 @@
 <div class="mr-auto flex w-full flex-col items-baseline justify-between pt-4">
-  <span class="text-2xl font-bold">Sångarkiv</span>
-  <span class="text-sm text-gray-600">
-    Här finns alla sånger som har gjorts i spexet genom åren. Kika och lyssna in!
-  </span>
+  <div class="flex w-full flex-row items-center justify-between">
+    <div class="flex flex-col">
+      <span class="text-2xl font-bold">Sångarkiv</span>
+      <span class="text-sm text-gray-600">
+        Här finns alla sånger som har gjorts i spexet genom åren. Kika och lyssna in!
+      </span>
+    </div>
+
+    <.link
+      :if={@authorized_admin}
+      navigate={~p"/songs/edit"}
+      class="text-md bg-burgandy-500 block rounded-md px-3 py-1 text-sm text-white hover:bg-burgandy-400"
+    >
+      Administrera
+    </.link>
+  </div>
   <.form id="show-form" as={:show} for={%{}} phx-change="select_show" class="w-full pt-2">
     <.input name="show" label="Välj spex" type="select" value={@show.id} options={@show_options} />
   </.form>

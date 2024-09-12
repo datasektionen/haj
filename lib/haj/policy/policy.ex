@@ -109,4 +109,11 @@ defmodule Haj.Policy do
       allow role: :admin
     end
   end
+
+  object :songs do
+    action :edit do
+      allow role: :admin
+      allow group_member: :music
+    end
+  end
 end
