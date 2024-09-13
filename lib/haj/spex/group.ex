@@ -2,7 +2,7 @@ defmodule Haj.Spex.Group do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @group_permissions [:chefsgruppen, :grafiq]
+  @group_permissions [:chefsgruppen, :grafiq, :music]
 
   schema "groups" do
     field :name, :string
