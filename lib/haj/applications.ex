@@ -248,7 +248,7 @@ defmodule Haj.Applications do
     är du välkommen att kontakta Direqtionen på <a href="mailto:direqtionen@metaspexet.se">direqtionen@metaspexet.se</a>.
     <br/><br/>
     Hälsningar,<br/><br/>
-    Chefsgruppen för METAspexet 2024
+    Chefsgruppen för METAspexet #{spex.year.year}
     """
   end
 

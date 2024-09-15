@@ -7,6 +7,7 @@ defmodule Haj.Spex do
   alias Haj.Repo
 
   alias Haj.Spex.Show
+  alias Haj.Spex.GroupMembership
 
   @doc """
   Returns the list of shows.
@@ -197,8 +198,6 @@ defmodule Haj.Spex do
   def change_group(%Group{} = group, attrs \\ %{}) do
     Group.changeset(group, attrs)
   end
-
-  alias Haj.Spex.GroupMembership
 
   def member_of_spex?(show, user) do
     query =
