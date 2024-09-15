@@ -41,8 +41,7 @@ defmodule HajWeb.ApplyLive.Groups do
         groups =
           Spex.get_show_groups_for_show(current_spex.id)
           |> Enum.filter(fn %{application_open: o} -> o end)
-          # Temp manus fix, should be removed
-          |> Enum.sort_by(fn %{group: %{name: n}} -> n == "Manus" end, :desc)
+
 
         socket =
           if pre_filled? do
