@@ -86,7 +86,7 @@ defmodule HajWeb.UserSettingsLive do
       </div>
 
       <div class="col-span-6 sm:col-span-3">
-        <.form_text_input for={f} input={:class} text="Årskurs (eg D-20 eller Media-21)" />
+        <.form_text_input for={f} input={:class} text="Årskurs (eg D-20 eller Me-21)" />
       </div>
 
       <div class="col-span-6 sm:col-span-3">
