@@ -12,7 +12,7 @@ defmodule HajWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import HajWeb.Gettext
+  use Gettext, backend: HajWeb.Gettext
 
   @doc """
   Renders a modal.
