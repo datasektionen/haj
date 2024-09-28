@@ -49,4 +49,3 @@ config :logger, level: :info
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
-config :haj, HajWeb.Endpoint, force_ssl: [hsts: true]
