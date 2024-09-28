@@ -6,7 +6,10 @@ defmodule HajWeb.UserLive do
     user = Accounts.get_user_by_username!(username) |> Accounts.preload(:foods)
 
     groups = Haj.Spex.get_show_groups_for_user(user.id)
-    groups_by_year = Enum.group_by(groups, fn %{show: show} -> show.year end)
+
+    groups_by_year =
+      Enum.sort_by(groups, &{&1.show.year, &1.group.name})
+      |> Enum.group_by(fn %{show: show} -> show.year end)
 
     {:ok, assign(socket, page_title: full_name(user), user: user, groups: groups_by_year)}
   end

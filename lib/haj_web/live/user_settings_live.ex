@@ -47,7 +47,7 @@ defmodule HajWeb.UserSettingsLive do
         {:noreply,
          socket
          |> put_flash(:info, "Ändringen sparades.")
-         |> push_redirect(to: Routes.user_path(Endpoint, :index, user.username))}
+         |> push_navigate(to: Routes.user_path(Endpoint, :index, user.username))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         socket = socket |> put_flash(:error, "Något gick fel, kolla att allt är ifyllt korrekt.")
