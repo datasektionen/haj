@@ -570,10 +570,12 @@ defmodule Haj.Forms do
   @doc """
   Returns a form response for a user and form, if one exists.
   """
-  def get_response_for_user(form_id, user_id) do
+  def get_event_response_for_user(event_id, user_id) do
     query =
       from r in Response,
-        where: r.form_id == ^form_id and r.user_id == ^user_id,
+        join: er in assoc(r, :event_registration),
+        join: e in assoc(er, :event),
+        where: r.user_id == ^user_id and e.id == ^event_id,
         preload: [question_responses: []]
 
     Repo.one(query)

@@ -46,7 +46,7 @@ defmodule HajWeb.EventLive.FormComponent do
     attending = registration && registration.attending && true
 
     if event.form do
-      form_response = Forms.get_response_for_user(event.form_id, user.id)
+      form_response = Forms.get_event_response_for_user(event.id, user.id)
 
       changeset = Forms.get_form_changeset!(event.form_id, form_response || %{})
       form = Forms.get_form!(event.form_id)
@@ -128,7 +128,7 @@ defmodule HajWeb.EventLive.FormComponent do
     %{current_user: user, attending: attending} = socket.assigns
 
     with previous when not is_nil(previous) <-
-           Forms.get_response_for_user(socket.assigns.form.id, user.id),
+           Forms.get_event_response_for_user(socket.assigns.registration.event_id, user.id),
          {:ok, _} <-
            Forms.update_form_response(socket.assigns.form.id, previous, response),
          {:ok, _} <-
