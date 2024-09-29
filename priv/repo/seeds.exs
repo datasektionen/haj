@@ -127,7 +127,8 @@ Enum.each(applicants, fn user ->
       Repo.delete!(previous)
     end
 
-    application = Repo.insert!(%Haj.Applications.Application{user: user, show: show})
+    application =
+      Repo.insert!(%Haj.Applications.Application{user: user, show: show, status: :submitted})
 
     application_groups = show_groups |> Enum.shuffle() |> Enum.take(2)
 

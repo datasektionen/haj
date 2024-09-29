@@ -62,7 +62,7 @@ defmodule HajWeb.UserAuth do
           end)
 
         case new_socket.assigns.current_user do
-          %Accounts.User{} = user ->
+          %Accounts.User{} ->
             {:cont, new_socket}
 
           _ ->
