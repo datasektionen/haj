@@ -68,7 +68,6 @@ defmodule HajWeb.Nav do
   tab SettingsLive.Food.Index, {:setting, :foods}
   tab SettingsLive.Event.Index, {:setting, :events}
   tab SettingsLive.Form.Index, {:setting, :forms}
-  tab SettingsLive.Song.Index, {:setting, :songs}
 
   tab EventLive.Index, :events
 

@@ -4,6 +4,7 @@ defmodule Haj.Policy do
   object :haj do
     action :access do
       allow :spex_member
+      allow role: :admin
     end
 
     action :admin do
@@ -56,6 +57,12 @@ defmodule Haj.Policy do
     end
   end
 
+  object :show do
+    action :export do
+      allow role: :admin
+    end
+  end
+
   object :show_group do
     action :edit do
       allow :is_chef
@@ -100,6 +107,13 @@ defmodule Haj.Policy do
     action :approve do
       allow :is_chef
       allow role: :admin
+    end
+  end
+
+  object :songs do
+    action :edit do
+      allow role: :admin
+      allow group_member: :music
     end
   end
 

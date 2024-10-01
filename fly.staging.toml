@@ -13,6 +13,8 @@ processes = []
 
 [env]
   PHX_HOST = "betaspexet.se"
+  LOGIN_HOST = "login.datasektionen.se"
+  ZFINGER_URL = "d2imehpdli8mvq.cloudfront.net"
   PORT = "8080"
 
 [experimental]

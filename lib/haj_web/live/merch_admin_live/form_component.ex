@@ -70,7 +70,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
   end
 
   def handle_event("cancel-upload", %{"ref" => ref}, socket) do
-    {:noreply, cancel_upload(socket, socket.assigns.upload_name, ref)}
+    {:noreply, cancel_upload(socket, :image, ref)}
   end
 
   defp save_merch(socket, :edit, merch_params) do
@@ -167,10 +167,12 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
       <%= for entry <- @uploads.image.entries do %>
         <article class="">
           <figure class="h-32 w-48 overflow-hidden rounded-md">
-            <.live_img_preview entry={entry} />
+            <.live_img_preview :if={entry.valid?} entry={entry} />
+            <div :if={!entry.valid?} class="h-full w-full rounded-md border bg-white" />
           </figure>
 
           <button
+            :if={entry.valid?}
             type="button"
             phx-click="cancel-upload"
             phx-value-ref={entry.ref}
@@ -181,7 +183,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
           </button>
 
           <%= for err <- upload_errors(@uploads.image, entry) do %>
-            <p class="alert alert-danger"><%= err %></p>
+            <.error><%= err %></.error>
           <% end %>
         </article>
       <% end %>
@@ -199,7 +201,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
       <% end %>
 
       <div>
-        <label class="input-label">Ladda upp bild</label>
+        <HajWeb.CoreComponents.label>Ladda upp bild</HajWeb.CoreComponents.label>
         <.live_file_input upload={@uploads.image} class="pt-2 text-sm" />
       </div>
     </div>

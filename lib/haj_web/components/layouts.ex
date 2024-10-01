@@ -154,11 +154,6 @@ defmodule HajWeb.Layouts do
           active={@active_tab == {:setting, :forms}}
         />
 
-        <:sub_link
-          navigate={~p"/settings/songs"}
-          title="Sånger"
-          active={@active_tab == {:setting, :songs}}
-        />
       </.nav_link_group>
     </div>
     """

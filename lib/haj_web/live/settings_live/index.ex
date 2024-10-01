@@ -39,9 +39,6 @@ defmodule HajWeb.SettingsLive.Index do
         <.setting_card name="Formulär" navigate={~p"/settings/forms"}>
           Redigera och skapa formulär
         </.setting_card>
-        <.setting_card name="Sånger" navigate={~p"/settings/songs"}>
-          Redigera sånger
-        </.setting_card>
       </div>
     </div>
     """

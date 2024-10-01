@@ -1,8 +1,8 @@
 <.header>
-  Sånger
+  Listing Songs
   <:actions>
-    <.link patch={~p"/settings/songs/new"}>
-      <.button>Ny sång</.button>
+    <.link patch={~p"/songs/edit/new"}>
+      <.button>New Song</.button>
     </.link>
   </:actions>
 </.header>
@@ -10,17 +10,17 @@
 <.table
   id="songs"
   rows={@streams.songs}
-  row_click={fn {_id, song} -> JS.navigate(~p"/settings/songs/#{song}") end}
+  row_click={fn {_id, song} -> JS.navigate(~p"/songs/edit/#{song}") end}
 >
   <:col :let={{_id, song}} label="Name"><%= song.name %></:col>
   <:col :let={{_id, song}} label="Original name"><%= song.original_name %></:col>
   <:col :let={{_id, song}} label="Number"><%= song.number %></:col>
-  <:col :let={{_id, song}} label="Spex"><%= song.show.year.year %></:col>
+  <:col :let={{_id, song}} label="Spex"><%= song.show && song.show.year.year %></:col>
   <:action :let={{_id, song}}>
     <div class="sr-only">
-      <.link navigate={~p"/settings/songs/#{song}"}>Visa</.link>
+      <.link navigate={~p"/songs/edit/#{song}"}>Show</.link>
     </div>
-    <.link patch={~p"/settings/songs/#{song}/edit"}>Redigera</.link>
+    <.link patch={~p"/songs/edit/#{song}/edit"}>Edit</.link>
   </:action>
   <:action :let={{id, song}}>
     <.link
@@ -36,14 +36,14 @@
   :if={@live_action in [:new, :edit]}
   id="song-modal"
   show
-  on_cancel={JS.navigate(~p"/settings/songs")}
+  on_cancel={JS.navigate(~p"/songs/edit")}
 >
   <.live_component
-    module={HajWeb.SettingsLive.Song.FormComponent}
+    module={HajWeb.SongLive.Edit.FormComponent}
     id={@song.id || :new}
     title={@page_title}
     action={@live_action}
     song={@song}
-    patch={~p"/settings/songs"}
+    patch={~p"/songs/edit"}
   />
 </.modal>

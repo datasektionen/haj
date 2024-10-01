@@ -138,7 +138,8 @@ defmodule Haj.Applications do
         join: asg in assoc(a, :application_show_groups),
         where: asg.application_id == a.id,
         where: asg.show_group_id == ^show_group_id and a.status == ^:submitted,
-        preload: [user: [], application_show_groups: [show_group: [group: []]]]
+        preload: [user: [], application_show_groups: [show_group: [group: []]]],
+        order_by: [asc: a.updated_at]
 
     Repo.all(query)
   end
@@ -202,7 +203,8 @@ defmodule Haj.Applications do
     query =
       from a in App,
         where: a.show_id == ^show_id and a.status == ^:submitted,
-        preload: [application_show_groups: [show_group: [group: []]], user: []]
+        preload: [application_show_groups: [show_group: [group: []]], user: []],
+        order_by: [asc: a.updated_at]
 
     Repo.all(query)
   end
@@ -248,7 +250,7 @@ defmodule Haj.Applications do
     är du välkommen att kontakta Direqtionen på <a href="mailto:direqtionen@metaspexet.se">direqtionen@metaspexet.se</a>.
     <br/><br/>
     Hälsningar,<br/><br/>
-    Chefsgruppen för METAspexet 2024
+    Chefsgruppen för METAspexet #{spex.year.year}
     """
   end
 

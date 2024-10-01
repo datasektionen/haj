@@ -92,6 +92,13 @@ defmodule HajWeb.Router do
       live "/applications/:id", ApplicationsLive.Show, :show
       live "/applications/:id/confirm", ApplicationsLive.Show, :approve
 
+      ## Song administration
+      live "/songs/edit", SongLive.Edit.Index, :index
+      live "/songs/edit/new", SongLive.Edit.Index, :new
+      live "/songs/edit/:id/edit", SongLive.Edit.Index, :edit
+      live "/songs/edit/:id", SongLive.Edit.Show, :show
+      live "/songs/edit/:id/show/edit", SongLive.Edit.Show, :edit
+
       ## Songs
       live "/songs", SongLive.Index, :index
       live "/songs/:id", SongLive.Show, :show
@@ -190,6 +197,8 @@ defmodule HajWeb.Router do
 
   scope "/", HajWeb do
     pipe_through [:browser, :require_authenticated_user, :require_spex_access]
+
+    post "/show/:id/csv", GroupController, :csv
 
     post "/group/:show_group_id/csv", GroupController, :csv
     post "/group/:show_group_id/vcard", GroupController, :vcard
