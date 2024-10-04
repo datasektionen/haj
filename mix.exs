@@ -52,7 +52,7 @@ defmodule Haj.MixProject do
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:tailwind_formatter, "~> 0.3.6", only: [:dev, :test], runtime: false},
       {:heroicons, "~> 0.5.1"},
-      {:httpoison, "~> 1.8"},
+      {:req, "~> 0.5.0"},
       {:csv, "~> 2.4"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
@@ -60,8 +60,8 @@ defmodule Haj.MixProject do
       {:earmark, "~> 1.4"},
       {:html_sanitize_ex, "~> 1.4"},
       {:let_me, "~> 1.0"},
-      {:ex_aws, "~> 2.1.2"},
-      {:ex_aws_s3, "~> 2.0"}
+      {:ex_aws, "~> 2.5"},
+      {:ex_aws_s3, "~> 2.5"}
     ]
   end
 
