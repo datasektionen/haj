@@ -45,7 +45,6 @@ defmodule Haj.Mailer.SpamAdapter do
       |> prepare_body()
       |> prepare_key(api_key)
       |> Swoosh.json_library().encode!()
-      |> dbg()
 
     case Swoosh.ApiClient.post(@spam_url, headers, body, email) do
       {:ok, 200, _headers, body} ->
