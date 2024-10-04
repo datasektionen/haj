@@ -117,7 +117,8 @@ defmodule Haj.Mailer.SpamAdapter do
   defp render_recipient({name, address}), do: %{name: name, address: address}
   defp render_recipient(list) when is_list(list), do: Enum.map(list, &render_recipient/1)
 
-  # SPAM does not support "name" in the recipient field in "from" field
+  # SPAM does not support "name" in the recipient field in "from" field.
+  # TODO: Can be removed when https://github.com/datasektionen/spam/pull/10 is merged
   defp render_from(nil), do: []
   defp render_from({_name, address}), do: address
   defp render_from(list) when is_list(list), do: Enum.map(list, &render_recipient/1)
