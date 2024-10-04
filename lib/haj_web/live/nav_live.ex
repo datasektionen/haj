@@ -61,13 +61,15 @@ defmodule HajWeb.Nav do
   tab ApplicationsLive.Index, :applications
 
   tab SettingsLive.Index, :settings
+  tab SettingsLive.User.Index, {:setting, :users}
   tab SettingsLive.Show.Index, {:setting, :shows}
   tab SettingsLive.Group.Index, {:setting, :groups}
-  tab SettingsLive.Food.Index, {:setting, :foods}
-  tab SettingsLive.User.Index, {:setting, :users}
-  tab SettingsLive.Merch.Index, {:setting, :merch}
   tab SettingsLive.Responsibility.Index, {:setting, :responsibilities}
-  tab SettingsLive.Song.Index, {:setting, :song}
+  tab SettingsLive.Food.Index, {:setting, :foods}
+  tab SettingsLive.Event.Index, {:setting, :events}
+  tab SettingsLive.Form.Index, {:setting, :forms}
+
+  tab EventLive.Index, :events
 
   defp set_active_tab(params, _url, socket) do
     active_tab =

@@ -11,14 +11,20 @@ defmodule HajWeb.ApplicationsLive.Index do
     applications = Applications.list_applications_for_show(current_spex.id)
 
     most_popular_group =
-      applications
-      |> Enum.flat_map(fn app -> app.application_show_groups end)
-      |> Enum.group_by(fn asg -> asg.show_group_id end)
-      |> Enum.map(fn {_, asgs} -> {hd(asgs).show_group.group, length(asgs)} end)
-      |> Enum.sort_by(fn {_, asgs} -> asgs end, :desc)
-      |> Enum.take(1)
-      |> hd()
-      |> elem(0)
+      case applications do
+        [] ->
+          %Spex.Group{name: "Inga ansökningar"}
+
+        apps ->
+          apps
+          |> Enum.flat_map(fn app -> app.application_show_groups end)
+          |> Enum.group_by(fn asg -> asg.show_group_id end)
+          |> Enum.map(fn {_, asgs} -> {hd(asgs).show_group.group, length(asgs)} end)
+          |> Enum.sort_by(fn {_, asgs} -> asgs end, :desc)
+          |> Enum.take(1)
+          |> List.first()
+          |> elem(0)
+      end
 
     stats = %{
       apps: length(applications),

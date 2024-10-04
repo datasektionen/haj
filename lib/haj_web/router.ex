@@ -92,6 +92,13 @@ defmodule HajWeb.Router do
       live "/applications/:id", ApplicationsLive.Show, :show
       live "/applications/:id/confirm", ApplicationsLive.Show, :approve
 
+      ## Song administration
+      live "/songs/edit", SongLive.Edit.Index, :index
+      live "/songs/edit/new", SongLive.Edit.Index, :new
+      live "/songs/edit/:id/edit", SongLive.Edit.Index, :edit
+      live "/songs/edit/:id", SongLive.Edit.Show, :show
+      live "/songs/edit/:id/show/edit", SongLive.Edit.Show, :edit
+
       ## Songs
       live "/songs", SongLive.Index, :index
       live "/songs/:id", SongLive.Show, :show
@@ -99,6 +106,18 @@ defmodule HajWeb.Router do
       ## Shows
       live "/shows", ShowLive.Index, :index
       live "/shows/:show_id", ShowLive.Show, :index
+
+      ## Events
+      live "/events", EventLive.Index, :index
+      live "/events/:id", EventLive.Show, :index
+      live "/events/:id/register", EventLive.Show, :register
+
+      live "/events/:id/registrations", EventLive.Registrations, :users
+      live "/events/:id/registrations/users", EventLive.Registrations, :users
+      live "/events/:id/registrations/questions", EventLive.Registrations, :questions
+      live "/events/:id/registrations/food", EventLive.Registrations, :food
+
+      live "/forms/:id", FormLive.Index, :index
     end
 
     # Admin only!
@@ -113,6 +132,10 @@ defmodule HajWeb.Router do
         live "/shows", SettingsLive.Show.Index, :index
         live "/shows/new", SettingsLive.Show.Index, :new
         live "/shows/:id/edit", SettingsLive.Show.Index, :edit
+
+        live "/events", SettingsLive.Event.Index, :index
+        live "/events/new", SettingsLive.Event.Index, :new
+        live "/events/:id/edit", SettingsLive.Event.Index, :edit
 
         live "/shows/:id", SettingsLive.Show.Show, :show
         live "/shows/:id/show/edit", SettingsLive.Show.Show, :edit
@@ -161,12 +184,21 @@ defmodule HajWeb.Router do
 
         live "/songs/:id", SettingsLive.Song.Show, :show
         live "/songs/:id/show/edit", SettingsLive.Song.Show, :edit
+
+        live "/forms", SettingsLive.Form.Index, :index
+        live "/forms/new", SettingsLive.Form.Index, :new
+        live "/forms/:id/edit", SettingsLive.Form.Index, :edit
+
+        live "/forms/:id", SettingsLive.Form.Show, :show
+        live "/forms/:id/show/edit", SettingsLive.Form.Show, :edit
       end
     end
   end
 
   scope "/", HajWeb do
     pipe_through [:browser, :require_authenticated_user, :require_spex_access]
+
+    post "/show/:id/csv", GroupController, :csv
 
     post "/group/:show_group_id/csv", GroupController, :csv
     post "/group/:show_group_id/vcard", GroupController, :vcard

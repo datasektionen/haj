@@ -111,7 +111,7 @@ defmodule HajWeb.ApplyLive.Complete do
             required
             class="mr-2 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
           />
-          Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR och kommer tas bort efter rekryteringen är färdig, senast 1a Januari 2024.
+          Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR och kommer tas bort efter rekryteringen är färdig, senast 1a Januari 2025.
         </div>
 
         <div class="col-span-6 border-t pt-4 text-right">

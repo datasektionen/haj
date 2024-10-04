@@ -3,7 +3,7 @@ defmodule Haj.Repo.Migrations.AddGroupDescriptions do
 
   def change do
     alter table(:groups) do
-      add(:description, :text)
+      add :description, :text
     end
   end
 end

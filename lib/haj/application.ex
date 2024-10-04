@@ -15,7 +15,9 @@ defmodule Haj.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Haj.PubSub},
       # Start the Endpoint (http/https)
-      HajWeb.Endpoint
+      HajWeb.Endpoint,
+      # Start the presence tracker (for online users)
+      Haj.Presence,
       # Start a worker by calling: Haj.Worker.start_link(arg)
       # {Haj.Worker, arg}
     ]

@@ -1,9 +1,11 @@
-defmodule HajWeb.SettingsLive.Song.Index do
+defmodule HajWeb.SongLive.Edit.Index do
   use HajWeb, :live_view
 
   alias Haj.Archive
   alias Haj.Archive.Song
   alias Haj.Repo
+
+  on_mount {HajWeb.UserAuth, {:authorize, :songs_edit}}
 
   @impl true
   def mount(_params, _session, socket) do
@@ -17,24 +19,24 @@ defmodule HajWeb.SettingsLive.Song.Index do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
-    |> assign(:page_title, "Edit Song")
+    |> assign(:page_title, "Redigera sång")
     |> assign(:song, Archive.get_song!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Song")
+    |> assign(:page_title, "New sång")
     |> assign(:song, %Song{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Songs")
+    |> assign(:page_title, "Sånger")
     |> assign(:song, nil)
   end
 
   @impl true
-  def handle_info({HajWeb.SettingsLive.Song.FormComponent, {:saved, song}}, socket) do
+  def handle_info({HajWeb.SongLive.Edit.FormComponent, {:saved, song}}, socket) do
     {:noreply, stream_insert(socket, :songs, song |> Repo.preload(:show))}
   end
 

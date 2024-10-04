@@ -4,6 +4,7 @@ defmodule Haj.Policy do
   object :haj do
     action :access do
       allow :spex_member
+      allow role: :admin
     end
 
     action :admin do
@@ -19,15 +20,15 @@ defmodule Haj.Policy do
     end
 
     action :admin do
-      allow current_group_member: :grafiq
-
       allow role: :admin
+
+      allow current_group_member: :grafiq
     end
 
     action :list_orders do
-      allow current_group_member: :grafiq
-
       allow role: :admin
+
+      allow current_group_member: :grafiq
     end
   end
 
@@ -52,6 +53,12 @@ defmodule Haj.Policy do
 
     action :comment do
       allow :has_responsibility
+      allow role: :admin
+    end
+  end
+
+  object :show do
+    action :export do
       allow role: :admin
     end
   end
@@ -100,6 +107,20 @@ defmodule Haj.Policy do
     action :approve do
       allow :is_chef
       allow role: :admin
+    end
+  end
+
+  object :songs do
+    action :edit do
+      allow role: :admin
+      allow group_member: :music
+    end
+  end
+
+  object :event_registrations do
+    action :read do
+      allow role: :admin
+      allow current_group_member: :chefsgruppen
     end
   end
 end

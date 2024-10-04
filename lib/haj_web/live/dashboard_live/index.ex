@@ -31,19 +31,7 @@ defmodule HajWeb.DashboardLive.Index do
      )}
   end
 
-  attr :navigate, :any, required: true
-  slot :inner_block, required: true
-
-  defp card(assigns) do
-    ~H"""
-    <.link
-      navigate={@navigate}
-      class="flex flex-col gap-1 rounded-lg border px-4 py-4 shadow-sm hover:bg-gray-50 sm:gap-1.5"
-    >
-      <%= render_slot(@inner_block) %>
-    </.link>
-    """
-  end
+  attr :order_item, Haj.Merch.MerchOrderItem
 
   defp merch_card(assigns) do
     ~H"""

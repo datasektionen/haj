@@ -22,6 +22,7 @@ defmodule Haj.Accounts.User do
 
     many_to_many :foods, Haj.Foods.Food, join_through: "food_preferences", on_replace: :delete
     has_many :group_memberships, Haj.Spex.GroupMembership
+    has_many :user_tokens, Haj.Accounts.UserToken
 
     field :food_preference_other, :string
 
@@ -63,5 +64,11 @@ defmodule Haj.Accounts.User do
     |> validate_change(:username, fn :username, _ ->
       [username: "Du kan inte ändra KTH-id!"]
     end)
+  end
+end
+
+defimpl Phoenix.HTML.Safe, for: Haj.Accounts.User do
+  def to_iodata(user) do
+    Phoenix.HTML.Engine.html_escape(user.full_name)
   end
 end
