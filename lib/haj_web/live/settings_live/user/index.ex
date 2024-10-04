@@ -5,7 +5,7 @@ defmodule HajWeb.SettingsLive.User.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    login_secret = Application.get_env(:haj, :api_login_secret)
+    login_secret = Application.get_env(:haj, :api_login_secret, "secret")
 
     {:ok,
      assign(

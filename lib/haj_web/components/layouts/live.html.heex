@@ -93,7 +93,7 @@
         <div class="relative flex flex-row items-center">
           <button role="button" phx-click={show("#user-dropdown")} class="group">
             <img
-              src={"https://#{Application.get_env(:haj, :zfinger_url)}/user/#{@current_user.username}/image/100"}
+              src={"#{Application.get_env(:haj, :zfinger_url)}/user/#{@current_user.username}/image/100"}
               class="h-10 w-10 rounded-full border-2 border-gray-300 object-cover object-top group-hover:brightness-95"
             />
           </button>

@@ -34,7 +34,7 @@ defmodule HajWeb.SongLive.Show do
 
     {:noreply,
      assign(socket, player: true, playing: false)
-     |> push_event("load", %{timings: song.line_timings, url: Haj.Archive.s3_url(song.file)})}
+     |> push_event("load", %{timings: song.line_timings, url: Haj.S3.s3_url(song.file)})}
   end
 
   def handle_event("loaded", _params, socket) do
