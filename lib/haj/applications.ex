@@ -262,10 +262,11 @@ defmodule Haj.Applications.Mail do
     |> reply_to({"Direqtionen", "direqtionen@metaspexet.se"})
     |> subject("Ansökan till METAspexet #{spex.year.year}")
     |> html_body(html)
-    |> put_provider_option(:template, "metaspexet")
   end
 
   defp email_html(spex, user, show_group_names) do
+    # TODO: Use proper template engine like heex. This is vulnerable to html injection. Alternatively, just html escape
+    # user input.
     """
     <h2>Tack för din ansökan!</h2>
     <p>Din ansökan till METAspexet #{spex.year.year} har tagits emot. Nedan kommer en sammanfattning av din ansökan:</p>
@@ -281,5 +282,6 @@ defmodule Haj.Applications.Mail do
     Hälsningar,<br/><br/>
     Chefsgruppen för METAspexet #{spex.year.year}
     """
+    |> Haj.Mailer.layout()
   end
 end

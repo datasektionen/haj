@@ -1,5 +1,38 @@
 defmodule Haj.Mailer do
   use Swoosh.Mailer, otp_app: :haj
+
+  def layout(content) do
+    # TODO: Refactor this to something like heex or eex templates, partly for safety reasons.
+    # Also, note that because we are technically sending markdown to the Spam API, we can't use
+    # double newlines. This would be interpreted as a new paragraph in markdown. Instead, we
+    # need to use <br> tags.
+    """
+    <div>
+    <div class="outer" style="background-color:#f7f7f7;margin:0;padding:0;border:0">
+        <div class="main" style="max-width:700px;margin:0 auto;padding:0;border:0">
+            <div class="top"
+                style="background-color:rgb(111 29 27);margin:0;padding:0;border:0;text-align:center;height:10px">
+            </div>
+            <div class="content" style="background-color:#fff;padding:30px 30px;margin:0;border:0">#{content}</div>
+            <table class="footer"
+                style="background-color:rgb(111 29 27);margin:0;padding:20px 0;border:0;text-align:center;width:100%;">
+                <tr>
+                    <td style="vertical-align:top;width:80px;">
+                        <img src="https://metaspexet.se/images/logo.png"
+                            style="height:36;margin:0 0 0 20px;text-align:center">
+                    </td>
+                    <td>
+                        <h2
+                            style="color:#fff;text-align:left;font-size:24px;height:30px;padding:0;margin:2px auto 0;border:0">
+                            Haj</h2>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    </div>
+    """
+  end
 end
 
 defmodule Haj.Mailer.SpamAdapter do
@@ -74,10 +107,10 @@ defmodule Haj.Mailer.SpamAdapter do
     |> prepare_attachments(email)
   end
 
-  defp prepare_from(body, %Email{from: from}), do: Map.put(body, :from, render_from(from))
+  defp prepare_from(body, %Email{from: from}), do: Map.put(body, :from, render_recipient(from))
 
   defp prepare_to(body, %Email{to: to}) do
-    Map.put(body, :to, to |> render_recipient())
+    Map.put(body, :to, render_recipient(to))
   end
 
   defp prepare_bcc(body, %{bcc: []}), do: body
@@ -94,6 +127,8 @@ defmodule Haj.Mailer.SpamAdapter do
 
   defp prepare_template(body, %{provider_options: %{template: template}}),
     do: Map.put(body, :template, template)
+
+  defp prepare_template(body, _), do: Map.put(body, :template, "none")
 
   defp prepare_key(body, api_key) do
     Map.put(body, :key, api_key)
@@ -115,10 +150,4 @@ defmodule Haj.Mailer.SpamAdapter do
   defp render_recipient(nil), do: []
   defp render_recipient({name, address}), do: %{name: name, address: address}
   defp render_recipient(list) when is_list(list), do: Enum.map(list, &render_recipient/1)
-
-  # SPAM does not support "name" in the recipient field in "from" field.
-  # TODO: Can be removed when https://github.com/datasektionen/spam/pull/10 is merged
-  defp render_from(nil), do: []
-  defp render_from({_name, address}), do: address
-  defp render_from(list) when is_list(list), do: Enum.map(list, &render_recipient/1)
 end
