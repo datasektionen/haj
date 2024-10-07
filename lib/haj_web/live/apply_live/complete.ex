@@ -48,21 +48,21 @@ defmodule HajWeb.ApplyLive.Complete do
       case Applications.complete_application(socket.assigns.application, application_params) do
         {:ok, application} ->
           slack_message =
-            Haj.Slack.application_message(
+            Haj.Applications.application_complete_slack_message(
               socket.assigns.current_user,
               application,
               socket.assigns.show_groups
             )
 
           email =
-            Applications.application_email(
+            Applications.Mail.application_email(
               socket.assigns.current_user,
               application,
               socket.assigns.show_groups
             )
 
-          Haj.Slack.send_message(Spex.current_spex().slack_webhook_url, slack_message)
-          Haj.Applications.send_email(socket.assigns.current_user.email, email)
+          Haj.Slack.send_message!(Spex.current_spex().slack_webhook_url, slack_message)
+          Haj.Mailer.deliver!(email)
 
           {:noreply,
            put_flash(socket, :info, "Ansökan lyckades!")

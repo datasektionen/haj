@@ -228,6 +228,23 @@ defmodule Haj.Applications do
     end
   end
 
+  def application_complete_slack_message(user, application, show_groups) do
+    show_group_names =
+      Enum.map(application.application_show_groups, fn sg ->
+        show_groups[sg.show_group_id].group.name
+      end)
+      |> Enum.join(", ")
+
+    """
+    #{user.first_name} #{user.last_name} (#{user.email}) sökte just till följande grupper: #{show_group_names}.
+    """
+  end
+end
+
+defmodule Haj.Applications.Mail do
+  import Swoosh.Email
+  alias Haj.Spex
+
   def application_email(user, application, show_groups) do
     spex = Spex.current_spex()
 
@@ -237,6 +254,19 @@ defmodule Haj.Applications do
       end)
       |> Enum.join(", ")
 
+    html = email_html(spex, user, show_group_names)
+
+    new()
+    |> from({"METAspexet", "metaspexet@datasektionen.se"})
+    |> to({"#{user.first_name} #{user.last_name}", user.email})
+    |> reply_to({"Direqtionen", "direqtionen@metaspexet.se"})
+    |> subject("Ansökan till METAspexet #{spex.year.year}")
+    |> html_body(html)
+  end
+
+  defp email_html(spex, user, show_group_names) do
+    # TODO: Use proper template engine like heex. This is vulnerable to html injection. Alternatively, just html escape
+    # user input.
     """
     <h2>Tack för din ansökan!</h2>
     <p>Din ansökan till METAspexet #{spex.year.year} har tagits emot. Nedan kommer en sammanfattning av din ansökan:</p>
@@ -252,25 +282,6 @@ defmodule Haj.Applications do
     Hälsningar,<br/><br/>
     Chefsgruppen för METAspexet #{spex.year.year}
     """
-  end
-
-  @spam_url "https://spam.datasektionen.se/api/sendmail"
-
-  def send_email(to, message) do
-    spex = Spex.current_spex()
-    api_key = Application.get_env(:haj, :spam_api_key)
-
-    HTTPoison.post(
-      @spam_url,
-      {:form,
-       [
-         {"from", "metaspexet@datasektionen.se"},
-         {"to", to},
-         {"subject", "Din ansökan till METAspexet #{spex.year.year}"},
-         {"content", message},
-         {"template", "metaspexet"},
-         {"key", api_key}
-       ]}
-    )
+    |> Haj.Mailer.layout()
   end
 end
