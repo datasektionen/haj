@@ -2,26 +2,34 @@ import Config
 
 # Configure your database
 config :haj, Haj.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "haj_dev",
+  username: System.get_env("POSTGRES_USER", "postgres"),
+  password: System.get_env("POSTGRES_PASSWORD", "postgres"),
+  hostname: System.get_env("POSTGRES_HOST", "localhost"),
+  database: System.get_env("POSTGRES_DB", "haj_dev"),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
 config :haj,
   login_api_key: System.get_env("LOGIN_API_KEY"),
-  login_host: System.get_env("LOGIN_HOST"),
+  login_url: System.get_env("LOGIN_URL"),
   spam_api_key: System.get_env("SPAM_API_KEY"),
-  hostname: "localhost.datasektionen.se",
+  login_frontend_url: System.get_env("LOGIN_FRONTEND_URL", "http://localhost:7002"),
   port: 4001,
-  api_login_secret: System.get_env("API_LOGIN_SECRET"),
+  api_login_secret: "usemetologin",
   zfinger_url: System.get_env("ZFINGER_URL")
 
 config :imgproxy,
   key: System.get_env("IMGPROXY_KEY"),
-  salt: System.get_env("IMGPROXY_SALT")
+  salt: System.get_env("IMGPROXY_SALT"),
+  prefix: System.get_env("IMAGE_URL")
+
+if System.get_env("AWS_LOCAL") != "false" do
+  config :ex_aws, :s3,
+    scheme: System.get_env("AWS_S3_SCHEME", "http://"),
+    host: System.get_env("AWS_S3_HOST", "localhost"),
+    port: System.get_env("AWS_S3_PORT", "9000")
+end
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

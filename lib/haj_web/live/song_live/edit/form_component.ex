@@ -174,7 +174,7 @@ defmodule HajWeb.SongLive.Edit.FormComponent do
     meta = %{
       uploader: "S3",
       key: key,
-      url: "https://#{bucket}.s3-#{config.region}.amazonaws.com",
+      url: Haj.S3.base_url(),
       fields: fields
     }
 
@@ -215,4 +215,5 @@ defmodule HajWeb.SongLive.Edit.FormComponent do
   defp error_to_string(:too_large), do: "Too large, max size is 20MB"
   defp error_to_string(:too_many_files), do: "You have selected too many files"
   defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(other), do: other
 end
