@@ -14,7 +14,6 @@ processes = []
 [env]
   PHX_HOST = "haj.metaspexet.se"
   LOGIN_HOST = "login.datasektionen.se"
-  ZFINGER_URL = "d2imehpdli8mvq.cloudfront.net"
   PORT = "8080"
   IMAGE_URL = "https://d3874pm7xaa2tj.cloudfront.net"
   ZFINGER_URL = "https://d2imehpdli8mvq.cloudfront.net"
