@@ -12,7 +12,7 @@ defmodule Haj.ArchiveFixtures do
       attrs
       |> Enum.into(%{
         name: "some name",
-        number: 42,
+        number: "1.2",
         original_name: "some original_name",
         text: "some text"
       })

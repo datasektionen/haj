@@ -14,6 +14,6 @@ defmodule Haj.Responsibilities.ResponsibleUser do
   def changeset(responsible_user, attrs) do
     responsible_user
     |> cast(attrs, [:show_id, :user_id, :responsibility_id])
-    |> validate_required([])
+    |> validate_required([:show_id, :user_id, :responsibility_id])
   end
 end

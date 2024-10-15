@@ -19,6 +19,6 @@ defmodule Haj.Archive.Song do
   def changeset(song, attrs) do
     song
     |> cast(attrs, [:name, :original_name, :name, :number, :text, :show_id, :file, :line_timings])
-    |> validate_required([:name, :original_name, :name, :number, :text])
+    |> validate_required([:name, :original_name, :number, :text])
   end
 end

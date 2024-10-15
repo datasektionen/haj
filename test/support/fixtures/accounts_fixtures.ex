@@ -18,6 +18,6 @@ defmodule Haj.AccountsFixtures do
       })
       |> Haj.Accounts.create_user()
 
-    user
+    user |> Map.put(:full_name, "#{user.first_name} #{user.last_name}")
   end
 end
