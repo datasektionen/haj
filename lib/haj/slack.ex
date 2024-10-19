@@ -19,10 +19,13 @@ defmodule Haj.Slack do
 
   def application_message(user, application, show_groups) do
     show_group_names =
-      Enum.map(application.application_show_groups, fn sg ->
-        show_groups[sg.show_group_id].group.name
-      end)
-      |> Enum.join(", ")
+      Enum.map_join(
+        application.application_show_groups,
+        fn sg ->
+          show_groups[sg.show_group_id].group.name
+        end,
+        ", "
+      )
 
     """
     #{user.first_name} #{user.last_name} (#{user.email}) sökte just till följande grupper: #{show_group_names}.

@@ -21,7 +21,7 @@ defmodule HajWeb.ApplicationsLive.ApproveComponent do
          socket.assigns.current_user,
          show_group
        ) do
-      if Spex.is_member_of_show_group?(application.user.id, show_group_id) do
+      if Spex.member_of_show_group?(application.user.id, show_group_id) do
         push_flash(
           :error,
           "#{application.user.full_name} är redan medlem i #{show_group.group.name}."

@@ -65,7 +65,7 @@ defmodule HajWeb.UserLive do
   end
 
   defp display_foods(user) do
-    prefs = Enum.map(user.foods, fn %{name: name} -> name end) |> Enum.join(", ")
+    prefs = Enum.map_join(user.foods, fn %{name: name} -> name end, ", ")
 
     case user.food_preference_other do
       nil -> prefs

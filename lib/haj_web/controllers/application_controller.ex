@@ -59,16 +59,22 @@ defmodule HajWeb.ApplicationController do
   end
 
   defp all_groups(application) do
-    Enum.map(application.application_show_groups, fn %{show_group: %{group: group}} ->
-      group.name
-    end)
-    |> Enum.join(", ")
+    Enum.map_join(
+      application.application_show_groups,
+      fn %{show_group: %{group: group}} ->
+        group.name
+      end,
+      ", "
+    )
   end
 
   defp special_text(appliaction) do
-    Enum.map(appliaction.application_show_groups, fn %{special_text: text} ->
-      text
-    end)
-    |> Enum.join(";")
+    Enum.map_join(
+      appliaction.application_show_groups,
+      fn %{special_text: text} ->
+        text
+      end,
+      ";"
+    )
   end
 end

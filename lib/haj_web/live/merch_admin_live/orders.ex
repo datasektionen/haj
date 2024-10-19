@@ -44,7 +44,10 @@ defmodule HajWeb.MerchAdminLive.Orders do
   end
 
   defp list_items(order) do
-    Enum.map(order.merch_order_items, fn item -> "#{item.count} x #{item.merch_item.name}" end)
-    |> Enum.join(", ")
+    Enum.map_join(
+      order.merch_order_items,
+      fn item -> "#{item.count} x #{item.merch_item.name}" end,
+      ", "
+    )
   end
 end

@@ -13,7 +13,7 @@ defmodule Haj.Events.Event do
 
     has_many :ticket_types, Haj.Events.TicketType, on_replace: :delete
     has_many :registrations, Haj.Events.EventRegistration, on_replace: :delete
-    belongs_to :form, Haj.Forms.Form
+    has_one :form, Haj.Forms.Form
 
     timestamps()
   end

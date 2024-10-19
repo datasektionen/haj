@@ -232,10 +232,13 @@ defmodule Haj.Applications do
     spex = Spex.current_spex()
 
     show_group_names =
-      Enum.map(application.application_show_groups, fn sg ->
-        show_groups[sg.show_group_id].group.name
-      end)
-      |> Enum.join(", ")
+      Enum.map_join(
+        application.application_show_groups,
+        fn sg ->
+          show_groups[sg.show_group_id].group.name
+        end,
+        ", "
+      )
 
     """
     <h2>Tack för din ansökan!</h2>

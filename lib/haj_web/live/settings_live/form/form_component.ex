@@ -47,7 +47,7 @@ defmodule HajWeb.SettingsLive.Form.FormComponent do
                 class="col-span-6"
               />
 
-              <div :if={is_select(f_nested[:type])} class="col-span-6">
+              <div :if={select?(f_nested[:type])} class="col-span-6">
                 <HajWeb.CoreComponents.label>Alternativ</HajWeb.CoreComponents.label>
                 <div :for={option <- f_nested[:options].value} class="flex flex-row items-center">
                   <.input
@@ -176,7 +176,7 @@ defmodule HajWeb.SettingsLive.Form.FormComponent do
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 
-  defp is_select(form_field) do
+  defp select?(form_field) do
     form_field.value == "select" || form_field.value == "multi_select" ||
       form_field.value == :select || form_field.value == :multi_select
   end

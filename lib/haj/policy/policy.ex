@@ -65,12 +65,12 @@ defmodule Haj.Policy do
 
   object :show_group do
     action :edit do
-      allow :is_chef
+      allow :chef?
       allow role: :admin
     end
 
     action :export do
-      allow :is_chef
+      allow :chef?
       allow role: :admin
     end
   end
@@ -105,7 +105,7 @@ defmodule Haj.Policy do
     end
 
     action :approve do
-      allow :is_chef
+      allow :chef?
       allow role: :admin
     end
   end

@@ -359,11 +359,11 @@ defmodule Haj.Spex do
 
   ## Examples
 
-      iex> is_member_of_show_group?(user_id, show_group_id)
+      iex> member_of_show_group?(user_id, show_group_id)
       true
 
   """
-  def is_member_of_show_group?(user_id, show_group_id) do
+  def member_of_show_group?(user_id, show_group_id) do
     Repo.exists?(
       from sg in ShowGroup,
         join: gm in assoc(sg, :group_memberships),
@@ -371,7 +371,7 @@ defmodule Haj.Spex do
     )
   end
 
-  def is_chef_of_show_group?(show_group, user) do
+  def chef_of_show_group?(show_group, user) do
     Repo.exists?(
       from sg in ShowGroup,
         join: gm in assoc(sg, :group_memberships),
