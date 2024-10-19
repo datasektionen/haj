@@ -28,7 +28,8 @@ user_data =
     %User{first_name: "Adrian", last_name: "Salamon", username: "asalamon", role: :admin},
     %User{first_name: "Hampus", last_name: "Hallkvist", username: "hallkvi", role: :admin},
     %User{first_name: "Isak", last_name: "Lefevre", username: "lefevre", role: :admin},
-    %User{first_name: "Martin", last_name: "Ryberg Laude", username: "mrl", role: :admin}
+    %User{first_name: "Martin", last_name: "Ryberg Laude", username: "mrl", role: :admin},
+    %User{first_name: "Ture", last_name: "Teknokrat", username: "turetek", role: :admin}
   ]
   |> Enum.map(fn user ->
     %User{user | email: "#{user.username}@kth.se"}
@@ -126,7 +127,8 @@ Enum.each(applicants, fn user ->
       Repo.delete!(previous)
     end
 
-    application = Repo.insert!(%Haj.Applications.Application{user: user, show: show})
+    application =
+      Repo.insert!(%Haj.Applications.Application{user: user, show: show, status: :submitted})
 
     application_groups = show_groups |> Enum.shuffle() |> Enum.take(2)
 

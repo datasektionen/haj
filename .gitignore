@@ -37,6 +37,7 @@ npm-debug.log
 .DS_Store
 
 .elixir_ls/
+.elixir-tools/
 
 # Jetbrains IDEs
 .idea/
