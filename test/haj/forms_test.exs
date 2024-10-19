@@ -209,7 +209,9 @@ defmodule Haj.FormsTest do
     test "create_question_response/1 with valid data creates a question_response" do
       valid_attrs = %{answer: "some answer", multi_answer: ["option1", "option2"]}
 
-      assert {:ok, %QuestionResponse{} = question_response} = Forms.create_question_response(valid_attrs)
+      assert {:ok, %QuestionResponse{} = question_response} =
+               Forms.create_question_response(valid_attrs)
+
       assert question_response.answer == "some answer"
       assert question_response.multi_answer == ["option1", "option2"]
     end
@@ -222,21 +224,29 @@ defmodule Haj.FormsTest do
       question_response = question_response_fixture()
       update_attrs = %{answer: "some updated answer", multi_answer: ["option1"]}
 
-      assert {:ok, %QuestionResponse{} = question_response} = Forms.update_question_response(question_response, update_attrs)
+      assert {:ok, %QuestionResponse{} = question_response} =
+               Forms.update_question_response(question_response, update_attrs)
+
       assert question_response.answer == "some updated answer"
       assert question_response.multi_answer == ["option1"]
     end
 
     test "update_question_response/2 with invalid data returns error changeset" do
       question_response = question_response_fixture()
-      assert {:error, %Ecto.Changeset{}} = Forms.update_question_response(question_response, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Forms.update_question_response(question_response, @invalid_attrs)
+
       assert question_response == Forms.get_question_response!(question_response.id)
     end
 
     test "delete_question_response/1 deletes the question_response" do
       question_response = question_response_fixture()
       assert {:ok, %QuestionResponse{}} = Forms.delete_question_response(question_response)
-      assert_raise Ecto.NoResultsError, fn -> Forms.get_question_response!(question_response.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Forms.get_question_response!(question_response.id)
+      end
     end
 
     test "change_question_response/1 returns a question_response changeset" do

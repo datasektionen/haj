@@ -1,4 +1,4 @@
-defmodule HajWeb.EventLive.Registrations do
+defmodule HajWeb.EventLive.Registrations.Index do
   use HajWeb, :live_view
 
   on_mount {HajWeb.UserAuth, {:authorize, :event_registrations_read}}
@@ -16,7 +16,8 @@ defmodule HajWeb.EventLive.Registrations do
     registrations = Events.list_event_registrations(id)
 
     most_popular =
-      Enum.flat_map(registrations, & &1.user.group_memberships)
+      Enum.filter(registrations, & &1.attending)
+      |> Enum.flat_map(& &1.user.group_memberships)
       |> Enum.map(& &1.show_group.group)
       |> Enum.frequencies()
       |> Enum.sort_by(fn {_, c} -> c end, &>=/2)

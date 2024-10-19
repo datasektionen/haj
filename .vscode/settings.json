@@ -12,11 +12,11 @@
   },
   "[phoenix-heex]": {
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "elixir-tools.elixir-tools",
+    "editor.defaultFormatter": "animus-coop.vscode-elixir-mix-formatter",
     "editor.tabSize": 2
   },
   "[elixir]": {
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "elixir-tools.elixir-tools"
+    "editor.defaultFormatter": "animus-coop.vscode-elixir-mix-formatter"
   }
 }

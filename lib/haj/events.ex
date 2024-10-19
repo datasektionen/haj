@@ -9,6 +9,7 @@ defmodule Haj.Events do
   alias Haj.Events.Event
   alias Haj.Events.TicketType
   alias Haj.Events.EventRegistration
+  alias Haj.Forms.QuestionResponse
 
   @doc """
   Returns the list of events.
@@ -22,9 +23,42 @@ defmodule Haj.Events do
   def list_events do
     query =
       from e in Event,
-        preload: [:ticket_types]
+        preload: [:ticket_types],
+        order_by: [asc: e.event_date]
 
     Repo.all(query)
+  end
+
+  @doc """
+  Returns a list of events in a given date range.
+
+  ## Examples
+
+      iex> list_events_between(~D[2020-01-01], ~D[2020-12-31])
+      [%Event{}, ...]
+
+  """
+
+  def list_events_between(start_date, end_date) do
+    start_date = to_datetime(start_date)
+    end_date = to_datetime(end_date)
+
+    query =
+      from e in Event,
+        where: e.event_date >= ^start_date and e.event_date <= ^end_date,
+        preload: [:ticket_types],
+        order_by: [asc: e.event_date]
+
+    Repo.all(query)
+  end
+
+  defp to_datetime(%DateTime{} = dt), do: dt
+
+  defp to_datetime(%Date{} = date) do
+    Date.to_gregorian_days(date)
+    |> Kernel.*(86_400)
+    |> Kernel.+(86_399)
+    |> DateTime.from_gregorian_seconds()
   end
 
   @doc """
@@ -61,12 +95,13 @@ defmodule Haj.Events do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_event(attrs \\ %{}, opts \\ []) do
+  def create_event(attrs \\ %{}, after_save \\ &{:ok, &1}, opts \\ []) do
     with_tickets = Keyword.get(opts, :with_tickets, false)
 
     %Event{}
     |> Event.changeset(attrs, with_tickets: with_tickets)
     |> Repo.insert()
+    |> after_save(after_save)
   end
 
   @doc """
@@ -81,12 +116,13 @@ defmodule Haj.Events do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_event(%Event{} = event, attrs, opts \\ []) do
+  def update_event(%Event{} = event, attrs, after_save \\ &{:ok, &1}, opts \\ []) do
     with_tickets = Keyword.get(opts, :with_tickets, false)
 
     event
     |> Event.changeset(attrs, with_tickets: with_tickets)
     |> Repo.update()
+    |> after_save(after_save)
   end
 
   @doc """
@@ -259,7 +295,7 @@ defmodule Haj.Events do
   end
 
   @doc """
-  Gets a single event_registration.
+  Gets a single event_registration. Loads, user, event, response, question_responses and questions.
 
   Raises `Ecto.NoResultsError` if the Event registration does not exist.
 
@@ -272,7 +308,28 @@ defmodule Haj.Events do
       ** (Ecto.NoResultsError)
 
   """
-  def get_event_registration!(id), do: Repo.get!(EventRegistration, id)
+  def get_event_registration!(id) do
+    query =
+      from er in EventRegistration,
+        where: er.id == ^id,
+        join: u in assoc(er, :user),
+        join: e in assoc(er, :event),
+        join: r in assoc(er, :response),
+        preload: [
+          user: u,
+          event: e,
+          response:
+            {r,
+             question_responses:
+               ^from(qr in QuestionResponse,
+                 join: q in assoc(qr, :question),
+                 preload: [question: q],
+                 order_by: q.id
+               )}
+        ]
+
+    Repo.one!(query)
+  end
 
   @doc """
   Creates a event_registration.
@@ -381,4 +438,10 @@ defmodule Haj.Events do
   defp notify_subscribers({:error, reason}, _) do
     {:error, reason}
   end
+
+  defp after_save({:ok, result}, func) do
+    {:ok, _result} = func.(result)
+  end
+
+  defp after_save(error, _func), do: error
 end

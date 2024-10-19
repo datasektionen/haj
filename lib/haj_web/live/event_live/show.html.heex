@@ -1,9 +1,13 @@
 <div :if={@event.image} class="relative mt-4 overflow-hidden rounded-2xl">
   <div
     class="absolute inset-0 z-0 h-full w-full scale-105 bg-cover bg-center blur-3xl"
-    style={"background-image: url('#{@event.image}')"}
+    style={"background-image: url('#{image_url(@event.image, 400, 400)}')"}
   />
-  <img src={@event.image} alt={"Picture of #{@event.name}"} class="relative z-0 mx-auto max-h-96" />
+  <img
+    src={image_url(@event.image, 600, 600)}
+    alt={"Picture of #{@event.name}"}
+    class="relative z-0 mx-auto max-h-96"
+  />
 </div>
 <div class="flex flex-row gap-4 pb-4">
   <%!-- Main content --%>

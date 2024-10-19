@@ -17,7 +17,7 @@ defmodule Haj.Application do
       # Start the Endpoint (http/https)
       HajWeb.Endpoint,
       # Start the presence tracker (for online users)
-      Haj.Presence,
+      Haj.Presence
       # Start a worker by calling: Haj.Worker.start_link(arg)
       # {Haj.Worker, arg}
     ]

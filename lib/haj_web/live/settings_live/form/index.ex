@@ -4,12 +4,62 @@ defmodule HajWeb.SettingsLive.Form.Index do
   alias Haj.Forms
   alias Haj.Forms.Form
 
-  @impl true
+  @impl Phoenix.LiveView
+  def render(assigns) do
+    ~H"""
+    <.header>
+      Formulär
+      <:actions>
+        <.link patch={~p"/settings/forms/new"}>
+          <.button>Nytt formulär</.button>
+        </.link>
+      </:actions>
+    </.header>
+
+    <.table
+      id="forms"
+      rows={@streams.forms}
+      row_click={fn {_id, form} -> JS.navigate(~p"/settings/forms/#{form}/responses") end}
+    >
+      <:col :let={{_id, form}} label="Namn"><%= form.name %></:col>
+      <:col :let={{_id, form}} label="Beskrivning"><%= form.description %></:col>
+      <:action :let={{_id, form}}>
+        <.link patch={~p"/settings/forms/#{form}/edit"}>Redigera</.link>
+      </:action>
+      <:action :let={{id, form}}>
+        <.link
+          phx-click={JS.push("delete", value: %{id: form.id}) |> hide("##{id}")}
+          data-confirm="Är du säker, alla formulärsvar kommer försvinna!?"
+        >
+          Radera
+        </.link>
+      </:action>
+    </.table>
+
+    <.modal
+      :if={@live_action in [:new, :edit]}
+      id="form-modal"
+      show
+      on_cancel={JS.navigate(~p"/settings/forms")}
+    >
+      <.live_component
+        module={HajWeb.SettingsLive.Form.FormComponent}
+        id={@form.id || :new}
+        title={@page_title}
+        action={@live_action}
+        form={@form}
+        patch={~p"/settings/forms"}
+      />
+    </.modal>
+    """
+  end
+
+  @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     {:ok, stream(socket, :forms, Forms.list_forms())}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
@@ -37,7 +87,7 @@ defmodule HajWeb.SettingsLive.Form.Index do
     {:noreply, stream_insert(socket, :forms, form)}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("delete", %{"id" => id}, socket) do
     form = Forms.get_form!(id)
 

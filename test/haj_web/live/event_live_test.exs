@@ -4,9 +4,30 @@ defmodule HajWeb.EventLiveTest do
   import Phoenix.LiveViewTest
   import Haj.EventsFixtures
 
-  @create_attrs %{description: "some description", event_date: "2022-11-21T19:51:00Z", image: "some image", name: "some name", purchase_deadline: "2022-11-21T19:51:00Z", ticket_limit: 42}
-  @update_attrs %{description: "some updated description", event_date: "2022-11-22T19:51:00Z", image: "some updated image", name: "some updated name", purchase_deadline: "2022-11-22T19:51:00Z", ticket_limit: 43}
-  @invalid_attrs %{description: nil, event_date: nil, image: nil, name: nil, purchase_deadline: nil, ticket_limit: nil}
+  @create_attrs %{
+    description: "some description",
+    event_date: "2022-11-21T19:51:00Z",
+    image: "some image",
+    name: "some name",
+    purchase_deadline: "2022-11-21T19:51:00Z",
+    ticket_limit: 42
+  }
+  @update_attrs %{
+    description: "some updated description",
+    event_date: "2022-11-22T19:51:00Z",
+    image: "some updated image",
+    name: "some updated name",
+    purchase_deadline: "2022-11-22T19:51:00Z",
+    ticket_limit: 43
+  }
+  @invalid_attrs %{
+    description: nil,
+    event_date: nil,
+    image: nil,
+    name: nil,
+    purchase_deadline: nil,
+    ticket_limit: nil
+  }
 
   defp create_event(_) do
     event = event_fixture()

@@ -5,21 +5,40 @@ defmodule HajWeb.EventLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, events: list_events())}
+    {:ok, socket}
+  end
+
+  @impl true
+  def handle_params(%{"date" => date}, _url, socket) do
+    date = Date.from_iso8601!(date)
+
+    {:noreply,
+     assign(socket,
+       selected_date: date,
+       events: events_in_month(date)
+     )}
+  end
+
+  def handle_params(_params, _url, socket) do
+    date = Date.utc_today()
+
+    {:noreply,
+     assign(socket,
+       selected_date: date,
+       events: events_in_month(date)
+     )}
   end
 
   @impl true
   def handle_info({Events, [:registration, _], _}, socket) do
-    {:noreply, assign(socket, events: list_events())}
+    {:noreply, assign(socket, events: events_in_month(socket.assigns.selected_date))}
   end
 
-  defp list_events do
-    # Todo: maybe fetch in one query
-    Events.list_events()
-    |> Enum.map(fn event ->
-      ticked_sold = Events.tickets_sold(event.id)
-      Map.put(event, :availible, event.ticket_limit - ticked_sold)
-    end)
+  def handle_info({:updated_date, %{date: date}}, socket) do
+    url = Routes.event_index_path(socket, :index, %{date: Date.to_iso8601(date)})
+    socket = push_patch(socket, to: url)
+
+    {:noreply, socket}
   end
 
   @impl true
@@ -36,20 +55,45 @@ defmodule HajWeb.EventLive.Index do
     end
   end
 
+  @impl Phoenix.LiveView
+  def render(assigns) do
+    ~H"""
+    <div>
+      <div class="mr-auto flex w-full flex-row items-baseline justify-between sm:flex-col">
+        <span class="text-2xl font-bold">Events</span>
+        <span class="text-sm text-gray-600">Partaj och annat skoj</span>
+      </div>
+
+      <div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
+        <.live_component
+          module={HajWeb.Components.CalendarComponent}
+          id="event-calendar"
+          highlighted_dates={@events |> Enum.map(&DateTime.to_date(&1.event_date))}
+          on_date_pick={fn date -> send(self(), {:updated_date, date}) end}
+        />
+
+        <ol class="mt-4 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8">
+          <div class="flex flex-col gap-8 pt-4">
+            <.event_card :for={event <- @events} event={event} />
+            <div :if={Enum.empty?(@events)} class="text-gray-500">
+              Inga planerade events den här månaden!
+            </div>
+          </div>
+        </ol>
+      </div>
+    </div>
+    """
+  end
+
   defp event_card(assigns) do
     ~H"""
-    <.link navigate={~p"/events/#{@event}"}>
-      <div class="group relative mx-0 flex h-64 flex-col overflow-hidden rounded-xl border bg-white duration-150 hover:bg-gray-50">
-        <div class="h-2/3 overflow-hidden">
-          <img
-            :if={@event.image}
-            src={@event.image}
-            alt={"Picture of #{@event.name}"}
-            class="tmt relative right-0 left-0 h-full w-full object-cover p-0"
-          />
+    <.link navigate={~p"/events/#{@event}"} class="w-full">
+      <div class="group relative mx-0 flex flex-row overflow-hidden rounded-xl border bg-white duration-150 hover:bg-gray-50">
+        <div :if={@event.image} class="w-32">
           <div
-            :if={!@event.image}
-            class="bg-size-125 bg-pos-0 from-burgandy-400 to-burgandy-800 inset-0 h-full w-full bg-gradient-to-br duration-300 ease-in-out group-hover:bg-pos-100"
+            alt={"Picture of #{@event.name}"}
+            class="tmt relative h-full w-full bg-cover bg-center"
+            style={"background-image: url('#{image_url(@event.image, 400, 400)}')"}
           />
         </div>
 
@@ -67,5 +111,12 @@ defmodule HajWeb.EventLive.Index do
       </div>
     </.link>
     """
+  end
+
+  defp events_in_month(date) do
+    month_start = Date.beginning_of_month(date)
+    month_end = Date.end_of_month(date)
+
+    Events.list_events_between(month_start, month_end)
   end
 end

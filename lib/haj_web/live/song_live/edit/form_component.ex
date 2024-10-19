@@ -104,7 +104,7 @@ defmodule HajWeb.SongLive.Edit.FormComponent do
   end
 
   def handle_event("save", %{"song" => song_params}, socket) do
-    song_params = put_image_url(song_params, socket)
+    song_params = put_song_url(song_params, socket)
     line_timings = parse_line_timings(song_params["line_timings"])
 
     song_params = Map.put(song_params, "line_timings", line_timings)
@@ -181,7 +181,7 @@ defmodule HajWeb.SongLive.Edit.FormComponent do
     {:ok, meta, socket}
   end
 
-  defp put_image_url(params, socket) do
+  defp put_song_url(params, socket) do
     {completed, []} = uploaded_entries(socket, :file)
 
     paths = for entry <- completed, do: "/archive/songs/#{entry.client_name}"

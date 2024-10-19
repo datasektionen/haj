@@ -8,7 +8,14 @@ defmodule Haj.EventsTest do
 
     import Haj.EventsFixtures
 
-    @invalid_attrs %{description: nil, event_date: nil, image: nil, name: nil, purchase_deadline: nil, ticket_limit: nil}
+    @invalid_attrs %{
+      description: nil,
+      event_date: nil,
+      image: nil,
+      name: nil,
+      purchase_deadline: nil,
+      ticket_limit: nil
+    }
 
     test "list_events/0 returns all events" do
       event = event_fixture()
@@ -21,7 +28,14 @@ defmodule Haj.EventsTest do
     end
 
     test "create_event/1 with valid data creates a event" do
-      valid_attrs = %{description: "some description", event_date: ~U[2022-11-21 19:51:00Z], image: "some image", name: "some name", purchase_deadline: ~U[2022-11-21 19:51:00Z], ticket_limit: 42}
+      valid_attrs = %{
+        description: "some description",
+        event_date: ~U[2022-11-21 19:51:00Z],
+        image: "some image",
+        name: "some name",
+        purchase_deadline: ~U[2022-11-21 19:51:00Z],
+        ticket_limit: 42
+      }
 
       assert {:ok, %Event{} = event} = Events.create_event(valid_attrs)
       assert event.description == "some description"
@@ -38,7 +52,15 @@ defmodule Haj.EventsTest do
 
     test "update_event/2 with valid data updates the event" do
       event = event_fixture()
-      update_attrs = %{description: "some updated description", event_date: ~U[2022-11-22 19:51:00Z], image: "some updated image", name: "some updated name", purchase_deadline: ~U[2022-11-22 19:51:00Z], ticket_limit: 43}
+
+      update_attrs = %{
+        description: "some updated description",
+        event_date: ~U[2022-11-22 19:51:00Z],
+        image: "some updated image",
+        name: "some updated name",
+        purchase_deadline: ~U[2022-11-22 19:51:00Z],
+        ticket_limit: 43
+      }
 
       assert {:ok, %Event{} = event} = Events.update_event(event, update_attrs)
       assert event.description == "some updated description"
@@ -99,9 +121,16 @@ defmodule Haj.EventsTest do
 
     test "update_ticket_type/2 with valid data updates the ticket_type" do
       ticket_type = ticket_type_fixture()
-      update_attrs = %{description: "some updated description", name: "some updated name", price: 43}
 
-      assert {:ok, %TicketType{} = ticket_type} = Events.update_ticket_type(ticket_type, update_attrs)
+      update_attrs = %{
+        description: "some updated description",
+        name: "some updated name",
+        price: 43
+      }
+
+      assert {:ok, %TicketType{} = ticket_type} =
+               Events.update_ticket_type(ticket_type, update_attrs)
+
       assert ticket_type.description == "some updated description"
       assert ticket_type.name == "some updated name"
       assert ticket_type.price == 43
@@ -145,7 +174,8 @@ defmodule Haj.EventsTest do
     test "create_event_registration/1 with valid data creates a event_registration" do
       valid_attrs = %{}
 
-      assert {:ok, %EventRegistration{} = event_registration} = Events.create_event_registration(valid_attrs)
+      assert {:ok, %EventRegistration{} = event_registration} =
+               Events.create_event_registration(valid_attrs)
     end
 
     test "create_event_registration/1 with invalid data returns error changeset" do
@@ -156,19 +186,26 @@ defmodule Haj.EventsTest do
       event_registration = event_registration_fixture()
       update_attrs = %{}
 
-      assert {:ok, %EventRegistration{} = event_registration} = Events.update_event_registration(event_registration, update_attrs)
+      assert {:ok, %EventRegistration{} = event_registration} =
+               Events.update_event_registration(event_registration, update_attrs)
     end
 
     test "update_event_registration/2 with invalid data returns error changeset" do
       event_registration = event_registration_fixture()
-      assert {:error, %Ecto.Changeset{}} = Events.update_event_registration(event_registration, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Events.update_event_registration(event_registration, @invalid_attrs)
+
       assert event_registration == Events.get_event_registration!(event_registration.id)
     end
 
     test "delete_event_registration/1 deletes the event_registration" do
       event_registration = event_registration_fixture()
       assert {:ok, %EventRegistration{}} = Events.delete_event_registration(event_registration)
-      assert_raise Ecto.NoResultsError, fn -> Events.get_event_registration!(event_registration.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Events.get_event_registration!(event_registration.id)
+      end
     end
 
     test "change_event_registration/1 returns a event_registration changeset" do

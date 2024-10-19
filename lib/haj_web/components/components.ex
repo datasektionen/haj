@@ -84,20 +84,25 @@ defmodule HajWeb.Components do
 
   @doc """
   A generic form component that works with Changesets generated from Haj.Form.
+
+  Question types are: :select, :multi_select, :text_area, :text
   """
 
   attr :question, :any, required: true
   attr :field, :any, required: true
+  attr :class, :string, default: ""
 
   def form_input(%{question: %{type: :select}} = assigns) do
     ~H"""
-    <.input field={@field} type="select" options={@question.options} label={@question.name} />
+    <div class={@class}>
+      <.input field={@field} type="select" options={@question.options} label={@question.name} />
+    </div>
     """
   end
 
   def form_input(%{question: %{type: :multi_select}} = assigns) do
     ~H"""
-    <div>
+    <div class={@class}>
       <label class="block text-sm font-semibold leading-6 text-zinc-800">
         <%= @question.name %>
       </label>
@@ -112,14 +117,25 @@ defmodule HajWeb.Components do
             label={option}
           />
         </div>
+        <.error :for={msg <- Enum.map(assigns.field.errors, &translate_error(&1))}><%= msg %></.error>
       </div>
+    </div>
+    """
+  end
+
+  def form_input(%{question: %{type: :text_area}} = assigns) do
+    ~H"""
+    <div class={@class}>
+      <.input field={@field} type="textarea" label={@question.name} />
     </div>
     """
   end
 
   def form_input(assigns) do
     ~H"""
-    <.input field={@field} type="text" label={@question.name} />
+    <div class={@class}>
+      <.input field={@field} type="text" label={@question.name} />
+    </div>
     """
   end
 

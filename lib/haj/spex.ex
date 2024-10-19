@@ -422,6 +422,64 @@ defmodule Haj.Spex do
   end
 
   @doc """
+  Returns map of show group ids and some metadata. The metadata is
+  the number of members in the show group, and the heads of the group.
+
+  Returns 0 if no memberships are found (even if the show group does not exist).
+
+  ## Examples
+
+      iex> get_show_group_membership_counts([1, 2, 3])
+      %{1 => 5, 2 => 3, 3 => 0}
+  """
+
+  def get_show_group_membership_metas(show_group_ids) when is_list(show_group_ids) do
+    count_query =
+      from sg in ShowGroup,
+        join: gm in assoc(sg, :group_memberships),
+        where: sg.id in ^show_group_ids,
+        group_by: sg.id,
+        select: {sg.id, count(gm.id)}
+
+    chef_query =
+      from sg in ShowGroup,
+        join: gm in assoc(sg, :group_memberships),
+        join: u in assoc(gm, :user),
+        where: sg.id in ^show_group_ids and gm.role == :chef,
+        group_by: sg.id,
+        select: {sg.id, fragment("array_agg(?)", u.id)}
+
+    counts = Repo.all(count_query)
+    chefs = Repo.all(chef_query)
+
+    result_map = Enum.into(counts, %{})
+    chefs = Enum.into(chefs, %{})
+
+    Enum.reduce(show_group_ids, %{}, fn show_group_id, acc ->
+      Map.put(acc, show_group_id, %{
+        n_members: Map.get(result_map, show_group_id, 0),
+        chefs: Map.get(chefs, show_group_id, [])
+      })
+    end)
+  end
+
+  @doc """
+  Returns the membership count for a single show group, or 0
+  if it does not exist.
+
+  ## Examples
+
+      iex> get_show_group_membership_count(1)
+      5
+
+  """
+
+  def get_show_group_membership_meta(show_group_id) do
+    get_show_group_membership_metas([show_group_id])
+    |> Map.get(show_group_id, %{})
+  end
+
+  @doc """
   Creates a show_group.
 
   ## Examples
@@ -520,12 +578,22 @@ defmodule Haj.Spex do
     Repo.preload(users, group_memberships: query)
   end
 
+  @doc """
+  Returns all group memberships for a given user. Preloads show group and group.
+
+  ## Examples
+
+      iex> get_group_memberships_for_user(user_id)
+      [%GroupMembership{}, ...]
+  """
   def get_show_groups_for_user(userid) do
     query =
       from sg in ShowGroup,
         join: gm in assoc(sg, :group_memberships),
+        join: s in assoc(sg, :show),
+        join: g in assoc(sg, :group),
         where: gm.user_id == ^userid,
-        preload: [show: [], group: [], group_memberships: []]
+        preload: [show: s, group: g]
 
     Repo.all(query)
   end

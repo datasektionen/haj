@@ -45,9 +45,7 @@ defmodule Haj.EventsFixtures do
   def event_registration_fixture(attrs \\ %{}) do
     {:ok, event_registration} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> Haj.Events.create_event_registration()
 
     event_registration

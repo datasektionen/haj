@@ -153,7 +153,6 @@ defmodule HajWeb.Layouts do
           title="Formulär"
           active={@active_tab == {:setting, :forms}}
         />
-
       </.nav_link_group>
     </div>
     """

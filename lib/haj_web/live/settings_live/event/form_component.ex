@@ -1,9 +1,8 @@
-require Logger
-
 defmodule HajWeb.SettingsLive.Event.FormComponent do
   use HajWeb, :live_component
 
   alias Haj.Events
+  alias Haj.Events.Event
 
   @impl true
   def mount(socket) do
@@ -32,7 +31,39 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
           <.input field={@form[:ticket_limit]} type="number" label="Biljettgräns" />
           <.input field={@form[:event_date]} type="datetime-local" label="Datum" />
           <.input field={@form[:purchase_deadline]} type="datetime-local" label="Köpdeadline" />
-          <.input field={@form[:image]} type="text" label="Bild" />
+          <!-- File upload -->
+          <div>
+            <HajWeb.CoreComponents.label for="file">
+              Bild
+            </HajWeb.CoreComponents.label>
+            <div class="mt-1">
+              <.live_file_input upload={@uploads.file} />
+            </div>
+            <%= for entry <- @uploads.file.entries do %>
+              <article class="upload-entry">
+                <figure class="max-h-64 overflow-hidden rounded-md">
+                  <.live_img_preview entry={entry} />
+                  <figcaption><%= entry.client_name %></figcaption>
+                </figure>
+
+                <button
+                  type="button"
+                  phx-click="cancel-upload"
+                  phx-value-ref={entry.ref}
+                  phx-target={@myself}
+                  aria-label="cancel"
+                >
+                  &times;
+                </button>
+
+                <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
+                <%= for err <- upload_errors(@uploads.file, entry) do %>
+                  <p class="alert alert-danger"><%= error_to_string(err) %></p>
+                <% end %>
+              </article>
+            <% end %>
+          </div>
+
           <.input
             field={@form[:has_tickets]}
             type="checkbox"
@@ -112,6 +143,13 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
 
     {:ok,
      socket
+     |> assign(:uploaded_files, [])
+     |> allow_upload(:file,
+       accept: ~w(.jpg .jpeg),
+       max_file_size: 8_000_000,
+       max_entries: 1,
+       external: &presign_upload/2
+     )
      |> assign(assigns)
      |> assign_form(changeset)}
   end
@@ -128,6 +166,8 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
 
   @impl true
   def handle_event("save", %{"event" => event_params}, socket) do
+    event_params = put_image_url(event_params, socket)
+
     save_event(socket, socket.assigns.action, event_params)
   end
 
@@ -136,12 +176,19 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
     delete_ticket_type(socket, ticket_type)
   end
 
+  @impl true
+  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :file, ref)}
+  end
+
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
   end
 
   defp save_event(socket, :edit, event_params) do
-    case Events.update_event(socket.assigns.event, event_params, with_tickets: true) do
+    case Events.update_event(socket.assigns.event, event_params, &consume_images(socket, &1),
+           with_tickets: true
+         ) do
       {:ok, _event} ->
         {:noreply,
          socket
@@ -154,7 +201,7 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
   end
 
   defp save_event(socket, :new, event_params) do
-    case Events.create_event(event_params, with_tickets: true) do
+    case Events.create_event(event_params, &consume_images(socket, &1), with_tickets: true) do
       {:ok, _event} ->
         {:noreply,
          socket
@@ -178,4 +225,58 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
         {:noreply, assign_form(socket, changeset)}
     end
   end
+
+  defp put_image_url(params, socket) do
+    {completed, []} = uploaded_entries(socket, :file)
+
+    paths =
+      for entry <- completed do
+        "/images/events/#{entry.client_name}"
+      end
+
+    case paths do
+      [] -> params
+      [path | _] -> Map.put(params, "image", path)
+    end
+  end
+
+  defp presign_upload(entry, socket) do
+    uploads = socket.assigns.uploads
+    bucket = "metaspexet-haj"
+    key = "images/events/#{entry.client_name}"
+
+    config = %{
+      region: "eu-north-1",
+      access_key_id: System.fetch_env!("AWS_ACCESS_KEY_ID"),
+      secret_access_key: System.fetch_env!("AWS_SECRET_ACCESS_KEY")
+    }
+
+    {:ok, fields} =
+      SimpleS3Upload.sign_form_upload(config, bucket,
+        key: key,
+        content_type: entry.client_type,
+        max_file_size: uploads[entry.upload_config].max_file_size,
+        expires_in: :timer.hours(1)
+      )
+
+    meta = %{
+      uploader: "S3",
+      key: key,
+      url: Haj.S3.base_url(),
+      fields: fields
+    }
+
+    {:ok, meta, socket}
+  end
+
+  defp consume_images(socket, %Event{} = event) do
+    consume_uploaded_entries(socket, :file, fn _meta, _entry -> :ok end)
+
+    {:ok, event}
+  end
+
+  defp error_to_string(:too_large), do: "Too large, max size is 8MB"
+  defp error_to_string(:too_many_files), do: "You have selected too many files"
+  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(other), do: other
 end

@@ -14,7 +14,7 @@
     <.input
       type="select"
       name="tab"
-      options={[{"Anmälda", :users}, {"Frågor", :questions}, {"Matpreferenser", :food}]}
+      options={[{"Svar", :users}, {"Frågor", :questions}, {"Matpreferenser", :food}]}
       value={@live_action}
     />
   </.form>
@@ -24,7 +24,7 @@
     <nav class="-mb-px flex space-x-8" aria-label="Tabs">
       <.tab
         active={@live_action == :users}
-        name="Anmälda"
+        name="Svar"
         navigate={~p"/events/#{@event}/registrations/users"}
       />
       <.tab
@@ -41,7 +41,13 @@
   </div>
 </div>
 
-<.table :if={@live_action == :users} small id="registrations_table" rows={@registrations}>
+<.table
+  :if={@live_action == :users}
+  small
+  id="registrations_table"
+  rows={@registrations}
+  row_click={fn reg -> JS.navigate(~p"/events/registrations/#{reg.id}") end}
+>
   <:col :let={reg} label="Namn">
     <%= reg.user.full_name %>
   </:col>
@@ -81,7 +87,7 @@
           <%= group.name %>
         </div>
       </div>
-      <div :if={length(@group_counts) == 0} class="pt-2">
+      <div :if={Enum.empty?(@group_counts)} class="pt-2">
         Inga svar
       </div>
     </div>
@@ -98,40 +104,38 @@
           <%= class %>
         </div>
       </div>
-      <div :if={length(@class_counts) == 0} class="pt-2">
+      <div :if={Enum.empty?(@class_counts)} class="pt-2">
         Inga svar
       </div>
     </div>
   </div>
 
-  <%= if @event.form do %>
-    <div :for={question <- @event.form.questions} class="rounded-lg border p-4">
-      <span class="font-bold"><%= question.name %></span>
-      <div class="mt-2 flex max-h-64 flex-col divide-y overflow-y-auto border-t">
-        <%= if @response_counts[question.id] do %>
-          <div
-            :for={{answer, count} <- @response_counts[question.id]}
-            class="flex flex-row gap-2 py-2 last:pb-0"
-          >
-            <div class="min-w-6 flex items-center justify-center rounded-full bg-gray-100 font-medium">
-              <%= count %>
-            </div>
-            <div>
-              <%= answer %>
-            </div>
+  <div :for={question <- @event.form.questions} :if={@event.form} class="rounded-lg border p-4">
+    <span class="font-bold"><%= question.name %></span>
+    <div class="mt-2 flex max-h-64 flex-col divide-y overflow-y-auto border-t">
+      <%= if @response_counts[question.id] do %>
+        <div
+          :for={{answer, count} <- @response_counts[question.id]}
+          class="flex flex-row gap-2 py-2 last:pb-0"
+        >
+          <div class="min-w-6 flex items-center justify-center rounded-full bg-gray-100 font-medium">
+            <%= count %>
           </div>
-        <% else %>
-          <div class="pt-2">
-            Inga svar
+          <div>
+            <%= answer %>
           </div>
-        <% end %>
-      </div>
+        </div>
+      <% else %>
+        <div class="pt-2">
+          Inga svar
+        </div>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>
 
 <div :if={@live_action == :food} class="mt-5">
-  <span :if={length(@food_counts) == 0 && length(@special_food_users) == 0} class="">
+  <span :if={Enum.empty?(@food_counts) && Enum.empty?(@special_food_users)} class="">
     Inga anmälda med matpreferenser
   </span>
 
@@ -139,7 +143,7 @@
     <.stats_card :for={{food, count} <- @food_counts} title={food} value={count} />
   </dl>
 
-  <div :if={length(@special_food_users) > 0} class="mt-4 rounded-lg border p-4">
+  <div :if={!Enum.empty?(@special_food_users)} class="mt-4 rounded-lg border p-4">
     <span class="font-bold">Övriga</span>
 
     <.table

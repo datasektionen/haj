@@ -31,7 +31,7 @@
       <article class="">
         <figure class="h-32 w-48 overflow-hidden rounded-md">
           <%= if merch_item.image do %>
-            <img src={Imgproxy.new(merch_item.image) |> Imgproxy.resize(400, 400) |> to_string()} />
+            <img src={image_url(merch_item.image, 400, 400)} />
           <% else %>
             <div class="h-full w-full rounded-md border bg-white" />
           <% end %>

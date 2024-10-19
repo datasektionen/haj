@@ -112,10 +112,12 @@ defmodule HajWeb.Router do
       live "/events/:id", EventLive.Show, :index
       live "/events/:id/register", EventLive.Show, :register
 
-      live "/events/:id/registrations", EventLive.Registrations, :users
-      live "/events/:id/registrations/users", EventLive.Registrations, :users
-      live "/events/:id/registrations/questions", EventLive.Registrations, :questions
-      live "/events/:id/registrations/food", EventLive.Registrations, :food
+      live "/events/:id/registrations", EventLive.Registrations.Index, :users
+      live "/events/:id/registrations/users", EventLive.Registrations.Index, :users
+      live "/events/:id/registrations/questions", EventLive.Registrations.Index, :questions
+      live "/events/:id/registrations/food", EventLive.Registrations.Index, :food
+
+      live "/events/registrations/:id", EventLive.Registrations.Show, :show
 
       live "/forms/:id", FormLive.Index, :index
     end
@@ -191,6 +193,9 @@ defmodule HajWeb.Router do
 
         live "/forms/:id", SettingsLive.Form.Show, :show
         live "/forms/:id/show/edit", SettingsLive.Form.Show, :edit
+
+        live "/forms/:id/responses", SettingsLive.Form.Show, :responses
+        live "/forms/:id/responses/:response_id", SettingsLive.Form.Show, :response
       end
     end
   end

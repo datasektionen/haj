@@ -179,4 +179,8 @@ defmodule HajWeb.LiveHelpers do
     {"Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag", "Söndag"}
     |> elem(day - 1)
   end
+
+  def image_url(path, w, h, options \\ []) do
+    Imgproxy.new(path) |> Imgproxy.resize(w, h, options) |> to_string()
+  end
 end

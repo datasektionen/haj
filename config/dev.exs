@@ -84,6 +84,7 @@ config :haj, HajWeb.Endpoint,
 # Watch static and templates for browser reloading.
 config :haj, HajWeb.Endpoint,
   live_reload: [
+    web_console_logger: true,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",

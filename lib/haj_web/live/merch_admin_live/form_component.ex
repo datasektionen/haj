@@ -192,7 +192,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
         <article class="">
           <figure class="h-32 w-48 overflow-hidden rounded-md">
             <%= if @image do %>
-              <img src={Imgproxy.new(@image) |> Imgproxy.resize(400, 400) |> to_string()} />
+              <img src={image_url(@image, 400, 400)} />
             <% else %>
               <div class="h-full w-full rounded-md border bg-white" />
             <% end %>

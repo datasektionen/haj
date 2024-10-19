@@ -9,11 +9,11 @@ defmodule Haj.Events.Event do
     field :name, :string
     field :purchase_deadline, :utc_datetime
     field :ticket_limit, :integer
-    field :has_tickets, :boolean, default: true
+    field :has_tickets, :boolean, default: false
 
     has_many :ticket_types, Haj.Events.TicketType, on_replace: :delete
     has_many :registrations, Haj.Events.EventRegistration, on_replace: :delete
-    has_one :form, Haj.Forms.Form
+    belongs_to :form, Haj.Forms.Form
 
     timestamps()
   end

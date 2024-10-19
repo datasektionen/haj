@@ -29,11 +29,7 @@
     <div class="grid grid-cols-1 gap-6 xs:grid-cols-3">
       <%= if @merch_item.image do %>
         <img
-          src={
-            Imgproxy.new(@merch_item.image)
-            |> Imgproxy.resize(1000, 1000, type: "fill-down")
-            |> to_string()
-          }
+          src={image_url(@merch_item.image, 1000, 1000, type: "fill-down")}
           alt={@merch_item.name}
           class="rounded-lg"
         />

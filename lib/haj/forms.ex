@@ -244,7 +244,17 @@ defmodule Haj.Forms do
       ** (Ecto.NoResultsError)
 
   """
-  def get_response!(id), do: Repo.get!(Response, id)
+  def get_response!(id) do
+    query =
+      from r in Response,
+        where: r.id == ^id,
+        join: u in assoc(r, :user),
+        left_join: qr in assoc(r, :question_responses),
+        left_join: q in assoc(qr, :question),
+        preload: [user: u, question_responses: {qr, question: q}]
+
+    Repo.one!(query)
+  end
 
   @doc """
   Creates a response.
@@ -349,6 +359,7 @@ defmodule Haj.Forms do
     {data, types}
     |> Ecto.Changeset.cast(attrs, Map.keys(types))
     |> validate_required(form.questions)
+    |> validate_required_multi(form.questions)
     |> validate_options(form.questions)
   end
 
@@ -358,6 +369,24 @@ defmodule Haj.Forms do
       |> Enum.map(fn %{id: id} -> String.to_atom("#{id}") end)
 
     Ecto.Changeset.validate_required(changeset, required)
+  end
+
+  defp validate_required_multi(changeset, questions) do
+    Enum.reduce(questions, changeset, fn q, acc ->
+      field = String.to_atom("#{q.id}")
+
+      if q.type == :multi_select && q.required do
+        acc
+        |> Ecto.Changeset.validate_change(field, fn field, values ->
+          case values do
+            [] -> [{field, "At least one value must be selected"}]
+            _ -> []
+          end
+        end)
+      else
+        acc
+      end
+    end)
   end
 
   defp validate_options(changeset, questions) do
@@ -579,5 +608,20 @@ defmodule Haj.Forms do
         preload: [question_responses: []]
 
     Repo.one(query)
+  end
+
+  @doc """
+  Returns all responses for a form.
+  """
+  def list_responses_for(form_id) do
+    query =
+      from r in Response,
+        where: r.form_id == ^form_id,
+        join: u in assoc(r, :user),
+        join: qr in assoc(r, :question_responses),
+        join: q in assoc(qr, :question),
+        preload: [user: u, question_responses: {qr, question: q}]
+
+    Repo.all(query)
   end
 end
