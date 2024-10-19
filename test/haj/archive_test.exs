@@ -21,7 +21,12 @@ defmodule Haj.ArchiveTest do
     end
 
     test "create_song/1 with valid data creates a song" do
-      valid_attrs = %{name: "some name", number: 42, original_name: "some original_name", text: "some text"}
+      valid_attrs = %{
+        name: "some name",
+        number: 42,
+        original_name: "some original_name",
+        text: "some text"
+      }
 
       assert {:ok, %Song{} = song} = Archive.create_song(valid_attrs)
       assert song.name == "some name"
@@ -36,7 +41,13 @@ defmodule Haj.ArchiveTest do
 
     test "update_song/2 with valid data updates the song" do
       song = song_fixture()
-      update_attrs = %{name: "some updated name", number: 43, original_name: "some updated original_name", text: "some updated text"}
+
+      update_attrs = %{
+        name: "some updated name",
+        number: 43,
+        original_name: "some updated original_name",
+        text: "some updated text"
+      }
 
       assert {:ok, %Song{} = song} = Archive.update_song(song, update_attrs)
       assert song.name == "some updated name"

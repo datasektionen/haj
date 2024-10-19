@@ -138,7 +138,8 @@ defmodule Haj.Applications do
         join: asg in assoc(a, :application_show_groups),
         where: asg.application_id == a.id,
         where: asg.show_group_id == ^show_group_id and a.status == ^:submitted,
-        preload: [user: [], application_show_groups: [show_group: [group: []]]]
+        preload: [user: [], application_show_groups: [show_group: [group: []]]],
+        order_by: [asc: a.updated_at]
 
     Repo.all(query)
   end
@@ -202,7 +203,8 @@ defmodule Haj.Applications do
     query =
       from a in App,
         where: a.show_id == ^show_id and a.status == ^:submitted,
-        preload: [application_show_groups: [show_group: [group: []]], user: []]
+        preload: [application_show_groups: [show_group: [group: []]], user: []],
+        order_by: [asc: a.updated_at]
 
     Repo.all(query)
   end
@@ -230,10 +232,13 @@ defmodule Haj.Applications do
     spex = Spex.current_spex()
 
     show_group_names =
-      Enum.map(application.application_show_groups, fn sg ->
-        show_groups[sg.show_group_id].group.name
-      end)
-      |> Enum.join(", ")
+      Enum.map_join(
+        application.application_show_groups,
+        ", ",
+        fn sg ->
+          show_groups[sg.show_group_id].group.name
+        end
+      )
 
     """
     <h2>Tack för din ansökan!</h2>
@@ -248,7 +253,7 @@ defmodule Haj.Applications do
     är du välkommen att kontakta Direqtionen på <a href="mailto:direqtionen@metaspexet.se">direqtionen@metaspexet.se</a>.
     <br/><br/>
     Hälsningar,<br/><br/>
-    Chefsgruppen för METAspexet 2024
+    Chefsgruppen för METAspexet #{spex.year.year}
     """
   end
 

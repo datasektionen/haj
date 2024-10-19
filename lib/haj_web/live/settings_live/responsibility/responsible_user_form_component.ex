@@ -12,40 +12,16 @@ defmodule HajWeb.SettingsLive.Responsibility.ResponsibleUserFormComponent do
         <%= @title %>
       </.header>
 
-      <.simple_form for={} as={:search_form} phx-target={@myself} phx-change="search">
-        <.input name="q" label="Sök efter användare" type="text" value={@query} autocomplete={:off} />
-      </.simple_form>
-
-      <div class="mt-2">
-        <div
-          :for={user <- @users}
-          title="Namn"
-          class="cursor-pointer rounded-md px-3 py-2 hover:bg-gray-100"
-          phx-click="select_user"
-          phx-value-id={user.id}
-          phx-target={@myself}
-        >
-          <%= user.full_name %>
-        </div>
-      </div>
-
-      <.simple_form
-        for={@form}
-        id="user-responsibility-form"
-        phx-target={@myself}
-        phx-change="validate"
-        phx-submit="save"
-      >
-        <.input
-          name="username"
-          label="Vald andvändare"
-          type="text"
-          disabled
-          value={@user && @user.full_name}
+      <.simple_form for={@form} id="user-responsibility-form" phx-target={@myself} phx-submit="save">
+        <.live_component
+          id="search-component"
+          module={HajWeb.Components.SearchComboboxComponent}
+          search_fn={&Haj.Accounts.search_users/1}
+          field={@form[:user_id]}
+          label="Ansvarig"
         />
 
         <.input field={@form[:show_id]} type="select" label="Spex" options={@shows} />
-        <.input field={@form[:user_id]} type="hidden" value={@user && @user.id} />
         <:actions>
           <.button phx-disable-with="Sparar...">Spara</.button>
         </:actions>
@@ -78,20 +54,6 @@ defmodule HajWeb.SettingsLive.Responsibility.ResponsibleUserFormComponent do
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}
-  end
-
-  @impl true
-  def handle_event("search", %{"q" => query}, socket) do
-    users = Haj.Accounts.search_users(query) |> Enum.slice(0..5)
-
-    {:noreply, assign(socket, users: users, query: query)}
-  end
-
-  @impl true
-  def handle_event("select_user", %{"id" => user_id}, socket) do
-    user = Haj.Accounts.get_user!(user_id)
-
-    {:noreply, assign(socket, user: user, users: [], query: "")}
   end
 
   @impl true

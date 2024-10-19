@@ -50,7 +50,7 @@ defmodule HajWeb.ApplyLive.Index do
 
           <p class="mt-4">
             Informationen hanteras i enlighet med Datasektionens <a
-              href="https://styrdokument.datasektionen.se/informationshanteringspolicy"
+              href="https://styrdokument.datasektionen.se/pm/pm_informationshantering"
               class="text-burgandy-500 font-bold"
             >informationshanteringspolicy</a>.
             Om du vill att uppgifterna ska tas bort kan du maila <a

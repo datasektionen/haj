@@ -14,6 +14,9 @@ defmodule HajWeb.DashboardLive.Index do
       Spex.get_show_groups_for_user(user_id)
       |> Enum.filter(fn %{show: show} -> show.id == current_show.id end)
 
+    membership_meta =
+      Enum.map(user_groups, fn %{id: id} -> id end) |> Spex.get_show_group_membership_metas()
+
     merch_order_items = Merch.get_current_merch_order_items(user_id)
 
     responsibilities =
@@ -25,25 +28,14 @@ defmodule HajWeb.DashboardLive.Index do
     {:ok,
      assign(socket,
        user_groups: user_groups,
+       membership_meta: membership_meta,
        merch_order_items: merch_order_items,
        responsibilities: responsibilities,
        page_title: "Hem"
      )}
   end
 
-  attr :navigate, :any, required: true
-  slot :inner_block, required: true
-
-  defp card(assigns) do
-    ~H"""
-    <.link
-      navigate={@navigate}
-      class="flex flex-col gap-1 rounded-lg border px-4 py-4 shadow-sm hover:bg-gray-50 sm:gap-1.5"
-    >
-      <%= render_slot(@inner_block) %>
-    </.link>
-    """
-  end
+  attr :order_item, Haj.Merch.MerchOrderItem
 
   defp merch_card(assigns) do
     ~H"""
@@ -53,7 +45,7 @@ defmodule HajWeb.DashboardLive.Index do
     >
       <%= if @order_item.merch_item.image do %>
         <img
-          src={Imgproxy.new(@order_item.merch_item.image) |> Imgproxy.resize(800, 800) |> to_string()}
+          src={image_url(@order_item.merch_item.image, 800, 800)}
           alt={@order_item.merch_item.name}
           class="absolute inset-0 h-full w-full object-cover brightness-50 duration-300 ease-in-out group-hover:scale-105"
         />
@@ -69,5 +61,14 @@ defmodule HajWeb.DashboardLive.Index do
       </div>
     </.link>
     """
+  end
+
+  defp get_role(user_id, show_group_id, membership_meta) do
+    chefs = Map.get(membership_meta, show_group_id, %{chefs: []})[:chefs]
+
+    case user_id in chefs do
+      true -> "Chef"
+      false -> "Gruppis"
+    end
   end
 end

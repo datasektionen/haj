@@ -94,7 +94,7 @@ defmodule HajWeb.ApplyLive.EditInfo do
         <.input
           field={@form[:class]}
           type="text"
-          label="Årskurs (ex D-20)"
+          label="Årskurs (ex D-20 eller Me-22)"
           class="col-span-6 sm:col-span-2"
         />
         <.input

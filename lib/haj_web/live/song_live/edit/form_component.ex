@@ -1,4 +1,4 @@
-defmodule HajWeb.SettingsLive.Song.FormComponent do
+defmodule HajWeb.SongLive.Edit.FormComponent do
   use HajWeb, :live_component
 
   alias Haj.Archive
@@ -10,7 +10,7 @@ defmodule HajWeb.SettingsLive.Song.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage song records in your database.</:subtitle>
+        <:subtitle>Använd detta formulär för att redigera sånger i databasen.</:subtitle>
       </.header>
 
       <.simple_form
@@ -47,8 +47,18 @@ defmodule HajWeb.SettingsLive.Song.FormComponent do
           options={@show_options}
           prompt="Välj spex"
         />
-        <.live_file_input upload={@uploads.file} />
 
+        <div>
+          <HajWeb.CoreComponents.label for="file">
+            Fil
+          </HajWeb.CoreComponents.label>
+          <div class="mt-1">
+            <.live_file_input upload={@uploads.file} />
+          </div>
+          <div :for={{_, err} <- @uploads.file.errors}>
+            <.error><%= error_to_string(err) %></.error>
+          </div>
+        </div>
         <:actions>
           <.button phx-disable-with="Saving...">Save Song</.button>
         </:actions>
@@ -70,7 +80,12 @@ defmodule HajWeb.SettingsLive.Song.FormComponent do
     {:ok,
      socket
      |> assign(:uploaded_files, [])
-     |> allow_upload(:file, accept: :any, max_entries: 1, external: &presign_upload/2)
+     |> allow_upload(:file,
+       accept: [".mp4", ".mp3"],
+       max_file_size: 20_000_000,
+       max_entries: 1,
+       external: &presign_upload/2
+     )
      |> assign(assigns)
      |> assign(show_options: show_options, line_timings: line_timings)
      |> assign_form(changeset)}
@@ -89,7 +104,7 @@ defmodule HajWeb.SettingsLive.Song.FormComponent do
   end
 
   def handle_event("save", %{"song" => song_params}, socket) do
-    song_params = put_image_url(song_params, socket)
+    song_params = put_song_url(song_params, socket)
     line_timings = parse_line_timings(song_params["line_timings"])
 
     song_params = Map.put(song_params, "line_timings", line_timings)
@@ -102,7 +117,7 @@ defmodule HajWeb.SettingsLive.Song.FormComponent do
   end
 
   defp save_song(socket, :edit, song_params) do
-    case Archive.update_song(socket.assigns.song, song_params, &consume_images(socket, &1)) do
+    case Archive.update_song(socket.assigns.song, song_params, &consume_songs(socket, &1)) do
       {:ok, song} ->
         notify_parent({:saved, song})
 
@@ -117,7 +132,7 @@ defmodule HajWeb.SettingsLive.Song.FormComponent do
   end
 
   defp save_song(socket, :new, song_params) do
-    case Archive.create_song(song_params, &consume_images(socket, &1)) do
+    case Archive.create_song(song_params, &consume_songs(socket, &1)) do
       {:ok, song} ->
         notify_parent({:saved, song})
 
@@ -159,14 +174,14 @@ defmodule HajWeb.SettingsLive.Song.FormComponent do
     meta = %{
       uploader: "S3",
       key: key,
-      url: "https://#{bucket}.s3-#{config.region}.amazonaws.com",
+      url: Haj.S3.base_url(),
       fields: fields
     }
 
     {:ok, meta, socket}
   end
 
-  defp put_image_url(params, socket) do
+  defp put_song_url(params, socket) do
     {completed, []} = uploaded_entries(socket, :file)
 
     paths = for entry <- completed, do: "/archive/songs/#{entry.client_name}"
@@ -177,7 +192,7 @@ defmodule HajWeb.SettingsLive.Song.FormComponent do
     end
   end
 
-  defp consume_images(socket, %Haj.Archive.Song{} = song) do
+  defp consume_songs(socket, %Haj.Archive.Song{} = song) do
     consume_uploaded_entries(socket, :file, fn _meta, _entry -> :ok end)
 
     {:ok, song}
@@ -196,4 +211,9 @@ defmodule HajWeb.SettingsLive.Song.FormComponent do
         |> Enum.map(&String.to_integer/1)
     end
   end
+
+  defp error_to_string(:too_large), do: "Too large, max size is 20MB"
+  defp error_to_string(:too_many_files), do: "You have selected too many files"
+  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(other), do: other
 end

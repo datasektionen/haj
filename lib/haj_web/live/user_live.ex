@@ -6,17 +6,20 @@ defmodule HajWeb.UserLive do
     user = Accounts.get_user_by_username!(username) |> Accounts.preload(:foods)
 
     groups = Haj.Spex.get_show_groups_for_user(user.id)
-    groups_by_year = Enum.group_by(groups, fn %{show: show} -> show.year end)
+
+    groups_by_year =
+      Enum.sort_by(groups, &{&1.show.year, &1.group.name})
+      |> Enum.group_by(fn %{show: show} -> show.year end)
 
     {:ok, assign(socket, page_title: full_name(user), user: user, groups: groups_by_year)}
   end
 
   def render(assigns) do
     ~H"""
-    <div class="pt-4">
+    <div class="">
       <div class="flex flex-row items-center gap-4 pb-4">
         <img
-          src={"https://#{Application.get_env(:haj, :zfinger_url)}/user/#{@user.username}/image/200"}
+          src={"#{Application.get_env(:haj, :zfinger_url)}/user/#{@user.username}/image/200"}
           class="inline-block h-20 w-20 rounded-full object-cover object-top filter group-hover:brightness-90"
         />
         <div class="flex flex-col">
@@ -62,7 +65,7 @@ defmodule HajWeb.UserLive do
   end
 
   defp display_foods(user) do
-    prefs = Enum.map(user.foods, fn %{name: name} -> name end) |> Enum.join(", ")
+    prefs = Enum.map_join(user.foods, ", ", fn %{name: name} -> name end)
 
     case user.food_preference_other do
       nil -> prefs

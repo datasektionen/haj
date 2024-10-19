@@ -13,7 +13,12 @@ processes = []
 
 [env]
   PHX_HOST = "haj.metaspexet.se"
+  LOGIN_HOST = "login.datasektionen.se"
   PORT = "8080"
+  IMAGE_URL = "https://d3874pm7xaa2tj.cloudfront.net"
+  ZFINGER_URL = "https://d2imehpdli8mvq.cloudfront.net"
+  LOGIN_URL = "https://login.datasektionen.se"
+  LOGIN_FRONTEND_URL = "https://login.datasektionen.se"
 
 [experimental]
   allowed_public_ports = []

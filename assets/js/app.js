@@ -145,6 +145,18 @@ topbar.config({ barColors: { 0: "#6F1D1B" }, shadowColor: "rgba(0, 0, 0, .3)" })
 window.addEventListener("phx:page-loading-start", (info) => topbar.show());
 window.addEventListener("phx:page-loading-stop", (info) => topbar.hide());
 
+
+
+// Enable log streaming to browser console
+window.addEventListener("phx:live_reload:attached", ({detail: reloader}) => {
+  // Enable server log streaming to client.
+  // Disable with reloader.disableServerLogs()
+  reloader.enableServerLogs()
+  window.liveReloader = reloader
+})
+
+
+
 // connect if there are any LiveViews on the page
 liveSocket.connect();
 

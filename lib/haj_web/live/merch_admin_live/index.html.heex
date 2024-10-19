@@ -1,5 +1,5 @@
 <div class="border-b pb-4">
-  <h3 class="py-2 text-2xl font-bold">Administrera merch</h3>
+  <h3 class="pb-2 text-2xl font-bold">Administrera merch</h3>
   <.form :let={f} for={%{}} id="show-form" as={:show} phx-change="select_show" class="">
     <div class="">
       <%= label(f, :show, "Välj spex",
@@ -31,7 +31,7 @@
       <article class="">
         <figure class="h-32 w-48 overflow-hidden rounded-md">
           <%= if merch_item.image do %>
-            <img src={Imgproxy.new(merch_item.image) |> Imgproxy.resize(400, 400) |> to_string()} />
+            <img src={image_url(merch_item.image, 400, 400)} />
           <% else %>
             <div class="h-full w-full rounded-md border bg-white" />
           <% end %>

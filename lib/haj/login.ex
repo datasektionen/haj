@@ -4,11 +4,11 @@ defmodule Haj.Login do
   """
 
   def authorize_url() do
-    login_host = Application.get_env(:haj, :login_host)
+    login_url = Application.get_env(:haj, :login_url)
     hostname = Application.get_env(:haj, :hostname)
     port = Application.get_env(:haj, :port)
 
-    callback = URI.encode("https://#{hostname}:#{port}/login/callback/?token=")
-    "https://#{login_host}/login?callback=#{callback}"
+    callback = URI.encode("#{hostname}:#{port}/login/callback/?token=")
+    "#{login_url}/login?callback=#{callback}"
   end
 end

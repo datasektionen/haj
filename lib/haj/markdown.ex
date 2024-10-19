@@ -1,6 +1,6 @@
 defmodule Haj.Markdown do
   def to_html!(markdown, options \\ []) do
-    {:ok, ast, _} = EarmarkParser.as_ast(markdown, smartypants: true)
+    {:ok, ast, _} = Earmark.Parser.as_ast(markdown, smartypants: true)
 
     with_ids = Keyword.get(options, :with_ids, false)
 

@@ -2,7 +2,7 @@
   Song <%= @song.id %>
   <:subtitle>This is a song record from your database.</:subtitle>
   <:actions>
-    <.link patch={~p"/settings/songs/#{@song}/show/edit"} phx-click={JS.push_focus()}>
+    <.link patch={~p"/songs/edit/#{@song}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit song</.button>
     </.link>
   </:actions>
@@ -22,20 +22,20 @@
   </div>
 </div>
 
-<.back navigate={~p"/settings/songs"}>Back to songs</.back>
+<.back navigate={~p"/songs/edit"}>Back to songs</.back>
 
 <.modal
   :if={@live_action == :edit}
   id="song-modal"
   show
-  on_cancel={JS.patch(~p"/settings/songs/#{@song}")}
+  on_cancel={JS.patch(~p"/songs/edit/#{@song}")}
 >
   <.live_component
-    module={HajWeb.SettingsLive.Song.FormComponent}
+    module={HajWeb.SongLive.Edit.FormComponent}
     id={@song.id}
     title={@page_title}
     action={@live_action}
     song={@song}
-    patch={~p"/settings/songs/#{@song}"}
+    patch={~p"/songs/edit/#{@song}"}
   />
 </.modal>

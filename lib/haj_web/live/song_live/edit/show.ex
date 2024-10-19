@@ -1,7 +1,8 @@
-defmodule HajWeb.SettingsLive.Song.Show do
+defmodule HajWeb.SongLive.Edit.Show do
   use HajWeb, :live_view
 
   alias Haj.Archive
+  on_mount {HajWeb.UserAuth, {:authorize, :songs_edit}}
 
   @impl true
   def mount(_params, _session, socket) do

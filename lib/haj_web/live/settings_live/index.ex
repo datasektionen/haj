@@ -3,7 +3,7 @@ defmodule HajWeb.SettingsLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, socket |> assign(:page_title, "Administrera")}
   end
 
   @impl true
@@ -18,23 +18,26 @@ defmodule HajWeb.SettingsLive.Index do
       </.header>
 
       <div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <.setting_card name="Användare" navigate={~p"/settings/users"}>
+          Redigera användare och användaruppgifter
+        </.setting_card>
         <.setting_card name="Spex" navigate={~p"/settings/shows"}>
           Redigera alla spex
         </.setting_card>
         <.setting_card name="Grupper" navigate={~p"/settings/groups"}>
           Redigera grupper och spexgrupper
         </.setting_card>
-        <.setting_card name="Mat" navigate={~p"/settings/foods"}>
-          Redigera matpreferenser
-        </.setting_card>
-        <.setting_card name="Användare" navigate={~p"/settings/users"}>
-          Redigera användare och användaruppgifter
-        </.setting_card>
         <.setting_card name="Ansvar" navigate={~p"/settings/responsibilities"}>
           Redigera ansvar
         </.setting_card>
-        <.setting_card name="Sånger" navigate={~p"/settings/songs"}>
-          Redigera sånger
+        <.setting_card name="Mat" navigate={~p"/settings/foods"}>
+          Redigera matpreferenser
+        </.setting_card>
+        <.setting_card name="Events" navigate={~p"/settings/events"}>
+          Redigera events
+        </.setting_card>
+        <.setting_card name="Formulär" navigate={~p"/settings/forms"}>
+          Redigera och skapa formulär
         </.setting_card>
       </div>
     </div>
@@ -47,17 +50,11 @@ defmodule HajWeb.SettingsLive.Index do
 
   defp setting_card(assigns) do
     ~H"""
-    <.link
-      navigate={@navigate}
-      class="flex flex-col gap-1 rounded-lg border px-4 py-4 hover:bg-gray-50 sm:gap-1.5"
-    >
-      <div class="text-burgandy-500 text-lg font-bold">
-        <%= @name %>
-      </div>
-      <div class="text-sm">
-        <%= render_slot(@inner_block) %>
-      </div>
-    </.link>
+    <.generic_card navigate={@navigate}>
+      <:title><%= @name %></:title>
+
+      <%= render_slot(@inner_block) %>
+    </.generic_card>
     """
   end
 end

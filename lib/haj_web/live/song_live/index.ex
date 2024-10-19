@@ -3,6 +3,7 @@ defmodule HajWeb.SongLive.Index do
 
   alias Haj.Archive
   alias Haj.Spex
+  alias Haj.Policy
 
   def mount(_params, _session, socket) do
     show = Spex.current_spex()
@@ -14,8 +15,16 @@ defmodule HajWeb.SongLive.Index do
         [key: "#{year.year}: #{title}", value: id]
       end)
 
+    authorized_admin = Policy.authorize?(:songs_edit, socket.assigns.current_user)
+
     {:ok,
-     assign(socket, page_title: "Sånger", songs: songs, show: show, show_options: show_options)}
+     assign(socket,
+       page_title: "Sånger",
+       songs: songs,
+       show: show,
+       show_options: show_options,
+       authorized_admin: authorized_admin
+     )}
   end
 
   def handle_event("select_show", %{"show" => show_id}, socket) do

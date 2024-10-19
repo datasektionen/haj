@@ -28,7 +28,8 @@ user_data =
     %User{first_name: "Adrian", last_name: "Salamon", username: "asalamon", role: :admin},
     %User{first_name: "Hampus", last_name: "Hallkvist", username: "hallkvi", role: :admin},
     %User{first_name: "Isak", last_name: "Lefevre", username: "lefevre", role: :admin},
-    %User{first_name: "Martin", last_name: "Ryberg Laude", username: "mrl", role: :admin}
+    %User{first_name: "Martin", last_name: "Ryberg Laude", username: "mrl", role: :admin},
+    %User{first_name: "Ture", last_name: "Teknokrat", username: "turetek", role: :admin}
   ]
   |> Enum.map(fn user ->
     %User{user | email: "#{user.username}@kth.se"}
@@ -36,7 +37,7 @@ user_data =
 
 users =
   Enum.map(user_data, fn user ->
-    case Repo.one(from u in User, where: u.username == ^user.username) do
+    case Repo.one(from(u in User, where: u.username == ^user.username)) do
       nil -> Repo.insert!(user)
       u -> u
     end
@@ -108,7 +109,7 @@ app_user_data =
 
 applicants =
   Enum.map(app_user_data, fn user ->
-    case Repo.one(from u in User, where: u.username == ^user.username) do
+    case Repo.one(from(u in User, where: u.username == ^user.username)) do
       nil -> Repo.insert!(user)
       u -> u
     end
@@ -118,15 +119,17 @@ Enum.each(applicants, fn user ->
   Repo.transaction(fn ->
     previous =
       Repo.one(
-        from a in Haj.Applications.Application,
+        from(a in Haj.Applications.Application,
           where: a.show_id == ^show.id and a.user_id == ^user.id
+        )
       )
 
     if previous != nil do
       Repo.delete!(previous)
     end
 
-    application = Repo.insert!(%Haj.Applications.Application{user: user, show: show})
+    application =
+      Repo.insert!(%Haj.Applications.Application{user: user, show: show, status: :submitted})
 
     application_groups = show_groups |> Enum.shuffle() |> Enum.take(2)
 
@@ -138,3 +141,35 @@ Enum.each(applicants, fn user ->
     end)
   end)
 end)
+
+# Creates a form and one response
+
+alias Haj.Forms.Form
+alias Haj.Forms.Question
+alias Haj.Forms.Response
+
+form = Repo.insert!(%Form{name: "Formulär för TB2", description: "Fyll i!"})
+
+answers = ["Adrian", "Hundar", "Ja"]
+
+questions =
+  [
+    %Question{form_id: form.id, name: "namn", required: true, type: :text},
+    %Question{form_id: form.id, name: "favoritdjur", required: false, type: :text},
+    %Question{
+      form_id: form.id,
+      name: "GDPR?",
+      description: "Jag godkänner att sälja min själ till Metaspexet",
+      required: false,
+      type: :select,
+      options: ["Ja", "Nej"]
+    }
+  ]
+  |> Enum.map(fn q -> Repo.insert!(q) end)
+  |> Enum.with_index()
+  |> Enum.each(fn {q, index} ->
+    Repo.insert!(%Response{
+      user_id: hd(users).id,
+      form_id: form.id
+    })
+  end)

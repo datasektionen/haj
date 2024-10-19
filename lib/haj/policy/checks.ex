@@ -29,7 +29,7 @@ defmodule Haj.Policy.Checks do
 
   def own_comment(%User{} = user, %Comment{} = comment), do: comment.user_id == user.id
 
-  def is_chef(%User{} = user, %ShowGroup{} = show_group) do
-    Spex.is_chef_of_show_group?(show_group, user)
+  def chef?(%User{} = user, %ShowGroup{} = show_group) do
+    Spex.chef_of_show_group?(show_group, user)
   end
 end

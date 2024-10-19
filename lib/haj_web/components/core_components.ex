@@ -12,7 +12,7 @@ defmodule HajWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import HajWeb.Gettext
+  use Gettext, backend: HajWeb.Gettext
 
   @doc """
   Renders a modal.
@@ -350,7 +350,7 @@ defmodule HajWeb.CoreComponents do
       <select
         id={@id}
         name={@name}
-        class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-zinc-500 sm:text-sm"
+        class="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-zinc-500 sm:text-sm"
         multiple={@multiple}
         {@rest}
       >
@@ -497,8 +497,8 @@ defmodule HajWeb.CoreComponents do
       end
 
     ~H"""
-    <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class={["mt-6", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
+    <div class="w-full overflow-x-auto px-4 sm:px-0">
+      <table class={["mt-6 overflow-clip", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
         <thead class="text-[0.8125rem] text-left leading-6 text-zinc-500">
           <tr>
             <th :for={col <- @col} class={["p-0 pr-6 pb-4 font-normal", Map.get(col, :class, "")]}>
@@ -582,7 +582,7 @@ defmodule HajWeb.CoreComponents do
       end
 
     ~H"""
-    <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
+    <div class="overflow-x-auto px-4 sm:overflow-visible sm:px-0">
       <table class={["mt-6", @small && "w-full", @small || "w-[40rem] sm:w-full"]}>
         <thead class="text-[0.8125rem] text-left leading-6 text-zinc-500">
           <tr>

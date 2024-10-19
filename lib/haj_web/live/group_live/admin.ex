@@ -78,7 +78,7 @@ defmodule HajWeb.GroupLive.Admin do
   end
 
   def add_user(id, socket) do
-    if Haj.Spex.is_member_of_show_group?(id, socket.assigns.show_group.id) do
+    if Haj.Spex.member_of_show_group?(id, socket.assigns.show_group.id) do
       {:noreply,
        socket |> put_flash(:error, "Användaren är redan med i gruppen.") |> assign(matches: [])}
     else

@@ -132,12 +132,4 @@ defmodule Haj.Archive do
   end
 
   defp after_save(error, _func), do: error
-
-  def s3_url(path) do
-    {:ok, url} =
-      ExAws.Config.new(:s3, region: "eu-north-1")
-      |> ExAws.S3.presigned_url(:get, "metaspexet-haj", path, virtual_host: true)
-
-    url
-  end
 end

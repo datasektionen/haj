@@ -41,8 +41,6 @@ defmodule HajWeb.ApplyLive.Groups do
         groups =
           Spex.get_show_groups_for_show(current_spex.id)
           |> Enum.filter(fn %{application_open: o} -> o end)
-          # Temp manus fix, should be removed
-          |> Enum.sort_by(fn %{group: %{name: n}} -> n == "Manus" end, :desc)
 
         socket =
           if pre_filled? do
@@ -109,7 +107,7 @@ defmodule HajWeb.ApplyLive.Groups do
       |> Enum.map(fn {k, _} -> String.to_integer(k) end)
 
     cond do
-      length(sgs) == 0 ->
+      Enum.empty?(sgs) ->
         {:noreply, socket |> put_flash(:error, "Du måste söka minst en grupp!")}
 
       !Applications.open?() ->
