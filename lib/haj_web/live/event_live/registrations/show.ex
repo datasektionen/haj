@@ -79,7 +79,7 @@ defmodule HajWeb.EventLive.Registrations.Show do
           </.field>
 
           <.field :for={qr <- @registration.response.question_responses} large name={qr.question.name}>
-            <%= qr.answer %>
+            <%= qr %>
           </.field>
         </dl>
       </div>

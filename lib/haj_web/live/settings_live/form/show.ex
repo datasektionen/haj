@@ -16,6 +16,20 @@ defmodule HajWeb.SettingsLive.Form.Show do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  @impl Phoenix.LiveView
+  def handle_event("delete", %{"id" => id}, socket) do
+    response = Forms.get_response!(id)
+
+    case Forms.delete_response(response) do
+      {:ok, _} ->
+        {:noreply, stream_delete(socket, :responses, response)}
+
+      {:error, _} ->
+        put_flash(socket, :error, "Kunde inte ta bort svaret")
+        {:noreply, socket}
+    end
+  end
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -66,7 +80,7 @@ defmodule HajWeb.SettingsLive.Form.Show do
           </.field>
 
           <.field :for={qr <- @response.question_responses} large name={qr.question.name}>
-            <%= qr.answer %>
+            <%= qr %>
           </.field>
         </dl>
       </div>

@@ -19,3 +19,13 @@ defmodule Haj.Forms.QuestionResponse do
     |> validate_required([])
   end
 end
+
+defimpl Phoenix.HTML.Safe, for: Haj.Forms.QuestionResponse do
+  def to_iodata(question_response) do
+    case {question_response.answer, question_response.multi_answer} do
+      {nil, nil} -> ""
+      {nil, multi_answer} -> Enum.join(multi_answer, ", ") |> Phoenix.HTML.Engine.html_escape()
+      {answer, nil} -> Phoenix.HTML.Engine.html_escape(answer)
+    end
+  end
+end
