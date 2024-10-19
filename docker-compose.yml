@@ -35,8 +35,10 @@ services:
       MINIO_ROOT_PASSWORD: adminadmin
     # We need to download the root.key and root.cert files before starting the server
     entrypoint: >
-      bin/sh -c 'curl -sSL --tlsv1.2 -O "https://raw.githubusercontent.com/minio/kes/master/root.key" -O "https://raw.githubusercontent.com/minio/kes/master/root.cert";
-       minio server /data --console-address ":9001";'
+      bin/sh -c '
+       mkdir -p /root/.minio/certs && cd /root/.minio/certs;
+       curl -sSL --tlsv1.2 -O "https://raw.githubusercontent.com/minio/kes/master/root.key" -O "https://raw.githubusercontent.com/minio/kes/master/root.cert";
+       /bin/minio server /data --console-address ":9001";'
     volumes:
       - _minio:/data
     ports:
