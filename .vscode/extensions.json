@@ -4,7 +4,7 @@
 
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
-		"JakeBecker.elixir-ls",
+		"elixir-tools.elixir-tools",
 		"bradlc.vscode-tailwindcss",
 		"phoenixframework.phoenix"
 	],

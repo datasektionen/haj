@@ -37,4 +37,4 @@ else
 fi
 
 # Start the Phoenix server
-mix phx.server
+elixir --sname haj -S mix phx.server

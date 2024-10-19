@@ -15,6 +15,12 @@ docker-compose up
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
+If you want an iterative `IEX` shell, connected to the running server, you can run:
+
+```bash
+docker compose exec app iex --sname console --remsh haj
+```
+
 ### Using local environment
 
 This is considerably more complex, and requires a bit of setup. You will also need access to many environment variables. This is not recommended.

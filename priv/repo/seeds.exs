@@ -37,7 +37,7 @@ user_data =
 
 users =
   Enum.map(user_data, fn user ->
-    case Repo.one(from u in User, where: u.username == ^user.username) do
+    case Repo.one(from(u in User, where: u.username == ^user.username)) do
       nil -> Repo.insert!(user)
       u -> u
     end
@@ -109,7 +109,7 @@ app_user_data =
 
 applicants =
   Enum.map(app_user_data, fn user ->
-    case Repo.one(from u in User, where: u.username == ^user.username) do
+    case Repo.one(from(u in User, where: u.username == ^user.username)) do
       nil -> Repo.insert!(user)
       u -> u
     end
@@ -119,8 +119,9 @@ Enum.each(applicants, fn user ->
   Repo.transaction(fn ->
     previous =
       Repo.one(
-        from a in Haj.Applications.Application,
+        from(a in Haj.Applications.Application,
           where: a.show_id == ^show.id and a.user_id == ^user.id
+        )
       )
 
     if previous != nil do
@@ -169,8 +170,6 @@ questions =
   |> Enum.each(fn {q, index} ->
     Repo.insert!(%Response{
       user_id: hd(users).id,
-      form_id: form.id,
-      question_id: q.id,
-      value: Enum.at(answers, index)
+      form_id: form.id
     })
   end)
