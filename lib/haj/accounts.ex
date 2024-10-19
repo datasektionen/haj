@@ -190,7 +190,7 @@ defmodule Haj.Accounts do
   Creates a vcard string based on users and show, the show is needed to create organization year
   """
   def to_vcard(users, show) do
-    Enum.map_join(users, &user_vcard(&1, show), "\r\n")
+    Enum.map_join(users, "\r\n", &user_vcard(&1, show))
   end
 
   defp user_vcard(user, show) do

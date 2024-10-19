@@ -125,6 +125,6 @@ defmodule HajWeb.ApplyLive.Complete do
   end
 
   defp group_names(show_groups) do
-    Enum.map_join(show_groups, fn {_, sg} -> sg.group.name end, ", ")
+    Enum.map_join(show_groups, ", ", fn {_, sg} -> sg.group.name end)
   end
 end

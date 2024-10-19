@@ -21,10 +21,10 @@ defmodule Haj.Slack do
     show_group_names =
       Enum.map_join(
         application.application_show_groups,
+        ", ",
         fn sg ->
           show_groups[sg.show_group_id].group.name
-        end,
-        ", "
+        end
       )
 
     """
