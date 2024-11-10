@@ -135,6 +135,12 @@ defmodule HajWeb.Layouts do
           title="Ansvar"
           active={@active_tab == {:setting, :responsibilities}}
         />
+
+        <:sub_link
+          navigate={~p"/settings/polls"}
+          title="Omröstningar"
+          active={@active_tab == {:setting, :polls}}
+        />
       </.nav_link_group>
     </div>
     """
