@@ -110,14 +110,18 @@ defmodule HajWeb.PollLive.Show do
       </div>
 
       <ul role="list" phx-update="stream" id="options" class="divide-y divide-gray-100">
-        <label
+        <div
           :for={{id, option} <- @streams.options}
           id={id}
-          class="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 rounded-md px-2 py-5 hover:bg-gray-50 sm:flex-nowrap"
-          phx-click="vote"
-          phx-value-id={option.id}
+          class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 rounded-md px-2 py-5 hover:bg-gray-50 sm:flex-nowrap"
         >
-          <input type="checkbox" checked={option.voted} />
+          <label phx-click="vote" phx-value-id={option.id} class="px-4 py-3 hover:cursor-pointer">
+            <input
+              type="checkbox"
+              class="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+              checked={option.voted}
+            />
+          </label>
 
           <div class="mr-auto">
             <p class="text-sm/6 font-semibold text-gray-900">
@@ -135,7 +139,7 @@ defmodule HajWeb.PollLive.Show do
               </p>
             </div>
           </div>
-          <div class="flex w-16 gap-x-2.5">
+          <div class="flex w-16 gap-x-2.5 pl-4">
             <dt class="flex items-center">
               <span class="sr-only">Total votes</span>
               <.icon name={:user} class="h-5 w-5 text-gray-400" />
@@ -144,7 +148,7 @@ defmodule HajWeb.PollLive.Show do
               <%= option.votes %>
             </dd>
           </div>
-        </label>
+        </div>
       </ul>
     </div>
 
