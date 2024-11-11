@@ -55,7 +55,7 @@ defmodule HajWeb.PollLive.Show do
       Map.put(option, :voted, false)
       |> Map.put(:votes, 0)
 
-    {:noreply, socket |> stream_insert(socket, :options, option)}
+    {:noreply, stream_insert(socket, :options, option)}
   end
 
   @impl true
