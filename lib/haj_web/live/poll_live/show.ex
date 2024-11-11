@@ -4,6 +4,8 @@ defmodule HajWeb.PollLive.Show do
   alias Haj.Polls
   alias Haj.Polls.Option
 
+  on_mount {HajWeb.UserAuth, {:authorize, :polls_vote}}
+
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     poll = Polls.get_poll!(id)
@@ -109,7 +111,7 @@ defmodule HajWeb.PollLive.Show do
         </div>
       </div>
 
-      <ul role="list" phx-update="stream" id="options" class="divide-y divide-gray-100">
+      <ul role="list" phx-update="stream" id="options" class="mt-4 divide-y divide-gray-100">
         <div
           :for={{id, option} <- @streams.options}
           id={id}
