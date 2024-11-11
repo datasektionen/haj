@@ -33,6 +33,9 @@ defmodule HajWeb.SettingsLive.Index do
         <.setting_card name="Ansvar" navigate={~p"/settings/responsibilities"}>
           Redigera ansvar
         </.setting_card>
+        <.setting_card name="Omröstningar" navigate={~p"/settings/polls"}>
+          Redigera omröstningar
+        </.setting_card>
       </div>
     </div>
     """

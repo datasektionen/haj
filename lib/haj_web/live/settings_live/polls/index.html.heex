@@ -1,0 +1,49 @@
+<.header>
+  Listing Polls
+  <:actions>
+    <.link patch={~p"/settings/polls/new"}>
+      <.button>New Poll</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="poll"
+  rows={@streams.poll_collection}
+  row_click={fn {_id, poll} -> JS.navigate(~p"/settings/polls/#{poll}") end}
+>
+  <:col :let={{_id, poll}} label="Title"><%= poll.title %></:col>
+  <:col :let={{_id, poll}} label="Description"><%= poll.description %></:col>
+  <:col :let={{_id, poll}} label="Display votes"><%= poll.display_votes %></:col>
+  <:col :let={{_id, poll}} label="Allow user options"><%= poll.allow_user_options %></:col>
+  <:action :let={{_id, poll}}>
+    <div class="sr-only">
+      <.link navigate={~p"/settings/polls/#{poll}"}>Show</.link>
+    </div>
+    <.link patch={~p"/settings/polls/#{poll}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, poll}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: poll.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="poll-modal"
+  show
+  on_cancel={JS.patch(~p"/settings/polls")}
+>
+  <.live_component
+    module={HajWeb.PollLive.FormComponent}
+    id={@poll.id || :new}
+    title={@page_title}
+    action={@live_action}
+    poll={@poll}
+    patch={~p"/settings/polls"}
+  />
+</.modal>

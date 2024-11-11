@@ -1,0 +1,73 @@
+<.header>
+  Poll <%= @poll.id %>
+  <:subtitle>This is a poll record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/settings/polls/#{@poll}/options/new"} phx-click={JS.push_focus()}>
+      <.button>Add option</.button>
+    </.link>
+    <.link patch={~p"/settings/polls/#{@poll}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit poll</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="options"
+  rows={@streams.options}
+  row_click={fn {_id, option} -> JS.navigate(~p"/settings/polls/options/#{option}") end}
+>
+  <:col :let={{_id, option}} label="Name"><%= option.name %></:col>
+  <:col :let={{_id, option}} label="Description"><%= option.description %></:col>
+  <:col :let={{_id, option}} label="Url"><%= option.url %></:col>
+  <:action :let={{_id, option}}>
+    <div class="sr-only">
+      <.link navigate={~p"/settings/polls/options/#{option}"}>Show</.link>
+    </div>
+    <.link patch={~p"/settings/polls/#{@poll}/options/#{option}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, option}}>
+    <.link
+      phx-click={JS.push("delete_option", value: %{id: option.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new_option, :edit_option]}
+  id="option-modal"
+  show
+  on_cancel={JS.patch(~p"/settings/polls/#{@poll}")}
+>
+  <.live_component
+    module={HajWeb.OptionLive.FormComponent}
+    id={@option.id || :new}
+    title={@page_title}
+    action={
+      case @live_action do
+        :new_option -> :new
+        :edit_option -> :edit
+      end
+    }
+    option={@option}
+    patch={~p"/settings/polls/#{@poll}"}
+  />
+</.modal>
+
+<.modal
+  :if={@live_action == :edit}
+  id="poll-modal"
+  show
+  on_cancel={JS.patch(~p"/settings/polls/#{@poll}")}
+>
+  <.live_component
+    module={HajWeb.PollLive.FormComponent}
+    id={@poll.id}
+    title={@page_title}
+    action={@live_action}
+    poll={@poll}
+    patch={~p"/settings/polls/#{@poll}"}
+  />
+</.modal>
