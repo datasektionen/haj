@@ -116,4 +116,11 @@ defmodule Haj.Policy do
       allow group_member: :music
     end
   end
+
+  object :polls do
+    action :vote do
+      allow :current_spex_member
+      allow role: :admin
+    end
+  end
 end

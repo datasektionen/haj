@@ -154,7 +154,7 @@ defmodule HajWeb.MerchAdminLive.FormComponent do
     meta = %{
       uploader: "S3",
       key: key,
-      url: "https://#{bucket}.s3-#{config.region}.amazonaws.com",
+      url: Haj.S3.base_url(),
       fields: fields
     }
 

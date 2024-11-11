@@ -1,0 +1,12 @@
+<.header>
+  Option <%= @option.id %>
+  <:subtitle>This is a option record from your database.</:subtitle>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @option.name %></:item>
+  <:item title="Description"><%= @option.description %></:item>
+  <:item title="Url"><%= @option.url %></:item>
+</.list>
+
+<.back navigate={~p"/settings/polls/#{@option.poll_id}"}>Back to options</.back>

@@ -3,11 +3,29 @@
   <h3 class="text-burgandy-600 inline-block"><%= @current_user.first_name %>!</h3>
 </div>
 <p class="pt-2 text-sm text-gray-500">
-  Välkommen till Haj, METAspexets interna system! Detta system är fortfarade under utveckling. Idéer eller tankar? Hör av dig till Webbchef Adrian på
-  <a href="mailto:webb@metaspexet.se" class="text-burgandy-600 font-bold">mail</a>
+  Välkommen till Haj, METAspexets interna system! Detta system är fortfarade under utveckling. Idéer eller tankar? Hör av dig till Webbgruppen på
+  <a href="mailto:webbgrupp@metaspexet.se" class="text-burgandy-600 font-bold">mail</a>
   eller Slack!
 </p>
-<div class="flex flex-col gap-4 py-4">
+<!-- TODO: Temp hardcoded stuff - Remove this when the polls are done -->
+<div :if={Policy.authorize?(:polls_vote, @current_user)} class="flex flex-col gap-4 pt-4">
+  <h3 class="text-xl font-bold group-hover:text-burgandy-600">Aktuellt</h3>
+  <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
+    <.card navigate={~p"/polls/1"}>
+      <div class="text-burgandy-500 inline-flex items-center gap-2 text-lg font-bold">
+        <.icon name={:musical_note} solid />
+        <span class="">
+          Låtar
+        </span>
+      </div>
+      <div class="text-gray-500">
+        Du kan nu rösta på låtar till årets spex!
+      </div>
+    </.card>
+  </div>
+</div>
+
+<div class="flex flex-col gap-4 pt-2">
   <div>
     <h3 class="pt-2 pb-4 text-xl font-bold">Dina grupper</h3>
     <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
@@ -61,14 +79,5 @@
     <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
       <.merch_card :for={merch_order_item <- @merch_order_items} order_item={merch_order_item} />
     </div>
-    <.link navigate={~p"/merch"} class="group inline-flex items-center gap-1">
-      <span class="text-burgandy-500 font-bold group-hover:text-burgandy-700">
-        Ändra beställning
-      </span>
-      <Heroicons.arrow_right
-        mini
-        class="fill-burgandy-500 mr-auto inline-block h-5 group-hover:fill-burgandy-700"
-      />
-    </.link>
   </div>
 </div>

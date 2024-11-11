@@ -106,6 +106,10 @@ defmodule HajWeb.Router do
       ## Shows
       live "/shows", ShowLive.Index, :index
       live "/shows/:show_id", ShowLive.Show, :index
+
+      ## Polls
+      live "/polls/:id", PollLive.Show, :show
+      live "/polls/:id/add-option", PollLive.Show, :new_option
     end
 
     # Admin only!
@@ -161,6 +165,18 @@ defmodule HajWeb.Router do
              :new_responsible
 
         live "/responsibilities/:id/show/edit", SettingsLive.Responsibility.Show, :edit
+
+        live "/polls", SettingsLive.Poll.Index, :index
+        live "/polls/new", SettingsLive.Poll.Index, :new
+        live "/polls/:id/edit", SettingsLive.Poll.Index, :edit
+
+        live "/polls/:id", SettingsLive.Poll.Show, :show
+        live "/polls/:id/show/edit", SettingsLive.Poll.Show, :edit
+
+        live "/polls/:id/options/new", SettingsLive.Poll.Show, :new_option
+        live "/polls/:id/options/:option_id/edit", SettingsLive.Poll.Show, :edit_option
+
+        live "/polls/options/:id", SettingsLive.Option.Show, :show
       end
     end
   end

@@ -37,24 +37,31 @@ if config_env() == :prod || config_env() == :staging do
     socket_options: maybe_ipv6
 
   login_api_key = System.get_env("LOGIN_API_KEY") || raise "LOGIN_API_KEY is missing"
-  login_host = System.get_env("LOGIN_HOST") || raise "LOGIN_HOST is missing"
+  login_url = System.get_env("LOGIN_URL") || raise "LOGIN_URL is missing"
+
+  login_frontend_url =
+    System.get_env("LOGIN_FRONTEND_URL") || raise "LOGIN_FRONTEND_URL is missing"
+
   api_login_secret = System.get_env("API_LOGIN_SECRET") || raise "API_LOGIN_SECRET is missing"
   zfinger_url = System.get_env("ZFINGER_URL") || raise "ZFINGER_URL is missing"
   spam_api_key = System.get_env("SPAM_API_KEY") || raise "SPAM_API_KEY is missing"
 
   config :haj,
     login_api_key: login_api_key,
-    login_host: login_host,
+    login_url: login_url,
+    login_frontend_url: login_frontend_url,
     api_login_secret: api_login_secret,
     zfinger_url: zfinger_url
 
   # Variables for imgproxy
   imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"
   imgproxy_salt = System.get_env("IMGPROXY_SALT") || raise "IMGPROXY_SALT is missing"
+  image_url = System.get_env("IMAGE_URL") || raise "IMAGE_URL is missing"
 
   config :imgproxy,
     key: imgproxy_key,
-    salt: imgproxy_salt
+    salt: imgproxy_salt,
+    prefix: image_url
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you

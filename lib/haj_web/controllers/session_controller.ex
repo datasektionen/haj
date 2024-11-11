@@ -18,7 +18,7 @@ defmodule HajWeb.SessionController do
   end
 
   defp do_login(conn, _params) do
-    host = Application.get_env(:haj, :login_host)
+    login_frontend_url = Application.get_env(:haj, :login_frontend_url)
 
     scheme =
       case get_req_header(conn, "x-forwarded-proto") do
@@ -33,7 +33,7 @@ defmodule HajWeb.SessionController do
       end
 
     callback = URI.encode("#{scheme}://#{conn.host}:#{port}/login/callback/?token=")
-    url = "https://#{host}/login?callback=#{callback}"
+    url = "#{login_frontend_url}/login?callback=#{callback}"
 
     conn
     |> put_resp_header("location", url)
@@ -42,11 +42,11 @@ defmodule HajWeb.SessionController do
 
   def callback(conn, %{"token" => token}) do
     # Gets the users data from the login server
-    host = Application.get_env(:haj, :login_host)
+    login_url = Application.get_env(:haj, :login_url)
     api_key = Application.get_env(:haj, :login_api_key)
 
     # TODO, move this to backend Haj.Login module
-    response = Req.get!("https://#{host}/verify/#{token}.json?api_key=#{api_key}")
+    response = Req.get!("#{login_url}/verify/#{token}.json?api_key=#{api_key}")
 
     case response do
       %{status: 200, body: data} ->

@@ -63,10 +63,6 @@ config :tailwind,
     cd: Path.expand("../assets", __DIR__)
   ]
 
-config :imgproxy,
-  # Cloudfront URL
-  prefix: "https://d3874pm7xaa2tj.cloudfront.net"
-
 config :ex_aws,
   http_client: ExAws.Request.Req
 

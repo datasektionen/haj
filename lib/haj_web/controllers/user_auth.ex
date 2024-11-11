@@ -61,8 +61,13 @@ defmodule HajWeb.UserAuth do
             |> Haj.Spex.preload_user_groups()
           end)
 
-        %Accounts.User{} = new_socket.assigns.current_user
-        {:cont, new_socket}
+        case new_socket.assigns.current_user do
+          %Accounts.User{} ->
+            {:cont, new_socket}
+
+          _ ->
+            {:halt, redirect_require_login(socket, %{"return_url" => return_to})}
+        end
 
       %{} ->
         {:halt, redirect_require_login(socket, %{"return_url" => return_to})}
