@@ -6,10 +6,7 @@
       <.link patch={~p"/settings/groups/#{@group}/show/edit"} phx-click={JS.push_focus()}>
         <.button>Redigera grupp</.button>
       </.link>
-      <.link
-        patch={~p"/settings/groups/#{@group}/show-groups/new"}
-        phx-click={JS.push_focus()}
-      >
+      <.link patch={~p"/settings/groups/#{@group}/show-groups/new"} phx-click={JS.push_focus()}>
         <.button>Lägg till till spex</.button>
       </.link>
     </div>

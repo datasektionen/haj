@@ -46,12 +46,12 @@ defmodule HajWeb.SessionController do
     api_key = Application.get_env(:haj, :login_api_key)
 
     # TODO, move this to backend Haj.Login module
-    {:ok, response} = HTTPoison.get("#{login_url}/verify/#{token}.json?api_key=#{api_key}")
+    response = Req.get!("#{login_url}/verify/#{token}.json?api_key=#{api_key}")
 
     case response do
-      %{status_code: 200, body: data} ->
+      %{status: 200, body: data} ->
         # Get the user or insert into database
-        user = Accounts.upsert_user(Jason.decode!(data))
+        user = Accounts.upsert_user(data)
         UserAuth.log_in_user(conn, user)
 
       _ ->

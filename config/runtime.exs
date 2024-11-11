@@ -51,8 +51,7 @@ if config_env() == :prod || config_env() == :staging do
     login_url: login_url,
     login_frontend_url: login_frontend_url,
     api_login_secret: api_login_secret,
-    zfinger_url: zfinger_url,
-    spam_api_key: spam_api_key
+    zfinger_url: zfinger_url
 
   # Variables for imgproxy
   imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"
@@ -91,21 +90,11 @@ if config_env() == :prod || config_env() == :staging do
     ],
     secret_key_base: secret_key_base
 
-  # ## Configuring the mailer
-  #
-  # In production you need to configure the mailer to use a different adapter.
-  # Also, you may need to configure the Swoosh API client of your choice if you
-  # are not using SMTP. Here is an example of the configuration:
-  #
-  #     config :haj, Haj.Mailer,
-  #       adapter: Swoosh.Adapters.Mailgun,
-  #       api_key: System.get_env("MAILGUN_API_KEY"),
-  #       domain: System.get_env("MAILGUN_DOMAIN")
-  #
-  # For this example you need include a HTTP client required by Swoosh API client.
-  # Swoosh supports Hackney and Finch out of the box:
-  #
-  #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
-  #
-  # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+  ## Configuring the mailer
+
+  config :haj, Haj.Mailer,
+    adapter: Haj.Mailer.SpamAdapter,
+    api_key: spam_api_key
+
+  config :swoosh, :api_client, Swoosh.ApiClient.Req
 end
