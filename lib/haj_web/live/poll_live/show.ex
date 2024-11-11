@@ -37,7 +37,7 @@ defmodule HajWeb.PollLive.Show do
 
   defp apply_action(socket, :new_option, _params) do
     socket
-    |> assign(:page_title, "New Option")
+    |> assign(:page_title, "Nytt alternativ")
     |> assign(:option, %Option{
       poll_id: socket.assigns.poll.id,
       creator_id: socket.assigns.current_user.id
@@ -96,15 +96,15 @@ defmodule HajWeb.PollLive.Show do
   def render(assigns) do
     ~H"""
     <div>
-      <div class="flex flex-row items-center justify-between">
-        <div class="mr-auto flex w-full flex-row items-baseline justify-between pt-4 sm:flex-col">
+      <div class="flex flex-col items-center justify-between xs:flex-row">
+        <div class="mr-auto flex w-full flex-col items-baseline justify-between pt-4">
           <span class="text-2xl font-bold"><%= @poll.title %></span>
-          <span class="hidden text-sm text-gray-600 sm:block"><%= @poll.description %></span>
+          <span class="text-sm text-gray-600"><%= @poll.description %></span>
         </div>
 
-        <div class="flex-none">
+        <div class="mt-4 w-full flex-none xs:w-fit">
           <.link patch={~p"/polls/#{@poll}/add-option"}>
-            <.button>Nytt alternativ</.button>
+            <.button class="w-full">Nytt alternativ</.button>
           </.link>
         </div>
       </div>
@@ -113,41 +113,51 @@ defmodule HajWeb.PollLive.Show do
         <div
           :for={{id, option} <- @streams.options}
           id={id}
-          class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 rounded-md px-2 py-5 hover:bg-gray-50 sm:flex-nowrap"
+          class="flex flex-col rounded-md px-2 py-5 hover:bg-gray-50 sm:flex-nowrap"
         >
-          <label phx-click="vote" phx-value-id={option.id} class="px-4 py-3 hover:cursor-pointer">
-            <input
-              type="checkbox"
-              class="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
-              checked={option.voted}
-            />
-          </label>
+          <div class="flex flex-wrap items-center justify-between gap-x-2">
+            <label
+              phx-click="vote"
+              phx-value-id={option.id}
+              class="px-2 py-2 hover:cursor-pointer md:px-4"
+            >
+              <input
+                type="checkbox"
+                class="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+                checked={option.voted}
+              />
+            </label>
 
-          <div class="mr-auto">
-            <p class="text-sm/6 font-semibold text-gray-900">
-              <.link href={option.url} class="hover:underline"><%= option.name %></.link>
-            </p>
-            <div class="text-xs/5 mt-1 flex items-center gap-x-2 text-gray-500">
-              <p>
-                <%= option.description %>
-              </p>
-              <svg viewBox="0 0 2 2" class="h-0.5 w-0.5 fill-current">
-                <circle cx="1" cy="1" r="1"></circle>
-              </svg>
-              <p>
-                <%= option.creator.full_name %>
+            <div class="mr-auto">
+              <p class="text-sm/6 font-semibold">
+                <.link
+                  :if={option.url}
+                  href={option.url}
+                  target="_blank"
+                  class="text-burgandy-600 hover:underline"
+                >
+                  <%= option.name %>
+                </.link>
+                <span :if={!option.url}><%= option.name %></span>
               </p>
             </div>
+            <div class="flex w-16 gap-x-2.5 pl-4">
+              <dt class="flex items-center">
+                <span class="sr-only">Total votes</span>
+                <.icon name={:user} class="h-4 w-4 text-gray-400" />
+              </dt>
+              <dd class="text-sm/6 text-gray-900">
+                <%= option.votes %>
+              </dd>
+            </div>
           </div>
-          <div class="flex w-16 gap-x-2.5 pl-4">
-            <dt class="flex items-center">
-              <span class="sr-only">Total votes</span>
-              <.icon name={:user} class="h-5 w-5 text-gray-400" />
-            </dt>
-            <dd class="text-sm/6 text-gray-900">
-              <%= option.votes %>
-            </dd>
-          </div>
+
+          <p
+            :if={option.description}
+            class="text-xs/5 mt-1 ml-2 flex items-center gap-x-2 text-gray-500 md:ml-4"
+          >
+            <%= option.description %>
+          </p>
         </div>
       </ul>
     </div>

@@ -171,16 +171,17 @@ defmodule Haj.Polls do
 
   """
   def create_option(attrs \\ %{}) do
-    Repo.transaction(fn repo ->
-      option =
-        %Option{}
-        |> Option.changeset(attrs)
-        |> repo.insert!()
+    case %Option{}
+         |> Option.changeset(attrs)
+         |> Repo.insert() do
+      {:ok, option} ->
+        option = Repo.preload(option, :creator)
+        broadcast_new_option(option)
+        {:ok, option}
 
-      option = repo.preload(option, :creator)
-      broadcast_new_option(option)
-      option
-    end)
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """

@@ -18,6 +18,6 @@ defmodule Haj.Polls.Option do
   def changeset(option, attrs) do
     option
     |> cast(attrs, [:name, :description, :url, :poll_id, :creator_id])
-    |> validate_required([:name, :description, :url])
+    |> validate_required([:name])
   end
 end

@@ -9,7 +9,7 @@ defmodule HajWeb.OptionLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage option records in your database.</:subtitle>
+        <:subtitle>Använd detta formulär för att skapa nya röstningsalternativ.</:subtitle>
       </.header>
 
       <.simple_form
@@ -22,11 +22,11 @@ defmodule HajWeb.OptionLive.FormComponent do
         <.input field={@form[:poll_id]} type="hidden" />
         <.input field={@form[:creator_id]} type="hidden" />
 
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:description]} type="text" label="Description" />
-        <.input field={@form[:url]} type="text" label="Url" />
+        <.input field={@form[:name]} type="text" label="Namn" placeholder="Låtnamn" />
+        <.input field={@form[:description]} type="text" label="Beskrivning" placeholder="Artistnamn" />
+        <.input field={@form[:url]} type="text" label="Länk" placeholder="Pls spotifylänk" />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Option</.button>
+          <.button phx-disable-with="Sparar...">Spara</.button>
         </:actions>
       </.simple_form>
     </div>
