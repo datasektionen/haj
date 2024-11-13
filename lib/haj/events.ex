@@ -344,8 +344,20 @@ defmodule Haj.Events do
 
   """
   def create_event_registration(attrs \\ %{}) do
-    %EventRegistration{}
-    |> EventRegistration.changeset(attrs)
+    case EventRegistration.changeset(%EventRegistration{}, attrs) do
+      {:ok, changeset} ->
+        event = get_event!(changeset.changes.event_id)
+        has_tickets = event.has_tickets
+
+        if has_tickets do
+          EventRegistration.tickets_changeset(%EventRegistration{}, attrs)
+        else
+          changeset
+        end
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
     |> Repo.insert()
     |> notify_subscribers({:registration, :created})
   end
@@ -363,8 +375,14 @@ defmodule Haj.Events do
 
   """
   def update_event_registration(%EventRegistration{} = event_registration, attrs) do
-    event_registration
-    |> EventRegistration.changeset(attrs)
+    event = get_event!(event_registration.event_id)
+    has_tickets = event.has_tickets
+
+    if has_tickets do
+      EventRegistration.tickets_changeset(event_registration, attrs)
+    else
+      EventRegistration.changeset(event_registration, attrs)
+    end
     |> Repo.update()
   end
 

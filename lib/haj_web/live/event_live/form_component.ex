@@ -12,12 +12,28 @@ defmodule HajWeb.EventLive.FormComponent do
         <:subtitle><%= @form.description %></:subtitle>
       </.header>
       <.form
+        :let={form}
         for={@response_form}
         phx-submit="save"
         phx-change="validate"
         phx-target={@myself}
         class="mt-4 flex flex-col gap-4"
       >
+        <HajWeb.CoreComponents.label :if={@event.has_tickets}>
+          Biljett
+        </HajWeb.CoreComponents.label>
+        <.radio_group :if={@event.has_tickets} field={form[:ticket_type_id]}>
+          <:radio :for={ticket <- @event.ticket_types} value={ticket.id}>
+            <div>
+              <div class="font-medium"><%= ticket.name %></div>
+              <div class="text-sm text-gray-800">
+                <p :if={ticket.price == 0}>Gratis</p>
+                <p :if={ticket.price != 0}><%= ticket.price %> kr</p>
+              </div>
+            </div>
+          </:radio>
+        </.radio_group>
+
         <.input
           name="attending"
           type="select"
@@ -45,26 +61,35 @@ defmodule HajWeb.EventLive.FormComponent do
     registration = Events.get_registration_for_user(event.id, user.id)
     attending = registration && registration.attending && true
 
-    if event.form do
-      form_response = Forms.get_event_response_for_user(event.id, user.id)
+    socket = assign(socket, registration: registration)
 
-      changeset = Forms.get_form_changeset!(event.form_id, form_response || %{})
-      form = Forms.get_form!(event.form_id)
+    assigns =
+      if event.form do
+        form_response = Forms.get_event_response_for_user(event.id, user.id)
 
-      {:ok,
-       assign(socket, assigns)
-       |> assign(registration: registration, form: form, attending: attending)
-       |> assign_form(changeset)}
-    else
-      {:ok,
-       assign(socket, assigns)
-       |> assign(
-         registration: registration,
-         attending: attending,
-         form: %{name: "Anmälan", description: "Anmäl dig till #{event.name}", questions: []},
-         response_form: to_form(%{})
-       )}
-    end
+        changeset = Forms.get_form_changeset!(event.form_id, form_response || %{})
+        form = Forms.get_form!(event.form_id)
+
+        changeset =
+          if registration,
+            do: Ecto.Changeset.cast(changeset, Map.from_struct(registration), []),
+            else: changeset
+
+        assign(socket, assigns)
+        |> assign(form: form)
+        |> assign_form(changeset)
+      else
+        assign(socket, assigns)
+        |> assign(
+          form: %{name: "Anmälan", description: "Anmäl dig till #{event.name}", questions: []},
+          response_form: to_form(%{})
+        )
+      end
+
+    {:ok,
+     assigns
+     |> assign(price: 0, attending: attending)
+     |> assign_selected_tickets(event.ticket_types)}
   end
 
   @impl true
@@ -93,10 +118,15 @@ defmodule HajWeb.EventLive.FormComponent do
 
   @impl true
   def handle_event("save", %{"form_response" => response, "attending" => attending}, socket) do
-    response = flatten_response(response)
+    ticket_id = Map.get(response, "ticket_type_id", nil)
+
+    response =
+      Map.delete(response, "ticket_type_id")
+      |> flatten_response()
 
     {:noreply,
-     assign(socket, attending: attending) |> save(socket.assigns.registration, response)}
+     assign(socket, attending: attending, ticket_id: ticket_id)
+     |> save(socket.assigns.registration, response)}
   end
 
   @impl true
@@ -105,27 +135,39 @@ defmodule HajWeb.EventLive.FormComponent do
   end
 
   defp save(socket, nil, response) do
-    %{current_user: user, event: event, attending: attending} = socket.assigns
+    %{current_user: user, event: event, attending: attending, ticket_id: ticket_id} =
+      socket.assigns
 
-    with {:ok, form_response} <- Forms.submit_form(socket.assigns.form.id, user.id, response),
+    with {:ok, form_response} <-
+           Forms.submit_form(socket.assigns.form.id, user.id, response),
          {:ok, _} <-
            Events.create_event_registration(%{
              event_id: event.id,
              user_id: user.id,
              response_id: form_response[:response].id,
-             attending: attending
+             attending: attending,
+             ticket_type_id: ticket_id
            }) do
       push_flash(:info, "Du är nu anmäld!")
       push_patch(socket, to: socket.assigns.patch)
     else
       {:error, changeset} ->
+        dbg(changeset)
         push_flash(:error, "Något gick fel.")
         assign_form(socket, changeset)
+
+      a ->
+        dbg(a)
+        IO.inspect("error")
+        push_flash(:error, "Något gick fel.")
     end
   end
 
   defp save(socket, registration, response) do
-    %{current_user: user, attending: attending} = socket.assigns
+    %{current_user: user, attending: attending, ticket_id: ticket_id} = socket.assigns
+
+    dbg(socket.assigns.registration)
+    dbg(socket.assigns.form)
 
     with previous when not is_nil(previous) <-
            Forms.get_event_response_for_user(socket.assigns.registration.event_id, user.id),
@@ -134,16 +176,19 @@ defmodule HajWeb.EventLive.FormComponent do
          {:ok, _} <-
            Events.update_event_registration(registration, %{
              form_response_id: previous.id,
-             attending: attending
+             attending: attending,
+             ticket_type_id: ticket_id
            }) do
       push_flash(:info, "Uppdaterade anmälan!")
       push_patch(socket, to: socket.assigns.patch)
     else
       nil ->
+        dbg(response)
         push_flash(:error, "Något gick fel.")
         socket
 
       {:error, changeset} ->
+        dbg(changeset)
         push_flash(:error, "Något gick fel.")
         assign_form(socket, changeset)
     end
@@ -194,5 +239,12 @@ defmodule HajWeb.EventLive.FormComponent do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :response_form, to_form(changeset, as: :form_response))
+  end
+
+  defp assign_selected_tickets(socket, ticket_types) do
+    socket
+    |> assign_new(:ticket_types, fn ->
+      Map.new(ticket_types, fn %{id: id} = tt -> {id, tt} end)
+    end)
   end
 end

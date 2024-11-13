@@ -48,44 +48,6 @@
 
     <div class="flex flex-auto flex-col p-4 md:rounded-xl md:border md:p-6">
       <div class="flex flex-auto flex-col gap-4">
-        <div
-          :for={ticket <- @event.ticket_types}
-          :if={@event.has_tickets}
-          class="flex flex-row justify-between"
-        >
-          <div>
-            <div class="font-medium"><%= ticket.name %></div>
-            <div class="text-sm text-gray-800">
-              <p :if={ticket.price == 0}>Gratis</p>
-              <p :if={ticket.price != 0}><%= ticket.price %> kr</p>
-            </div>
-          </div>
-          <div class="flex flex-row items-center gap-2">
-            <button
-              :if={@selected[ticket.id] > 0}
-              class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl shadow-md hover:cursor-pointer hover:bg-gray-100"
-              phx-click={JS.push("dec", value: %{id: ticket.id})}
-            >
-              <.icon name={:minus} mini />
-            </button>
-
-            <div class="flex h-10 w-8 items-center justify-center rounded-lg bg-gray-200">
-              <span><%= @selected[ticket.id] %></span>
-            </div>
-
-            <button
-              class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-2xl shadow-md hover:cursor-pointer hover:bg-gray-100"
-              phx-click={JS.push("inc", value: %{id: ticket.id})}
-            >
-              <.icon name={:plus} mini />
-            </button>
-          </div>
-        </div>
-
-        <div :if={@price > 0} class="text-right text-gray-700">
-          Totalt: <%= @price %> kr
-        </div>
-
         <.button class="mt-auto" phx-click="register">
           <%= case {@registration, @event.has_tickets} do %>
             <% {%Haj.Events.EventRegistration{}, _} -> %>

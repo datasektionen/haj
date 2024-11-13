@@ -25,10 +25,8 @@ defmodule HajWeb.EventLive.Show do
     {:ok,
      assign(socket,
        event: event,
-       online_count: initial_count,
-       price: 0
-     )
-     |> assign_selected_tickets(event.ticket_types)}
+       online_count: initial_count
+     )}
   end
 
   @impl true
@@ -54,39 +52,8 @@ defmodule HajWeb.EventLive.Show do
   end
 
   @impl true
-  def handle_event("inc", %{"id" => id}, socket) do
-    selected = Map.update(socket.assigns.selected, id, 0, &(&1 + 1))
-    price = socket.assigns.price + socket.assigns.ticket_types[id].price
-
-    {:noreply, assign(socket, selected: selected, price: price)}
-  end
-
-  @impl true
-  def handle_event("dec", %{"id" => id}, socket) do
-    selected = Map.update(socket.assigns.selected, id, 0, &(&1 - 1))
-    price = socket.assigns.price - socket.assigns.ticket_types[id].price
-
-    {:noreply, assign(socket, selected: selected, price: price)}
-  end
-
-  @impl true
   def handle_event("register", _, socket) do
-    if socket.assigns.event.has_tickets do
-      _selected = Enum.filter(socket.assigns.selected, fn {_, count} -> count > 0 end)
-      {:noreply, socket}
-    else
-      {:noreply, push_patch(socket, to: ~p"/events/#{socket.assigns.event}/register")}
-    end
-  end
-
-  defp assign_selected_tickets(socket, ticket_types) do
-    socket
-    |> assign_new(:selected, fn ->
-      Map.new(ticket_types, fn %{id: id} -> {id, 0} end)
-    end)
-    |> assign_new(:ticket_types, fn ->
-      Map.new(ticket_types, fn %{id: id} = tt -> {id, tt} end)
-    end)
+    {:noreply, push_patch(socket, to: ~p"/events/#{socket.assigns.event}/register")}
   end
 
   defp toggle_mobile_tickets(js \\ %JS{}) do

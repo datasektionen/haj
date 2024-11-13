@@ -64,12 +64,7 @@ defmodule HajWeb.SettingsLive.Event.FormComponent do
             <% end %>
           </div>
 
-          <.input
-            field={@form[:has_tickets]}
-            type="checkbox"
-            label="Har biljetter (don't use, experimental)"
-            disabled
-          />
+          <.input field={@form[:has_tickets]} type="checkbox" label="Har biljetter" />
 
           <.live_component
             id="search-component"
