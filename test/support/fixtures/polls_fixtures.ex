@@ -43,9 +43,7 @@ defmodule Haj.PollsFixtures do
   def vote_fixture(attrs \\ %{}) do
     {:ok, vote} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> Haj.Polls.create_vote()
 
     vote

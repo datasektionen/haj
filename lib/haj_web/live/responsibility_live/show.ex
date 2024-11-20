@@ -122,8 +122,14 @@ defmodule HajWeb.ResponsibilityLive.Show do
 
   @impl true
   def handle_event("select_tab", %{"tab_form" => %{"tab" => tab}}, socket) do
-    {:noreply,
-     socket |> push_patch(to: ~p"/responsibilities/#{socket.assigns.responsibility}/#{tab}")}
+    to =
+      case tab do
+        "comments" -> ~p"/responsibilities/#{socket.assigns.responsibility}/comments"
+        "history" -> ~p"/responsibilities/#{socket.assigns.responsibility}/history"
+        "description" -> ~p"/responsibilities/#{socket.assigns.responsibility}/"
+      end
+
+    {:noreply, socket |> push_patch(to: to)}
   end
 
   @impl true

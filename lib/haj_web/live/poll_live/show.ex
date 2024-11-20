@@ -115,7 +115,7 @@ defmodule HajWeb.PollLive.Show do
         role="list"
         phx-update="stream"
         id="options"
-        class="mt-4 divide divide-gray-100 grid grid-cols-2 gap-x-4"
+        class="divide mt-4 grid grid-cols-2 gap-x-4 divide-gray-100"
       >
         <div
           :for={{id, option} <- @streams.options}

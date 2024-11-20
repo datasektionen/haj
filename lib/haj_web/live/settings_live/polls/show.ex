@@ -25,13 +25,13 @@ defmodule HajWeb.SettingsLive.Poll.Show do
     |> assign(:option, nil)
   end
 
-  defp apply_action(socket, :show_option, %{"id" => id, "option_id" => option_id}) do
+  defp apply_action(socket, :show_option, %{"id" => _id, "option_id" => option_id}) do
     socket
     |> assign(:page_title, "Show Option")
     |> assign(:option, Polls.get_option!(option_id))
   end
 
-  defp apply_action(socket, :edit_option, %{"id" => id, "option_id" => option_id}) do
+  defp apply_action(socket, :edit_option, %{"id" => _id, "option_id" => option_id}) do
     socket
     |> assign(:page_title, "Edit Option")
     |> assign(:option, Polls.get_option!(option_id))
