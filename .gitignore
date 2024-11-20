@@ -40,3 +40,5 @@ npm-debug.log
 
 # Jetbrains IDEs
 .idea/
+
+tmp.txt
