@@ -111,11 +111,16 @@ defmodule HajWeb.PollLive.Show do
         </div>
       </div>
 
-      <ul role="list" phx-update="stream" id="options" class="mt-4 divide-y divide-gray-100">
+      <ul
+        role="list"
+        phx-update="stream"
+        id="options"
+        class="mt-4 divide divide-gray-100 grid grid-cols-2 gap-x-4"
+      >
         <div
           :for={{id, option} <- @streams.options}
           id={id}
-          class="flex flex-col rounded-md px-2 py-5 hover:bg-gray-50 sm:flex-nowrap"
+          class="flex flex-col rounded-md px-2 py-5 hover:bg-gray-50"
         >
           <div class="flex flex-wrap items-center justify-between gap-x-2">
             <label
