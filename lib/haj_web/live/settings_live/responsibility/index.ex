@@ -6,7 +6,10 @@ defmodule HajWeb.SettingsLive.Responsibility.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :responsibilities, Responsibilities.list_responsibilities())}
+    show = Haj.Spex.current_spex()
+
+    {:ok,
+     stream(socket, :responsibilities, Responsibilities.list_responsibilities_for_show(show.id))}
   end
 
   @impl true

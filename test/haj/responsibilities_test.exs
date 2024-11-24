@@ -10,9 +10,14 @@ defmodule Haj.ResponsibilitiesTest do
 
     @invalid_attrs %{description: nil, name: nil}
 
-    test "list_responsibilities/0 returns all responsibilities" do
-      responsibility = responsibility_fixture()
-      assert Responsibilities.list_responsibilities() == [responsibility]
+    test "list_responsibilities_for_show/1 returns all responsibilities" do
+      %{responsibility: responsibility} =
+        responsible_user =
+        responsible_user_fixture()
+        |> Repo.preload(:responsibility)
+
+      assert [responsibility] =
+               Responsibilities.list_responsibilities_for_show(responsible_user.show_id)
     end
 
     test "get_responsibility!/1 returns the responsibility with given id" do
@@ -131,7 +136,7 @@ defmodule Haj.ResponsibilitiesTest do
 
     import Haj.ResponsibilitiesFixtures
 
-    @invalid_attrs %{}
+    @invalid_attrs %{user_id: nil, show_id: nil, responsibility_id: nil}
 
     test "list_responsibility_users/0 returns all responsibility_users" do
       responsible_user = responsible_user_fixture()
@@ -144,7 +149,15 @@ defmodule Haj.ResponsibilitiesTest do
     end
 
     test "create_responsible_user/1 with valid data creates a responsible_user" do
-      valid_attrs = %{}
+      user = Haj.AccountsFixtures.user_fixture()
+      responsibility = Haj.ResponsibilitiesFixtures.responsibility_fixture()
+      spex = Haj.SpexFixtures.show_fixture()
+
+      valid_attrs = %{
+        user_id: user.id,
+        responsibility_id: responsibility.id,
+        show_id: spex.id
+      }
 
       assert {:ok, %ResponsibleUser{} = responsible_user} =
                Responsibilities.create_responsible_user(valid_attrs)

@@ -396,7 +396,7 @@ defmodule Haj.Merch do
         Repo.rollback("Beställningsdeadline passerad.")
       end
 
-      Repo.delete(merch_order_item)
+      Repo.delete!(merch_order_item)
     end)
   end
 

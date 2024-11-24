@@ -75,7 +75,7 @@ defmodule Haj.Accounts do
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(returning: [:full_name])
   end
 
   @doc """

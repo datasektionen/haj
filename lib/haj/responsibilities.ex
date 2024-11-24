@@ -23,13 +23,11 @@ defmodule Haj.Responsibilities do
       [%Responsibility{responsible_users: [%User{}, ...]}, ...]
 
   """
-  def list_responsibilities do
-    current_spex = Haj.Spex.current_spex()
-
+  def list_responsibilities_for_show(show_id) do
     query =
       from r in Responsibility,
         left_join: ru in ResponsibleUser,
-        on: r.id == ru.responsibility_id and ru.show_id == ^current_spex.id,
+        on: r.id == ru.responsibility_id and ru.show_id == ^show_id,
         left_join: u in assoc(ru, :user),
         preload: [responsible_users: u]
 

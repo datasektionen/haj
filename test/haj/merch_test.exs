@@ -135,7 +135,15 @@ defmodule Haj.MerchTest do
     end
 
     test "create_merch_order_item/1 with valid data creates a merch_order_item" do
-      valid_attrs = %{count: 42, size: "some size"}
+      item = Haj.MerchFixtures.merch_item_fixture()
+      order = Haj.MerchFixtures.merch_order_fixture()
+
+      valid_attrs = %{
+        count: 42,
+        size: "some size",
+        merch_item_id: item.id,
+        merch_order_id: order.id
+      }
 
       assert {:ok, %MerchOrderItem{} = merch_order_item} =
                Merch.create_merch_order_item(valid_attrs)

@@ -43,6 +43,7 @@ defmodule HajWeb.ResponsibilityLive.Index do
   end
 
   defp list_responsibilities do
-    Responsibilities.list_responsibilities()
+    show = Haj.Spex.current_spex()
+    Responsibilities.list_responsibilities_for_show(show.id)
   end
 end

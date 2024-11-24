@@ -8,8 +8,6 @@ defmodule Haj.ResponsibilitiesFixtures do
   Generate a responsibility.
   """
   def responsibility_fixture(attrs \\ %{}) do
-    show = Haj.SpexFixtures.show_fixture()
-
     {:ok, responsibility} =
       attrs
       |> Enum.into(%{
@@ -17,13 +15,6 @@ defmodule Haj.ResponsibilitiesFixtures do
         name: "some name"
       })
       |> Haj.Responsibilities.create_responsibility()
-      |> Haj.Repo.preload(responsible_users:
-        from ru in ResponsibleUser,
-          where: r.id == ru.responsibility_id and ru.show_id == ^current_spex.id,
-          left_join: u in assoc(ru, :user),
-          preload: [responsible_users: u]
-
-      )
 
     responsibility
   end
@@ -35,7 +26,7 @@ defmodule Haj.ResponsibilitiesFixtures do
     {:ok, comment} =
       attrs
       |> Enum.into(%{
-        text: "some text"
+        text: "some text\n## Title\n\n"
       })
       |> Haj.Responsibilities.create_comment()
 
@@ -46,9 +37,17 @@ defmodule Haj.ResponsibilitiesFixtures do
   Generate a responsible_user.
   """
   def responsible_user_fixture(attrs \\ %{}) do
+    user = Haj.AccountsFixtures.user_fixture()
+    show = Haj.SpexFixtures.show_fixture()
+    responsibility = Haj.ResponsibilitiesFixtures.responsibility_fixture()
+
     {:ok, responsible_user} =
       attrs
-      |> Enum.into(%{})
+      |> Enum.into(%{
+        user_id: user.id,
+        show_id: show.id,
+        responsibility_id: responsibility.id
+      })
       |> Haj.Responsibilities.create_responsible_user()
 
     responsible_user

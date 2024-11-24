@@ -38,11 +38,16 @@ defmodule Haj.MerchFixtures do
   Generate a merch_order_item.
   """
   def merch_order_item_fixture(attrs \\ %{}) do
+    item = Haj.MerchFixtures.merch_item_fixture()
+    order = Haj.MerchFixtures.merch_order_fixture()
+
     {:ok, merch_order_item} =
       attrs
       |> Enum.into(%{
         count: 42,
-        size: "some size"
+        size: "some size",
+        merch_item_id: item.id,
+        merch_order_id: order.id
       })
       |> Haj.Merch.create_merch_order_item()
 
