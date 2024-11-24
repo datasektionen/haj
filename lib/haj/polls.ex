@@ -70,9 +70,13 @@ defmodule Haj.Polls do
 
   """
   def update_poll(%Poll{} = poll, attrs) do
-    poll
-    |> Poll.changeset(attrs)
-    |> Repo.update()
+    res =
+      poll
+      |> Poll.changeset(attrs)
+      |> Repo.update()
+
+    broadcast_updated_poll(res)
+    res
   end
 
   @doc """
@@ -410,4 +414,10 @@ defmodule Haj.Polls do
   defp broadcast(poll_id, event, payload) do
     PubSub.broadcast(Haj.PubSub, "poll:#{poll_id}", {event, payload})
   end
+
+  defp broadcast_updated_poll({:ok, poll}) do
+    PubSub.broadcast(Haj.PubSub, "poll:#{poll.id}", {:poll_updated, %{poll: poll}})
+  end
+
+  defp broadcast_updated_poll({:error, _changeset}), do: :ok
 end
