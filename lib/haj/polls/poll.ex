@@ -7,6 +7,7 @@ defmodule Haj.Polls.Poll do
     field :title, :string
     field :display_votes, :boolean, default: false
     field :allow_user_options, :boolean, default: false
+    field :open, :boolean, default: true
 
     has_many :options, Haj.Polls.Option
     has_many :votes, Haj.Polls.Vote
@@ -17,7 +18,7 @@ defmodule Haj.Polls.Poll do
   @doc false
   def changeset(poll, attrs) do
     poll
-    |> cast(attrs, [:title, :description, :display_votes, :allow_user_options])
+    |> cast(attrs, [:title, :description, :display_votes, :allow_user_options, :open])
     |> validate_required([:title, :description, :display_votes, :allow_user_options])
   end
 end
