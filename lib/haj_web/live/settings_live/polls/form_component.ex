@@ -21,6 +21,7 @@ defmodule HajWeb.PollLive.FormComponent do
       >
         <.input field={@form[:title]} type="text" label="Title" />
         <.input field={@form[:description]} type="text" label="Description" />
+        <.input field={@form[:open]} type="checkbox" label="Open for voting" />
         <.input field={@form[:display_votes]} type="checkbox" label="Display votes" />
         <.input field={@form[:allow_user_options]} type="checkbox" label="Allow user options" />
         <:actions>
