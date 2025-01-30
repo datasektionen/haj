@@ -20,6 +20,7 @@ defmodule HajWeb.ApplyLive.EditInfo do
 
   @impl true
   def handle_event("validate", %{"user" => params}, socket) do
+    params = map_program_and_year_to_class(params)
     changeset =
       socket.assigns[:current_user]
       |> Accounts.User.application_changeset(params)
@@ -30,6 +31,7 @@ defmodule HajWeb.ApplyLive.EditInfo do
 
   @impl true
   def handle_event("save", %{"user" => params}, socket) do
+    params = map_program_and_year_to_class(params)
     changeset =
       socket.assigns[:current_user]
       |> Accounts.User.application_changeset(params)
@@ -44,6 +46,14 @@ defmodule HajWeb.ApplyLive.EditInfo do
          |> put_flash(:error, "Något gick fel, kolla att allt är ifyllt korrekt.")
          |> assign_form(changeset)}
     end
+  end
+
+  defp map_program_and_year_to_class(params) do
+    program_map = %{"Data" => "D", "Media" => "Me", "Annan" => "annan"}
+    program = Map.get(params, "program")
+    year = Map.get(params, "year")
+    class = "#{program_map[program]}-#{year}"
+    Map.put(params, "class", class)
   end
 
   defp assign_form(socket, changeset) do
@@ -90,19 +100,46 @@ defmodule HajWeb.ApplyLive.EditInfo do
           class="col-span-6 sm:col-span-2"
           disabled="true"
         />
-        <.input field={@form[:email]} type="text" label="Email" class="col-span-6 sm:col-span-4" />
         <.input
-          field={@form[:class]}
-          type="text"
-          label="Årskurs (ex D-20 eller Me-22)"
+          field={@form[:program]}
+          type="select"
+          label="Program"
+          options={["Data", "Media", "Annat"]}
+          prompt="Välj program"
           class="col-span-6 sm:col-span-2"
         />
+        <.input
+          field={@form[:year]}
+          type="number"
+          label="Årskurs (25 om du började 2025)"
+          class="col-span-6 sm:col-span-2"
+          min="0"
+          max="100"
+        />
+        <.input field={@form[:email]} type="text" label="Email (behöver inte vara KTH-email)" class="col-span-6 sm:col-span-3" />
         <.input
           field={@form[:phone]}
           type="text"
           label="Telefonnummer"
-          class="col-span-6 sm:col-span-4"
+          class="col-span-6 sm:col-span-3"
         />
+        <.input
+          field={@form[:ths_member]}
+          type="select"
+          label="THS medlem"
+          options={["Ja", "Nej", "Vill ej ange"]}
+          prompt="Välj om THS medlem"
+          class="col-span-6 sm:col-span-3"
+        />
+        <.input
+          field={@form[:gender]}
+          type="select"
+          label="Kön"
+          options={["Man", "Kvinna", "Annat", "Vill ej ange"]}
+          prompt="Välj kön"
+          class="col-span-6 sm:col-span-3"
+        />
+
         <div class="col-span-6 border-t pt-4 text-right">
           <.button type="submit">
             Nästa

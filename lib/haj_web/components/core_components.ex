@@ -350,7 +350,7 @@ defmodule HajWeb.CoreComponents do
       <select
         id={@id}
         name={@name}
-        class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-zinc-500 sm:text-sm"
+        class="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-zinc-500 sm:text-sm"
         multiple={@multiple}
         {@rest}
       >
