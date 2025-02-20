@@ -41,21 +41,41 @@ defmodule HajWeb.SessionController do
   end
 
   def callback(conn, %{"token" => token}) do
-    # Gets the users data from the login server
     login_url = Application.get_env(:haj, :login_url)
     api_key = Application.get_env(:haj, :login_api_key)
 
-    # TODO, move this to backend Haj.Login module
     response = Req.get!("#{login_url}/verify/#{token}.json?api_key=#{api_key}")
 
-    case response do
-      %{status: 200, body: data} ->
-        # Get the user or insert into database
-        user = Accounts.upsert_user(data)
-        UserAuth.log_in_user(conn, user)
+  case response do
+    %{status: 200, body: data} ->
+      user = Accounts.upsert_user(data)
 
-      _ ->
-        conn |> put_status(503) |> text("503: Something went wrong")
+      # Get the path first before logging in
+      redirect_to =
+        case Haj.Applications.get_current_application_for_user(user.id) do
+          nil -> UserAuth.signed_in_path(conn)
+          %{id: id} -> ~p"/applications/#{id}/edit"
+        end
+
+      # Log in with explicit redirect path
+      conn
+      |> put_session(:user_return_to, redirect_to)
+      |> UserAuth.log_in_user(user)
+
+    _ ->
+      conn |> put_status(503) |> text("503: Something went wrong")
+  end
+  end
+
+  defp handle_post_login_redirect(conn, user) do
+    case Haj.Applications.get_pending_application_for_user(user.id) do
+      nil ->
+        conn  # No pending application, proceed normally
+
+      %{id: application_id} ->
+        conn
+        |> redirect(to: ~p"/applications/#{application_id}/edit")
+        |> halt()
     end
   end
 

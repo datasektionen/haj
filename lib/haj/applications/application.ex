@@ -6,6 +6,8 @@ defmodule Haj.Applications.Application do
     field :other, :string
     field :ranking, :string
 
+    field :group_ids, {:array, :integer}, virtual: true
+
     field :status, Ecto.Enum,
       values: [:pending, :submitted],
       default: :pending
@@ -26,9 +28,8 @@ defmodule Haj.Applications.Application do
 
   @doc false
   def changeset_with_show_groups(application, attrs) do
-    changeset(application, attrs)
-    |> cast_assoc(:application_show_groups,
-      with: &Haj.Applications.ApplicationShowGroup.changeset/2
-    )
+    application
+    |> cast(attrs, [:other, :ranking, :group_ids])
+    |> validate_required([:group_ids])
   end
 end

@@ -4,6 +4,8 @@ defmodule Haj.Applications do
   """
 
   import Ecto.Query, warn: false
+  import Ecto.Changeset
+
   alias Haj.Spex.ShowGroup
   alias Haj.Spex
   alias Haj.Repo
@@ -38,7 +40,10 @@ defmodule Haj.Applications do
       ** (Ecto.NoResultsError)
 
   """
-  def get_application!(id), do: Repo.get!(App, id)
+  def get_application(id) do
+    Repo.get(App, id)
+    |> Repo.preload([:user, application_show_groups: [show_group: :group]])
+  end
 
   @doc """
   Creates an application. Takes a list of show, groups, user id and a show id.
@@ -82,6 +87,24 @@ defmodule Haj.Applications do
         end)
       end
     end)
+  end
+
+  @doc """
+  Updates an application.
+  """
+  def update_application(%App{} = application, attrs) do
+    application
+    |> App.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Changes an application with associated show groups for form usage.
+  """
+  def change_application_with_show_groups(%App{} = application, attrs \\ %{}) do
+    application
+    |> cast(attrs, [:other, :ranking, :group_ids])
+    |> validate_required([:group_ids])
   end
 
   @doc """
@@ -162,9 +185,8 @@ defmodule Haj.Applications do
   def get_current_application_for_user(user_id) do
     query =
       from a in App,
-        where:
-          a.user_id == ^user_id and a.show_id == ^Spex.current_spex().id and
-            a.status == ^:submitted,
+        where: a.user_id == ^user_id and a.show_id == ^Spex.current_spex().id,
+        # Remove status filter to get any application
         preload: [application_show_groups: []]
 
     Repo.one(query)
@@ -177,7 +199,7 @@ defmodule Haj.Applications do
     query =
       from a in App,
         where:
-          a.user_id == ^user_id and a.show_id == ^Spex.current_spex().id and a.status == ^:pending,
+          a.user_id == ^user_id and a.show_id == ^Spex.current_spex().id,
         preload: [application_show_groups: []]
 
     Repo.one(query)

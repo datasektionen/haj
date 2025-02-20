@@ -1,6 +1,7 @@
 defmodule HajWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
+  require Logger
 
   use HajWeb, :controller
 
@@ -215,11 +216,27 @@ defmodule HajWeb.UserAuth do
   def require_authenticated_user(conn, _opts) do
     if conn.assigns[:current_user] do
       conn
+      |> maybe_redirect_if_pending_application()
     else
       conn
       |> maybe_store_return_to()
       |> redirect(to: Routes.session_path(conn, :login))
       |> halt()
+    end
+  end
+
+  defp maybe_redirect_if_pending_application(conn) do
+    user = conn.assigns.current_user
+    case Haj.Applications.get_pending_application_for_user(user.id) do
+      nil -> conn
+      %{id: application_id} ->
+        if current_path(conn) != "/applications/#{application_id}/edit" do
+          conn
+          |> Phoenix.Controller.redirect(to: ~p"/applications/#{application_id}/edit")
+          |> Plug.Conn.halt()
+        else
+          conn
+        end
     end
   end
 
@@ -262,6 +279,14 @@ defmodule HajWeb.UserAuth do
 
   defp maybe_store_return_to(conn), do: conn
 
-  defp signed_in_path(), do: ~p"/dashboard"
-  defp signed_in_path(_conn), do: ~p"/dashboard"
+  def signed_in_path(), do: ~p"/dashboard"
+  def signed_in_path(conn) do
+    user = conn.assigns.current_user
+
+    case Haj.Applications.get_pending_application_for_user(user.id) do
+      nil -> "/sok"
+      %{id: application_id} -> "/applications/#{application_id}/edit"
+    end
+  end
+
 end

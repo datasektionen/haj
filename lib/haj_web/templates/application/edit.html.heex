@@ -1,0 +1,114 @@
+<div class="max-w-3xl mx-auto bg-white p-8 shadow-md rounded-lg">
+  <h1 class="text-3xl font-bold text-gray-900 mb-4">Redigera Ansökan</h1>
+  <p class="text-gray-600 mb-8">
+    Uppdatera dina personuppgifter och information om din ansökan.
+  </p>
+
+  <.form :let={f} for={@changeset} action={~p"/applications/#{@application.id}"} method="put" class="space-y-6">
+    <!-- Förnamn -->
+    <div>
+      <label for="first_name" class="block text-sm font-medium text-gray-700">Förnamn</label>
+      <.input 
+        field={f[:first_name]} 
+        type="text" 
+        value={@application.user.first_name} 
+        class="mt-1 block w-full rounded-lg focus:ring-blue-500 focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Efternamn -->
+    <div>
+      <label for="last_name" class="block text-sm font-medium text-gray-700">Efternamn</label>
+      <.input 
+        field={f[:last_name]} 
+        type="text" 
+        value={@application.user.last_name} 
+        class="mt-1 block w-full rounded-lg focus:ring-blue-500 focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+      <.input 
+        field={f[:email]} 
+        type="email" 
+        value={@application.user.email} 
+        class="mt-1 block w-full rounded-lg focus:ring-blue-500 focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Årskurs -->
+    <div>
+      <label for="class" class="block text-sm font-medium text-gray-700">Årskurs</label>
+      <.input 
+        field={f[:class]} 
+        type="text" 
+        value={@application.user.class} 
+        class="mt-1 block w-full rounded-lg focus:ring-blue-500 focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Telefonnummer -->
+    <div>
+      <label for="phone" class="block text-sm font-medium text-gray-700">Telefonnummer</label>
+      <.input 
+        field={f[:phone]} 
+        type="tel" 
+        value={@application.user.phone} 
+        class="mt-1 block w-full rounded-lg focus:ring-blue-500 focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Ansökta grupper (checkboxar) -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Ansökta grupper</label>
+      <div class="mt-1 grid grid-cols-2 gap-2">
+        <%= for {group_name, group_id} <- @groups_options do %>
+          <label class="flex items-center space-x-2">
+            <input type="checkbox"
+                   name="application[group_ids][]"
+                   value={group_id}
+                   checked={group_id in (Phoenix.HTML.Form.input_value(f, :group_ids) || [])}
+                   class="h-4 w-4 text-blue-600 border-gray-300 rounded" />
+            <span><%= group_name %></span>
+          </label>
+        <% end %>
+      </div>
+      <p class="text-sm text-gray-500 mt-2">
+        Kryssa i de grupper du vill ansöka till. Du kan både lägga till och ta bort val genom att klicka på rutorna.
+      </p>
+    </div>
+
+    <!-- Övrigt -->
+    <div>
+      <label for="other" class="block text-sm font-medium text-gray-700">Övrigt</label>
+      <.input 
+        field={f[:other]} 
+        type="textarea" 
+        value={@application.other} 
+        rows="3"
+        class="mt-1 block w-full rounded-lg focus:ring-blue-500 focus:border-blue-500"
+      />
+    </div>
+
+    <div class="flex justify-between items-center mt-8 border-t pt-4">
+      <.button 
+        type="button"
+        phx-click={JS.push("delete") |> hide("#application-form")}
+        class="inline-flex justify-center items-center px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+        data-confirm="Är du säker på att du vill radera din ansökan? Detta kan inte ångras."
+      >
+        Dra tillbaka och radera ansökan
+      </.button>
+
+      <.button 
+        type="submit"
+        class="inline-flex justify-center items-center px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        phx-disable-with="Sparar..."
+      >
+        Uppdatera Ansökan
+      </.button>
+    </div>
+  </.form>
+</div>

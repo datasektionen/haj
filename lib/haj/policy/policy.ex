@@ -1,6 +1,10 @@
 defmodule Haj.Policy do
   use LetMe.Policy
 
+  def has_applied(user, _params) do
+    user.has_applied == true
+  end
+
   object :haj do
     action :access do
       allow :spex_member
@@ -106,6 +110,11 @@ defmodule Haj.Policy do
 
     action :approve do
       allow :is_chef
+      allow role: :admin
+    end
+
+    action :edit do
+      allow :has_applied
       allow role: :admin
     end
   end

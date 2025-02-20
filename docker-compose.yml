@@ -20,6 +20,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    ports:
+      - "5432:5432"
 
   minio:
     image: minio/minio
@@ -86,6 +88,8 @@ services:
 
   login:
     image: ghcr.io/datasektionen/nyckeln-under-dorrmattan
+    environment:
+      KTH_ID: "nilsmal"
     ports:
       - 7002:7002
 

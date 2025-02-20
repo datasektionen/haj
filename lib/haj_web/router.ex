@@ -92,6 +92,13 @@ defmodule HajWeb.Router do
       live "/applications/:id", ApplicationsLive.Show, :show
       live "/applications/:id/confirm", ApplicationsLive.Show, :approve
 
+      scope "/" do
+        pipe_through :require_authenticated_user
+        get "/applications/:id/edit", ApplicationController, :edit
+        put "/applications/:id", ApplicationController, :update
+        delete "/applications/:id", ApplicationController, :delete
+      end
+
       ## Song administration
       live "/songs/edit", SongLive.Edit.Index, :index
       live "/songs/edit/new", SongLive.Edit.Index, :new
