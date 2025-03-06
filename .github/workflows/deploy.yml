@@ -1,0 +1,20 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Nomad
+        uses: datasektionen/nomad-deploy@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          nomad-token: ${{ secrets.NOMAD_TOKEN }}
+          nomad-addr: ${{ vars.NOMAD_ADDR }}
+          build-vars: |
+            RAZZLE_TAITAN_URL=https://taitan.datasektionen.se
+            RAZZLE_CALYPSO_URL=https://calypso.datasektionen.se/api
