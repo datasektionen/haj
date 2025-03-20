@@ -91,10 +91,27 @@ defmodule HajWeb.UserSettingsLive do
 
       <div class="col-span-6 sm:col-span-3">
         <.form_text_input for={f} input={:personal_number} text="Personummer" />
-        <p class="mt-2 text-sm text-gray-500">
+        <p class="mt-2 text-xs text-gray-500 relative" style="margin-bottom: -1rem;">
           Detta är endast synligt för administratörer och samlas då uppgifterna
           behövs för att få pengar från ABF.
         </p>
+      </div>
+
+      <div class="col-span-6 sm:col-span-3">
+        <.form_select_input
+          input={:ths_member}
+          for={f}
+          options={["Ja", "Nej", "Vill ej ange"]}
+          text="THS medlem"
+        />
+      </div>
+      <div class="col-span-6 sm:col-span-3">
+        <.form_select_input
+          input={:gender}
+          for={f}
+          options={["Man", "Kvinna", "Annat", "Vill ej ange"]}
+          text="Kön"
+        />
       </div>
 
       <div class="col-span-6 border-t pt-4 text-lg font-bold">
@@ -198,6 +215,24 @@ defmodule HajWeb.UserSettingsLive do
     <%= text_input(
       @for,
       @input,
+      class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+    ) %>
+    <%= error_tag(@for, @input, class: "pt-1 text-sm") %>
+    """
+  end
+
+  defp form_select_input(assigns) do
+    ~H"""
+    <%= label(
+      @for,
+      @input,
+      @text,
+      class: "block text-sm font-medium text-gray-700"
+    ) %>
+    <%= select(
+      @for,
+      @input,
+      @options,
       class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
     ) %>
     <%= error_tag(@for, @input, class: "pt-1 text-sm") %>
