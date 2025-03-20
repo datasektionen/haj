@@ -25,6 +25,9 @@ defmodule Haj.Accounts.User do
 
     field :food_preference_other, :string
 
+    field :ths_member, :string
+    field :gender, :string
+
     timestamps()
   end
 
@@ -44,7 +47,9 @@ defmodule Haj.Accounts.User do
       :zip,
       :city,
       :role,
-      :food_preference_other
+      :food_preference_other,
+      :ths_member,
+      :gender
     ])
     |> validate_format(:personal_number, ~r"^\d{10}$",
       message: "Personnummer måste vara 10 siffror, utan bindestreck."
