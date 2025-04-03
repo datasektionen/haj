@@ -11,7 +11,7 @@ import Config
 # before starting your production server.
 config :haj, HajWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
-  check_origin: ["https://haj.metaspexet.se", "https://metaspexet.se"]
+  check_origin: ["https://haj.metaspexet.se", "https://metaspexet.se", "https://haj.betaspexet.se"]
 
 # Do not print debug messages in production
 config :logger, level: :info
