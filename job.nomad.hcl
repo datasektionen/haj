@@ -38,7 +38,8 @@ PORT={{ env "NOMAD_PORT_hajhttp" }}
 LOGIN_API_KEY={{ .login_api_key }}
 
 PHX_HOST=haj.betaspexet.se
-LOGIN_URL=https://sso.datasektionen.se/legacyapi
+LOGIN_URL=http://sso.nomad.dsekt.internal/legacyapi
+LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
 IMGPROXY_KEY={{ .imgproxy_key }}
 IMGPROXY_SALT={{ .imgproxy_salt }}
 IMAGE_URL=https://imgproxy.haj.betaspexet.se
