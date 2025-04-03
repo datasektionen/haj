@@ -36,6 +36,7 @@ DATABASE_URL=postgres://haj:{{ .database_password }}@postgres.dsekt.internal:543
 SECRET_KEY_BASE={{ .secret_key_base }}
 PORT={{ env "NOMAD_PORT_hajhttp" }}
 LOGIN_API_KEY={{ .login_api_key }}
+API_LOGIN_SECRET={{ .api_login_secret }}
 
 PHX_HOST=haj.betaspexet.se
 LOGIN_URL=http://sso.nomad.dsekt.internal/legacyapi
