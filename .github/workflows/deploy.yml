@@ -15,3 +15,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           nomad-token: ${{ secrets.NOMAD_TOKEN }}
           nomad-addr: ${{ vars.NOMAD_ADDR }}
+          build-dockerfile: Dockerfile.production
