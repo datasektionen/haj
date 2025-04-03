@@ -51,7 +51,6 @@ EOF
 
 
     task "imgproxy" {
-
       service {
         name     = "imgproxy"
         port     = "imgproxyhttp"
@@ -82,8 +81,8 @@ AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
 IMGPROXY_MAX_SRC_RESOLUTION=30
 IMGPROXY_USE_S3=true
 IMGPROXY_TTL=31536000
-AWS_REGION="eu-west-1"
-IMGPROXY_BASE_URL="s3://salamon-test"
+AWS_REGION=eu-west-1
+IMGPROXY_BASE_URL=s3://salamon-test
 {{ end }}
 EOF
         destination = "local/.env"
