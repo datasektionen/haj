@@ -37,14 +37,16 @@ SECRET_KEY_BASE={{ .secret_key_base }}
 PORT={{ env "NOMAD_PORT_hajhttp" }}
 LOGIN_API_KEY={{ .login_api_key }}
 API_LOGIN_SECRET={{ .api_login_secret }}
+SPAM_API_KEY={{ .spam_api_key }}
+IMGPROXY_KEY={{ .imgproxy_key }}
+IMGPROXY_SALT={{ .imgproxy_salt }}
+{{ end }}
 
 PHX_HOST=haj.betaspexet.se
 LOGIN_URL=http://sso.nomad.dsekt.internal/legacyapi
 LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
-IMGPROXY_KEY={{ .imgproxy_key }}
-IMGPROXY_SALT={{ .imgproxy_salt }}
 IMAGE_URL=https://imgproxy.haj.betaspexet.se
-{{ end }}
+ZFINGER_URL=https://zfinger.datasektionen.se
 EOF
         destination = "local/.env"
         env         = true
