@@ -63,8 +63,8 @@ EOF
         provider = "nomad"
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.imgproxy.rule=Host(`imgproxy.haj.betaspexet.se`)",
-          "traefik.http.routers.imgproxy.tls.certresolver=default"
+          "traefik.http.routers.haj-imgproxy.rule=Host(`imgproxy.haj.betaspexet.se`)",
+          "traefik.http.routers.haj-imgproxy.tls.certresolver=default"
         ]
       }
 
