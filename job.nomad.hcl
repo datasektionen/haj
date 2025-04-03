@@ -32,7 +32,7 @@ job "haj" {
 
         data        = <<EOF
 {{ with nomadVar "nomad/jobs/haj" }}
-DATABASE_URL=postgres://haj:{{ .database_password }}@postgres.dsekt.internal:5432/haj
+DATABASE_URL=ecto://haj:{{ .database_password }}@postgres.dsekt.internal:5432/haj
 SECRET_KEY_BASE={{ .secret_key_base }}
 PORT={{ env "NOMAD_PORT_hajhttp" }}
 LOGIN_API_KEY={{ .login_api_key }}
