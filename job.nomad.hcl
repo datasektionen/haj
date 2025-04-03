@@ -40,6 +40,8 @@ API_LOGIN_SECRET={{ .api_login_secret }}
 SPAM_API_KEY={{ .spam_api_key }}
 IMGPROXY_KEY={{ .imgproxy_key }}
 IMGPROXY_SALT={{ .imgproxy_salt }}
+AWS_ACCESS_KEY_ID={{ .aws_access_key_id }}
+AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
 {{ end }}
 
 PHX_HOST=haj.betaspexet.se
@@ -85,8 +87,7 @@ AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
 IMGPROXY_MAX_SRC_RESOLUTION=30
 IMGPROXY_USE_S3=true
 IMGPROXY_TTL=31536000
-AWS_REGION=eu-north-1
-IMGPROXY_BASE_URL=s3://dsekt-metaspexet-haj
+IMGPROXY_BASE_URL=s3://metaspexet-haj
 {{ end }}
 EOF
         destination = "local/.env"
