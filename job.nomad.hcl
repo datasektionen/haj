@@ -82,8 +82,8 @@ EOF
 IMGPROXY_KEY={{ .imgproxy_key }}
 IMGPROXY_SALT={{ .imgproxy_salt }}
 IMGPROXY_BIND=:{{ env "NOMAD_PORT_imgproxyhttp" }}
-AWS_ACCESS_KEY_ID={{ .aws_access_key_id }}
-AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
+AWS_ACCESS_KEY_ID={{ .imgproxy_aws_access_key_id }}
+AWS_SECRET_ACCESS_KEY={{ .imgproxy_aws_secret_access_key }}
 IMGPROXY_MAX_SRC_RESOLUTION=30
 IMGPROXY_USE_S3=true
 IMGPROXY_TTL=31536000
