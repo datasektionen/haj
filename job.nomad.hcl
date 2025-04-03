@@ -1,6 +1,6 @@
 job "haj" {
   type = "service"
-  namespace = "spexet"
+  namespace = "metaspexet"
 
   group "haj" {
 
@@ -38,7 +38,7 @@ PORT={{ env "NOMAD_PORT_hajhttp" }}
 LOGIN_API_KEY={{ .login_api_key }}
 
 PHX_HOST=haj.betaspexet.se
-LOGIN_URL=https://login.datasektionen.se
+LOGIN_URL=https://sso.datasektionen.se/legacyapi
 IMGPROXY_KEY={{ .imgproxy_key }}
 IMGPROXY_SALT={{ .imgproxy_salt }}
 IMAGE_URL=https://imgproxy.haj.betaspexet.se
@@ -57,7 +57,7 @@ EOF
         provider = "nomad"
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.imgproxy.rule=Host(`haj-imgproxy.datasektionen.se`)",
+          "traefik.http.routers.imgproxy.rule=Host(`imgproxy.haj.betaspexet.se`)",
           "traefik.http.routers.imgproxy.tls.certresolver=default"
         ]
       }
@@ -81,8 +81,8 @@ AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
 IMGPROXY_MAX_SRC_RESOLUTION=30
 IMGPROXY_USE_S3=true
 IMGPROXY_TTL=31536000
-AWS_REGION=eu-west-1
-IMGPROXY_BASE_URL=s3://salamon-test
+AWS_REGION=eu-north-1
+IMGPROXY_BASE_URL=s3://dsekt-metaspexet-haj
 {{ end }}
 EOF
         destination = "local/.env"
