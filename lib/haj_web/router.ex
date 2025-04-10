@@ -57,6 +57,7 @@ defmodule HajWeb.Router do
       live "/groups", GroupLive.Index, :index
       live "/group/:show_group_id", GroupLive.Show, :show
       live "/group/admin/:show_group_id", GroupLive.Admin, :index
+      live "/group/extra_questions/:show_group_id", GroupLive.ExtraQuestions
 
       ## Merch
       live "/merch", MerchLive.Index, :index
