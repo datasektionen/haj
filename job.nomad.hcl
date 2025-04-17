@@ -7,6 +7,7 @@ job "haj" {
     network {
       port "hajhttp" {}
       port "imgproxyhttp" {}
+      port "haj_metrics_http" {}
     }
 
     task "haj" {
@@ -20,6 +21,17 @@ job "haj" {
           "traefik.http.routers.haj.tls.certresolver=default",
         ]
       }
+
+      service {
+        name     = "haj-metrics"
+        port     = "haj_metrics_http"
+        provider = "nomad"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.haj-metrics.rule=Host(`haj-metrics.nomad.dsekt.internal`)",
+          "traefik.http.routers.haj-metrics.entrypoints=web-internal"
+        ]
+    }
 
       driver = "docker"
 
@@ -35,6 +47,7 @@ job "haj" {
 DATABASE_URL=postgres://haj:{{ .database_password }}@postgres.dsekt.internal/haj
 SECRET_KEY_BASE={{ .secret_key_base }}
 PORT={{ env "NOMAD_PORT_hajhttp" }}
+METRICS_PORT={{ env "NOMAD_PORT_haj_metrics_http" }}
 LOGIN_API_KEY={{ .login_api_key }}
 API_LOGIN_SECRET={{ .api_login_secret }}
 SPAM_API_KEY={{ .spam_api_key }}

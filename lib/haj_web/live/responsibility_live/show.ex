@@ -212,7 +212,7 @@ defmodule HajWeb.ResponsibilityLive.Show do
 
   attr :class, :string, default: nil
   slot :left
-  slot :right, default: nil
+  slot :right
 
   defp center_layout(assigns) do
     ~H"""

@@ -46,12 +46,16 @@ if config_env() == :prod || config_env() == :staging do
   zfinger_url = System.get_env("ZFINGER_URL") || raise "ZFINGER_URL is missing"
   spam_api_key = System.get_env("SPAM_API_KEY") || raise "SPAM_API_KEY is missing"
 
+  metrics_port =
+    System.get_env("METRICS_PORT") |> String.to_integer() || raise "METRICS_PORT is missing"
+
   config :haj,
     login_api_key: login_api_key,
     login_url: login_url,
     login_frontend_url: login_frontend_url,
     api_login_secret: api_login_secret,
-    zfinger_url: zfinger_url
+    zfinger_url: zfinger_url,
+    metrics_port: metrics_port
 
   # Variables for imgproxy
   imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"
