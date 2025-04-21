@@ -8,10 +8,10 @@ defmodule Haj.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      # Start metrics first
+      Haj.PromEx,
       # Start the Ecto repository
       Haj.Repo,
-      # Start the Telemetry supervisor
-      HajWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Haj.PubSub},
       # Start the Endpoint (http/https)

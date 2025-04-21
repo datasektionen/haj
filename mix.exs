@@ -63,7 +63,7 @@ defmodule Haj.MixProject do
       {:let_me, "~> 1.0"},
       {:ex_aws, "~> 2.5"},
       {:ex_aws_s3, "~> 2.5"},
-      {:peep, "~> 3.5"}
+      {:prom_ex, "~> 1.0"}
     ]
   end
 

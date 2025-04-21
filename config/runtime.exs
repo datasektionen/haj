@@ -54,8 +54,15 @@ if config_env() == :prod || config_env() == :staging do
     login_url: login_url,
     login_frontend_url: login_frontend_url,
     api_login_secret: api_login_secret,
-    zfinger_url: zfinger_url,
-    metrics_port: metrics_port
+    zfinger_url: zfinger_url
+
+  config :haj, Haj.PromEx,
+    disabled: false,
+    manual_metrics_start_delay: :no_delay,
+    grafana: :disabled,
+    metrics_server: [
+      port: metrics_port
+    ]
 
   # Variables for imgproxy
   imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"

@@ -29,7 +29,8 @@ job "haj" {
         tags = [
           "traefik.enable=true",
           "traefik.http.routers.haj-metrics.rule=Host(`haj-metrics.nomad.dsekt.internal`)",
-          "traefik.http.routers.haj-metrics.entrypoints=web-internal"
+          "traefik.http.routers.haj-metrics.entrypoints=web-internal",
+          "prometheus.scrape-url=haj-metrics.nomad.dsekt.internal"
         ]
     }
 
@@ -37,7 +38,7 @@ job "haj" {
 
       config {
         image = var.image_tag
-        ports = ["hajhttp"]
+        ports = ["hajhttp", "haj_metrics_http"]
       }
 
       template {
