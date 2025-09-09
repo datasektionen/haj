@@ -1,23 +1,23 @@
-job "haj" {
+job "haj-dev" {
   type = "service"
   namespace = "metaspexet"
 
-  group "haj" {
+  group "haj-dev" {
 
     network {
       port "hajhttp" {}
       port "imgproxyhttp" {}
     }
 
-    task "haj" {
+    task "haj-dev" {
       service {
-        name     = "haj"
+        name     = "haj-dev"
         port     = "hajhttp"
         provider = "nomad"
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.haj.rule=Host(`haj.metaspexet.se`)",
-          "traefik.http.routers.haj.tls.certresolver=default",
+          "traefik.http.routers.haj-dev.rule=Host(`haj.betaspexet.se`)",
+          "traefik.http.routers.haj-dev.tls.certresolver=default",
         ]
       }
 
@@ -31,8 +31,8 @@ job "haj" {
       template {
 
         data        = <<EOF
-{{ with nomadVar "nomad/jobs/haj" }}
-DATABASE_URL=postgres://haj:{{ .database_password }}@postgres.dsekt.internal/haj
+{{ with nomadVar "nomad/jobs/haj-dev" }}
+DATABASE_URL=postgres://haj-dev:{{ .database_password }}@postgres.dsekt.internal/haj-dev
 SECRET_KEY_BASE={{ .secret_key_base }}
 PORT={{ env "NOMAD_PORT_hajhttp" }}
 LOGIN_API_KEY={{ .login_api_key }}
@@ -44,10 +44,10 @@ AWS_ACCESS_KEY_ID={{ .aws_access_key_id }}
 AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
 {{ end }}
 
-PHX_HOST=haj.metaspexet.se
+PHX_HOST=haj.betaspexet.se
 LOGIN_URL=http://sso.nomad.dsekt.internal/legacyapi
 LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
-IMAGE_URL=https://imgproxy.haj.metaspexet.se
+IMAGE_URL=https://imgproxy.haj.betaspexet.se
 ZFINGER_URL=https://zfinger.datasektionen.se
 EOF
         destination = "local/.env"
@@ -63,8 +63,8 @@ EOF
         provider = "nomad"
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.haj-imgproxy.rule=Host(`imgproxy.haj.metaspexet.se`)",
-          "traefik.http.routers.haj-imgproxy.tls.certresolver=default"
+          "traefik.http.routers.haj-dev-imgproxy.rule=Host(`imgproxy.haj.betaspexet.se`)",
+          "traefik.http.routers.haj-dev-imgproxy.tls.certresolver=default"
         ]
       }
 
@@ -78,7 +78,7 @@ EOF
 
       template {
         data        = <<EOF
-{{ with nomadVar "nomad/jobs/haj" }}
+{{ with nomadVar "nomad/jobs/haj-dev" }}
 IMGPROXY_KEY={{ .imgproxy_key }}
 IMGPROXY_SALT={{ .imgproxy_salt }}
 IMGPROXY_BIND=:{{ env "NOMAD_PORT_imgproxyhttp" }}
@@ -99,5 +99,5 @@ EOF
 
 variable "image_tag" {
   type    = string
-  default = "ghcr.io/datasektionen/haj:latest"
+  default = "ghcr.io/datasektionen/haj:staging"
 }

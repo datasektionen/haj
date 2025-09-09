@@ -1,22 +1,20 @@
-name: Fly Deploy Staging
+name: Deploy to Staging Environment
+
 on:
-  pull_request:
-    branches:
-      - main
   push:
-    branches:
-      - dev
-env:
-  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+    branches: [ dev ]
+  workflow_dispatch:
+
 jobs:
   deploy:
-      timeout-minutes: 5
-      name: Deploy app
-      runs-on: ubuntu-latest
-      environment: 
-        name: staging
-        url: https://betaspexet.se
-      steps:
-        - uses: actions/checkout@v2
-        - uses: superfly/flyctl-actions/setup-flyctl@master
-        - run: flyctl deploy --remote-only --config ./fly.staging.toml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Nomad
+        uses: datasektionen/nomad-deploy@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          nomad-token: ${{ secrets.NOMAD_TOKEN }}
+          nomad-addr: ${{ vars.NOMAD_ADDR }}
+          build-dockerfile: Dockerfile.staging
+          job-file-path: staging.nomad.hcl
+          image-tag: staging
