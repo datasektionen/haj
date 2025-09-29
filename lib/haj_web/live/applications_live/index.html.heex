@@ -44,6 +44,12 @@
       </.link>
     </.form>
 
+    <small class="mt-2 text-sm font-normal text-gray-500">
+      Visar <%= length(@applications) %> <%= if length(@applications) == 1,
+        do: "ansökan",
+        else: "ansökningar" %>
+    </small>
+
     <.table
       small
       id="applicaiton_table"
