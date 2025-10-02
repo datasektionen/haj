@@ -10,27 +10,29 @@ defmodule HajWeb.ApplicationsLive.Index do
     current_spex = Spex.current_spex() |> Haj.Repo.preload(show_groups: [group: []])
     applications = Applications.list_applications_for_show(current_spex.id)
 
-    most_popular_group =
+    most_popular_groups =
       case applications do
         [] ->
-          %Spex.Group{name: "Inga ansökningar"}
+          [%Spex.Group{name: "Inga ansökningar"}]
 
         apps ->
-          apps
-          |> Enum.flat_map(fn app -> app.application_show_groups end)
-          |> Enum.group_by(fn asg -> asg.show_group_id end)
-          |> Enum.map(fn {_, asgs} -> {hd(asgs).show_group.group, length(asgs)} end)
-          |> Enum.sort_by(fn {_, asgs} -> asgs end, :desc)
-          |> Enum.take(1)
-          |> List.first()
-          |> elem(0)
+          groups =
+            apps
+            |> Enum.flat_map(fn app -> app.application_show_groups end)
+            |> Enum.group_by(fn asg -> asg.show_group_id end)
+            |> Enum.map(fn {_, asgs} -> {hd(asgs).show_group.group, length(asgs)} end)
+
+          max_count = Enum.map(groups, &elem(&1, 1)) |> Enum.max()
+
+          Enum.filter(groups, fn {_, count} -> count == max_count end)
       end
 
     stats = %{
       apps: length(applications),
       group_apps:
         Enum.reduce(applications, 0, fn app, acc -> acc + length(app.application_show_groups) end),
-      most_popular_group: most_popular_group.name
+      most_popular_groups:
+        Enum.map_join(most_popular_groups, ", ", fn {group, _} -> group.name end)
     }
 
     {:ok,
