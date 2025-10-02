@@ -4,7 +4,7 @@ defmodule HajWeb.ApplicationsLive.Index do
   alias Haj.Spex
   alias Haj.Applications
 
-  on_mount {HajWeb.UserAuth, {:authorize, :applications_read}}
+  on_mount({HajWeb.UserAuth, {:authorize, :applications_read}})
 
   def mount(_params, _session, socket) do
     current_spex = Spex.current_spex() |> Haj.Repo.preload(show_groups: [group: []])
@@ -22,17 +22,18 @@ defmodule HajWeb.ApplicationsLive.Index do
             |> Enum.group_by(fn asg -> asg.show_group_id end)
             |> Enum.map(fn {_, asgs} -> {hd(asgs).show_group.group, length(asgs)} end)
 
-          max_count = Enum.map(groups, &elem(&1, 1)) |> Enum.max()
+          {_, max_count} = Enum.max_by(groups, &elem(&1, 1))
 
-          Enum.filter(groups, fn {_, count} -> count == max_count end)
+          Enum.filter_map(groups, fn {_, count} -> count == max_count end, fn {group, _} ->
+            group
+          end)
       end
 
     stats = %{
       apps: length(applications),
       group_apps:
         Enum.reduce(applications, 0, fn app, acc -> acc + length(app.application_show_groups) end),
-      most_popular_groups:
-        Enum.map_join(most_popular_groups, ", ", fn {group, _} -> group.name end)
+      most_popular_groups: Enum.map_join(most_popular_groups, ", ", & &1.name)
     }
 
     {:ok,
