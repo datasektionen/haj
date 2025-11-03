@@ -7,6 +7,23 @@
   <a href="mailto:webbgrupp@metaspexet.se" class="text-burgandy-600 font-bold">mail</a>
   eller Mattermost!
 </p>
+<!-- TODO: Temp hardcoded stuff - Remove this when the polls are done -->
+<div :if={Policy.authorize?(:polls_vote, @current_user)} class="flex flex-col gap-4 pt-4">
+  <h3 class="text-xl font-bold group-hover:text-burgandy-600">Aktuellt</h3>
+  <div class="grid gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
+    <.card navigate={~p"/polls/2"}>
+      <div class="text-burgandy-500 inline-flex items-center gap-2 text-lg font-bold">
+        <.icon name={:musical_note} solid />
+        <span class="">
+          Låtar
+        </span>
+      </div>
+      <div class="text-gray-500">
+        Du kan nu rösta på låtar till årets spex!
+      </div>
+    </.card>
+  </div>
+</div>
 <div class="flex flex-col gap-4 pt-2">
   <div>
     <h3 class="pt-2 pb-4 text-xl font-bold">Dina grupper</h3>

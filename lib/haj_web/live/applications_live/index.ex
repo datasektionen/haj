@@ -24,8 +24,9 @@ defmodule HajWeb.ApplicationsLive.Index do
 
           {_, max_count} = Enum.max_by(groups, &elem(&1, 1))
 
-          Enum.filter(groups, fn {_, count} -> count == max_count end)
-          |> Enum.map(fn {group, _} -> group end)
+          Enum.filter_map(groups, fn {_, count} -> count == max_count end, fn {group, _} ->
+            group
+          end)
       end
 
     stats = %{
