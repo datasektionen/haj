@@ -62,7 +62,7 @@ defmodule Haj.Mailer.SpamAdapter do
 
   alias Swoosh.Email
 
-  @spam_url "https://spam.datasektionen.se/api/sendmail"
+  @spam_url "https://spam.datasektionen.se/api/legacy/sendmail"
 
   def deliver(%Email{} = email, config \\ []) do
     headers = [
