@@ -1,8 +1,6 @@
 name: Deploy to Staging Environment
 
 on:
-  push:
-    branches: [ dev ]
   workflow_dispatch:
 
 jobs:

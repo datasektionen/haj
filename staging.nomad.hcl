@@ -16,7 +16,7 @@ job "haj-dev" {
         provider = "nomad"
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.haj-dev.rule=Host(`haj.betaspexet.se`)",
+          "traefik.http.routers.haj-dev.rule=Host(`haj.betasektionen.se`)",
           "traefik.http.routers.haj-dev.tls.certresolver=default",
         ]
       }
