@@ -14,8 +14,18 @@ defmodule HajWeb.ApplyLive.EditInfo do
   def mount(_params, _session, socket) do
     user = socket.assigns[:current_user]
     changeset = Accounts.change_user(user)
-
-    {:ok, assign_form(socket, changeset) |> assign(page_title: "Uppgifter")}
+    open = Haj.Applications.open?()
+    show = Haj.Spex.current_spex()
+    if !open do
+      {:ok,
+       socket
+       |> put_flash(:error, "Ansökan är stängd.")
+       |> redirect(to: ~p"/sok")}
+    else
+      {:ok,
+       assign_form(socket, changeset)
+       |> assign(open: open, show: show, page_title: "Uppgifter")}
+    end
   end
 
   @impl true

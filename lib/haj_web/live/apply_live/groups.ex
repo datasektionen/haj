@@ -15,54 +15,63 @@ defmodule HajWeb.ApplyLive.Groups do
   @impl true
   def mount(_params, _session, socket) do
     user = socket.assigns[:current_user]
+    open = Haj.Applications.open?()
+    show = Haj.Spex.current_spex()
+    if !open do
+      {:ok,
+       socket
+       |> put_flash(:error, "Ansökan är stängd.")
+       |> redirect(to: ~p"/sok")}
+    else
+      unfilled? =
+        Enum.any?([:email, :class, :phone], fn val ->
+          val = Map.get(user, val)
+          val == nil || val == ""
+        end)
 
-    unfilled? =
-      Enum.any?([:email, :class, :phone], fn val ->
-        val = Map.get(user, val)
-        val == nil || val == ""
-      end)
+      case unfilled? do
+        true ->
+          {:ok,
+           socket
+           |> put_flash(:error, "Du måste fylla i dina uppgifter först!")
+           |> push_navigate(to: ~p"/sok/edit")}
 
-    case unfilled? do
-      true ->
-        {:ok,
-         socket
-         |> put_flash(:error, "Du måste fylla i dina uppgifter först!")
-         |> push_navigate(to: ~p"/sok/edit")}
+        false ->
+          current_spex = Spex.current_spex()
 
-      false ->
-        current_spex = Spex.current_spex()
+          {application, pre_filled?} =
+            case Haj.Applications.get_current_application_for_user(user.id) do
+              nil -> {%Haj.Applications.Application{}, false}
+              app -> {app, true}
+            end
 
-        {application, pre_filled?} =
-          case Haj.Applications.get_current_application_for_user(user.id) do
-            nil -> {%Haj.Applications.Application{}, false}
-            app -> {app, true}
-          end
+          groups =
+            Spex.get_show_groups_for_show(current_spex.id)
+            |> Enum.filter(fn %{application_open: o} -> o end)
 
-        groups =
-          Spex.get_show_groups_for_show(current_spex.id)
-          |> Enum.filter(fn %{application_open: o} -> o end)
+          socket =
+            if pre_filled? do
+              put_flash(
+                socket,
+                :info,
+                "Data fylld från tidigare ansökan. Du kan uppdatera den genom att fylla i nya uppfiter."
+              )
+            else
+              socket
+            end
 
-        socket =
-          if pre_filled? do
-            put_flash(
-              socket,
-              :info,
-              "Data fylld från tidigare ansökan. Du kan uppdatera den genom att fylla i nya uppfiter."
-            )
-          else
-            socket
-          end
+          changeset = Haj.Applications.change_application(application)
 
-        changeset = Haj.Applications.change_application(application)
-
-        {:ok,
-         assign(socket,
-           groups: groups,
-           application: application,
-           page_title: "Sök grupper",
-           pre_filled: pre_filled?
-         )
-         |> assign_form(changeset)}
+          {:ok,
+           assign(socket,
+             groups: groups,
+             socket: socket, open: open, show: show,
+             application: application,
+             page_title: "Sök grupper",
+             pre_filled: pre_filled?
+           )
+           |> assign_form(changeset)}
+      end
     end
   end
 

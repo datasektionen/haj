@@ -15,24 +15,33 @@ defmodule HajWeb.ApplyLive.Complete do
   def mount(_params, _session, socket) do
     user = socket.assigns[:current_user]
     application = Applications.get_pending_application_for_user(user.id)
+    open = Haj.Applications.open?()
+    show = Haj.Spex.current_spex()
+    cond do
+      !open ->
+        {:ok,
+         socket
+         |> put_flash(:error, "Ansökan är stängd.")
+         |> redirect(to: ~p"/sok")}
 
-    if application == nil do
-      {:ok,
-       socket
-       |> put_flash(:error, "Du måste ange vilka grupper du vill söka först.")
-       |> push_navigate(to: ~p"/sok/groups")}
-    else
-      show_groups =
-        Applications.get_show_groups_for_application(application.id)
-        |> Enum.reduce(%{}, fn sg, acc ->
-          Map.put(acc, sg.id, sg)
-        end)
+      application == nil ->
+        {:ok,
+         socket
+         |> put_flash(:error, "Du måste ange vilka grupper du vill söka först.")
+         |> push_navigate(to: ~p"/sok/groups")}
 
-      {:ok,
-       socket
-       |> assign(page_title: "Ansök")
-       |> assign(show_groups: show_groups, application: application)
-       |> assign_form(Applications.change_application(application))}
+      true ->
+        show_groups =
+          Applications.get_show_groups_for_application(application.id)
+          |> Enum.reduce(%{}, fn sg, acc ->
+            Map.put(acc, sg.id, sg)
+          end)
+
+        {:ok,
+         socket
+         |> assign(page_title: "Ansök")
+         |> assign(show_groups: show_groups, application: application, socket: socket, open: open, show: show)
+         |> assign_form(Applications.change_application(application))}
     end
   end
 
