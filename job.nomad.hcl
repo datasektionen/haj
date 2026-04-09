@@ -45,10 +45,11 @@ AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
 {{ end }}
 
 PHX_HOST=haj.metaspexet.se
-LOGIN_URL=https://sso.datasektionen.se/legacyapi
-LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
+LOGIN_URL=https://login.datasektionen.se
+LOGIN_FRONTEND_URL=https://login.datasektionen.se
 IMAGE_URL=https://imgproxy.haj.metaspexet.se
-ZFINGER_URL=https://zfinger.datasektionen.se
+RFINGER_API_URL=https://rfinger.datasektionen.se
+RFINGER_API_KEY=super_secret
 EOF
         destination = "local/.env"
         env         = true
