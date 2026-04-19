@@ -114,6 +114,8 @@ services:
       LOGIN_API_KEY: VERY_SECRET_API_KEY
       # Misc
       ZFINGER_URL: http://zfinger.datasektionen.se
+      RFINGER_API_URL: https://rfinger.datasektionen.se/api/
+      RFINGER_API_KEY: rfinger-secret
     ports:
       - "4000:4000"
     volumes:

@@ -17,7 +17,9 @@ config :haj,
   login_frontend_url: System.get_env("LOGIN_FRONTEND_URL", "http://localhost:7002"),
   port: 4001,
   api_login_secret: "usemetologin",
-  zfinger_url: System.get_env("ZFINGER_URL")
+  zfinger_url: System.get_env("ZFINGER_URL"),
+  rfinger_api_url: System.get_env("RFINGER_API_URL"),
+  rfinger_api_key: System.get_env("RFINGER_API_KEY")
 
 config :imgproxy,
   key: System.get_env("IMGPROXY_KEY"),

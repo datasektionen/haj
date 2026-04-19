@@ -49,6 +49,8 @@ LOGIN_URL=http://sso.nomad.dsekt.internal/legacyapi
 LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
 IMAGE_URL=https://imgproxy.haj.betaspexet.se
 ZFINGER_URL=https://zfinger.datasektionen.se
+RFINGER_API_URL=https://rfinger.datasektionen.se/api/
+RFINGER_API_KEY=rfinger-secret
 EOF
         destination = "local/.env"
         env         = true

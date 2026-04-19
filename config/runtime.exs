@@ -44,6 +44,8 @@ if config_env() == :prod || config_env() == :staging do
 
   api_login_secret = System.get_env("API_LOGIN_SECRET") || raise "API_LOGIN_SECRET is missing"
   zfinger_url = System.get_env("ZFINGER_URL") || raise "ZFINGER_URL is missing"
+  rfinger_api_url = System.get_env("RFINGER_API_URL") || raise "RFINGER_API_URL is missing"
+  rfinger_api_key = System.get_env("RFINGER_API_KEY") || raise "RFINGER_API_KEY is missing"
   spam_api_key = System.get_env("SPAM_API_KEY") || raise "SPAM_API_KEY is missing"
 
   config :haj,
@@ -51,7 +53,9 @@ if config_env() == :prod || config_env() == :staging do
     login_url: login_url,
     login_frontend_url: login_frontend_url,
     api_login_secret: api_login_secret,
-    zfinger_url: zfinger_url
+    zfinger_url: zfinger_url,
+    rfinger_api_url: rfinger_api_url,
+    rfinger_api_key: rfinger_api_key
 
   # Variables for imgproxy
   imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"
