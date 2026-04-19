@@ -203,6 +203,12 @@ defmodule HajWeb.Router do
     end
   end
 
+  scope "/", HajWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/rfinger/user/:username/image", RfingerController, :user_image
+  end
+
   scope "/sok", HajWeb do
     pipe_through [:browser]
 
