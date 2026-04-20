@@ -46,7 +46,7 @@ AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
 
 PHX_HOST=haj.betaspexet.se
 OIDC_PROVIDER=https://sso.datasektionen.se/op
-OIDC_ID=haj-dev
+OIDC_ID=haj
 OIDC_REDIRECT_URL=https://haj.betaspexet.se/login/callback
 OIDC_SCOPES=openid profile email
 IMAGE_URL=https://imgproxy.haj.betaspexet.se
