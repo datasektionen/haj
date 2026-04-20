@@ -9,10 +9,6 @@ defmodule HajWeb.SessionController do
   @doc """
   Starts an OIDC Authorization Code + PKCE login flow.
   """
-  def login(conn, %{"code" => _code, "state" => _state} = params) do
-    callback(conn, params)
-  end
-
   def login(conn, %{"return_url" => return_url} = params) do
     conn = put_session(conn, :user_return_to, return_url)
     do_login(conn, params)
