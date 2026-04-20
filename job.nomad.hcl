@@ -50,8 +50,7 @@ OIDC_ID=haj
 OIDC_REDIRECT_URL=https://haj.metaspexet.se/login/callback
 OIDC_SCOPES=openid profile email
 IMAGE_URL=https://imgproxy.haj.metaspexet.se
-RFINGER_API_URL=https://rfinger.datasektionen.se
-RFINGER_API_KEY=super_secret
+ZFINGER_URL=https://zfinger.datasektionen.se
 EOF
         destination = "local/.env"
         env         = true
