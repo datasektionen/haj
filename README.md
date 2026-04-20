@@ -22,7 +22,7 @@ This is considerably more complex, and requires a bit of setup. You will also ne
 Prerequisites:
 
 - You will need an env variables as defined in `config/.env.example` file. Most notably, you will need
-  valid OIDC credentials (`OIDC_PROVIDER`, `OIDC_ID`, `OIDC_SECRET`, `OIDC_REDIRECT_URL`) to be able to login. If you wish to interact with media files (images, audio) you will
+  a `LOGIN_API_KEY` to be able to login. If you wish to interact with media files (images, audio) you will
   need either an S3 bucket or a Minio server running locally. See the `docker-compose.yml` file for an example
   of how to run a Minio server locally.
 - Our images are served by an [imgproxy](https://github.com/imgproxy/imgproxy) server behind a Cloudfront CDN. You will need to use correct `IMGPROXY_KEY` and `IMGPROXY_SALT` env variables set. You can also run a local imgproxy server by running `docker-compose up imgproxy`.
