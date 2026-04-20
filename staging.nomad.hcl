@@ -34,8 +34,8 @@ job "haj-dev" {
 {{ with nomadVar "nomad/jobs/haj-dev" }}
 DATABASE_URL=postgres://haj-dev:{{ .database_password }}@postgres.dsekt.internal/haj-dev
 SECRET_KEY_BASE={{ .secret_key_base }}
+OIDC_SECRET={{ .oidc_secret }}
 PORT={{ env "NOMAD_PORT_hajhttp" }}
-LOGIN_API_KEY={{ .login_api_key }}
 API_LOGIN_SECRET={{ .api_login_secret }}
 SPAM_API_KEY={{ .spam_api_key }}
 IMGPROXY_KEY={{ .imgproxy_key }}
@@ -45,8 +45,10 @@ AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
 {{ end }}
 
 PHX_HOST=haj.betaspexet.se
-LOGIN_URL=http://sso.nomad.dsekt.internal/legacyapi
-LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
+OIDC_PROVIDER=https://sso.datasektionen.se/op
+OIDC_ID=haj
+OIDC_REDIRECT_URL=https://haj.betaspexet.se/login/callback
+OIDC_SCOPES=openid profile email
 IMAGE_URL=https://imgproxy.haj.betaspexet.se
 ZFINGER_URL=https://zfinger.datasektionen.se
 EOF

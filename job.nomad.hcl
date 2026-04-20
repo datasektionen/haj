@@ -34,8 +34,8 @@ job "haj" {
 {{ with nomadVar "nomad/jobs/haj" }}
 DATABASE_URL=postgres://haj:{{ .database_password }}@postgres.dsekt.internal/haj
 SECRET_KEY_BASE={{ .secret_key_base }}
+OIDC_SECRET={{ .oidc_secret }}
 PORT={{ env "NOMAD_PORT_hajhttp" }}
-LOGIN_API_KEY={{ .login_api_key }}
 API_LOGIN_SECRET={{ .api_login_secret }}
 SPAM_API_KEY={{ .spam_api_key }}
 IMGPROXY_KEY={{ .imgproxy_key }}
@@ -45,10 +45,13 @@ AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
 {{ end }}
 
 PHX_HOST=haj.metaspexet.se
-LOGIN_URL=https://sso.datasektionen.se/legacyapi
-LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
+OIDC_PROVIDER=https://sso.datasektionen.se/op
+OIDC_ID=haj
+OIDC_REDIRECT_URL=https://haj.metaspexet.se/login/callback
+OIDC_SCOPES=openid profile email
 IMAGE_URL=https://imgproxy.haj.metaspexet.se
-ZFINGER_URL=https://zfinger.datasektionen.se
+RFINGER_API_URL=https://rfinger.datasektionen.se
+RFINGER_API_KEY=super_secret
 EOF
         destination = "local/.env"
         env         = true

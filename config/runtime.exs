@@ -36,20 +36,22 @@ if config_env() == :prod || config_env() == :staging do
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     socket_options: maybe_ipv6
 
-  login_api_key = System.get_env("LOGIN_API_KEY") || raise "LOGIN_API_KEY is missing"
-  login_url = System.get_env("LOGIN_URL") || raise "LOGIN_URL is missing"
-
-  login_frontend_url =
-    System.get_env("LOGIN_FRONTEND_URL") || raise "LOGIN_FRONTEND_URL is missing"
+  oidc_provider = System.get_env("OIDC_PROVIDER") || raise "OIDC_PROVIDER is missing"
+  oidc_id = System.get_env("OIDC_ID") || raise "OIDC_ID is missing"
+  oidc_secret = System.get_env("OIDC_SECRET") || raise "OIDC_SECRET is missing"
+  oidc_redirect_url = System.get_env("OIDC_REDIRECT_URL") || raise "OIDC_REDIRECT_URL is missing"
+  oidc_scopes = System.get_env("OIDC_SCOPES") || "openid profile email"
 
   api_login_secret = System.get_env("API_LOGIN_SECRET") || raise "API_LOGIN_SECRET is missing"
   zfinger_url = System.get_env("ZFINGER_URL") || raise "ZFINGER_URL is missing"
   spam_api_key = System.get_env("SPAM_API_KEY") || raise "SPAM_API_KEY is missing"
 
   config :haj,
-    login_api_key: login_api_key,
-    login_url: login_url,
-    login_frontend_url: login_frontend_url,
+    oidc_provider: oidc_provider,
+    oidc_id: oidc_id,
+    oidc_secret: oidc_secret,
+    oidc_redirect_url: oidc_redirect_url,
+    oidc_scopes: oidc_scopes,
     api_login_secret: api_login_secret,
     zfinger_url: zfinger_url
 
