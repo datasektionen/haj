@@ -24,13 +24,15 @@ defmodule Haj.OIDC do
 
   def exchange_code!(code, redirect_uri, code_verifier) do
     metadata = discovery!()
+    client_id = fetch_env!(:oidc_id)
+    client_secret = fetch_env!(:oidc_secret)
+    basic = Base.encode64("#{client_id}:#{client_secret}")
 
     Req.post!(metadata["token_endpoint"],
+      headers: [{"authorization", "Basic #{basic}"}],
       form: [
         grant_type: "authorization_code",
         code: code,
-        client_id: fetch_env!(:oidc_id),
-        client_secret: fetch_env!(:oidc_secret),
         redirect_uri: redirect_uri,
         code_verifier: code_verifier
       ]
