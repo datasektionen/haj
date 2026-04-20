@@ -35,7 +35,8 @@ defmodule HajWeb.SessionController do
   def callback(conn, %{"code" => code, "state" => state}) do
     with :ok <- verify_oidc_state(conn, state),
          code_verifier when is_binary(code_verifier) <- get_session(conn, :oidc_code_verifier),
-         {:ok, token_response} <- OIDC.exchange_code!(code, oidc_redirect_uri(conn), code_verifier),
+         {:ok, token_response} <-
+           OIDC.exchange_code!(code, oidc_redirect_uri(conn), code_verifier),
          %{"access_token" => access_token} <- token_response,
          {:ok, userinfo} <- OIDC.fetch_userinfo!(access_token),
          user_attrs <- userinfo_to_user_attrs(userinfo) do

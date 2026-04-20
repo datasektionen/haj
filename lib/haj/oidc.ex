@@ -45,7 +45,8 @@ defmodule Haj.OIDC do
       {:ok, %{status: status, body: body}} when status in [400, 401] ->
         # Some clients are configured as public and require no client authentication.
         case Req.post(metadata["token_endpoint"], form: [client_id: client_id] ++ form) do
-          {:ok, %{status: fallback_status, body: fallback_body}} when fallback_status in 200..299 ->
+          {:ok, %{status: fallback_status, body: fallback_body}}
+          when fallback_status in 200..299 ->
             {:ok, fallback_body}
 
           {:ok, %{status: fallback_status, body: fallback_body}} ->
