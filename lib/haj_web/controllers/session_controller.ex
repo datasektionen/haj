@@ -35,9 +35,10 @@ defmodule HajWeb.SessionController do
   def callback(conn, %{"code" => code, "state" => state}) do
     with :ok <- verify_oidc_state(conn, state),
          code_verifier when is_binary(code_verifier) <- get_session(conn, :oidc_code_verifier),
-         token_response <- OIDC.exchange_code!(code, oidc_redirect_uri(conn), code_verifier),
+         {:ok, token_response} <-
+           OIDC.exchange_code!(code, oidc_redirect_uri(conn), code_verifier),
          %{"access_token" => access_token} <- token_response,
-         userinfo <- OIDC.fetch_userinfo!(access_token),
+         {:ok, userinfo} <- OIDC.fetch_userinfo!(access_token),
          user_attrs <- userinfo_to_user_attrs(userinfo) do
       user = Accounts.upsert_user(user_attrs)
 
@@ -45,7 +46,9 @@ defmodule HajWeb.SessionController do
       |> clear_oidc_session()
       |> UserAuth.log_in_user(user)
     else
-      _ ->
+      reason ->
+        Logger.error("OIDC callback flow failed: #{inspect(reason)}")
+
         conn
         |> clear_oidc_session()
         |> put_flash(:error, "Inloggningen misslyckades.")
