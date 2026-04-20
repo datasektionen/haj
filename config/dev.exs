@@ -11,12 +11,10 @@ config :haj, Haj.Repo,
   pool_size: 10
 
 config :haj,
-  oidc_provider: System.get_env("OIDC_PROVIDER", "https://sso.datasektionen.se/op"),
-  oidc_id: System.get_env("OIDC_ID"),
-  oidc_secret: System.get_env("OIDC_SECRET"),
-  oidc_redirect_url: System.get_env("OIDC_REDIRECT_URL", "http://localhost:4000/login/callback"),
-  oidc_scopes: System.get_env("OIDC_SCOPES", "openid profile email"),
+  login_api_key: System.get_env("LOGIN_API_KEY"),
+  login_url: System.get_env("LOGIN_URL"),
   spam_api_key: System.get_env("SPAM_API_KEY"),
+  login_frontend_url: System.get_env("LOGIN_FRONTEND_URL", "http://localhost:7002"),
   port: 4001,
   api_login_secret: "usemetologin",
   zfinger_url: System.get_env("ZFINGER_URL")

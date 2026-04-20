@@ -108,12 +108,10 @@ services:
       # Minio/S3 stuff
       AWS_ACCESS_KEY_ID: IPGAGmgxUBwvZoHowCez
       AWS_SECRET_ACCESS_KEY: RNHuldJLrZSB0RxmpCEYzLOwN0HRIz9RnC2I4qQG
-      # OIDC stuff
-      OIDC_PROVIDER: ${OIDC_PROVIDER:-https://sso.datasektionen.se/op}
-      OIDC_ID: ${OIDC_ID:-haj}
-      OIDC_SECRET: ${OIDC_SECRET:-change_me}
-      OIDC_REDIRECT_URL: ${OIDC_REDIRECT_URL:-http://localhost:4000/login/callback}
-      OIDC_SCOPES: ${OIDC_SCOPES:-openid profile email}
+      # Login stuff
+      LOGIN_URL: http://login:7002
+      LOGIN_FRONTEND_URL: http://localhost:7002
+      LOGIN_API_KEY: VERY_SECRET_API_KEY
       # Misc
       ZFINGER_URL: http://zfinger.datasektionen.se
     ports:
@@ -125,6 +123,7 @@ services:
       - db
       - minio
       - imgproxy
+      - login
 
 volumes:
   _postgres:

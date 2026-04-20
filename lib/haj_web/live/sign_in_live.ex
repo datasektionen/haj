@@ -3,7 +3,7 @@ defmodule HajWeb.SignInLive do
 
   def render(assigns) do
     ~H"""
-    <a href={~p"/login"}>Logga in</a>
+    <a href={Haj.Login.authorize_url()}>Logga in</a>
     """
   end
 end
