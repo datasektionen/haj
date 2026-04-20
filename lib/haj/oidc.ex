@@ -22,24 +22,61 @@ defmodule Haj.OIDC do
 
   def exchange_code!(code, redirect_uri) do
     metadata = discovery!()
+    client_id = fetch_env!(:oidc_id)
+    client_secret = fetch_env!(:oidc_secret)
+    basic = Base.encode64("#{client_id}:#{client_secret}")
 
-    Req.post!(metadata["token_endpoint"],
-      form: [
-        grant_type: "authorization_code",
-        code: code,
-        client_id: fetch_env!(:oidc_id),
-        client_secret: fetch_env!(:oidc_secret),
-        redirect_uri: redirect_uri
-      ]
-    ).body
+    form = [
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: redirect_uri,
+      code_verifier: code_verifier
+    ]
+
+    case Req.post(metadata["token_endpoint"],
+           headers: [{"authorization", "Basic #{basic}"}],
+           form: form
+         ) do
+      {:ok, %{status: status, body: body}} when status in 200..299 ->
+        {:ok, body}
+
+      {:ok, %{status: status, body: body}} when status in [400, 401] ->
+        # Some clients are configured as public and require no client authentication.
+        case Req.post(metadata["token_endpoint"], form: [client_id: client_id] ++ form) do
+          {:ok, %{status: fallback_status, body: fallback_body}}
+          when fallback_status in 200..299 ->
+            {:ok, fallback_body}
+
+          {:ok, %{status: fallback_status, body: fallback_body}} ->
+            {:error, {:token_exchange_failed, fallback_status, fallback_body, status, body}}
+
+          {:error, reason} ->
+            {:error, {:token_exchange_error, reason, status, body}}
+        end
+
+      {:ok, %{status: status, body: body}} ->
+        {:error, {:token_exchange_failed, status, body}}
+
+      {:error, reason} ->
+        {:error, {:token_exchange_error, reason}}
+    end
   end
 
   def fetch_userinfo!(access_token) do
     metadata = discovery!()
 
-    Req.get!(metadata["userinfo_endpoint"],
-      headers: [{"authorization", "Bearer #{access_token}"}]
-    ).body
+    case Req.get(metadata["userinfo_endpoint"],
+           headers: [{"authorization", "Bearer #{access_token}"}]
+         ) do
+      {:ok, %{status: status, body: body}} when status in 200..299 ->
+        {:ok, body}
+
+      {:ok, %{status: status, body: body}} ->
+        {:error, {:userinfo_failed, status, body}}
+
+      {:error, reason} ->
+        {:error, {:userinfo_error, reason}}
+    end
   end
 
   defp discovery! do
