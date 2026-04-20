@@ -7,7 +7,7 @@ defmodule HajWeb.SessionController do
   require Logger
 
   @doc """
-  Starts an OIDC Authorization Code + PKCE login flow.
+  Starts an OIDC Authorization Code login flow.
   """
   def login(conn, %{"return_url" => return_url} = params) do
     conn = put_session(conn, :user_return_to, return_url)
@@ -20,22 +20,18 @@ defmodule HajWeb.SessionController do
 
   defp do_login(conn, _params) do
     state = random_token()
-    code_verifier = random_token()
-    code_challenge = code_challenge(code_verifier)
     redirect_uri = oidc_redirect_uri(conn)
 
-    url = OIDC.authorize_url!(redirect_uri, state, code_challenge)
+    url = OIDC.authorize_url!(redirect_uri, state)
 
     conn
     |> put_session(:oidc_state, state)
-    |> put_session(:oidc_code_verifier, code_verifier)
     |> redirect(external: url)
   end
 
   def callback(conn, %{"code" => code, "state" => state}) do
     with :ok <- verify_oidc_state(conn, state),
-         code_verifier when is_binary(code_verifier) <- get_session(conn, :oidc_code_verifier),
-         token_response <- OIDC.exchange_code!(code, oidc_redirect_uri(conn), code_verifier),
+         token_response <- OIDC.exchange_code!(code, oidc_redirect_uri(conn)),
          %{"access_token" => access_token} <- token_response,
          userinfo <- OIDC.fetch_userinfo!(access_token),
          user_attrs <- userinfo_to_user_attrs(userinfo) do
@@ -105,12 +101,6 @@ defmodule HajWeb.SessionController do
     |> Base.url_encode64(padding: false)
   end
 
-  defp code_challenge(code_verifier) do
-    :sha256
-    |> :crypto.hash(code_verifier)
-    |> Base.url_encode64(padding: false)
-  end
-
   defp userinfo_to_user_attrs(userinfo) do
     username =
       userinfo["preferred_username"] ||
@@ -157,7 +147,6 @@ defmodule HajWeb.SessionController do
   defp clear_oidc_session(conn) do
     conn
     |> delete_session(:oidc_state)
-    |> delete_session(:oidc_code_verifier)
   end
 
   defp oidc_redirect_uri(conn) do

@@ -5,7 +5,7 @@ defmodule Haj.OIDC do
 
   @default_scopes "openid profile email"
 
-  def authorize_url!(redirect_uri, state, code_challenge) do
+  def authorize_url!(redirect_uri, state) do
     metadata = discovery!()
 
     query =
@@ -14,15 +14,13 @@ defmodule Haj.OIDC do
         "redirect_uri" => redirect_uri,
         "response_type" => "code",
         "scope" => scopes(),
-        "state" => state,
-        "code_challenge" => code_challenge,
-        "code_challenge_method" => "S256"
+        "state" => state
       })
 
     metadata["authorization_endpoint"] <> "?" <> query
   end
 
-  def exchange_code!(code, redirect_uri, code_verifier) do
+  def exchange_code!(code, redirect_uri) do
     metadata = discovery!()
 
     Req.post!(metadata["token_endpoint"],
@@ -31,8 +29,7 @@ defmodule Haj.OIDC do
         code: code,
         client_id: fetch_env!(:oidc_id),
         client_secret: fetch_env!(:oidc_secret),
-        redirect_uri: redirect_uri,
-        code_verifier: code_verifier
+        redirect_uri: redirect_uri
       ]
     ).body
   end
