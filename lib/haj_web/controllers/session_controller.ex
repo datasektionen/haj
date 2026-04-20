@@ -130,7 +130,8 @@ defmodule HajWeb.SessionController do
   end
 
   defp names_from_userinfo(%{"given_name" => first_name, "family_name" => last_name})
-       when is_binary(first_name) and is_binary(last_name) and first_name != "" and last_name != "" do
+       when is_binary(first_name) and is_binary(last_name) and first_name != "" and
+              last_name != "" do
     {first_name, last_name}
   end
 
