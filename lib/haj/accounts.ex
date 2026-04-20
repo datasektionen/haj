@@ -47,7 +47,7 @@ defmodule Haj.Accounts do
   if it does't exist in the database, it adds it.
   """
   def upsert_user(%{"user" => name, "emails" => email} = attrs) do
-    case Repo.get_by(User, username: name) do
+    case Repo.get_by(User, username: name) || Repo.get_by(User, email: email) do
       nil ->
         data = attrs |> Map.put("username", name) |> Map.put("email", email)
 
