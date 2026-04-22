@@ -34,7 +34,7 @@ defmodule HajWeb.SessionController do
          {:ok, token_response} <- OIDC.exchange_code!(code, oidc_redirect_uri(conn)),
          %{"access_token" => access_token} <- token_response,
          {:ok, userinfo} <- OIDC.fetch_userinfo!(access_token),
-         user_attrs <- userinfo_to_user_attrs(userinfo) do
+         {:ok, user_attrs} <- userinfo_to_user_attrs(userinfo) do
       user = Accounts.upsert_user(user_attrs)
 
       conn
@@ -107,18 +107,24 @@ defmodule HajWeb.SessionController do
     username =
       userinfo["preferred_username"] ||
         userinfo["username"] ||
-        username_from_email(userinfo["email"]) ||
-        userinfo["sub"]
+        username_from_email(userinfo["email"])
 
-    email = userinfo["email"] || "#{username}@kth.se"
-    {first_name, last_name} = names_from_userinfo(userinfo)
+    username = normalize_username(username)
 
-    %{
-      "user" => username,
-      "emails" => email,
-      "first_name" => first_name,
-      "last_name" => last_name
-    }
+    if is_binary(username) and username != "" do
+      email = userinfo["email"] || "#{username}@kth.se"
+      {first_name, last_name} = names_from_userinfo(userinfo)
+
+      {:ok,
+       %{
+         "user" => username,
+         "emails" => email,
+         "first_name" => first_name,
+         "last_name" => last_name
+       }}
+    else
+      {:error, :missing_username_claim}
+    end
   end
 
   defp names_from_userinfo(%{"given_name" => first_name, "family_name" => last_name})
@@ -145,6 +151,16 @@ defmodule HajWeb.SessionController do
   end
 
   defp username_from_email(_), do: nil
+
+  defp normalize_username(username) when is_binary(username) do
+    username
+    |> String.trim()
+    |> String.downcase()
+    |> String.split("@", parts: 2)
+    |> List.first()
+  end
+
+  defp normalize_username(_), do: nil
 
   defp clear_oidc_session(conn) do
     conn
