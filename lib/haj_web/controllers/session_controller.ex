@@ -33,8 +33,9 @@ defmodule HajWeb.SessionController do
     with :ok <- verify_oidc_state(conn, state),
          {:ok, token_response} <- OIDC.exchange_code!(code, oidc_redirect_uri(conn)),
          %{"access_token" => access_token} <- token_response,
+         {:ok, subject} <- OIDC.subject_from_id_token(token_response),
          {:ok, userinfo} <- OIDC.fetch_userinfo!(access_token),
-         user_attrs <- userinfo_to_user_attrs(userinfo) do
+         {:ok, user_attrs} <- userinfo_to_user_attrs(userinfo, subject) do
       user = Accounts.upsert_user(user_attrs)
 
       conn
@@ -103,22 +104,23 @@ defmodule HajWeb.SessionController do
     |> Base.url_encode64(padding: false)
   end
 
-  defp userinfo_to_user_attrs(userinfo) do
-    username =
-      userinfo["preferred_username"] ||
-        userinfo["username"] ||
-        username_from_email(userinfo["email"]) ||
-        userinfo["sub"]
+  defp userinfo_to_user_attrs(userinfo, subject) do
+    username = normalize_username(subject)
 
-    email = userinfo["email"] || "#{username}@kth.se"
-    {first_name, last_name} = names_from_userinfo(userinfo)
+    if is_binary(username) and username != "" do
+      email = userinfo["email"] || "#{username}@kth.se"
+      {first_name, last_name} = names_from_userinfo(userinfo)
 
-    %{
-      "user" => username,
-      "emails" => email,
-      "first_name" => first_name,
-      "last_name" => last_name
-    }
+      {:ok,
+       %{
+         "user" => username,
+         "emails" => email,
+         "first_name" => first_name,
+         "last_name" => last_name
+       }}
+    else
+      {:error, :missing_username_claim}
+    end
   end
 
   defp names_from_userinfo(%{"given_name" => first_name, "family_name" => last_name})
@@ -137,14 +139,15 @@ defmodule HajWeb.SessionController do
 
   defp names_from_userinfo(_userinfo), do: {"Okand", "Okand"}
 
-  defp username_from_email(email) when is_binary(email) do
-    case String.split(email, "@", parts: 2) do
-      [username, _] when username != "" -> username
-      _ -> nil
-    end
+  defp normalize_username(username) when is_binary(username) do
+    username
+    |> String.trim()
+    |> String.downcase()
+    |> String.split("@", parts: 2)
+    |> List.first()
   end
 
-  defp username_from_email(_), do: nil
+  defp normalize_username(_), do: nil
 
   defp clear_oidc_session(conn) do
     conn
