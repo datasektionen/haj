@@ -78,6 +78,19 @@ defmodule Haj.OIDC do
     end
   end
 
+  def subject_from_id_token(%{"id_token" => id_token}) when is_binary(id_token) do
+    with [_header, payload, _signature] <- String.split(id_token, "."),
+         {:ok, decoded_payload} <- Base.url_decode64(payload, padding: false),
+         {:ok, claims} <- Jason.decode(decoded_payload),
+         sub when is_binary(sub) and sub != "" <- claims["sub"] do
+      {:ok, sub}
+    else
+      _ -> {:error, :missing_subject_claim}
+    end
+  end
+
+  def subject_from_id_token(_), do: {:error, :missing_id_token}
+
   defp discovery! do
     provider = fetch_env!(:oidc_provider) |> String.trim_trailing("/")
     url = provider <> "/.well-known/openid-configuration"
