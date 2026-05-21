@@ -36,5 +36,7 @@ else
   echo "Database $POSTGRES_DB created."
 fi
 
+nginx &
+
 # Start the Phoenix server
 mix phx.server
