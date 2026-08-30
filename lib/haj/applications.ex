@@ -276,8 +276,8 @@ defmodule Haj.Applications.Mail do
       <li><b>Telefonnummer</b>: #{user.phone}</li>
       <li><b>Sökta grupper</b>: #{show_group_names}</li>
     </ul>
-    Du kommer inom kort kontaktas av chefer för de grupper du sökt. Om du har några frågor eller funderingar
-    är du välkommen att kontakta Direqtionen på <a href="mailto:direqtionen@metaspexet.se">direqtionen@metaspexet.se</a>.
+    Du kommer inom kort kontaktas av chefer för de grupper du sökt, se till att kolla skräpposten om mejlet hamnar där.
+    Om du har några frågor eller funderingar är du välkommen att kontakta Direqtionen på <a href="mailto:direqtionen@metaspexet.se">direqtionen@metaspexet.se</a>.
     <br/><br/>
     Hälsningar,<br/><br/>
     Chefsgruppen för METAspexet #{spex.year.year}
