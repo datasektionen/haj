@@ -13,6 +13,7 @@ defmodule HajWeb.ApplyLive.Complete do
 
   @impl true
   def mount(_params, _session, socket) do
+    show = Haj.Spex.current_spex()
     user = socket.assigns[:current_user]
     application = Applications.get_pending_application_for_user(user.id)
 
@@ -30,7 +31,7 @@ defmodule HajWeb.ApplyLive.Complete do
 
       {:ok,
        socket
-       |> assign(page_title: "Ansök")
+       |> assign(page_title: "Ansök", show: show)
        |> assign(show_groups: show_groups, application: application)
        |> assign_form(Applications.change_application(application))}
     end
@@ -111,7 +112,7 @@ defmodule HajWeb.ApplyLive.Complete do
             required
             class="mr-2 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
           />
-          Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR och kommer tas bort efter rekryteringen är färdig, senast 1a Januari 2026.
+          Jag godkänner att de här uppgiferna lagras av METAspexet i syfte för rekrytering enligt GDPR och kommer tas bort efter rekryteringen är färdig, senast 1a Januari <%= @show.year.year %>.
         </div>
 
         <div class="col-span-6 border-t pt-4 text-right">
