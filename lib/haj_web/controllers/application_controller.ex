@@ -29,6 +29,7 @@ defmodule HajWeb.ApplicationController do
 
   defp to_csv(applications) do
     titles = [
+      "Id",
       "Namn",
       "Email",
       "Telefonnr",
@@ -41,8 +42,11 @@ defmodule HajWeb.ApplicationController do
     ]
 
     applications =
-      Enum.map(applications, fn app ->
+      applications
+      |> Enum.sort_by(& &1.id)
+      |> Enum.map(fn app ->
         [
+          app.id,
           "#{app.user.first_name} #{app.user.last_name}",
           app.user.email,
           app.user.phone,
