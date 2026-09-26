@@ -42,6 +42,7 @@ IMGPROXY_KEY={{ .imgproxy_key }}
 IMGPROXY_SALT={{ .imgproxy_salt }}
 AWS_ACCESS_KEY_ID={{ .aws_access_key_id }}
 AWS_SECRET_ACCESS_KEY={{ .aws_secret_access_key }}
+RFINGER_API_KEY={{ .rfinger_api_key }}
 {{ end }}
 
 PHX_HOST=haj.metaspexet.se
@@ -50,7 +51,7 @@ OIDC_ID=haj
 OIDC_REDIRECT_URL=https://haj.metaspexet.se/login/callback
 OIDC_SCOPES=openid profile email
 IMAGE_URL=https://imgproxy.haj.metaspexet.se
-ZFINGER_URL=https://zfinger.datasektionen.se
+RFINGER_URL=https://rfinger.datasektionen.se/api
 EOF
         destination = "local/.env"
         env         = true

@@ -4,6 +4,7 @@ defmodule HajWeb.GroupLive.Show do
   alias Haj.Spex
   alias HajWeb.Endpoint
   alias Haj.Policy
+  alias Haj.Accounts
 
   def mount(%{"show_group_id" => show_group_id}, _session, socket) do
     show_group = Spex.get_show_group!(show_group_id)
@@ -24,5 +25,6 @@ defmodule HajWeb.GroupLive.Show do
     |> Enum.map(fn %{user: user} ->
       user
     end)
+    |> Accounts.load_pictures()
   end
 end

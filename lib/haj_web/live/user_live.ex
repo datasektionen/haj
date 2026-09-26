@@ -3,7 +3,10 @@ defmodule HajWeb.UserLive do
   alias Haj.Accounts
 
   def mount(%{"username" => username}, _session, socket) do
-    user = Accounts.get_user_by_username!(username) |> Accounts.preload(:foods)
+    user =
+      Accounts.get_user_by_username!(username)
+      |> Accounts.preload(:foods)
+      |> Accounts.load_picture()
 
     groups_by_year =
       Haj.Spex.get_show_groups_for_user(user.id)
@@ -21,7 +24,7 @@ defmodule HajWeb.UserLive do
     <div class="pt-4">
       <div class="flex flex-row items-center gap-4 pb-4">
         <img
-          src={"#{Application.get_env(:haj, :zfinger_url)}/user/#{@user.username}/image/200"}
+          src={"#{@user.picture}"}
           class="inline-block h-20 w-20 rounded-full object-cover object-top filter group-hover:brightness-90"
         />
         <div class="flex flex-col">

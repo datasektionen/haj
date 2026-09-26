@@ -19,7 +19,8 @@ config :haj,
   spam_api_key: System.get_env("SPAM_API_KEY"),
   port: 4001,
   api_login_secret: "usemetologin",
-  zfinger_url: System.get_env("ZFINGER_URL")
+  rfinger_url: System.get_env("RFINGER_URL"),
+  rfinger_api_token: System.get_env("RFINGER_API_KEY")
 
 config :imgproxy,
   key: System.get_env("IMGPROXY_KEY"),

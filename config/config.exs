@@ -8,7 +8,8 @@
 import Config
 
 config :haj,
-  ecto_repos: [Haj.Repo]
+  ecto_repos: [Haj.Repo],
+  profile_picture_service_module: Haj.Rfinger
 
 # Configures the endpoint
 config :haj, HajWeb.Endpoint,

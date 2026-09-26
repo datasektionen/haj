@@ -7,6 +7,9 @@ defmodule Haj.Application do
 
   @impl true
   def start(_type, _args) do
+    profile_picture_service =
+      Application.get_env(:haj, :profile_picture_service_module, Haj.Rfinger)
+
     children = [
       # Start the Ecto repository
       Haj.Repo,
@@ -15,9 +18,10 @@ defmodule Haj.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Haj.PubSub},
       # Start the Endpoint (http/https)
-      HajWeb.Endpoint
+      HajWeb.Endpoint,
       # Start a worker by calling: Haj.Worker.start_link(arg)
       # {Haj.Worker, arg}
+      profile_picture_service
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

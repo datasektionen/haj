@@ -16,7 +16,7 @@
             class="group"
           >
             <img
-              src={"https://zfinger.datasektionen.se/user/#{chef.username}/image/100"}
+              src={"#{chef.picture}"}
               class="inline-block h-6 w-6 rounded-full object-cover object-top filter group-hover:brightness-90"
             />
             <span class="px-2 text-sm text-gray-700 group-hover:text-gray-900">
@@ -56,7 +56,11 @@
     </.link>
   </div>
 
-  <.live_table rows={@group.group_memberships |> Enum.map(fn %{user: user} -> user end)}>
+  <.live_table rows={
+    @group.group_memberships
+    |> Enum.map(fn %{user: user} -> user end)
+    |> Haj.Accounts.load_pictures()
+  }>
     <:col :let={member} label="Namn">
       <.user_card user={member} />
     </:col>
