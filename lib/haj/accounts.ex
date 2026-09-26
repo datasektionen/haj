@@ -9,6 +9,8 @@ defmodule Haj.Accounts do
   alias Haj.Accounts.User
   alias Haj.Accounts.UserToken
 
+  @profile_picture_service Application.compile_env(:haj, :profile_picture_service_module)
+
   @doc """
   Returns the list of users.
 
@@ -224,5 +226,16 @@ defmodule Haj.Accounts do
 
   def preload(users, args \\ []) do
     Repo.preload(users, args)
+  end
+
+  def load_picture(user) do
+    Map.put(user, :picture, @profile_picture_service.get_picture(user))
+  end
+
+  @doc """
+  This function is very ineffective. It should be changed to use rfinger's batch API
+  """
+  def load_pictures(users) do
+    Enum.map(users, &load_picture(&1))
   end
 end

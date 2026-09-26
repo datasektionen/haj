@@ -2,11 +2,15 @@ defmodule HajWeb.MembersLive do
   use HajWeb, :live_view
 
   alias Haj.Spex
+  alias Haj.Accounts
 
   def mount(_params, _session, socket) do
     %{id: show_id} = Spex.current_spex()
 
-    members = Spex.list_members_for_show(show_id) |> Spex.preload_user_groups()
+    members =
+      Spex.list_members_for_show(show_id)
+      |> Spex.preload_user_groups()
+      |> Accounts.load_pictures()
 
     groups =
       Spex.get_show_groups_for_show(show_id)

@@ -43,8 +43,9 @@ if config_env() == :prod || config_env() == :staging do
   oidc_scopes = System.get_env("OIDC_SCOPES") || "openid profile email"
 
   api_login_secret = System.get_env("API_LOGIN_SECRET") || raise "API_LOGIN_SECRET is missing"
-  zfinger_url = System.get_env("ZFINGER_URL") || raise "ZFINGER_URL is missing"
   spam_api_key = System.get_env("SPAM_API_KEY") || raise "SPAM_API_KEY is missing"
+  rfinger_url = System.get_env("RFINGER_URL") || raise "RFINGER_URL is missing"
+  rfinger_api_token = System.get_env("RFINGER_API_KEY") || raise "RFINGER_API_KEY is missing"
 
   config :haj,
     oidc_provider: oidc_provider,
@@ -53,7 +54,8 @@ if config_env() == :prod || config_env() == :staging do
     oidc_redirect_url: oidc_redirect_url,
     oidc_scopes: oidc_scopes,
     api_login_secret: api_login_secret,
-    zfinger_url: zfinger_url
+    rfinger_url: rfinger_url,
+    rfinger_api_token: rfinger_api_token
 
   # Variables for imgproxy
   imgproxy_key = System.get_env("IMGPROXY_KEY") || raise "IMGPROXY_KEY is missing"

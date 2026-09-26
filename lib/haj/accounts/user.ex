@@ -26,6 +26,8 @@ defmodule Haj.Accounts.User do
     field :food_preference_other, :string
 
     timestamps()
+
+    field :picture, :string, virtual: true
   end
 
   @doc false
