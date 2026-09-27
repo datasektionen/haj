@@ -11,6 +11,8 @@ defmodule HajWeb.PollLive.Show do
     poll = Polls.get_poll!(id)
     {options, user_votes} = get_options(id, socket.assigns.current_user.id)
 
+    options = if poll.display_votes, do: options, else: Enum.shuffle(options)
+
     if connected?(socket) do
       Polls.subscribe(id)
     end
@@ -132,7 +134,7 @@ defmodule HajWeb.PollLive.Show do
           </span>
         </div>
 
-        <div class="mt-4 w-full flex-none xs:w-fit">
+        <div :if={@poll.open} class="mt-4 w-full flex-none xs:w-fit">
           <.link patch={~p"/polls/#{@poll}/add-option"}>
             <.button class="w-full">Nytt alternativ</.button>
           </.link>
@@ -177,7 +179,7 @@ defmodule HajWeb.PollLive.Show do
                 <span :if={!option.url}><%= option.name %></span>
               </p>
             </div>
-            <div class="flex w-16 gap-x-2.5 pl-4">
+            <div :if={@poll.display_votes} class="flex w-16 gap-x-2.5 pl-4">
               <dt class="flex items-center">
                 <span class="sr-only">Total votes</span>
                 <.icon name={:user} class="h-4 w-4 text-gray-400" />
