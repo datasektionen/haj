@@ -5,6 +5,7 @@ defmodule HajWeb.DashboardLive.Index do
   alias Haj.Responsibilities
   alias Haj.Spex
   alias Haj.Merch
+  alias Haj.Polls
 
   def mount(_params, _session, socket) do
     current_show = Spex.current_spex()
@@ -22,11 +23,16 @@ defmodule HajWeb.DashboardLive.Index do
         _ -> []
       end
 
+    polls = 
+        Polls.list_polls()
+        |> Enum.filter(fn poll -> poll.open end)
+
     {:ok,
      assign(socket,
        user_groups: user_groups,
        merch_order_items: merch_order_items,
        responsibilities: responsibilities,
+       polls: polls,
        page_title: "Hem"
      )}
   end
